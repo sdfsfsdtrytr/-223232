@@ -48,6 +48,13 @@
         button { cursor: pointer; border: none; transition: 0.2s; color: #fff; background: none; font-weight: bold; }
         .avatar-emoji { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 26px; background: var(--glass-heavy); border: 1px solid var(--accent); flex-shrink: 0; }
 
+.avatar-emoji.has-photo {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow: hidden;
+}
+
         /* ОТДЕЛЬНЫЙ ЭКРАН АВТОРИЗАЦИИ */
         #auth-page { position: fixed; inset: 0; z-index: 100000; background: var(--bg); display: flex; justify-content: center; align-items: center; padding: 20px; }
         .auth-card { width: 400px; padding: 40px; text-align: center; border-radius: 30px; border: 1px solid rgba(255,255,255,0.1); }
@@ -126,6 +133,14 @@
             .swatch-grid, .icon-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
         }
 
+.nav-icon{
+    width:40px;
+    height:40px;
+    display:block;
+    object-fit:contain;
+    pointer-events:none;
+}
+
         /* Контекстные меню */
         .custom-menu { position: fixed; z-index: 50000; width: 220px; background: #111827; border: 1px solid var(--accent); border-radius: 12px; display: none; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .menu-item { padding: 12px 15px; font-size: 13px; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.05); color: white; display: flex; align-items: center; gap: 10px; }
@@ -186,7 +201,14 @@
         @media (max-width: 768px) {
             #pc-layout { display: none !important; }
             #mobile-layout { display: flex; height: 100vh; flex-direction: column; }
-            .mob-screen { display: none; flex: 1; padding: 20px; padding-top: 60px; overflow-y: auto; }
+            .mob-screen {
+    display: none;
+    flex: 1;
+    padding: 20px;
+    padding-top: 60px;
+    padding-bottom: 110px;
+    overflow-y: auto;
+}
             .mob-screen.active { display: flex; flex-direction: column; }
             .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 75px; display: flex; justify-content: space-around; align-items: center; background: rgba(0,0,0,0.6); backdrop-filter: blur(20px); z-index: 500; border-top: 1px solid rgba(255,255,255,0.1); }
             #mob-chat-view { position: fixed; inset: 0; background: var(--bg); z-index: 1000; display: none; flex-direction: column; transform: translateX(100%); transition: 0.3s; }
@@ -430,14 +452,17 @@
         <nav class="bottom-nav">
             <div class="nav-indicator" id="mob-nav-indicator"></div>
             <div class="nav-item active" onclick="mobNavControl('home', 0)">
-    <img src="Эконки/Чаты.jpg" width="40" height="40">
+    <img class="nav-icon" src="Эконки/Чаты.jpg">
 </div>
-            <div class="nav-item" onclick="mobNavControl('search', 1)">
-    <img src="Эконки/Лупа.png" width="40" height="40">
+
+<div class="nav-item" onclick="mobNavControl('search', 1)">
+    <img class="nav-icon" src="Эконки/Лупа.png">
 </div>
-            <div class="nav-item" onclick="mobNavControl('settings', 2)">
-    <img src="Эконки/Настройки.png" width="40" height="40">
+
+<div class="nav-item" onclick="mobNavControl('settings', 2)">
+    <img class="nav-icon" src="Эконки/Настройки.png">
 </div>
+</nav>
  
 <!-- PROFILE POPUP -->
     <div id="profile-popup" onclick="this.style.display='none'">
@@ -2075,6 +2100,7 @@ const vibeEnhancer = (() => {
     openModal('wide', `<div class="modal-head"><div><div class="modal-title">Создать группу</div><div class="settings-subtitle">Имя обязательно</div></div><button class="modal-close" onclick="closeOverlay()">✕</button></div><div class="settings-section"><input id="grp-name" placeholder="Имя группы"><input id="grp-emoji" placeholder="Эмодзи аватар" maxlength="2"><textarea id="grp-bio" placeholder="Описание"></textarea><div class="settings-nav-title">Выбери участников</div><input id="grp-search" placeholder="Поиск по друзьям" oninput="filterSelectableFriends(this.value, 'grp-friends')"><div id="grp-friends" class="people-list">${selectableFriendsHtml()}</div><div class="settings-actions"><button class="settings-save" onclick="createGroup()">Создать</button></div></div>`);
   }
   function openCreateChannel() {
+   console.log('openCreateChannel'); 
     openModal('wide', `<div class="modal-head"><div><div class="modal-title">Создать канал</div><div class="settings-subtitle">Имя, описание, эмодзи и тип ссылки</div></div><button class="modal-close" onclick="closeOverlay()">✕</button></div><div class="settings-section"><input id="chn-name" placeholder="Имя канала"><input id="chn-emoji" placeholder="Эмодзи аватар" maxlength="2"><textarea id="chn-bio" placeholder="Описание"></textarea><div class="settings-actions"><button class="settings-save" onclick="setChannelMode('private')">Частный</button><button class="settings-ghost" onclick="setChannelMode('public')">Публичный</button></div><input id="chn-link" placeholder="Ссылка канала"><div class="section-note">Для частного канала ссылка создаётся сама, для публичного ты придумываешь её сам.</div><div class="settings-actions"><button class="settings-save" onclick="createChannel()">Создать</button></div></div>`);
   }
   function randomInviteCode(prefix) { return `${prefix}_${Math.random().toString(36).slice(2, 9)}`; }
@@ -2667,13 +2693,13 @@ window.addEventListener('load', () => setTimeout(() => vibeEnhancer.init(), 250)
     installAdminButton();
     installPlusButtons();
   };
-
+/*
   window.showCreateMenu = function() {
     if (window.vibeEnhancer && typeof window.vibeEnhancer.showCreateMenu === 'function') {
       return window.vibeEnhancer.showCreateMenu();
     }
   };
-
+*/
   function bootFixes() {
     installEmojiInput();
     bindEmojiLivePreview();
@@ -3924,6 +3950,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const priv = $('mode-private'), pub = $('mode-public');
     if (priv && pub) { priv.className = mode === 'private' ? 'settings-save' : 'settings-ghost'; pub.className = mode === 'public' ? 'settings-save' : 'settings-ghost'; }
   };
+  
   window.createChannel = async function() {
     const d = FIX.channelDraft;
     if (!d || !d.name) return openCreateChannel();
@@ -3941,6 +3968,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderDialogsFixed();
     closeOverlay();
   };
+  
   window.searchUsers = async function(v, m) {
     const target = $(m === 'pc' ? 'pc-search-res' : 'mob-search-res');
     if (!target) return;
