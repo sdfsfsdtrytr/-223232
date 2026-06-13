@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -297,7 +297,7 @@
         .msg.received { align-self: flex-start; background: var(--msg-in); border-bottom-left-radius: 4px; }
 
         .chat-input-bar { padding: 15px; display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
-        .circle-btn { width: 45px; height: 45px; border-radius: 50%; background: var(--msg-in); display: flex; align-items: center; justify-content: center; font-size: 20px; transition: 0.2s; user-select: none; }
+        .circle-btn { width: 45px; height: 45px; border-radius: 50%; background: var(--msg-in); display: flex; align-items: center; justify-content: center; font-size: 20px; transition: 0.2s; user-select: none; touch-action: none; }
         
         /* ПЛАШКА ЭМОДЗИ (ФИКС РАЗМЕРА) */
         .emoji-picker { display: none; grid-template-columns: repeat(6, 1fr); gap: 5px; padding: 10px; position: absolute; bottom: 80px; left: 20px; width: 280px; height: 200px; overflow-y: auto; z-index: 2000; border: 1px solid var(--accent); background: #111827; border-radius: 15px; }
@@ -328,6 +328,12 @@
         justify-content: space-around; 
         border: 1px solid rgba(255,255,255,0.1);
         box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    }
+
+    #mob-msgs, #mob-msgs * {
+        -webkit-user-select: none !important;
+        user-select: none !important;
+        -webkit-touch-callout: none !important;
     }
     
     .nav-item { 
@@ -497,8 +503,10 @@ onkeydown="if(event.key==='Enter') sendText('pc')">
                         
 <button class="circle-btn"
         id="pc-voice-btn"
-        onmousedown="startVoice('pc')"
-        onmouseup="stopVoice()">
+        onpointerdown="startVoice('pc', event)"
+        onpointerup="stopVoice(event)"
+        onpointercancel="stopVoice(event)"
+        onpointerleave="voicePointerLeave(event)">
     <img src="Эконки/Микрофон.png" class="chat-btn-icon">
 </button>
                        <button class="circle-btn send"
@@ -590,8 +598,10 @@ z-index:999;
 
 <button class="circle-btn"
         id="mob-voice-btn"
-        ontouchstart="startVoice('mob')"
-        ontouchend="stopVoice()">
+        onpointerdown="startVoice('mob', event)"
+        onpointerup="stopVoice(event)"
+        onpointercancel="stopVoice(event)"
+        onpointerleave="voicePointerLeave(event)">
     <img src="Эконки/Микрофон.png" class="chat-btn-icon">
 </button>
 
@@ -804,6 +814,51 @@ function mobTab(id) {
         let mediaRecorder = null; let audioChunks = [];
         let authFlowMode = null;
         let authResendTimer = null;
+        let authCodeRequestInFlight = false;
+        let startupPermissionsPromise = null;
+        let voiceHoldState = { mode: null, pointerId: null, cancelOnRelease: false, active: false };
+
+        function getOverlayRoot() {
+            const roots = document.querySelectorAll('#app-overlay-root');
+            return roots[roots.length - 1] || roots[0] || null;
+        }
+
+        async function requestStartupPermissions() {
+            if (startupPermissionsPromise) return startupPermissionsPromise;
+            startupPermissionsPromise = (async () => {
+                try {
+                    if ('Notification' in window) {
+                        try {
+                            const perm = navigator.permissions && navigator.permissions.query ? await navigator.permissions.query({ name: 'notifications' }) : null;
+                            if (perm && perm.state) localStorage.setItem('vibe_notification_permission_state', perm.state);
+                        } catch (e) {}
+                        const notifState = localStorage.getItem('vibe_notification_permission_state') || '';
+                        if (Notification.permission === 'default' && notifState !== 'granted' && !localStorage.getItem('vibe_notification_permission_asked')) {
+                            localStorage.setItem('vibe_notification_permission_asked', '1');
+                            const result = await Notification.requestPermission();
+                            localStorage.setItem('vibe_notification_permission_state', result || Notification.permission || 'default');
+                        }
+                    }
+                } catch (e) {}
+
+                try {
+                    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                        try {
+                            const perm = navigator.permissions && navigator.permissions.query ? await navigator.permissions.query({ name: 'microphone' }) : null;
+                            if (perm && perm.state) localStorage.setItem('vibe_mic_permission_state', perm.state);
+                        } catch (e) {}
+                        const micState = localStorage.getItem('vibe_mic_permission_state') || '';
+                        if (micState !== 'granted' && !localStorage.getItem('vibe_mic_permission_asked')) {
+                            localStorage.setItem('vibe_mic_permission_asked', '1');
+                            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                            stream.getTracks().forEach(track => track.stop());
+                            localStorage.setItem('vibe_mic_permission_state', 'granted');
+                        }
+                    }
+                } catch (e) {}
+            })();
+            return startupPermissionsPromise;
+        }
 
         const vBadge = `<span class="verified-badge"><svg viewBox="0 0 24 24" fill="none"><path d="M22.5 12.5C22.5 18.0228 18.0228 22.5 12.5 22.5C6.97715 22.5 2.5 18.0228 2.5 12.5C2.5 6.97715 6.97715 2.5 12.5 2.5C18.0228 2.5 22.5 6.97715 22.5 12.5Z" fill="#00A3FF"/><path d="M10.5 15.5L7.5 12.5L8.5 11.5L10.5 13.5L15.5 8.5L16.5 9.5L10.5 15.5Z" fill="white"/></svg></span>`;
         const themeList = ["dark", "light", "purple", "lime", "ocean", "sunset", "rose", "forest", "midnight", "gold"];
@@ -880,6 +935,18 @@ function mobTab(id) {
             };
             tick();
             authResendTimer = setInterval(tick, 1000);
+        }
+
+        function setAuthButtonBusy(mode, busy, label) {
+            const buttonId = mode === 'login' ? 'login-btn-main' : mode === 'reg' ? 'reg-btn-main' : 'link-btn-main';
+            const btn = document.getElementById(buttonId);
+            if (!btn) return;
+            if (!btn.dataset.normalText) btn.dataset.normalText = btn.textContent;
+            btn.disabled = !!busy;
+            btn.style.opacity = busy ? '0.7' : '1';
+            btn.style.pointerEvents = busy ? 'none' : 'auto';
+            if (label) btn.textContent = label;
+            else if (!busy) btn.textContent = btn.dataset.normalText;
         }
 
         function showVerifyStep(mode, email, startTime) {
@@ -981,22 +1048,34 @@ function mobTab(id) {
         }
 
         async function startEmailFlow(mode) {
+            if (authCodeRequestInFlight) return;
+            authCodeRequestInFlight = true;
+            setAuthButtonBusy(mode, true, 'ОТПРАВЛЯЕМ...');
             try {
                 await sendVerificationCode(mode);
             } catch (e) {
                 console.error('Email flow error:', e);
                 alert(e.message || 'Не удалось отправить код. Проверь данные и попробуй ещё раз.');
+            } finally {
+                authCodeRequestInFlight = false;
+                setAuthButtonBusy(mode, false);
             }
         }
 
         async function resendVerificationCode() {
             if (!authFlowMode) return;
+            if (authCodeRequestInFlight) return;
+            authCodeRequestInFlight = true;
+            setAuthButtonBusy(authFlowMode, true, 'ОТПРАВЛЯЕМ...');
             try {
                 await sendVerificationCode(authFlowMode, true);
                 alert('Новый код отправлен.');
             } catch (e) {
                 console.error('Resend code error:', e);
                 alert(e.message || 'Не удалось отправить код повторно.');
+            } finally {
+                authCodeRequestInFlight = false;
+                setAuthButtonBusy(authFlowMode, false);
             }
         }
 
@@ -1608,9 +1687,7 @@ async function saveBio(m) {
 async function initPushNotifications() {
     // Если уведомления не поддерживаются — просто выходим без ошибок
     if (!('Notification' in window)) return;
-    if (Notification.permission === 'default') {
-        await Notification.requestPermission();
-    }
+    await requestStartupPermissions().catch(() => {});
     console.log("Push-уведомления инициализированы");
 }
 
@@ -1933,6 +2010,7 @@ window.onload = () => {
             me = JSON.parse(sUser);
             if (me && me.id) {
                 initApp();
+                requestStartupPermissions().catch(() => {});
                 // Запускаем уведомления отдельно, чтобы ошибки в них не вешали чат
                 initPushNotifications().catch(e => console.log("Push error handled"));
                 
@@ -1946,6 +2024,7 @@ window.onload = () => {
             localStorage.clear();
         }
     }
+    requestStartupPermissions().catch(() => {});
 };
 
 </script>
@@ -2121,7 +2200,7 @@ const vibeEnhancer = (() => {
     const selected = safeSettings().privacy.lastSeenExceptions || {};
     const entries = Object.values(state.friends);
     if (!entries.length) return `<div class="settings-card">Сначала добавь друзей</div>`;
-    return entries.map(user => `<label class="person-row"><span class="person-main"><span class="avatar-emoji">${user.avatar || '👤'}</span><span><div>${user.name}</div><div class="settings-nav-meta">${user.handle}</div></span></span><input type="checkbox" data-presence-id="${user.id}" ${selected[user.id] ? 'checked' : ''}></label>`).join('');
+    return entries.map(user => `<label class="person-row"><span class="person-main">${avatarHtml(user)}<span><div>${esc(user.name)}${user.verified ? vBadge : ''}</div><div class="settings-nav-meta">${esc(user.handle || '')}</div></span></span><input type="checkbox" data-presence-id="${user.id}" ${selected[user.id] ? 'checked' : ''}></label>`).join('');
   }
   function buildSettingsView() {
     const s = safeSettings();
@@ -2351,9 +2430,12 @@ const vibeEnhancer = (() => {
   function adminsRoom(room) { return room && (room.ownerId === me.id || (room.admins && room.admins[me.id])); }
   function isRoom(item) { return item && (item.type === 'group' || item.type === 'channel'); }
   function closeOverlay() {
-    const root = document.getElementById('app-overlay-root');
-    root.className = 'overlay-root';
-    root.innerHTML = '';
+    const roots = document.querySelectorAll('#app-overlay-root');
+    const root = roots[roots.length - 1] || roots[0];
+    if (root) {
+      root.className = 'overlay-root';
+      root.innerHTML = '';
+    }
     if (state.scanStream) {
       state.scanStream.getTracks().forEach(track => track.stop());
       state.scanStream = null;
@@ -2364,7 +2446,8 @@ const vibeEnhancer = (() => {
     }
   }
   function openModal(width, html) {
-    const root = document.getElementById('app-overlay-root');
+    const root = getOverlayRoot();
+    if (!root) return;
     root.className = 'overlay-root active';
     root.innerHTML = `<div class="app-modal-backdrop" onclick="closeOverlay()"><div class="app-modal ${width || ''}" onclick="event.stopPropagation()">${html}</div></div>`;
   }
@@ -2455,7 +2538,7 @@ const vibeEnhancer = (() => {
     const room = state.rooms[roomId];
     if (!room) return;
     const addable = Object.values(state.friends).filter(user => !(room.members && room.members[user.id]));
-    openModal('wide', `<div class="modal-head"><div><div class="modal-title">Настройки ${room.type === 'group' ? 'группы' : 'канала'}</div><div class="settings-subtitle">${room.name}</div></div><button class="modal-close" onclick="closeOverlay()">✕</button></div><div class="settings-section"><input id="room-name-edit" value="${escapeHtml(room.name || '')}" placeholder="Имя"><textarea id="room-bio-edit" placeholder="Описание">${escapeHtml(room.bio || '')}</textarea><input id="room-avatar-edit" value="${escapeHtml(room.avatar || '')}" maxlength="2" placeholder="Эмодзи"><div class="settings-actions"><button class="settings-save" onclick="saveRoomBasics('${roomId}')">Сохранить</button></div>${room.type === 'group' ? `<div class="settings-card"><div class="settings-nav-title">Добавить участника</div><div class="people-list">${addable.map(user => `<div class="person-row"><span class="person-main"><span class="avatar-emoji">${user.avatar}</span><span><div>${user.name}</div><div class="settings-nav-meta">${user.handle}</div></span></span><button class="settings-save" onclick="addRoomMember('${roomId}','${user.id}')">Добавить</button></div>`).join('') || 'Все друзья уже в группе'}</div></div>` : ''}</div>`);
+    openModal('wide', `<div class="modal-head"><div><div class="modal-title">Настройки ${room.type === 'group' ? 'группы' : 'канала'}</div><div class="settings-subtitle">${room.name}</div></div><button class="modal-close" onclick="closeOverlay()">✕</button></div><div class="settings-section"><div class="settings-card"><div class="settings-nav-title">Фото ${room.type === 'group' ? 'группы' : 'канала'}</div><div style="display:flex; gap:12px; align-items:center; margin-top:12px;">${roomAvatarHtml(room, 'settings-preview-avatar', 'width:72px;height:72px;font-size:26px;')}<div class="settings-actions"><button class="settings-save" onclick="pickRoomPhoto('${roomId}')">Выбрать фото</button>${room.avatarPhoto ? `<button class="settings-ghost" onclick="removeRoomPhoto('${roomId}')">Убрать фото</button>` : ''}</div></div></div><input id="room-name-edit" value="${escapeHtml(room.name || '')}" placeholder="Имя"><textarea id="room-bio-edit" placeholder="Описание">${escapeHtml(room.bio || '')}</textarea><input id="room-avatar-edit" value="${escapeHtml(room.avatar || '')}" maxlength="8" placeholder="Эмодзи"><div class="settings-actions"><button class="settings-save" onclick="saveRoomBasics('${roomId}')">Сохранить</button></div>${room.type === 'group' ? `<div class="settings-card"><div class="settings-nav-title">Добавить участника</div><div class="people-list">${addable.map(user => `<div class="person-row"><span class="person-main">${avatarHtml(user)}<span><div>${esc(user.name)}${user.verified ? vBadge : ''}</div><div class="settings-nav-meta">${esc(user.handle || '')}</div></span></span><button class="settings-save" onclick="addRoomMember('${roomId}','${user.id}')">Добавить</button></div>`).join('') || 'Все друзья уже в группе'}</div></div>` : ''}</div>`);
   }
   async function saveRoomBasics(roomId) {
     const room = state.rooms[roomId];
@@ -2630,8 +2713,8 @@ const vibeEnhancer = (() => {
     const host = document.getElementById(mode === 'pc' ? 'pc-chat-header-ui' : 'mob-chat-header-ui');
     if (!host) return;
     const subtitle = item.type === 'channel' ? (adminsRoom(item) ? 'Можно публиковать' : 'Только чтение') : `${Object.keys(item.members || {}).length} участников`;
-    if (mode === 'pc') host.innerHTML = `<div class="avatar-emoji room-avatar" style="width:40px;height:40px;font-size:20px;">${item.avatar || (item.type === 'channel' ? '📣' : '👥')}</div><div style="margin-left:10px;"><b>${item.name}</b><div style="font-size:12px; opacity:0.66;">${subtitle}</div></div>`;
-    else host.innerHTML = `<div style="display:flex; align-items:center; gap:10px;" onclick="showPeerProfile()"><button onclick="event.stopPropagation();closeMobChat()" style="font-size:24px;">←</button><div class="avatar-emoji room-avatar" style="width:35px;height:35px;font-size:18px;">${item.avatar || (item.type === 'channel' ? '📣' : '👥')}</div><div><b>${item.name}</b><div style="font-size:12px; opacity:0.66;">${subtitle}</div></div></div>`;
+    if (mode === 'pc') host.innerHTML = `${roomAvatarHtml(item, '', 'width:40px;height:40px;font-size:20px;')}<div style="margin-left:10px;"><b>${item.name}</b><div style="font-size:12px; opacity:0.66;">${subtitle}</div></div>`;
+    else host.innerHTML = `<div style="display:flex; align-items:center; gap:10px;" onclick="showPeerProfile()"><button onclick="event.stopPropagation();closeMobChat()" style="font-size:24px;">←</button>${roomAvatarHtml(item, '', 'width:35px;height:35px;font-size:18px;')}<div><b>${item.name}</b><div style="font-size:12px; opacity:0.66;">${subtitle}</div></div></div>`;
   }
   function openMobChat(item) {
     activePeer = item;
@@ -2828,7 +2911,7 @@ window.addEventListener('load', () => setTimeout(() => vibeEnhancer.init(), 250)
     });
     const qrUrl = `https://quickchart.io/qr?text=${encodeURIComponent(token)}&size=320`;
     closeOverlay();
-    const root = document.getElementById('app-overlay-root');
+    const root = getOverlayRoot();
     root.className = 'overlay-root active';
     root.innerHTML = `<div class="app-modal-backdrop" onclick="closeOverlay()"><div class="app-modal" onclick="event.stopPropagation()"><div class="modal-head"><div><div class="modal-title">Войти по QR-коду</div><div class="settings-subtitle">Открой Vibe на телефоне и отсканируй код.</div></div><button class="modal-close" onclick="closeOverlay()">✕</button></div><div class="qr-box"><img src="${qrUrl}" alt="QR" onerror="this.outerHTML='<div style=&quot;color:#000; text-align:center; font-weight:700;&quot;>QR не загрузился<br><br>${token}</div>'"></div><div class="settings-card" style="text-align:center;">Код: <b>${token}</b></div></div></div>`;
   };
@@ -2842,7 +2925,7 @@ window.addEventListener('load', () => setTimeout(() => vibeEnhancer.init(), 250)
     const emoji = appearance.patternEmoji || '☼';
     const pattern = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='88' height='88' viewBox='0 0 88 88'%3E%3Ctext x='44' y='52' font-size='24' text-anchor='middle' fill='rgba(0,0,0,0.45)'%3E${encodeURIComponent(emoji)}%3C/text%3E%3C/svg%3E")`;
     closeOverlay();
-    const root = document.getElementById('app-overlay-root');
+    const root = getOverlayRoot();
     root.className = 'overlay-root active';
     root.innerHTML = `<div class="app-modal-backdrop" onclick="closeOverlay()"><div class="app-modal wide" onclick="event.stopPropagation()"><div class="settings-preview" style="background:${bg}; min-height:260px;"><div class="settings-pattern" style="background-image:${pattern};"></div><div class="settings-preview-avatar">${user.avatar || '👤'}</div><div class="settings-preview-name" style="font-size:42px;">${user.name}${user.verified ? vBadge : ''}</div><div class="settings-preview-handle">${user.handle || ''}</div></div><div class="settings-card" style="margin-top:16px;"><div class="settings-nav-title">Описание</div><div class="section-note" style="margin-top:10px; font-size:14px; opacity:0.86;">${safeText(user.bio || 'Нет описания')}</div><div class="settings-actions" style="margin-top:18px;"><button class="settings-save" onclick="toggleBlock()">Заблокировать</button><button class="settings-ghost" style="color:#ff8a8a;" onclick="removeChat()">Удалить чат</button></div></div></div></div>`;
   };
@@ -2856,7 +2939,6 @@ window.addEventListener('load', () => setTimeout(() => vibeEnhancer.init(), 250)
       if (typeof showNotification === 'function') {
         showNotification(title, body, { });
       } else if ('Notification' in window) {
-        if (Notification.permission === 'default') await Notification.requestPermission();
         if (Notification.permission === 'granted') new Notification(title, { body, silent: false });
       }
     } catch (e) { console.warn('Notification error', e); }
@@ -3096,6 +3178,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const hasMe = () => typeof me !== 'undefined' && !!me && !!me.id;
   const badge = () => typeof vBadge !== 'undefined' ? vBadge : '';
   const avatarUrl = user => (user && (user.avatarPhoto || user.photoURL || user.avatarUrl)) || '';
+  const roomAvatarUrl = room => (room && (room.avatarPhoto || room.photoURL || room.avatarUrl)) || '';
   function avatarContent(user) {
     const url = avatarUrl(user);
     return url ? '' : esc((user && user.avatar) || '👤');
@@ -3111,6 +3194,22 @@ document.addEventListener('DOMContentLoaded', () => {
   function avatarHtml(user, extraClass = '', extraStyle = '') {
     const cls = `${avatarClass(user)}${extraClass ? ' ' + extraClass : ''}`;
     return `<div class="${cls}" style="${avatarStyle(user, extraStyle)}">${avatarContent(user)}</div>`;
+  }
+  function roomAvatarContent(room) {
+    const url = roomAvatarUrl(room);
+    return url ? '' : esc((room && room.avatar) || (room && room.type === 'channel' ? '📣' : '👥'));
+  }
+  function roomAvatarClass(room, base = 'avatar-emoji room-avatar') {
+    return `${base}${roomAvatarUrl(room) ? ' has-photo' : ''}`;
+  }
+  function roomAvatarStyle(room, extra = '') {
+    const url = roomAvatarUrl(room);
+    const bg = url ? `background-image:url('${esc(url)}');` : '';
+    return `${bg}${extra || ''}`;
+  }
+  function roomAvatarHtml(room, extraClass = '', extraStyle = '') {
+    const cls = `${roomAvatarClass(room)}${extraClass ? ' ' + extraClass : ''}`;
+    return `<div class="${cls}" style="${roomAvatarStyle(room, extraStyle)}">${roomAvatarContent(room)}</div>`;
   }
   function applyAvatarElement(el, user) {
     if (!el) return;
@@ -3135,7 +3234,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return handle === '@artem';
   };
   function showModal(width, html) {
-    const root = $('app-overlay-root');
+    const root = getOverlayRoot();
     if (!root) return alert('Окно не найдено. Перезагрузи страницу.');
     root.className = 'overlay-root active';
     root.innerHTML = `<div class="app-modal-backdrop" onclick="closeOverlay()"><div class="app-modal ${width || ''}" onclick="event.stopPropagation()">${html}</div></div>`;
@@ -3596,9 +3695,7 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const snd = $('snd-msg');
       if (snd) { snd.currentTime = 0; snd.play().catch(() => {}); }
-      if (!('Notification' in window)) return;
-      if (Notification.permission === 'default') await Notification.requestPermission();
-      if (Notification.permission !== 'granted') return;
+      if (!('Notification' in window) || Notification.permission !== 'granted') return;
       const title = isRoom(item) ? item.name : (item.name || 'Vibe');
       new Notification(title, { body: msg.val || 'Новое сообщение', silent: false });
     } catch (e) {}
@@ -3613,7 +3710,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const meta = FIX.meta[key] || {};
     const unread = meta.unread || 0;
     const open = desktop ? `openPCChat(vibeFix20260524.getItem('${key}'))` : `openMobChat(vibeFix20260524.getItem('${key}'))`;
-    if (isRoom(item)) return `<div class="contact-item glass" onclick="${open}"><div class="avatar-emoji room-avatar">${item.avatar || (item.type === 'channel' ? '📣' : '👥')}</div><div class="dialog-main"><b>${esc(item.name)}</b><br><small>${item.type === 'channel' ? 'Канал' : 'Группа'} · ${Object.keys(item.members || {}).length} участников</small></div>${meta.lastTime ? `<span class="dialog-time">${timeLabel(meta.lastTime)}</span>` : ''}${unread ? `<span class="unread-badge">${unread}</span>` : ''}</div>`;
+    if (isRoom(item)) return `<div class="contact-item glass" onclick="${open}">${roomAvatarHtml(item)}<div class="dialog-main"><b>${esc(item.name)}</b><br><small>${item.type === 'channel' ? 'Канал' : 'Группа'} · ${Object.keys(item.members || {}).length} участников</small></div>${meta.lastTime ? `<span class="dialog-time">${timeLabel(meta.lastTime)}</span>` : ''}${unread ? `<span class="unread-badge">${unread}</span>` : ''}</div>`;
     if (item.isDeleted) return `<div class="contact-item glass" onclick="alert('Этот аккаунт удалён.')" oncontextmenu="return false"><div class="avatar-emoji">🚫</div><div class="dialog-main"><b>Удалённый аккаунт</b><br><small class="st-none">Чат недоступен</small></div></div>`;
     return `<div class="contact-item glass" onclick="${open}" oncontextmenu="showChatListMenu(event, '${item.id}')">${avatarHtml(item)}<div class="dialog-main"><b>${esc(item.name)}${item.verified ? (badge()) : ''}</b><br><small class="${exactPresenceAllowed(item) && item.online ? 'st-all' : 'st-none'}">${window.getPresenceText(item)}</small></div>${meta.lastTime ? `<span class="dialog-time">${timeLabel(meta.lastTime)}</span>` : ''}${unread ? `<span class="unread-badge">${unread}</span>` : ''}</div>`;
   }
@@ -3745,7 +3842,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const data = snap.val() || {};
       const active = Object.entries(data).filter(([uid, v]) => uid !== me.id && v && now() - (v.time || 0) < 8000).map(([, v]) => v);
       const line = $(`${mode}-activity-line`);
-      if (line) line.textContent = active[0] ? activityText(active[0].kind) : '';
+      if (line) line.textContent = active[0] ? `${active[0].name || 'Друг'} ${activityText(active[0].kind)}` : '';
     };
     db.ref(activeTypingPath).on('value', activeTypingCb);
   }
@@ -3837,7 +3934,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       if (isRoom(item) && item.type === 'group' && msg.sender !== me.id) {
         const sender = (((window.vibeRoomState || {}).friends || {})[msg.sender]) || (await db.ref(`users/${msg.sender}`).once('value')).val() || {};
-        html += `<div style="font-size:12px;opacity:.72;margin-bottom:6px;"><b>${esc(sender.name || 'Участник')}</b></div>`;
+        html += `<div style="font-size:12px;opacity:.72;margin-bottom:6px;"><b>${esc(sender.name || 'Участник')}${sender.verified ? (badge()) : ''}</b></div>`;
       }
       html += renderMessageBody(msg);
     }
@@ -3974,12 +4071,16 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!input || input.dataset.typingInstalled === '1') return;
     input.dataset.typingInstalled = '1';
     let timer = null;
-    input.addEventListener('input', () => {
+    const markTyping = () => {
       if (!activePeer) return;
       setMyActivity('typing');
       clearTimeout(timer);
       timer = setTimeout(() => setMyActivity(null), 2200);
-    });
+    };
+    input.addEventListener('input', markTyping);
+    input.addEventListener('keydown', markTyping);
+    input.addEventListener('paste', markTyping);
+    input.addEventListener('compositionstart', markTyping);
     input.addEventListener('blur', () => {
       clearTimeout(timer);
       setMyActivity(null);
@@ -4138,9 +4239,65 @@ document.addEventListener('DOMContentLoaded', () => {
   let voiceMode = 'pc';
   let voiceSeconds = 0;
   let voiceTimer = null;
-  let voiceLocked = false;
-  window.startVoice = async function(mode) {
-
+  function ensureVoiceOverlay(mode) {
+    const existing = document.getElementById('voice-record-overlay');
+    if (existing) return existing;
+    const overlay = document.createElement('div');
+    overlay.id = 'voice-record-overlay';
+    overlay.style.cssText = `
+      position: fixed;
+      inset: 0;
+      z-index: 999999;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 20px;
+      pointer-events: none;
+    `;
+    overlay.innerHTML = `
+      <div style="
+        width: min(420px, 100%);
+        margin-bottom: 90px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        pointer-events: none;
+      ">
+        <div style="display:flex; align-items:center; gap:10px; padding:14px 18px; border-radius:20px; background:rgba(8,12,20,.82); border:1px solid rgba(255,255,255,.08); box-shadow:0 12px 30px rgba(0,0,0,.35);">
+          <div style="width:14px;height:14px;border-radius:50%;background:#ff4d4d;box-shadow:0 0 0 6px rgba(255,77,77,.15);"></div>
+          <div id="voice-record-timer" style="font-size:20px; font-weight:800; color:#fff; min-width:72px; text-align:center;">00:00</div>
+          <img src="Эконки/Микрофон.png" alt="" style="width:26px;height:26px;object-fit:contain;opacity:.95;display:block;">
+        </div>
+        <div id="voice-record-hint" style="color:#b8c1d1; font-size:13px; text-align:center; line-height:1.4; background:rgba(0,0,0,.3); padding:10px 14px; border-radius:14px; max-width:330px;">
+          Для отмены отпустите курсор вне поля
+        </div>
+      </div>`;
+    document.body.appendChild(overlay);
+    return overlay;
+  }
+  function updateVoiceOverlay(mode, text) {
+    const overlay = ensureVoiceOverlay(mode);
+    const timer = overlay.querySelector('#voice-record-timer');
+    const hint = overlay.querySelector('#voice-record-hint');
+    if (timer) timer.textContent = text || '00:00';
+    if (hint) hint.textContent = 'Для отмены отпустите курсор вне поля';
+    overlay.style.display = 'flex';
+  }
+  function hideVoiceOverlay() {
+    const overlay = document.getElementById('voice-record-overlay');
+    if (overlay) overlay.style.display = 'none';
+  }
+  function finalizeVoice() {
+    if (voiceRecorder && voiceRecorder.state !== 'inactive') voiceRecorder.stop();
+  }
+  window.voicePointerLeave = function(event) {
+    if (!voiceHoldState.active) return;
+    if (event && event.pointerId === voiceHoldState.pointerId) {
+      voiceHoldState.cancelOnRelease = true;
+    }
+  };
+  window.startVoice = async function(mode, event) {
     if (!activePeer) return alert('Сначала открой чат.');
     if (isRoom(activePeer) && !(activePeer.members && activePeer.members[me.id])) return alert('Вы больше не в этой группе.');
     if (activePeer.type === 'channel' && !canManage(activePeer)) return;
@@ -4148,45 +4305,38 @@ document.addEventListener('DOMContentLoaded', () => {
       voiceMode = mode || activeMode();
       voiceChunks = [];
       voiceSeconds = 0;
-
-const ui = document.getElementById('mob-voice-ui');
-
-if (voiceMode === 'mob' && ui) {
-    ui.style.display = 'block';
-}
-
-voiceTimer = setInterval(() => {
-
-    voiceSeconds++;
-
-    const m = String(Math.floor(voiceSeconds / 60))
-        .padStart(2, '0');
-
-    const s = String(voiceSeconds % 60)
-        .padStart(2, '0');
-
-    const timer = document.getElementById('mob-voice-timer');
-
-    if (timer) {
-        timer.textContent = `${m}:${s}`;
-    }
-
-}, 1000);
+      voiceHoldState = {
+        mode: voiceMode,
+        pointerId: event && event.pointerId != null ? event.pointerId : null,
+        cancelOnRelease: false,
+        active: true
+      };
+      if (event && event.currentTarget && event.currentTarget.setPointerCapture && event.pointerId != null) {
+        try { event.currentTarget.setPointerCapture(event.pointerId); } catch (e) {}
+      }
+      updateVoiceOverlay(voiceMode, '00:00');
+      clearInterval(voiceTimer);
+      voiceTimer = setInterval(() => {
+        voiceSeconds++;
+        const m = String(Math.floor(voiceSeconds / 60)).padStart(2, '0');
+        const s = String(voiceSeconds % 60).padStart(2, '0');
+        const timer = document.getElementById('voice-record-timer');
+        if (timer) timer.textContent = `${m}:${s}`;
+      }, 1000);
+      await requestStartupPermissions().catch(() => {});
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       voiceRecorder = new MediaRecorder(stream);
       voiceRecorder.ondataavailable = event => { if (event.data && event.data.size) voiceChunks.push(event.data); };
       voiceRecorder.onstop = async () => {
-      clearInterval(voiceTimer);
-
-const ui = document.getElementById('mob-voice-ui');
-
-if (ui) {
-    ui.style.display = 'none';
-}
+        clearInterval(voiceTimer);
+        voiceTimer = null;
+        hideVoiceOverlay();
         stream.getTracks().forEach(track => track.stop());
         const btn = $(`${voiceMode}-voice-btn`);
         if (btn) btn.classList.remove('recording');
-        if (!voiceChunks.length) return;
+        const cancelled = voiceHoldState.cancelOnRelease || voiceChunks.length === 0;
+        voiceHoldState.active = false;
+        if (cancelled) return;
         const loading = document.createElement('div');
         loading.className = 'attachment-draft';
         loading.innerHTML = '<div class="attachment-draft-preview">🎤</div><div class="attachment-draft-main"><div class="attachment-draft-name">Загрузка...</div><div class="attachment-draft-meta">Голосовое сообщение</div></div>';
@@ -4211,12 +4361,34 @@ if (ui) {
       const btn = $(`${voiceMode}-voice-btn`);
       if (btn) btn.classList.add('recording');
     } catch (err) {
+      voiceHoldState.active = false;
+      clearInterval(voiceTimer);
+      voiceTimer = null;
+      hideVoiceOverlay();
       alert('Не удалось включить микрофон.');
     }
   };
-  window.stopVoice = function() {
-    if (voiceRecorder && voiceRecorder.state !== 'inactive') voiceRecorder.stop();
+  window.stopVoice = function(event) {
+    if (!voiceRecorder || voiceRecorder.state === 'inactive') return;
+    const btn = event && event.currentTarget ? event.currentTarget : document.getElementById(`${voiceMode}-voice-btn`);
+    if (voiceHoldState.active && voiceHoldState.pointerId != null && event && event.pointerId != null && event.pointerId !== voiceHoldState.pointerId) return;
+    const rect = btn && btn.getBoundingClientRect ? btn.getBoundingClientRect() : null;
+    const outside = !!(rect && event && typeof event.clientX === 'number' && (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom));
+    if (outside) voiceHoldState.cancelOnRelease = true;
+    finalizeVoice();
   };
+  if (!FIX.voicePointerHooksInstalled) {
+    FIX.voicePointerHooksInstalled = true;
+    document.addEventListener('pointerup', event => {
+      if (voiceRecorder && voiceRecorder.state !== 'inactive') window.stopVoice(event);
+    }, true);
+    document.addEventListener('pointercancel', event => {
+      if (voiceRecorder && voiceRecorder.state !== 'inactive') {
+        voiceHoldState.cancelOnRelease = true;
+        window.stopVoice(event);
+      }
+    }, true);
+  }
   function installAttachmentButtons() {
     ['pc', 'mob'].forEach(mode => {
       const bar = chatBar(mode);
@@ -4280,6 +4452,7 @@ if (ui) {
     }
     await db.ref(chatPathFor(activePeer)).push(msg);
     inp.value = '';
+    setMyActivity(null);
     const key = chatKey(activePeer);
     FIX.meta[key] = FIX.meta[key] || {};
     FIX.meta[key].lastTime = now();
@@ -4304,7 +4477,7 @@ if (ui) {
   };
   function selectableUsers(exclude, attr) {
     const skip = exclude || {};
-    return friends().filter(u => !skip[u.id]).map(u => `<label class="person-row"><span class="person-main"><span class="avatar-emoji">${u.avatar || '👤'}</span><span><div>${esc(u.name)}</div><div class="settings-nav-meta">${esc(u.handle || '')}</div></span></span><input type="checkbox" ${attr}="${u.id}"></label>`).join('') || '<div class="settings-card">Нет доступных друзей</div>';
+    return friends().filter(u => !skip[u.id]).map(u => `<label class="person-row"><span class="person-main">${avatarHtml(u)}<span><div>${esc(u.name)}${u.verified ? vBadge : ''}</div><div class="settings-nav-meta">${esc(u.handle || '')}</div></span></span><input type="checkbox" ${attr}="${u.id}"></label>`).join('') || '<div class="settings-card">Нет доступных друзей</div>';
   }
   window.filterSelectableFriends = function(value, hostId) {
     const q = String(value || '').toLowerCase();
@@ -4314,12 +4487,12 @@ if (ui) {
   };
   window.openCreateGroup = function() {
     FIX.draft = null;
-    showModal('wide', `<div class="wizard-top"><button class="wizard-x" onclick="closeOverlay()">✕</button><div class="modal-title">Создать группу</div><button class="wizard-next" onclick="openCreateGroupMembers()">Далее</button></div><div class="settings-section"><input id="grp-name" placeholder="Имя группы"><div style="display:flex;gap:10px;align-items:center;"><input id="grp-emoji" placeholder="Эмодзи аватар" maxlength="8" oninput="updateCreateAvatarPreview('grp-emoji','grp-emoji-preview')"><div id="grp-emoji-preview" class="avatar-emoji" style="width:48px;height:48px;font-size:22px;">👥</div></div><textarea id="grp-bio" placeholder="Описание"></textarea></div>`);
+    showModal('wide', `<div class="wizard-top"><button class="wizard-x" onclick="closeOverlay()">✕</button><div class="modal-title">Создать группу</div><button class="wizard-next" onclick="openCreateGroupMembers()">Далее</button></div><div class="settings-section"><div class="settings-field"><label>Фото группы</label><div style="display:flex;gap:10px;align-items:center;"><button class="settings-ghost" onclick="pickRoomDraftPhoto('group')">Выбрать фото</button><div id="grp-photo-preview" class="settings-preview-avatar" style="width:64px;height:64px;font-size:24px;">👥</div></div></div><input id="grp-name" placeholder="Имя группы"><div style="display:flex;gap:10px;align-items:center;"><input id="grp-emoji" placeholder="Эмодзи аватар" maxlength="8" oninput="updateCreateAvatarPreview('grp-emoji','grp-emoji-preview')"><div id="grp-emoji-preview" class="avatar-emoji" style="width:48px;height:48px;font-size:22px;">👥</div></div><textarea id="grp-bio" placeholder="Описание"></textarea></div>`);
   };
   window.openCreateGroupMembers = function() {
     const name = $('grp-name').value.trim();
     if (!name) return alert('Имя группы обязательно.');
-    FIX.draft = { name, avatar: $('grp-emoji').value.trim() || '👥', bio: $('grp-bio').value.trim() };
+    FIX.draft = { name, avatar: $('grp-emoji').value.trim() || '👥', avatarPhoto: (FIX.draft && FIX.draft.avatarPhoto) || '', bio: $('grp-bio').value.trim() };
     showModal('wide', `<div class="wizard-top"><button class="wizard-x" onclick="closeOverlay()">✕</button><div class="modal-title">Участники</div><button class="wizard-next" onclick="createGroup()">Создать</button></div><input id="grp-search" placeholder="Поиск" oninput="filterSelectableFriends(this.value, 'grp-friends')"><div id="grp-friends" class="people-list" style="margin-top:14px;">${selectableUsers({}, 'data-group-member')}</div>`);
   };
   window.createGroup = async function() {
@@ -4328,7 +4501,7 @@ if (ui) {
     const members = { [me.id]: true };
     document.querySelectorAll('[data-group-member]:checked').forEach(item => members[item.getAttribute('data-group-member')] = true);
     const roomId = 'grp_' + Math.random().toString(36).slice(2, 10);
-    const room = { id: roomId, type: 'group', name: d.name, avatar: d.avatar, bio: d.bio, ownerId: me.id, admins: {}, members, createdAt: now(), updatedAt: now() };
+    const room = { id: roomId, type: 'group', name: d.name, avatar: d.avatar, avatarPhoto: d.avatarPhoto || '', bio: d.bio, ownerId: me.id, admins: {}, members, createdAt: now(), updatedAt: now() };
     await db.ref(`rooms/${roomId}`).set(room);
     await Promise.all(Object.keys(members).map(id => db.ref(`userRooms/${id}/${roomId}`).set(true)));
     await db.ref(`rooms/${roomId}/messages`).push({ sender: me.id, val: `${me.name} создал(а) группу «${d.name}»`, time: now(), system: true });
@@ -4339,12 +4512,12 @@ if (ui) {
   };
   window.openCreateChannel = function() {
     FIX.channelDraft = null;
-    showModal('wide', `<div class="wizard-top"><button class="wizard-x" onclick="closeOverlay()">✕</button><div class="modal-title">Создать канал</div><button class="wizard-next" onclick="openCreateChannelLink()">Далее</button></div><div class="settings-section"><input id="chn-name" placeholder="Имя канала"><div style="display:flex;gap:10px;align-items:center;"><input id="chn-emoji" maxlength="8" placeholder="Эмодзи аватар" oninput="updateCreateAvatarPreview('chn-emoji','chn-emoji-preview')"><div id="chn-emoji-preview" class="avatar-emoji" style="width:48px;height:48px;font-size:22px;">📣</div></div><textarea id="chn-bio" placeholder="Описание"></textarea></div>`);
+    showModal('wide', `<div class="wizard-top"><button class="wizard-x" onclick="closeOverlay()">✕</button><div class="modal-title">Создать канал</div><button class="wizard-next" onclick="openCreateChannelLink()">Далее</button></div><div class="settings-section"><div class="settings-field"><label>Фото канала</label><div style="display:flex;gap:10px;align-items:center;"><button class="settings-ghost" onclick="pickRoomDraftPhoto('channel')">Выбрать фото</button><div id="chn-photo-preview" class="settings-preview-avatar" style="width:64px;height:64px;font-size:24px;">📣</div></div></div><input id="chn-name" placeholder="Имя канала"><div style="display:flex;gap:10px;align-items:center;"><input id="chn-emoji" maxlength="8" placeholder="Эмодзи аватар" oninput="updateCreateAvatarPreview('chn-emoji','chn-emoji-preview')"><div id="chn-emoji-preview" class="avatar-emoji" style="width:48px;height:48px;font-size:22px;">📣</div></div><textarea id="chn-bio" placeholder="Описание"></textarea></div>`);
   };
   window.openCreateChannelLink = function() {
     const name = $('chn-name').value.trim();
     if (!name) return alert('Имя канала обязательно.');
-    FIX.channelDraft = { name, bio: $('chn-bio').value.trim(), avatar: $('chn-emoji').value.trim() || '📣', mode: 'private', link: 'join_' + Math.random().toString(36).slice(2, 9) };
+    FIX.channelDraft = { name, bio: $('chn-bio').value.trim(), avatar: $('chn-emoji').value.trim() || '📣', avatarPhoto: (FIX.channelDraft && FIX.channelDraft.avatarPhoto) || '', mode: 'private', link: 'join_' + Math.random().toString(36).slice(2, 9) };
     showModal('wide', `<div class="wizard-top"><button class="wizard-x" onclick="closeOverlay()">✕</button><div class="modal-title">Ссылка канала</div><button class="wizard-next" onclick="createChannel()">Создать</button></div><div class="settings-actions"><button id="mode-private" class="settings-save" onclick="setChannelMode('private')">Частный</button><button id="mode-public" class="settings-ghost" onclick="setChannelMode('public')">Публичный</button></div><input id="chn-link" value="${FIX.channelDraft.link}" readonly placeholder="Ссылка"><div class="section-note" style="margin-top:10px;">Частный канал открывается только по ссылке. Публичный можно найти поиском по имени или ссылке.</div>`);
   };
   window.setChannelMode = function(mode) {
@@ -4366,7 +4539,7 @@ if (ui) {
     const exists = await db.ref(`roomLinks/${link}`).once('value');
     if (exists.exists()) return alert('Эта ссылка уже занята.');
     const roomId = 'chn_' + Math.random().toString(36).slice(2, 10);
-    const room = { id: roomId, type: 'channel', name: d.name, avatar: d.avatar, bio: d.bio, ownerId: me.id, admins: {}, members: { [me.id]: true }, inviteCode: link, isPublic: d.mode === 'public', createdAt: now(), updatedAt: now() };
+    const room = { id: roomId, type: 'channel', name: d.name, avatar: d.avatar, avatarPhoto: d.avatarPhoto || '', bio: d.bio, ownerId: me.id, admins: {}, members: { [me.id]: true }, inviteCode: link, isPublic: d.mode === 'public', createdAt: now(), updatedAt: now() };
     await db.ref(`rooms/${roomId}`).set(room);
     await db.ref(`roomLinks/${link}`).set(roomId);
     await db.ref(`userRooms/${me.id}/${roomId}`).set(true);
@@ -4384,6 +4557,69 @@ if (ui) {
     const val = (inp && inp.value.trim()) || preview.innerText || '';
     preview.innerText = val || '👤';
   }
+  function refreshRoomDraftPreview(type) {
+    const draft = type === 'group' ? FIX.draft : FIX.channelDraft;
+    const preview = document.getElementById(type === 'group' ? 'grp-photo-preview' : 'chn-photo-preview');
+    if (!draft || !preview) return;
+    const url = draft.avatarPhoto || '';
+    preview.classList.toggle('has-photo', !!url);
+    preview.style.backgroundImage = url ? `url('${url}')` : '';
+    preview.textContent = url ? '' : (draft.avatar || (type === 'channel' ? '📣' : '👥'));
+  }
+  window.pickRoomDraftPhoto = async function(type) {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = async () => {
+      const file = input.files && input.files[0];
+      if (!file) return;
+      try {
+        const uploaded = await uploadToCloudinary(file);
+        if (type === 'group') {
+          FIX.draft = FIX.draft || {};
+          FIX.draft.avatarPhoto = uploaded.secure_url;
+        } else {
+          FIX.channelDraft = FIX.channelDraft || {};
+          FIX.channelDraft.avatarPhoto = uploaded.secure_url;
+        }
+        refreshRoomDraftPreview(type);
+      } catch (e) {
+        alert(e.message || 'Не удалось загрузить фото.');
+      }
+    };
+    input.click();
+  };
+  window.pickRoomPhoto = async function(roomId) {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = async () => {
+      const file = input.files && input.files[0];
+      if (!file) return;
+      try {
+        const uploaded = await uploadToCloudinary(file);
+        await db.ref(`rooms/${roomId}/avatarPhoto`).set(uploaded.secure_url);
+        if (window.vibeRoomState && window.vibeRoomState.rooms && window.vibeRoomState.rooms[roomId]) {
+          window.vibeRoomState.rooms[roomId].avatarPhoto = uploaded.secure_url;
+        }
+        if (activePeer && activePeer.id === roomId) activePeer.avatarPhoto = uploaded.secure_url;
+        renderDialogsFixed();
+        if (typeof window.openRoomSettings === 'function') window.openRoomSettings(roomId, 'edit');
+      } catch (e) {
+        alert(e.message || 'Не удалось загрузить фото.');
+      }
+    };
+    input.click();
+  };
+  window.removeRoomPhoto = async function(roomId) {
+    await db.ref(`rooms/${roomId}/avatarPhoto`).remove();
+    if (window.vibeRoomState && window.vibeRoomState.rooms && window.vibeRoomState.rooms[roomId]) {
+      delete window.vibeRoomState.rooms[roomId].avatarPhoto;
+    }
+    if (activePeer && activePeer.id === roomId) delete activePeer.avatarPhoto;
+    renderDialogsFixed();
+    if (typeof window.openRoomSettings === 'function') window.openRoomSettings(roomId, 'edit');
+  };
   
   window.searchUsers = async function(v, m) {
     const target = $(m === 'pc' ? 'pc-search-res' : 'mob-search-res');
@@ -4395,7 +4631,7 @@ if (ui) {
       const id = (await db.ref('handles/' + query.replace('@','')).once('value')).val();
       if (id) {
         const user = (await db.ref('users/' + id).once('value')).val();
-        if (user) html += `<div class="contact-item glass"><div class="avatar-emoji">${user.avatar || '👤'}</div><b>${esc(user.name)}</b><button onclick="addFriend('${user.id}')" style="margin-left:auto;background:var(--accent);color:#000;padding:5px 12px;border-radius:10px;">Добавить</button></div>`;
+        if (user) html += `<div class="contact-item glass">${avatarHtml(user)}<div class="dialog-main"><b>${esc(user.name)}${user.verified ? vBadge : ''}</b><br><small>${esc(user.handle || '')}</small></div><button onclick="addFriend('${user.id}')" style="margin-left:auto;background:var(--accent);color:#000;padding:5px 12px;border-radius:10px;">Добавить</button></div>`;
       }
     }
     const roomsSnap = await db.ref('rooms').once('value');
@@ -4404,7 +4640,7 @@ if (ui) {
       const byLink = room.inviteCode && String(room.inviteCode).toLowerCase() === query;
       if (byPublicName || byLink) {
         const privateNeedRequest = room.type === 'channel' && !room.isPublic && !(room.members && room.members[me.id]);
-        html += `<div class="contact-item glass"><div class="avatar-emoji room-avatar">${room.avatar || '📣'}</div><div class="dialog-main"><b>${esc(room.name)}</b><br><small>${esc(room.bio || room.inviteCode || '')}</small></div><button onclick="${privateNeedRequest ? `requestJoinChannel('${room.id}')` : `joinOrOpenRoom('${room.id}')`}" style="margin-left:auto;background:var(--accent);color:#000;padding:5px 12px;border-radius:10px;">${privateNeedRequest ? 'Запрос' : 'Добавить'}</button></div>`;
+        html += `<div class="contact-item glass">${roomAvatarHtml(room)}<div class="dialog-main"><b>${esc(room.name)}</b><br><small>${esc(room.bio || room.inviteCode || '')}</small></div><button onclick="${privateNeedRequest ? `requestJoinChannel('${room.id}')` : `joinOrOpenRoom('${room.id}')`}" style="margin-left:auto;background:var(--accent);color:#000;padding:5px 12px;border-radius:10px;">${privateNeedRequest ? 'Запрос' : 'Добавить'}</button></div>`;
       }
     });
     target.innerHTML = html || '<div class="settings-card">Ничего не найдено</div>';
@@ -4453,13 +4689,13 @@ if (ui) {
     const memberRows = memberIds.map(id => {
       const u = friends().find(x => x.id === id) || (id === me.id ? me : { id, name: id });
       const owner = id === room.ownerId;
-      const badge = owner ? '<span class="star-owner">★ владелец</span>' : (room.admins && room.admins[id] ? '<span class="star-admin">★ админ</span>' : '');
-      return `<div class="person-row"><span class="person-main"><span class="avatar-emoji">${u.avatar || '👤'}</span><span><div>${esc(u.name)}</div><div class="settings-nav-meta">${badge}</div></span></span>${!owner ? `<button class="settings-ghost" onclick="removeGroupMember('${roomId}','${id}')">Удалить участника</button>` : ''}</div>`;
+      const roleBadge = owner ? '<span class="star-owner">★ владелец</span>' : (room.admins && room.admins[id] ? '<span class="star-admin">★ админ</span>' : '');
+      return `<div class="person-row"><span class="person-main">${avatarHtml(u)}<span><div>${esc(u.name)}${u.verified ? vBadge : ''}</div><div class="settings-nav-meta">${roleBadge}</div></span></span>${!owner ? `<button class="settings-ghost" onclick="removeGroupMember('${roomId}','${id}')">Удалить участника</button>` : ''}</div>`;
     }).join('');
     const adminRows = memberIds.filter(id => id !== room.ownerId).map(id => {
       const u = friends().find(x => x.id === id) || { id, name: id };
       const isAdmin = room.admins && room.admins[id];
-      return `<div class="person-row"><span class="person-main"><span class="avatar-emoji">${u.avatar || '👤'}</span><span>${esc(u.name)}</span></span><button class="settings-save" onclick="${isAdmin ? `removeRoomAdmin('${roomId}','${id}')` : `addRoomAdmin('${roomId}','${id}')`}">${isAdmin ? 'Убрать админа' : 'Добавить админа'}</button></div>`;
+      return `<div class="person-row"><span class="person-main">${avatarHtml(u)}<span>${esc(u.name)}${u.verified ? vBadge : ''}</span></span><button class="settings-save" onclick="${isAdmin ? `removeRoomAdmin('${roomId}','${id}')` : `addRoomAdmin('${roomId}','${id}')`}">${isAdmin ? 'Убрать админа' : 'Добавить админа'}</button></div>`;
     }).join('') || '<div class="settings-card">Нет участников для назначения</div>';
     const edit = `<div class="settings-section"><input id="room-name-edit" value="${esc(room.name)}" placeholder="Имя"><button class="settings-save" onclick="saveRoomName('${roomId}')">Сохранить</button><textarea id="room-bio-edit" placeholder="Описание">${esc(room.bio || '')}</textarea><button class="settings-save" onclick="saveRoomBio('${roomId}')">Сохранить</button><input id="room-avatar-edit" value="${esc(room.avatar || '')}" maxlength="8" placeholder="Эмодзи"><button class="settings-save" onclick="saveRoomAvatar('${roomId}')">Сохранить</button></div>`;
     const add = `<input placeholder="Поиск" oninput="filterSelectableFriends(this.value,'add-members-list')"><div id="add-members-list" class="people-list" style="margin-top:12px;">${selectableUsers(room.members || {}, 'data-add-member')}</div><button class="settings-save" style="margin-top:12px;" onclick="document.querySelectorAll('[data-add-member]:checked').forEach(i=>addRoomMember('${roomId}',i.getAttribute('data-add-member')))">Добавить</button>`;
@@ -4491,13 +4727,13 @@ if (ui) {
     const room = activePeer;
     const list = Object.keys(room.members || {}).map(id => {
       const u = friends().find(x => x.id === id) || (id === me.id ? me : { id, name: id });
-      const badge = id === room.ownerId ? '<span class="star-owner">★ владелец</span>' : (room.admins && room.admins[id] ? '<span class="star-admin">★ админ</span>' : '');
-      return `<div class="person-row"><span class="person-main"><span class="avatar-emoji">${u.avatar || '👤'}</span><span><div>${esc(u.name)}</div><div class="settings-nav-meta">${badge}</div></span></span></div>`;
+      const roleBadge = id === room.ownerId ? '<span class="star-owner">★ владелец</span>' : (room.admins && room.admins[id] ? '<span class="star-admin">★ админ</span>' : '');
+      return `<div class="person-row"><span class="person-main">${avatarHtml(u)}<span><div>${esc(u.name)}${u.verified ? vBadge : ''}</div><div class="settings-nav-meta">${roleBadge}</div></span></span></div>`;
     }).join('');
     const owner = room.ownerId === me.id;
     const admin = canManage(room);
     const actions = owner ? `<button class="settings-save" onclick="openRoomSettings('${room.id}')">Настройки</button><button class="settings-ghost" style="color:#ff8a8a;" onclick="deleteRoom('${room.id}')">${room.type === 'group' ? 'Удалить группу' : 'Удалить канал'}</button>` : admin ? `<button class="settings-save" onclick="openRoomSettings('${room.id}')">Настройки</button><button class="settings-ghost" style="color:#ff8a8a;" onclick="leaveRoom('${room.id}')">Выйти из группы</button>` : `<button class="settings-ghost" style="color:#ff8a8a;" onclick="leaveRoom('${room.id}')">Выйти из группы</button>`;
-    showModal('wide', `<div class="modal-head"><div><div class="modal-title">${esc(room.name)}</div><div class="settings-subtitle">${esc(room.bio || 'Без описания')}</div></div><button class="modal-close" onclick="closeOverlay()">✕</button></div><div class="settings-actions">${actions}</div><div class="settings-card" style="margin-top:16px;"><div class="settings-nav-title" style="margin-bottom:12px;">Участники</div><div class="people-list">${list}</div></div>`);
+    showModal('wide', `<div class="modal-head"><div><div class="modal-title">${esc(room.name)}</div><div class="settings-subtitle">${esc(room.bio || 'Без описания')}</div></div><button class="modal-close" onclick="closeOverlay()">✕</button></div><div class="settings-card">${roomAvatarHtml(room, 'settings-preview-avatar', 'width:110px;height:110px;font-size:40px;display:flex;margin:0 auto 18px;')}</div><div class="settings-actions">${actions}</div><div class="settings-card" style="margin-top:16px;"><div class="settings-nav-title" style="margin-bottom:12px;">Участники</div><div class="people-list">${list}</div></div>`);
   };
   window.openQrLogin = async function() {
     if (!isPC && hasMe()) return startDeviceScanner();
@@ -4518,7 +4754,10 @@ if (ui) {
       location.reload();
     });
     const qrUrl = `https://quickchart.io/qr?text=${encodeURIComponent(token)}&size=320`;
-    showModal('', `<div class="modal-head"><div><div class="modal-title">Войти по QR-коду</div><div class="settings-subtitle">На телефоне: Настройки → Устройства → Подключить устройство, затем наведи камеру на этот код.</div></div><button class="modal-close" onclick="closeOverlay()">✕</button></div><div class="qr-box"><img src="${qrUrl}" alt="QR" onerror="this.outerHTML='<div style=&quot;color:#000;text-align:center;font-weight:800;padding:30px;&quot;>QR не загрузился<br><br>${token}</div>'"></div><div class="settings-card" style="text-align:center;">Код: <b>${token}</b></div>`);
+    const root = getOverlayRoot();
+    if (!root) return alert('Окно не найдено. Перезагрузи страницу.');
+    root.className = 'overlay-root active';
+    root.innerHTML = `<div class="app-modal-backdrop" onclick="closeOverlay()"><div class="app-modal" onclick="event.stopPropagation()"><div class="modal-head"><div><div class="modal-title">Войти по QR-коду</div><div class="settings-subtitle">На телефоне: Настройки → Устройства → Подключить устройство, затем наведи камеру на этот код.</div></div><button class="modal-close" onclick="closeOverlay()">✕</button></div><div class="qr-box"><img src="${qrUrl}" alt="QR" onerror="this.outerHTML='<div style=&quot;color:#000;text-align:center;font-weight:800;padding:30px;&quot;>QR не загрузился<br><br>${token}</div>'"></div><div class="settings-card" style="text-align:center;">Код: <b>${token}</b></div></div></div>`;
   };
   const baseStartDeviceScanner = window.startDeviceScanner;
   window.startDeviceScanner = async function() {
@@ -4604,12 +4843,25 @@ if (ui) {
     host.style.display = 'flex';
     host.innerHTML = `<div class="lock-card"><div style="font-size:54px;">🔒</div><h2 style="margin:14px 0;">Защита Vibe</h2><p class="section-note">Разблокируй приложение, чтобы продолжить.</p><div class="settings-actions" style="justify-content:center;margin-top:16px;"><button class="settings-save" onclick="unlockWithPassword()">Ввести пароль</button></div></div>`;
   }
+  function installMobileCopyShield() {
+    if (FIX.mobileCopyShieldInstalled) return;
+    FIX.mobileCopyShieldInstalled = true;
+    const mobMsgs = $('mob-msgs');
+    if (!mobMsgs) return;
+    ['copy', 'cut', 'contextmenu', 'selectstart', 'dragstart'].forEach(type => {
+      mobMsgs.addEventListener(type, event => {
+        event.preventDefault();
+        event.stopPropagation();
+      }, { capture: true });
+    });
+  }
   function boot() {
     if (!hasMe()) return;
     settings();
     patchSettingsControls();
     syncAvatarSurfaces();
     syncSupportLinks();
+    installMobileCopyShield();
     installPlusButtons();
     installAttachmentButtons();
     watchGlobalOverlays();
