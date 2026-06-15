@@ -180,10 +180,27 @@ box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1) !important;
     background: rgba(255, 255, 255, 0.05) !important;
     backdrop-filter: blur(20px) !important;
     border: 1px solid rgba(255, 255, 255, 0.08) !important;
-    border-radius: 25px !important;
+    border-radius: 37px !important;
 }
 
-
+.settings-preview {
+    position: relative;
+    overflow: hidden;
+    min-height: 300px;
+    padding: 30px;
+    border-radius: 28px !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    
+    /* Стеклянные настройки */
+    backdrop-filter: blur(20px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    /* Цвет теперь будет задаваться через background-color в JS */
+}
 
         /* ОТДЕЛЬНЫЙ ЭКРАН АВТОРИЗАЦИИ */
         #auth-page { position: fixed; inset: 0; z-index: 100000; background: var(--bg); display: flex; justify-content: center; align-items: center; padding: 20px; }
@@ -2993,7 +3010,7 @@ window.addEventListener('load', () => setTimeout(() => vibeEnhancer.init(), 250)
     closeOverlay();
     const root = document.getElementById('app-overlay-root');
     root.className = 'overlay-root active';
-    root.innerHTML = `<div class="app-modal-backdrop" onclick="closeOverlay()"><div class="app-modal wide" onclick="event.stopPropagation()"><div class="settings-preview" style="background:${bg}; min-height:260px;"><div class="settings-pattern" style="background-image:${pattern};"></div><div class="settings-preview-avatar">${user.avatar || '👤'}</div><div class="settings-preview-name" style="font-size:42px;">${user.name}${user.verified ? vBadge : ''}</div><div class="settings-preview-handle">${user.handle || ''}</div></div><div class="settings-card" style="margin-top:16px;"><div class="settings-nav-title">Описание</div><div class="section-note" style="margin-top:10px; font-size:14px; opacity:0.86;">${safeText(user.bio || 'Нет описания')}</div><div class="settings-actions" style="margin-top:18px;"><button class="settings-save" onclick="toggleBlock()">Заблокировать</button><button class="settings-ghost" style="color:#ff8a8a;" onclick="removeChat()">Удалить чат</button></div></div></div></div>`;
+    root.innerHTML = `<div class="app-modal-backdrop" onclick="closeOverlay()"><div class="app-modal wide" onclick="event.stopPropagation()"><div class="settings-preview " style="background:${bg}; min-height:260px;"><div class="settings-pattern" style="background-image:${pattern};"></div><div class="settings-preview-avatar">${user.avatar || '👤'}</div><div class="settings-preview-name" style="font-size:42px;">${user.name}${user.verified ? vBadge : ''}</div><div class="settings-preview-handle">${user.handle || ''}</div></div><div class="settings-card" style="margin-top:16px;"><div class="settings-nav-title">Описание</div><div class="section-note" style="margin-top:10px; font-size:14px; opacity:0.86;">${safeText(user.bio || 'Нет описания')}</div><div class="settings-actions" style="margin-top:18px;"><button class="settings-save" onclick="toggleBlock()">Заблокировать</button><button class="settings-ghost" style="color:#ff8a8a;" onclick="removeChat()">Удалить чат</button></div></div></div></div>`;
   };
 
   const notifySeen = {};
@@ -3348,9 +3365,22 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   function applyAppearancePreview() {
     const s = settings();
-    document.querySelectorAll('.settings-preview').forEach(preview => { preview.style.background = s.appearance.profileColor; });
-    document.querySelectorAll('.settings-preview .settings-pattern').forEach(layer => { layer.style.backgroundImage = emojiPattern(s.appearance.patternEmoji); });
-  }
+    const color = s.appearance.profileColor || '#956634';
+    
+    document.querySelectorAll('.settings-preview').forEach(preview => { 
+        // Если это HEX цвет (начинается с #), добавляем прозрачность 44 (27%)
+        if (color.startsWith('#')) {
+            preview.style.background = color + '44'; 
+        } else {
+            // Если это градиент, оставляем как есть
+            preview.style.background = color; 
+        }
+    });
+    
+    document.querySelectorAll('.settings-preview .settings-pattern').forEach(layer => { 
+        layer.style.backgroundImage = emojiPattern(s.appearance.patternEmoji); 
+    });
+}
   function visible(id) {
     return Array.from(document.querySelectorAll(`#${id}`)).find(el => el.offsetParent !== null) || $(id);
   }
