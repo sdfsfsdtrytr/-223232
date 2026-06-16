@@ -235,6 +235,38 @@ box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1) !important;
     padding-bottom: 5px !important;
 }
 
+button:disabled {
+    opacity: 0.5 !important;
+    cursor: not-allowed !important;
+}
+
+.chat-plus-btn img {
+    pointer-events: none !important;
+}
+
+#app-overlay-root {
+    z-index: 9999999 !important;
+}
+
+#intro-screen{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #000;
+    z-index: 999999999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#intro-screen video{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
 
         /* ОТДЕЛЬНЫЙ ЭКРАН АВТОРИЗАЦИИ */
         #auth-page { position: fixed; inset: 0; z-index: 100000; background: var(--bg); display: flex; justify-content: center; align-items: center; padding: 20px; }
@@ -562,9 +594,17 @@ box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1) !important;
         box-shadow: 0 5px 15px rgba(0, 242, 254, 0.4);
     }
 }
+
+
     </style>
 </head>
 <body class="theme-dark">
+
+<div id="intro-screen">
+    <video autoplay muted playsinline onended="this.parentElement.remove()">
+        <source src="intro.mp4" type="video/mp4">
+    </video>
+</div>
 
     <audio id="snd-msg" src="https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3"></audio>
 
@@ -665,7 +705,7 @@ box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1) !important;
             </div>
             <div class="glass" style="flex:1; padding:15px; overflow-y:auto;" id="pc-sidebar-content">
                 <div id="pc-contacts-list" style="position:relative;">
-                    <div class="chat-topbar"><h3>Чаты</h3><button class="chat-plus-btn" onclick="showCreateMenu()">
+                    <div class="chat-topbar"><h3>Чаты</h3><button class="chat-plus-btn">
     <img src="Эконки/Плюс.png" class="chat-plus-icon">
 </button></div>
                 </div>
@@ -727,7 +767,7 @@ onkeydown="if(event.key==='Enter') sendText('pc')">
 
     <!-- ТЕЛЕФОН -->
     <div id="mobile-layout">
-        <div id="mob-home" class="mob-screen active"><header style="display:flex; justify-content:space-between; align-items:center;"><h1>Чаты</h1><div style="display:flex; align-items:center; gap:10px;"><button class="chat-plus-btn" onclick="showCreateMenu()">+</button><div class="avatar-emoji" id="mob-my-ava" onclick="mobTab('settings')">👤</div></div></header><div id="mob-contacts" style="margin-top:20px;"></div></div>
+        <div id="mob-home" class="mob-screen active"><header style="display:flex; justify-content:space-between; align-items:center;"><h1>Чаты</h1><div style="display:flex; align-items:center; gap:10px;"><button class="chat-plus-btn">+</button><div class="avatar-emoji" id="mob-my-ava" onclick="mobTab('settings')">👤</div></div></header><div id="mob-contacts" style="margin-top:20px;"></div></div>
         <div id="mob-search" class="mob-screen"><h1>Поиск</h1><input type="text" placeholder="Введите @ник" oninput="searchUsers(this.value, 'mob')"><div id="mob-search-res" style="margin-top:20px;"></div></div>
         <div id="mob-settings" class="mob-screen">
             <h1>Настройки</h1>
@@ -1181,13 +1221,29 @@ function mobTab(id) {
         }
 
         async function startEmailFlow(mode) {
-            try {
-                await sendVerificationCode(mode);
-            } catch (e) {
-                console.error('Email flow error:', e);
-                alert(e.message || 'Не удалось отправить код. Проверь данные и попробуй ещё раз.');
-            }
+    // Находим кнопку в зависимости от режима
+    const btn = document.getElementById(mode === 'login' ? 'login-btn-main' : 
+                                       mode === 'reg' ? 'reg-btn-main' : 'link-btn-main');
+    
+    if (btn) {
+        btn.disabled = true;
+        btn.dataset.originalText = btn.innerText; // Запоминаем старый текст
+        btn.innerText = "Отправляем...";
+    }
+
+    try {
+        await sendVerificationCode(mode);
+    } catch (e) {
+        console.error('Email flow error:', e);
+        alert(e.message || 'Не удалось отправить код. Проверь данные и попробуй ещё раз.');
+        
+        // Если ошибка, возвращаем кнопку обратно
+        if (btn) {
+            btn.disabled = false;
+            btn.innerText = btn.dataset.originalText;
         }
+    }
+}
 
         async function resendVerificationCode() {
             if (!authFlowMode) return;
@@ -1217,21 +1273,35 @@ function mobTab(id) {
         }
 
         async function completeEmailFlow() {
-            if (!authFlowMode) return;
-            try {
-                assertVerification(authFlowMode);
-                if (authFlowMode === 'login') {
-                    await loginWithEmail();
-                } else if (authFlowMode === 'reg') {
-                    await registerWithEmail();
-                } else if (authFlowMode === 'link') {
-                    await linkEmailToAccount();
-                }
-            } catch (e) {
-                console.error('Verify error:', e);
-                alert(e.message || 'Не удалось завершить подтверждение.');
-            }
+    if (!authFlowMode) return;
+    
+    const btn = document.getElementById('verify-submit-btn');
+    if (btn) {
+        btn.disabled = true;
+        btn.dataset.originalText = btn.innerText;
+        btn.innerText = "Проверяем...";
+    }
+
+    try {
+        assertVerification(authFlowMode);
+        if (authFlowMode === 'login') {
+            await loginWithEmail();
+        } else if (authFlowMode === 'reg') {
+            await registerWithEmail();
+        } else if (authFlowMode === 'link') {
+            await linkEmailToAccount();
         }
+    } catch (e) {
+        console.error('Verify error:', e);
+        alert(e.message || 'Не удалось завершить подтверждение.');
+        
+        // Возвращаем кнопку, если код неверный
+        if (btn) {
+            btn.disabled = false;
+            btn.innerText = btn.dataset.originalText;
+        }
+    }
+}
 
         async function registerWithEmail() {
             const email = document.getElementById('r-email-input').value.trim().toLowerCase();
@@ -4871,14 +4941,68 @@ if (ui) {
     });
   }
 
-  document.addEventListener('DOMContentLoaded', () => { bindPlus(); bindQr(); });
-  // also bind after dynamic updates
-  const mo = new MutationObserver(() => { bindPlus(); bindQr(); });
-  mo.observe(document.documentElement, { childList: true, subtree: true });
-  // final safety: periodic rebind
-  setInterval(() => { bindPlus(); bindQr(); }, 2000);
-})();
-</script>
+// ПРИНУДИТЕЛЬНО выносим нужные функции в глобальную область window
+// Это исправляет ошибку "is not defined" при клике на кнопки в модалках
+window.addEventListener('load', () => {
+    if (typeof vibeEnhancer !== 'undefined') {
+        window.openCreateGroup = vibeEnhancer.openCreateGroup;
+        window.openCreateChannel = vibeEnhancer.openCreateChannel;
+        window.createGroup = vibeEnhancer.createGroup;
+        window.createChannel = vibeEnhancer.createChannel;
+        window.setChannelMode = vibeEnhancer.setChannelMode;
+        window.closeOverlay = vibeEnhancer.closeOverlay;
+        window.filterSelectableFriends = vibeEnhancer.filterSelectableFriends;
+        window.updateCreateAvatarPreview = vibeEnhancer.updateCreateAvatarPreview;
+    }
+});
 
+// Универсальный обработчик создания меню
+window.showCreateMenu = function() {
+    console.log("Вызов showCreateMenu...");
+    const html = `
+        <div class="modal-head">
+            <div class="modal-title">Создать</div>
+            <button class="modal-close" onclick="closeOverlay()">✕</button>
+        </div>
+        <div class="choice-stack">
+            <button class="choice-card" onclick="openCreateGroup()">
+                <b>Создать группу</b><br>
+                <span class="settings-nav-meta">Общий чат для друзей</span>
+            </button>
+            <button class="choice-card" onclick="openCreateChannel()">
+                <b>Создать канал</b><br>
+                <span class="settings-nav-meta">Публикации и подписчики</span>
+            </button>
+        </div>`;
+    
+    // Вызываем через vibeEnhancer
+    if (window.vibeEnhancer && typeof window.vibeEnhancer.openModal === 'function') {
+        window.vibeEnhancer.openModal('', html);
+    } else {
+        alert("Ошибка: openModal не найден");
+    }
+};
+
+// Исправление всех кнопок "+"
+const bindPlus = () => {
+    document.querySelectorAll('.chat-plus-btn, .fab-plus').forEach(btn => {
+        btn.onclick = null; 
+        btn.removeEventListener('click', window.showCreateMenu);
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            window.showCreateMenu();
+        }, { capture: true });
+    });
+};
+
+document.addEventListener('DOMContentLoaded', bindPlus);
+setInterval(bindPlus, 1000);
+
+if (window.innerWidth > 768) {
+    document.getElementById("intro-screen").remove();
+}
+
+</script>
 </body>
 </html>
