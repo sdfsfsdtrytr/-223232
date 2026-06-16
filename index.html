@@ -632,65 +632,50 @@ button:disabled {
     </div>
 
     <!-- AUTH PAGE -->
-    <div id="auth-page">
-        <div class="glass auth-card">
-            <h1 style="color:var(--accent); margin-bottom:25px; font-size:32px;">Vibe</h1>
-            <div class="auth-tabs">
-                <div class="auth-tab active" id="tab-l" onclick="switchAuth('login-email')">Вход</div>
-                <div class="auth-tab" id="tab-r" onclick="switchAuth('reg')">Регистрация</div>
-                <div class="auth-tab" id="tab-link" onclick="switchAuth('link')">Привязать почту</div>
-            </div>
-
-            <div id="auth-verify-view" class="auth-verify-view">
-                <div class="auth-verify-head">
-                    <button class="auth-back-btn" onclick="closeVerifyStep()">←</button>
-                    <div>
-                        <div class="auth-verify-title" id="verify-title">Подтверждение почты</div>
-                        <div class="auth-verify-subtitle" id="verify-subtitle">Мы отправили код на твою почту.</div>
-                    </div>
-                </div>
-                <input type="text" id="verify-code-input" placeholder="🔢 Код из письма" maxlength="6" style="text-align:center; letter-spacing:8px; font-size:20px;">
-                <div class="auth-timer" id="verify-timer">Отправляем код...</div>
-                <button id="verify-submit-btn" onclick="completeEmailFlow()" style="width:100%; padding:16px; background:var(--accent); color:#000; border-radius:15px; font-weight:bold; margin-top:14px; font-size:16px;">ПОДТВЕРДИТЬ</button>
-                <button id="verify-resend-btn" class="auth-resend-btn" onclick="resendVerificationCode()">ОТПРАВИТЬ ЕЩЁ РАЗ</button>
-            </div>
-            
-            <!-- Форма входа по email с верификацией -->
-            <div id="form-login-email">
-                <input type="email" id="l-email-input" placeholder="📧 Email">
-                <input type="password" id="l-pass-input" placeholder="🔑 Пароль">
-                <button onclick="startEmailFlow('login')" id="login-btn-main" style="width:100%; padding:16px; background:var(--accent); color:#000; border-radius:15px; font-weight:bold; margin-top:10px; font-size:16px;">ВОЙТИ ПО ПОЧТЕ</button>
-                <button onclick="openQrLogin()" class="auth-qr-btn">ВОЙТИ ПО QR-КОДУ</button>
-            </div>
-            
-            <!-- Форма входа по нику (старая) -->
-            <div id="form-login" style="display:none !important;">
-                <input type="text" id="l-h-input" placeholder="@username">
-                <button onclick="login()" style="width:100%; padding:16px; background:var(--accent); color:#000; border-radius:15px; font-weight:bold; margin-top:10px; font-size:16px;">ВОЙТИ</button>
-            </div>
-            
-            <!-- Форма регистрации с email -->
-            <div id="form-reg" style="display:none;">
-                <input type="email" id="r-email-input" placeholder="📧 Email">
-                <input type="password" id="r-pass-input" placeholder="🔑 Пароль (мин. 6 символов)">
-                <input type="password" id="r-pass-confirm-input" placeholder="🔐 Подтверди пароль">
-                <input type="text" id="r-e-input" placeholder="😊" maxlength="2" style="font-size:30px; text-align:center;">
-                <input type="text" id="r-n-input" placeholder="Твое имя">
-                <input type="text" id="r-h-input" placeholder="@username">
-                <button onclick="startEmailFlow('reg')" id="reg-btn-main" style="width:100%; padding:16px; background:var(--accent); color:#000; border-radius:15px; font-weight:bold; margin-top:10px; font-size:16px;">СОЗДАТЬ</button>
-            </div>
-            
-            <!-- Форма привязки почты для существующих юзеров -->
-            <div id="form-link" style="display:none;">
-                <p style="font-size:13px; opacity:0.8; margin-bottom:15px;">Введи свой @username чтобы привязать почту к аккаунту</p>
-                <input type="text" id="link-h-input" placeholder="@username">
-                <input type="email" id="link-email-input" placeholder="📧 Email для привязки">
-                <input type="password" id="link-pass-input" placeholder="🔑 Новый пароль">
-                <button onclick="startEmailFlow('link')" id="link-btn-main" style="width:100%; padding:16px; background:var(--accent); color:#000; border-radius:15px; font-weight:bold; margin-top:10px; font-size:16px;">ПРИВЯЗАТЬ ПОЧТУ</button>
+<div id="auth-page" style="position: fixed; inset: 0; z-index: 999999; background: #050505; display: flex; justify-content: center; align-items: center; padding: 20px;">
+    <div style="width: 100%; max-width: 400px; text-align: left;">
+        <h1 style="color: white; font-size: 48px; font-weight: 800; margin-bottom: 10px;">Vibe</h1>
+        
+        <!-- Форма Входа -->
+        <div id="form-login-email">
+            <h2 style="color: white; font-size: 40px; font-weight: 700; margin-bottom: 10px;">Вход в аккаунт</h2>
+            <input type="email" id="l-email-input" class="login-input" placeholder="example@mail.com">
+            <input type="password" id="l-pass-input" class="login-input" placeholder="Введите пароль">
+            <div style="color:#0A84FF; text-align:right; margin-bottom:35px; cursor:pointer;" onclick="switchAuth('reset')">Забыли пароль?</div>
+            <button id="loginBtn" class="login-btn" onclick="loginWithLoading()" style="width:100%; height:70px; border:none; border-radius:35px; background:#2c2c34; color:#8e8e93; font-size:24px; font-weight:700; transition: 0.3s; cursor:not-allowed;" disabled>Войти</button>
+            <div style="margin-top: 20px; text-align: center; color: #8e8e93;">
+                Нет аккаунта? <span style="color: #0A84FF; cursor:pointer; font-weight:bold;" onclick="switchAuth('reg')">Зарегистрироваться</span>
             </div>
         </div>
-    </div>
 
+        <!-- Форма Регистрации -->
+        <div id="form-reg" style="display:none;">
+            <h2 style="color: white; font-size: 40px; margin-bottom: 30px;">Регистрация</h2>
+            <input type="email" id="r-email-input" placeholder="Email" style="width:100%; height:65px; background:#1c1c1e; border-radius:20px; color:white; padding:0 20px; margin-bottom:18px;">
+            <input type="password" id="r-pass-input" placeholder="Пароль" style="width:100%; height:65px; background:#1c1c1e; border-radius:20px; color:white; padding:0 20px; margin-bottom:18px;">
+            <button onclick="startEmailFlow('reg')" id="reg-btn-main" class="login-btn active" style="width:100%; height:70px; border-radius:35px; background:#0A84FF; color:white; font-size:24px;">Создать</button>
+            <div style="margin-top: 20px; text-align: center; color: #8e8e93;">
+                Есть аккаунт? <span style="color: #0A84FF; cursor:pointer;" onclick="switchAuth('login-email')">Войти</span>
+            </div>
+        </div>
+
+        <!-- Форма Восстановления -->
+        <div id="form-reset" style="display:none;">
+            <h2 style="color: white; font-size: 32px; margin-bottom: 20px;">Восстановление</h2>
+            <input type="email" id="reset-email" placeholder="Твой email" style="width:100%; height:65px; background:#1c1c1e; border-radius:20px; color:white; padding:0 20px; margin-bottom:18px;">
+            <button class="login-btn active" style="width:100%; height:70px; border-radius:35px; background:#0A84FF; color:white;" onclick="startResetFlow()">Отправить код</button>
+        </div>
+
+        <!-- Окно Верификации -->
+        <div id="auth-verify-view" style="display:none;">
+            <h2 style="color: white; margin-bottom: 20px;">Введите код</h2>
+            <input type="text" id="verify-code-input" placeholder="000000" style="width:100%; height:65px; background:#1c1c1e; border-radius:20px; color:white; text-align:center; font-size:24px; margin-bottom:20px;">
+            <button id="verify-submit-btn" class="login-btn active" style="width:100%; height:70px; border-radius:35px; background:#0A84FF; color:white;" onclick="completeEmailFlow()">Подтвердить</button>
+        </div>
+    </div>
+</div>
+
+       
     <!-- ПК -->
     <div id="pc-layout">
         <div class="sidebar">
@@ -1049,17 +1034,17 @@ function mobTab(id) {
         const themeList = ["dark", "light", "purple", "lime", "ocean", "sunset", "rose", "forest", "midnight", "gold"];
 
         function switchAuth(t) {
-            if (t === 'login') t = 'login-email';
-            closeVerifyStep(true);
-            document.getElementById('form-login').style.display = 'none';
-            document.getElementById('form-login-email').style.display = t==='login-email'?'block':'none';
-            document.getElementById('form-reg').style.display = t==='reg'?'block':'none';
-            document.getElementById('form-link').style.display = t==='link'?'block':'none';
-            document.getElementById('auth-verify-view').style.display = 'none';
-            document.getElementById('tab-l').className = t==='login-email'?'auth-tab active':'auth-tab';
-            document.getElementById('tab-r').className = t==='reg'?'auth-tab active':'auth-tab';
-            document.getElementById('tab-link').className = t==='link'?'auth-tab active':'auth-tab';
-        }
+    // Скрываем все формы
+    document.getElementById('form-login-email').style.display = 'none';
+    document.getElementById('form-reg').style.display = 'none';
+    document.getElementById('form-reset').style.display = 'none';
+    document.getElementById('auth-verify-view').style.display = 'none';
+
+    // Показываем нужную
+    if (t === 'login-email') document.getElementById('form-login-email').style.display = 'block';
+    if (t === 'reg') document.getElementById('form-reg').style.display = 'block';
+    if (t === 'reset') document.getElementById('form-reset').style.display = 'block';
+}
 
         function generateCode() {
             return Math.floor(100000 + Math.random() * 900000).toString();
@@ -1741,6 +1726,25 @@ async function sendText(mode) {
     inp.value = "";
 }
 
+async function loginWithLoading() {
+    const btn = document.getElementById('loginBtn');
+    if (!btn) return;
+    
+    btn.disabled = true;
+    btn.innerText = 'Отправляем...';
+    btn.style.background = "#2c2c34";
+    btn.style.color = "#8e8e93";
+    btn.style.cursor = "not-allowed";
+
+    try {
+        await startEmailFlow('login');
+    } catch (e) {
+        btn.disabled = false;
+        btn.innerText = 'Войти';
+        checkInputs();
+    }
+}
+
 function showPeerProfile() {
     if(!activePeer) return;
     contextPeerId = activePeer.id; 
@@ -2195,6 +2199,29 @@ function closeLinkEmailModal() {
 async function doLinkEmail() {
     showLinkEmailModal();
 }
+
+// Слушатель ввода для формы входа
+const emailInput = document.getElementById("l-email-input");
+const passInput = document.getElementById("l-pass-input");
+const loginBtn = document.getElementById("loginBtn");
+
+document.addEventListener('input', function(e) {
+    if (e.target.id === 'l-email-input' || e.target.id === 'l-pass-input') {
+        if (emailInput.value.length > 5 && passInput.value.length > 5) {
+            // Кнопка АКТИВНА
+            loginBtn.style.background = "#0A84FF";
+            loginBtn.style.color = "white";
+            loginBtn.style.cursor = "pointer";
+            loginBtn.disabled = false;
+        } else {
+            // Кнопка НЕАКТИВНА
+            loginBtn.style.background = "#2c2c34";
+            loginBtn.style.color = "#8e8e93";
+            loginBtn.style.cursor = "not-allowed";
+            loginBtn.disabled = true;
+        }
+    }
+});
 
 window.onload = () => {
     const sUser = localStorage.getItem('liquid_pro_v32');
@@ -5002,6 +5029,27 @@ setInterval(bindPlus, 1000);
 if (window.innerWidth > 768) {
     document.getElementById("intro-screen").remove();
 }
+
+// Функция подсветки (замени эту часть в своем <script>)
+function checkInputs() {
+    const email = document.getElementById('l-email-input').value;
+    const pass = document.getElementById('l-pass-input').value;
+    const btn = document.getElementById('loginBtn');
+    
+    if (email.length > 5 && pass.length > 5) {
+        btn.style.background = "#0A84FF"; 
+        btn.style.color = "white";
+        btn.disabled = false;
+    } else {
+        btn.style.background = "#2c2c34";
+        btn.style.color = "#8e8e93";
+        btn.disabled = true;
+    }
+}
+
+// Привяжи её к полям
+document.getElementById('l-email-input').addEventListener('input', checkInputs);
+document.getElementById('l-pass-input').addEventListener('input', checkInputs);
 
 </script>
 </body>
