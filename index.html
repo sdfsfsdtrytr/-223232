@@ -58,6 +58,27 @@ body {
     border: var(--glass-border) !important;
 }
 
+#mob-contacts {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 100px;
+}
+
+#pc-active-chat {
+    display: none;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+}
+
+#mob-chat-view {
+    display: none; /* Изначально скрыт */
+    flex-direction: column;
+    z-index: 999999999 !important; /* Очень высокий приоритет */
+    background: var(--bg);
+}
+
+
         /* --- 10 ТЕМ ОФОРМЛЕНИЯ --- */
         body.theme-light { --bg: #f1f5f9; --text: #0f172a; --glass: rgba(0,0,0,0.05); --msg-in: #e2e8f0; --accent: #2563eb; --accent-grad: linear-gradient(90deg, #2563eb, #3b82f6); }
         body.theme-purple { --bg: #110724; --text: #f8fafc; --glass: rgba(255,255,255,0.08); --msg-in: #2d1b4d; --accent: #a855f7; --accent-grad: linear-gradient(90deg, #a855f7, #c084fc); }
@@ -82,6 +103,14 @@ body {
     background-repeat: no-repeat;
     overflow: hidden;
 }
+
+.fav-icon-box {
+    width: 46px; height: 46px; border-radius: 14px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex; align-items: center; justify-content: center;
+}
+.fav-svg-icon { width: 22px; height: 22px; fill: var(--accent); }
 
 :root {
     --accent: #00f2fe;
@@ -265,6 +294,56 @@ button:disabled {
     width: 100%;
     height: 100%;
     object-fit: cover;
+}
+
+/* Красивый модал для кадрирования аватарок */
+.crop-modal-card {
+    background: #0d111a !important; /* Насыщенный темный фон как на скриншоте */
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 32px !important;
+    padding: 24px !important;
+    max-width: 400px !important;
+    width: 100% !important;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6) !important;
+    margin: auto;
+}
+
+/* Стилизация ползунков */
+.crop-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 4px;
+    background: #1c2533;
+    border-radius: 2px;
+    outline: none;
+    margin: 0;
+}
+.crop-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #00f2fe; /* Яркий бирюзовый цвет бегунка */
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0, 242, 254, 0.5);
+    transition: transform 0.1s;
+}
+.crop-range::-webkit-slider-thumb:active {
+    transform: scale(1.2);
+}
+.crop-range::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border: none;
+    border-radius: 50%;
+    background: #00f2fe;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0, 242, 254, 0.5);
+    transition: transform 0.1s;
+}
+.crop-range::-moz-range-thumb:active {
+    transform: scale(1.2);
 }
 
 
@@ -562,6 +641,17 @@ button:disabled {
         box-shadow: 0 10px 30px rgba(0,0,0,0.4);
     }
     
+#mob-chat-view { 
+    position: fixed; 
+    inset: 0; 
+    background: var(--bg); 
+    z-index: 99999999 !important; /* Увеличили, чтобы перекрывало всё */
+    display: none; 
+    flex-direction: column; 
+    transform: translateX(100%); 
+    transition: 0.3s; 
+}
+
     .nav-item { 
         font-size: 24px; 
         opacity: 0.4; 
@@ -581,7 +671,7 @@ button:disabled {
         transform: translateY(-5px); 
         color: #000 !important; 
     }
-    
+
     .nav-indicator {
         position: absolute; 
         width: 50px; 
@@ -593,6 +683,126 @@ button:disabled {
         transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         box-shadow: 0 5px 15px rgba(0, 242, 254, 0.4);
     }
+}
+
+
+/* Стили для контекстного меню и архива */
+.custom-menu {
+    border-radius: 16px !important;
+    background: #151a24 !important;
+    border: 1px solid rgba(255,255,255,0.12) !important;
+    padding: 6px !important;
+}
+.menu-item {
+    padding: 10px 14px !important;
+    border-radius: 10px !important;
+    font-weight: 500 !important;
+    border-bottom: none !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+    transition: background 0.15s ease !important;
+}
+.menu-item:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: var(--accent) !important;
+}
+.menu-item svg {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+    flex-shrink: 0;
+}
+.archive-folder {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 20px;
+    border-radius: 24px;
+    background: rgba(0, 242, 254, 0.04) !important;
+    border: 1px solid rgba(0, 242, 254, 0.15) !important;
+    cursor: pointer;
+    margin-bottom: 12px;
+    transition: all 0.2s ease;
+}
+.archive-folder:hover {
+    background: rgba(0, 242, 254, 0.08) !important;
+}
+.archive-icon-wrap {
+    width: 48px;
+    height: 48px;
+    border-radius: 16px;
+    background: rgba(0, 242, 254, 0.1);
+    border: 1px solid rgba(0, 242, 254, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
+}
+.archive-icon-wrap svg {
+    width: 24px;
+    height: 24px;
+    fill: currentColor;
+}
+/* Пин-иконка на чате */
+.pin-indicator {
+    margin-left: auto;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+}
+.pin-indicator svg {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+}
+/* Стили для режима выбора в архиве */
+.archive-select-mode .contact-item {
+    cursor: pointer;
+}
+.archive-checkbox {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.3);
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+.archive-checkbox.checked {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #000;
+}
+.archive-checkbox svg {
+    width: 12px;
+    height: 12px;
+    fill: currentColor;
+    display: none;
+}
+.archive-checkbox.checked svg {
+    display: block;
+}
+/* Кнопка "Вернуть" снизу */
+.archive-restore-btn {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--accent-grad) !important;
+    color: #000 !important;
+    padding: 14px 28px !important;
+    border-radius: 20px !important;
+    font-weight: 800 !important;
+    box-shadow: 0 10px 30px rgba(0, 242, 254, 0.3) !important;
+    border: none !important;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 1000;
 }
 
 
@@ -610,15 +820,45 @@ button:disabled {
 
     <!-- Context Menus -->
     <div id="context-menu" class="custom-menu">
-        <div class="menu-item" onclick="prepareReply()">↪️ Ответить</div>
-        <div class="menu-item" onclick="doCopy()">📋 Скопировать</div>
-        <div class="menu-item" style="color:#ea868f" id="btn-del-all" onclick="deleteMessage('all')">🗑️ Удалить у всех</div>
-        <div class="menu-item" style="color:#ea868f" onclick="deleteMessage('me')">🗑️ Удалить у меня</div>
+        <div class="menu-item" onclick="prepareReply()">
+            <svg viewBox="0 0 24 24"><path d="M10,9V5L3,12L10,19V14.9C15,14.9 18.5,16.5 21,20C20,15 17,10 10,9Z"/></svg>
+            <span>Ответить</span>
+        </div>
+        <div class="menu-item" onclick="doCopy()">
+            <svg viewBox="0 0 24 24"><path d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"/></svg>
+            <span>Скопировать</span>
+        </div>
+        <div class="menu-item" onclick="sendToFavorites()">
+            <svg viewBox="0 0 24 24"><path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z"/></svg>
+            <span>В избранное</span>
+        </div>
+        <div class="menu-item" style="color:#ea868f" id="btn-del-all" onclick="deleteMessage('all')">
+            <svg viewBox="0 0 24 24"><path d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"/></svg>
+            <span>Удалить у всех</span>
+        </div>
+        <div class="menu-item" style="color:#ea868f" onclick="deleteMessage('me')">
+            <svg viewBox="0 0 24 24"><path d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"/></svg>
+            <span>Удалить у меня</span>
+        </div>
     </div>
 
     <div id="chat-list-menu" class="custom-menu">
-        <div class="menu-item" onclick="removeChat()">🗑️ Удалить чат</div>
-        <div class="menu-item" id="block-btn-txt" onclick="toggleBlock()">🚫 Заблокировать</div>
+        <div class="menu-item" onclick="togglePinChat()">
+            <svg viewBox="0 0 24 24"><path d="M16 12V4H17V2H7V4H8V12L6 14V16H11.2V22H12.8V16H18V14L16 12M8.8 14L10 12V4H14V12L15.2 14H8.8Z"/></svg>
+            <span id="pin-btn-txt">Закрепить чат</span>
+        </div>
+        <div class="menu-item" onclick="archiveChat()">
+            <svg viewBox="0 0 24 24"><path d="M20,21H4V10H20M20,5H4V8H20M21,19V17H19V19M19,15H21V13H19M21,11H19V9H21M22,3H2V9H3V22H21V9H22M14,12H10V14H14V12Z"/></svg>
+            <span>В архив</span>
+        </div>
+        <div class="menu-item" id="block-btn-txt" onclick="toggleBlock()">
+            <svg viewBox="0 0 24 24"><path d="M12,2A10,10 0 1,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 17.66,6.34L6.34,17.66A8,8 0 0,1 12,4M12,20A8,8 0 0,1 6.34,13.66L17.66,6.34A8,8 0 0,1 12,20Z"/></svg>
+            <span>Заблокировать</span>
+        </div>
+        <div class="menu-item" style="color:#ea868f" onclick="removeChat()">
+            <svg viewBox="0 0 24 24"><path d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"/></svg>
+            <span>Удалить чат</span>
+        </div>
     </div>
 
     <!-- Celebration -->
@@ -844,6 +1084,7 @@ z-index:999;
     <img class="nav-icon" src="Эконки/Настройки.png">
 </div>
 </nav>
+</div>
  
 <!-- PROFILE POPUP -->
     <div id="profile-popup" onclick="this.style.display='none'">
@@ -1015,7 +1256,11 @@ function mobNavControl(id, index) {
 // ФУНКЦИЯ ВЫХОДА ИЗ ЧАТА
 function closeMobChat() {
     const view = document.getElementById('mob-chat-view');
-    if(view) view.classList.remove('active');
+    if(view) {
+        view.classList.remove('active');
+        view.style.display = 'none'; // Добавь это, чтобы окно реально исчезло
+    }
+    document.body.classList.remove('chat-open-mobile');
     activePeer = null;
 }
 
@@ -1025,7 +1270,7 @@ function mobTab(id) {
 }
 
 
-        let me = null; let activePeer = null; isPC = window.innerWidth > 768;
+        let me = null; let activePeer = null; window.isPC = window.innerWidth > 768; let isPC = window.isPC;
         let replyingTo = null; let selectedMsgId = null; let selectedMsgText = ""; let contextPeerId = null;
         let mediaRecorder = null; let audioChunks = [];
         let authFlowMode = null;
@@ -1468,6 +1713,8 @@ function mobTab(id) {
         }
     });
 
+addFavoritesToContacts();
+
     listenToFriends(); 
     loadEmojis(); 
     populateThemes();
@@ -1586,6 +1833,9 @@ async function doLinkEmail() {
         const pcC = document.getElementById('pc-contacts-list');
         const mobC = document.getElementById('mob-contacts');
         if(pcC) pcC.innerHTML = ""; if(mobC) mobC.innerHTML = "";
+
+        addFavoritesToContacts();
+
         if(!snap.exists()) return;
         for(let fId in snap.val()) {
             db.ref('users/' + fId).on('value', uSnap => {
@@ -1615,21 +1865,69 @@ async function doLinkEmail() {
 
         function openMobChat(user) {
     activePeer = user; 
-    document.getElementById('mob-chat-view').classList.add('active');
+    
+    const view = document.getElementById('mob-chat-view');
     const header = document.getElementById('mob-chat-header-ui');
-    const badge = user.verified ? vBadge : '';
-    if (user.isDeleted) {
-        header.innerHTML = `<div style="display:flex;align-items:center;gap:10px;"><button onclick="event.stopPropagation();closeMobChat()" style="font-size:24px;">←</button><b>Удалённый аккаунт</b></div>`;
-        document.querySelector('#mob-chat-view .chat-input-bar').style.display = 'none';
-    } else {
-        header.innerHTML = `<div style="display:flex;align-items:center;gap:10px;" onclick="showPeerProfile()"><button onclick="event.stopPropagation();closeMobChat()" style="font-size:24px;">←</button><div class="avatar-emoji" style="width:35px;height:35px;font-size:18px;">${user.avatar}</div><b>${user.name}${badge}</b></div>`;
-        document.querySelector('#mob-chat-view .chat-input-bar').style.display = 'flex';
+    const inputBar = document.querySelector('#mob-chat-view .chat-input-bar');
+
+    view.style.display = 'flex';
+    view.classList.add('active'); // Убедись, что класс активен
+    
+    // ЛОГИКА ИЗБРАННОГО
+    if (user.id === 'saved_' + me.id) {
+        header.innerHTML = `
+            <div style="display:flex; align-items:center; gap:10px;">
+                <button onclick="event.stopPropagation();closeMobChat()" style="font-size:24px;">←</button>
+                <div class="fav-icon-box" style="width:35px; height:35px; margin-right:10px;">⭐</div>
+                <b>Избранное</b>
+            </div>`;
+        inputBar.style.display = 'flex'; // Поле ввода должно работать
+        startChatListener(user.id, 'mob');
+        return;
     }
+
+    // ЛОГИКА ОБЫЧНОГО ЧАТА
+    const badge = user.verified ? vBadge : '';
+    header.innerHTML = `
+        <div style="display:flex;align-items:center;gap:10px;" onclick="showPeerProfile()">
+            <button onclick="event.stopPropagation();closeMobChat()" style="font-size:24px;">←</button>
+            <div class="avatar-emoji" style="width:35px;height:35px;font-size:18px;">${user.avatar}</div>
+            <b>${user.name}${badge}</b>
+        </div>`;
+    inputBar.style.display = user.isDeleted ? 'none' : 'flex';
     startChatListener(user.id, 'mob');
+}
+
+function closeMobChat() {
+    const view = document.getElementById('mob-chat-view');
+    if(view) {
+        view.style.display = 'none'; // Полностью скрываем
+    }
+    activePeer = null;
 }
 
 function openPCChat(user) {
     activePeer = user; 
+
+if (user.id === 'saved_' + me.id) {
+        const header = document.getElementById('pc-chat-header-ui');
+        header.innerHTML = `
+            <div style="display:flex; align-items:center; gap:10px;">
+                <div class="fav-icon-box" style="width:40px; height:40px;">
+                    <svg class="fav-svg-icon" viewBox="0 0 24 24"><path d="M12 2L9.5 9H2L8 13.5L5.5 21L12 16.5L18.5 21L16 13.5L22 9H14.5L12 2Z"/></svg>
+                </div>
+                <b>Избранное</b>
+            </div>`;
+        startChatListener(user.id, 'pc');
+        document.getElementById('pc-active-chat').style.display = 'flex';
+        document.getElementById('pc-no-chat').style.display = 'none';
+        document.querySelector('.main-area .chat-input-bar').style.display = 'flex';
+        return; 
+    
+      startChatListener(user.id, 'pc'); 
+        return; 
+    }
+
     document.getElementById('pc-active-chat').style.display = 'flex';
     document.getElementById('pc-no-chat').style.display = 'none';
     const header = document.getElementById('pc-chat-header-ui');
@@ -1709,7 +2007,7 @@ async function sendText(mode) {
     const inp = document.getElementById(mode + '-input');
     if (!inp || !inp.value.trim() || !activePeer) return;
 
-    const rid = me.id < activePeer.id ? me.id + '_' + activePeer.id : activePeer.id + '_' + me.id;
+    const rid = (activePeer.id === 'saved_' + me.id) ? 'saved_' + me.id : (me.id < activePeer.id ? me.id + '_' + activePeer.id : activePeer.id + '_' + me.id);
     
     const msgData = {
         sender: me.id,
@@ -1809,7 +2107,7 @@ async function toggleBlock() {
         function doCopy() { navigator.clipboard.writeText(selectedMsgText); alert("OK!"); }
 
         async function deleteMessage(type) {
-            const rid = me.id < activePeer.id ? me.id + '_' + activePeer.id : activePeer.id + '_' + me.id;
+            const rid = (activePeer.id === 'saved_' + me.id) ? 'saved_' + me.id : (me.id < activePeer.id ? me.id + '_' + activePeer.id : activePeer.id + '_' + me.id);
             if(type === 'all') await db.ref(`chats/${rid}/${selectedMsgId}`).remove();
             else { await db.ref(`users/${me.id}/deletedMsgs/${selectedMsgId}`).set(true); if(!me.deletedMsgs) me.deletedMsgs = {}; me.deletedMsgs[selectedMsgId] = true; }
             document.getElementById('context-menu').style.display='none';
@@ -2119,38 +2417,139 @@ function showPeerProfile() {
     document.getElementById('profile-popup').style.display = 'flex';
 }
 
-function showChatListMenu(e, id) { 
-    e.preventDefault(); 
+window.showChatListMenu = function(e, id) { 
+    if (e) { e.preventDefault(); e.stopPropagation(); }
     contextPeerId = id; 
     const m = document.getElementById('chat-list-menu'); 
+    if (!m) return;
     m.style.display = 'block'; 
-    m.style.left = e.pageX + 'px'; 
-    m.style.top = e.pageY + 'px'; 
+    m.style.left = ((e && e.pageX) || 20) + 'px'; 
+    m.style.top = ((e && e.pageY) || 20) + 'px'; 
+
+    const isRoomTarget = id.startsWith('grp_') || id.startsWith('chn_');
+
+    // Скрываем блокировку для групп/каналов
+    const blockBtn = document.getElementById('block-btn-txt');
+    if (blockBtn) blockBtn.style.display = isRoomTarget ? 'none' : 'flex';
+
+    const pinBtnTxt = document.getElementById('pin-btn-txt');
+    if (pinBtnTxt) {
+      const isPinned = me.pins && me.pins[id];
+      pinBtnTxt.innerText = isPinned ? 'Открепить чат' : 'Закрепить чат';
+    }
+
+    const blockBtnTxt = document.querySelector('#chat-list-menu #block-btn-txt span');
+    if (blockBtnTxt) {
+      const isBlocked = me.blocks && me.blocks[id];
+      blockBtnTxt.innerText = isBlocked ? 'Разблокировать' : 'Заблокировать';
+    }
+  };
+// Переключение состояния закрепа в БД
+window.togglePinChat = async function() {
+  if (!contextPeerId) return;
+  const isPinned = me.pins && me.pins[contextPeerId];
+  await db.ref(`users/${me.id}/pins/${contextPeerId}`).set(isPinned ? null : true);
+  document.getElementById('chat-list-menu').style.display = 'none';
+};
+
+window.restoreSelectedArchives = async function() {
+    const ids = Object.keys(FIX.selectedArchiveIds || {});
+    if (ids.length === 0) return;
+    
+    const updates = {};
+    ids.forEach(id => {
+      updates[`users/${me.id}/archives/${id}`] = null;
+    });
+    await db.ref().update(updates);
+    closeOverlay();
+  };
+
+  // ТЕПЕРЬ ФУНКЦИЯ КОРРЕКТНО СТОИТ ВНУТРИ СКРИПТА
+  window.sendToFavorites = async function() {
+      const text = FIX.selectedMsgText || window.selectedMsgText;
+      if (!text || !me || !me.id) return;
+      const favPath = `chats/saved_${me.id}`;
+      await db.ref(favPath).push({
+          sender: me.id,
+          val: text,
+          time: Date.now()
+      });
+      document.getElementById('context-menu').style.display = 'none';
+  };
+
+// Сенсорный обработчик долгого зажатия на смартфонах без конфликта со скроллом
+function bindLongPressHandlers() {
+  document.querySelectorAll('.contact-item').forEach(item => {
+    if (item.dataset.longPressBound === '1') return;
+    item.dataset.longPressBound = '1';
+    
+    let pressTimer = null;
+    let startX = 0, startY = 0;
+    let isMoving = false;
+
+    const startPress = (e) => {
+      isMoving = false;
+      const touch = e.touches ? e.touches[0] : e;
+      startX = touch.clientX;
+      startY = touch.clientY;
+      
+      pressTimer = setTimeout(() => {
+        if (!isMoving) {
+          e.preventDefault();
+          const idAttr = item.id || '';
+          const cleanId = idAttr.replace('cnt-', '');
+          if (cleanId && cleanId !== 'fav-chat') {
+            window.showChatListMenu({ pageX: touch.clientX, pageY: touch.clientY }, cleanId);
+          }
+        }
+      }, 700);
+    };
+
+    const movePress = (e) => {
+      const touch = e.touches ? e.touches[0] : e;
+      if (Math.abs(touch.clientX - startX) > 10 || Math.abs(touch.clientY - startY) > 10) {
+        isMoving = true;
+        clearTimeout(pressTimer);
+      }
+    };
+
+    const endPress = () => clearTimeout(pressTimer);
+
+    item.addEventListener('touchstart', startPress, { passive: true });
+    item.addEventListener('touchmove', movePress, { passive: true });
+    item.addEventListener('touchend', endPress, { passive: true });
+    item.addEventListener('touchcancel', endPress, { passive: true });
+  });
 }
 
 async function toggleBlock() { 
     const isBlocked = (me.blocks && me.blocks[contextPeerId]);
     await db.ref(`users/${me.id}/blocks/${contextPeerId}`).set(isBlocked ? null : true); 
-    alert(isBlocked ? "Разблокирован" : "Заблокирован");
+    // Уведомление убрано
     document.getElementById('chat-list-menu').style.display='none';
     document.getElementById('profile-popup').style.display='none';
 }
 
 async function removeChat() { 
-    if(confirm("Удалить друга и чат?")) {
-        await db.ref(`users/${me.id}/friends/${contextPeerId}`).remove();
-        document.getElementById('chat-list-menu').style.display='none';
-        document.getElementById('profile-popup').style.display='none';
-        location.reload(); // Перезагрузим, чтобы чат исчез из списка
+    const targetId = contextPeerId || (activePeer && activePeer.id);
+    if (!targetId) return;
+    const isRoomTarget = targetId.startsWith('grp_') || targetId.startsWith('chn_');
+    
+    if (isRoomTarget) {
+        if (confirm("Вы точно хотите выйти из этого чата?")) {
+            await db.ref(`userRooms/${me.id}/${targetId}`).remove();
+            await db.ref(`rooms/${targetId}/members/${me.id}`).remove();
+            document.getElementById('chat-list-menu').style.display='none';
+            location.reload();
+        }
+    } else {
+        if (confirm("Удалить друга и чат?")) {
+            await db.ref(`users/${me.id}/friends/${targetId}`).remove();
+            document.getElementById('chat-list-menu').style.display='none';
+            document.getElementById('profile-popup').style.display='none';
+            location.reload();
+        }
     }
-}
-
-// Функция "Понятно"
-function closeBroadcast() {
-    if (window.currentBroadcastId) {
-        localStorage.setItem('last_broadcast_id', window.currentBroadcastId);
-    }
-    document.getElementById('screen-broadcast').style.display = 'none';
 }
 
 async function updateAnnouncement(active) {
@@ -2249,6 +2648,48 @@ window.onload = () => {
         } catch (e) {
             localStorage.clear();
         }
+    }
+};
+
+// Добавление Избранного в список
+function addFavoritesToContacts() {
+    const pcList = document.getElementById('pc-contacts-list');
+    const mobList = document.getElementById('mob-contacts');
+
+    // Если "Избранное" уже есть, не дублируем
+    if (document.getElementById('fav-chat')) return;
+
+    const favHTML = `
+    <div class="contact-item glass" id="fav-chat" onclick="openFavorites()">
+        <div class="fav-icon-box">
+            <svg class="fav-svg-icon" viewBox="0 0 24 24"><path d="M12 2L9.5 9H2L8 13.5L5.5 21L12 16.5L18.5 21L16 13.5L22 9H14.5L12 2Z"/></svg>
+        </div>
+        <div style="margin-left:12px">
+            <b>Избранное</b><br>
+            <small style="opacity:0.6">Личное хранилище</small>
+        </div>
+    </div>`;
+
+    if (pcList) pcList.insertAdjacentHTML('afterbegin', favHTML);
+    if (mobList) mobList.insertAdjacentHTML('afterbegin', favHTML);
+}
+
+window.openFavorites = function() {
+    // Проверка, что me существует
+    if (!me || !me.id) return alert("Подождите загрузки данных...");
+    
+    const favUser = { 
+        id: 'saved_' + me.id, 
+        name: 'Избранное', 
+        avatar: '⭐', 
+        isSaved: true 
+    }; 
+    
+    // Вызываем функции через window, так как они там зарегистрированы
+    if (window.isPC) {
+        window.openPCChat(favUser);
+    } else {
+        window.openMobChat(favUser);
     }
 };
 
@@ -3400,13 +3841,18 @@ document.addEventListener('DOMContentLoaded', () => {
   const hasMe = () => typeof me !== 'undefined' && !!me && !!me.id;
   const badge = () => typeof vBadge !== 'undefined' ? vBadge : '';
   const avatarUrl = user => (user && (user.avatarPhoto || user.photoURL || user.avatarUrl)) || '';
-  function avatarContent(user) {
-    const url = avatarUrl(user);
-    return url ? '' : esc((user && user.avatar) || '👤');
+  function avatarContent(item) {
+    const url = avatarUrl(item);
+    if (url) return '';
+    if (isRoom(item)) {
+      return esc(item.avatar || (item.type === 'channel' ? '📣' : '👥'));
+    }
+    return esc((item && item.avatar) || '👤');
   }
-  function avatarStyle(user, extra = '') {
+ function avatarStyle(user, extra = '') {
     const url = avatarUrl(user);
-    const bg = url ? `background-image:url('${esc(url)}');` : '';
+    // Добавлен приоритет !important, чтобы стили списка не перекрывали картинку
+    const bg = url ? `background-image:url('${esc(url)}') !important; background-size: cover !important; background-position: center !important;` : '';
     return `${bg}${extra || ''}`;
   }
   function avatarClass(user, base = 'avatar-emoji') {
@@ -3439,13 +3885,18 @@ document.addEventListener('DOMContentLoaded', () => {
     return handle === '@artem';
   };
   function showModal(width, html) {
-    const root = $('app-overlay-root');
-    if (!root) return alert('Окно не найдено. Перезагрузи страницу.');
-    root.className = 'overlay-root active';
-    root.innerHTML = `<div class="app-modal-backdrop" onclick="closeOverlay()"><div class="app-modal ${width || ''}" onclick="event.stopPropagation()">${html}</div></div>`;
-  }
+  const root = $('app-overlay-root');
+  if (!root) return;
+  root.className = 'overlay-root active';
+  root.innerHTML = `<div class="app-modal-backdrop" onclick="closeOverlay()"><div class="app-modal ${width || ''}" onclick="event.stopPropagation()">${html}</div></div>`;
+}
+window.showModal = showModal; // Экспортируем глобально
+  window.showModal = showModal; // Экспортируем функцию для открытия Архива
+  window.showModal = showModal; // Экспортируем функцию, чтобы Архив открывался
   function chatPathFor(item) {
     if (isRoom(item)) return `rooms/${item.id}/messages`;
+    // Если это Избранное, используем личную защищенную ветку
+    if (item.id === 'saved_' + me.id || item.isSaved) return `chats/saved_${me.id}`;
     const rid = me.id < item.id ? me.id + '_' + item.id : item.id + '_' + me.id;
     return `chats/${rid}`;
   }
@@ -3675,18 +4126,62 @@ document.addEventListener('DOMContentLoaded', () => {
     const url = avatarUrl(me);
     return `<div class="settings-shell"><div class="settings-topbar"><button class="settings-back" onclick="renderSettings()">←</button><div><div class="settings-title">Фото на аватарку</div><div class="settings-subtitle">Поставь эмодзи или свое фото профиля</div></div></div><div class="settings-card"><div class="settings-preview" style="background:${settings().appearance.profileColor || '#956634'};min-height:240px;"><div class="settings-pattern" style="background-image:${emojiPattern(settings().appearance.patternEmoji || '✨')}"></div><div class="${avatarClass(me, 'settings-preview-avatar')}" style="${avatarStyle(me)}">${avatarContent(me)}</div><div class="settings-preview-name" style="font-size:38px;">${esc(me.name || 'Без имени')}${me.verified ? badge() : ''}</div><div class="settings-preview-handle">${esc(me.handle || '@user')}</div></div></div><div class="settings-card settings-section"><div class="settings-field"><label>Эмодзи на аватарку</label><div style="display:flex;gap:10px;"><input id="avatar-emoji-fixed" maxlength="8" value="${esc(me.avatar || '👤')}" placeholder="👤"><button class="settings-save" onclick="saveAvatarEmojiFixed()">Сохранить</button></div></div><div class="avatar-tools"><button class="avatar-tool" onclick="takeAvatarPhoto()">Сделать</button><button class="avatar-tool" onclick="pickAvatarPhoto()">Поменять</button><button class="avatar-tool" onclick="openAvatarCropView()">Выбрать область</button></div>${url ? `<button class="settings-ghost" onclick="removeAvatarPhoto()">Убрать фото</button>` : ''}<p class="section-note">Можно оставить эмодзи или поставить свое фото на аватарку.</p></div></div>`;
   }
-  window.openAvatarPhotoView = function() {
-    settingsHosts().forEach(host => { host.innerHTML = avatarPhotoViewHtml(); });
+
+// Выбор фото при создании группы/канала с сохранением уже написанных данных
+  window.uploadDraftPhoto = async function(type) {
+    // Временно сохраняем уже введенный текст, чтобы он не стерся при переходе в обрезку
+    FIX.tempDraftValues = {
+      name: $(type === 'group' ? 'grp-name' : 'chn-name').value.trim(),
+      bio: $(type === 'group' ? 'grp-bio' : 'chn-bio').value.trim(),
+      avatar: $(type === 'group' ? 'grp-emoji' : 'chn-emoji').value.trim()
+    };
+    
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = () => {
+      const file = input.files && input.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        FIX.avatarCrop = { dataUrl: reader.result, name: file.name || 'draft_avatar.jpg' };
+        FIX.cropTarget = 'draft_' + type;
+        openAvatarCropView();
+      };
+      reader.readAsDataURL(file);
+    };
+    input.click();
   };
-  window.saveAvatarEmojiFixed = async function() {
-    const input = $('avatar-emoji-fixed');
-    const value = emojiOnly(input && input.value) || (input && input.value.trim()) || '👤';
-    me.avatar = value;
-    await db.ref(`users/${me.id}`).update({ avatar: value });
-    localStorage.setItem('liquid_pro_v32', JSON.stringify(me));
-    syncAvatarSurfaces();
-    window.openAvatarPhotoView();
+
+  // Изменение фото в настройках уже созданной группы/канала через обрезку
+  window.pickRoomPhoto = function(roomId) {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = () => {
+      const file = input.files && input.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        FIX.avatarCrop = { dataUrl: reader.result, name: file.name || 'room_avatar.jpg' };
+        FIX.cropTarget = 'room_' + roomId;
+        openAvatarCropView();
+      };
+      reader.readAsDataURL(file);
+    };
+    input.click();
   };
+
+  // Перенаправление на обрезку для пользователя
+  window.pickAvatarPhoto = () => {
+    FIX.cropTarget = 'user';
+    chooseAvatarFile(false);
+  };
+  window.takeAvatarPhoto = () => {
+    FIX.cropTarget = 'user';
+    chooseAvatarFile(true);
+  };
+
   function chooseAvatarFile(capture) {
     const input = document.createElement('input');
     input.type = 'file';
@@ -3698,6 +4193,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const reader = new FileReader();
       reader.onload = () => {
         FIX.avatarCrop = { dataUrl: reader.result, name: file.name || 'avatar.jpg' };
+        if (!FIX.cropTarget) FIX.cropTarget = 'user';
         openAvatarCropView();
       };
       reader.readAsDataURL(file);
@@ -3706,22 +4202,118 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   window.takeAvatarPhoto = () => chooseAvatarFile(true);
   window.pickAvatarPhoto = () => chooseAvatarFile(false);
+  // 1. Полноценное интерактивное кадрирование с переносом пальцем/мышкой
   window.openAvatarCropView = function() {
     const src = (FIX.avatarCrop && FIX.avatarCrop.dataUrl) || avatarUrl(me);
     if (!src) return chooseAvatarFile(false);
-    const html = `<div class="settings-shell"><div class="settings-topbar"><button class="settings-back" onclick="openAvatarPhotoView()">←</button><div><div class="settings-title">Выбрать область</div><div class="settings-subtitle">Настрой кадр и сохрани фото на аватарку</div></div></div><div class="settings-card settings-section"><div class="avatar-crop-wrap"><img id="avatar-crop-img" class="avatar-crop-img" crossorigin="anonymous" src="${esc(src)}"></div><div class="range-row"><label>Масштаб</label><input id="avatar-zoom" type="range" min="1" max="2.8" step="0.05" value="1" oninput="updateAvatarCropPreview()"></div><div class="range-row"><label>Горизонт</label><input id="avatar-x" type="range" min="-45" max="45" step="1" value="0" oninput="updateAvatarCropPreview()"></div><div class="range-row"><label>Вертикаль</label><input id="avatar-y" type="range" min="-45" max="45" step="1" value="0" oninput="updateAvatarCropPreview()"></div><div class="settings-actions"><button class="settings-save" onclick="saveCroppedAvatar()">Фото на аватарку</button><button class="settings-ghost" onclick="pickAvatarPhoto()">Поменяешь</button></div></div></div>`;
-    settingsHosts().forEach(host => { host.innerHTML = html; });
-    updateAvatarCropPreview();
+
+    // Открываем кадрирование в модальном окне поверх экрана
+    showModal('crop-modal-card', `
+      <h2 style="color:#fff; font-size: 24px; font-weight: 800; text-align: center; margin-bottom: 6px;">Выбрать область фото</h2>
+      <p style="color: #8a99a8; font-size: 13px; text-align: center; margin-bottom: 24px;">Отрегулируйте масштаб и положение снимка</p>
+      
+      <!-- Круглый контейнер с пунктирной линией -->
+      <div id="crop-viewport" style="width: 260px; height: 260px; margin: 0 auto 24px; border-radius: 50%; overflow: hidden; position: relative; border: 2px dashed rgba(255,255,255,0.3); background: rgba(0,0,0,0.4); cursor: move; touch-action: none;">
+        <img id="avatar-crop-img" crossorigin="anonymous" src="${esc(src)}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; transform-origin: center; user-select: none; pointer-events: none;">
+      </div>
+
+      <!-- Ползунки управления -->
+      <div style="display: flex; flex-direction: column; gap: 14px; margin-bottom: 28px;">
+        <div style="display: grid; grid-template-columns: 100px 1fr; align-items: center; gap: 12px;">
+          <span style="color: #8a99a8; font-size: 14px;">Масштаб:</span>
+          <input id="avatar-zoom" class="crop-range" type="range" min="1" max="4" step="0.01" value="1">
+        </div>
+        <div style="display: grid; grid-template-columns: 100px 1fr; align-items: center; gap: 12px;">
+          <span style="color: #8a99a8; font-size: 14px;">Смещение X:</span>
+          <input id="avatar-x" class="crop-range" type="range" min="-200" max="200" step="1" value="0">
+        </div>
+        <div style="display: grid; grid-template-columns: 100px 1fr; align-items: center; gap: 12px;">
+          <span style="color: #8a99a8; font-size: 14px;">Смещение Y:</span>
+          <input id="avatar-y" class="crop-range" type="range" min="-200" max="200" step="1" value="0">
+        </div>
+      </div>
+
+      <!-- Кнопки действий -->
+      <div style="display: flex; justify-content: flex-end; gap: 12px;">
+        <button class="settings-ghost" style="background: #232936 !important; color: #fff !important; border-radius: 20px !important; padding: 12px 24px !important; font-size: 15px; font-weight: 700; width: 110px;" onclick="closeOverlay()">Отмена</button>
+        <button class="settings-save" style="background: #00f2fe !important; color: #000 !important; border-radius: 20px !important; padding: 12px 24px !important; font-size: 15px; font-weight: 800; width: 130px; box-shadow: 0 4px 15px rgba(0, 242, 254, 0.3);" onclick="saveCroppedAvatar()">Применить</button>
+      </div>
+    `);
+
+    initInteractiveCrop();
   };
-  window.updateAvatarCropPreview = function() {
+
+  // 2. Инициализация обработки жестов перемещения картинки
+  window.initInteractiveCrop = function() {
+    const viewport = $('crop-viewport');
     const img = $('avatar-crop-img');
-    if (!img) return;
-    if (!img.naturalWidth) return alert('Фото еще загружается. Подожди секунду и нажми снова.');
-    const zoom = Number(($('avatar-zoom') || {}).value || 1);
-    const x = Number(($('avatar-x') || {}).value || 0);
-    const y = Number(($('avatar-y') || {}).value || 0);
-    img.style.transform = `scale(${zoom}) translate(${x}px, ${y}px)`;
+    const zoomInput = $('avatar-zoom');
+    const xInput = $('avatar-x');
+    const yInput = $('avatar-y');
+
+    if (!viewport || !img) return;
+
+    let state = {
+      zoom: 1.0,
+      x: 0,
+      y: 0,
+      isDragging: false,
+      startX: 0,
+      startY: 0
+    };
+
+    function update() {
+      img.style.transform = `translate(${state.x}px, ${state.y}px) scale(${state.zoom})`;
+      zoomInput.value = state.zoom;
+      xInput.value = state.x;
+      yInput.value = state.y;
+    }
+
+    // Поддержка перетаскивания (мышь и сенсорные касания через PointerEvents)
+    viewport.addEventListener('pointerdown', (e) => {
+      state.isDragging = true;
+      state.startX = e.clientX - state.x;
+      state.startY = e.clientY - state.y;
+      viewport.setPointerCapture(e.pointerId);
+    });
+
+    viewport.addEventListener('pointermove', (e) => {
+      if (!state.isDragging) return;
+      state.x = e.clientX - state.startX;
+      state.y = e.clientY - state.startY;
+
+      // Ограничение перемещений границами ползунков
+      state.x = Math.max(-200, Math.min(200, state.x));
+      state.y = Math.max(-200, Math.min(200, state.y));
+      update();
+    });
+
+    const handlePointerUp = (e) => {
+      if (state.isDragging) {
+        state.isDragging = false;
+        try { viewport.releasePointerCapture(e.pointerId); } catch(err) {}
+      }
+    };
+
+    viewport.addEventListener('pointerup', handlePointerUp);
+    viewport.addEventListener('pointercancel', handlePointerUp);
+
+    // Синхронизация ползунков с перетаскиванием
+    zoomInput.addEventListener('input', (e) => {
+      state.zoom = parseFloat(e.target.value);
+      update();
+    });
+    xInput.addEventListener('input', (e) => {
+      state.x = parseInt(e.target.value);
+      update();
+    });
+    yInput.addEventListener('input', (e) => {
+      state.y = parseInt(e.target.value);
+      update();
+    });
   };
+
+  // 3. Сохранение итоговой картинки на холсте с учетом точных координат кадрирования
   window.saveCroppedAvatar = async function() {
     const img = $('avatar-crop-img');
     if (!img) return;
@@ -3729,25 +4321,83 @@ document.addEventListener('DOMContentLoaded', () => {
     canvas.width = 512;
     canvas.height = 512;
     const ctx = canvas.getContext('2d');
+    
     const zoom = Number(($('avatar-zoom') || {}).value || 1);
-    const x = Number(($('avatar-x') || {}).value || 0) * 2;
-    const y = Number(($('avatar-y') || {}).value || 0) * 2;
+    
+    const scaleRatio = 512 / 260;
+    const x = Number(($('avatar-x') || {}).value || 0) * scaleRatio;
+    const y = Number(($('avatar-y') || {}).value || 0) * scaleRatio;
+    
     const base = Math.max(canvas.width / img.naturalWidth, canvas.height / img.naturalHeight) * zoom;
     const w = img.naturalWidth * base;
     const h = img.naturalHeight * base;
+    
     ctx.fillStyle = '#111827';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(img, (canvas.width - w) / 2 + x, (canvas.height - h) / 2 + y, w, h);
+    
     canvas.toBlob(async blob => {
       if (!blob) return alert('Не удалось подготовить фото.');
       try {
         const file = new File([blob], 'avatar.jpg', { type: 'image/jpeg' });
         const uploaded = await uploadToCloudinary(file);
-        me.avatarPhoto = uploaded.secure_url;
-        await db.ref(`users/${me.id}`).update({ avatarPhoto: me.avatarPhoto });
-        localStorage.setItem('liquid_pro_v32', JSON.stringify(me));
-        syncAvatarSurfaces();
-        window.openAvatarPhotoView();
+        const target = FIX.cropTarget || 'user';
+        
+        if (target === 'user') {
+          // Сохраняем фото пользователю
+          me.avatarPhoto = uploaded.secure_url;
+          await db.ref(`users/${me.id}`).update({ avatarPhoto: me.avatarPhoto });
+          localStorage.setItem('liquid_pro_v32', JSON.stringify(me));
+          syncAvatarSurfaces();
+          closeOverlay();
+          window.openAvatarPhotoView();
+        } else if (target === 'draft_group') {
+          // Возвращаемся в создание группы, восстанавливая введенные поля
+          FIX.grpDraftPhoto = uploaded.secure_url;
+          closeOverlay();
+          window.openCreateGroup();
+          setTimeout(() => {
+            if (FIX.tempDraftValues) {
+              if ($('grp-name')) $('grp-name').value = FIX.tempDraftValues.name || '';
+              if ($('grp-bio')) $('grp-bio').value = FIX.tempDraftValues.bio || '';
+              if ($('grp-emoji')) $('grp-emoji').value = FIX.tempDraftValues.avatar || '';
+              FIX.tempDraftValues = null;
+            }
+            const previewEl = $('grp-emoji-preview');
+            if (previewEl) {
+              previewEl.textContent = '';
+              previewEl.classList.add('has-photo');
+              previewEl.style.backgroundImage = `url('${uploaded.secure_url}')`;
+            }
+          }, 100);
+        } else if (target === 'draft_channel') {
+          // Возвращаемся в создание канала, восстанавливая введенные поля
+          FIX.chnDraftPhoto = uploaded.secure_url;
+          closeOverlay();
+          window.openCreateChannel();
+          setTimeout(() => {
+            if (FIX.tempDraftValues) {
+              if ($('chn-name')) $('chn-name').value = FIX.tempDraftValues.name || '';
+              if ($('chn-bio')) $('chn-bio').value = FIX.tempDraftValues.bio || '';
+              if ($('chn-emoji')) $('chn-emoji').value = FIX.tempDraftValues.avatar || '';
+              FIX.tempDraftValues = null;
+            }
+            const previewEl = $('chn-emoji-preview');
+            if (previewEl) {
+              previewEl.textContent = '';
+              previewEl.classList.add('has-photo');
+              previewEl.style.backgroundImage = `url('${uploaded.secure_url}')`;
+            }
+          }, 100);
+        } else if (target.startsWith('room_')) {
+          // Сохраняем фото в настройки уже созданной группы или канала
+          const roomId = target.slice(5);
+          await db.ref(`rooms/${roomId}/avatarPhoto`).set(uploaded.secure_url);
+          if (activePeer && activePeer.id === roomId) activePeer.avatarPhoto = uploaded.secure_url;
+          closeOverlay();
+          alert('Фото чата успешно обновлено!');
+          window.openRoomSettings(roomId, 'edit');
+        }
       } catch (err) {
         alert(err.message || 'Не удалось загрузить аватарку.');
       }
@@ -3924,31 +4574,85 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!ts) return '';
     return new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   }
-  FIX.getItem = key => key.startsWith('room:') ? (((window.vibeRoomState || {}).rooms || {})[key.slice(5)]) : (((window.vibeRoomState || {}).friends || {})[key.slice(5)]);
+  FIX.getItem = key => {
+    if (key && key.startsWith('user:saved_')) {
+      return { id: key.slice(5), name: 'Избранное', avatar: '⭐', isSaved: true };
+    }
+    return key.startsWith('room:') ? (((window.vibeRoomState || {}).rooms || {})[key.slice(5)]) : (((window.vibeRoomState || {}).friends || {})[key.slice(5)]);
+  };
   function rowFor(item, desktop) {
-    const key = chatKey(item);
-    const meta = FIX.meta[key] || {};
-    const unread = meta.unread || 0;
-    const open = desktop ? `openPCChat(vibeFix20260524.getItem('${key}'))` : `openMobChat(vibeFix20260524.getItem('${key}'))`;
-    if (isRoom(item)) return `<div class="contact-item glass" onclick="${open}"><div class="avatar-emoji room-avatar">${item.avatar || (item.type === 'channel' ? '📣' : '👥')}</div><div class="dialog-main"><b>${esc(item.name)}</b><br><small>${item.type === 'channel' ? 'Канал' : 'Группа'} · ${Object.keys(item.members || {}).length} участников</small></div>${meta.lastTime ? `<span class="dialog-time">${timeLabel(meta.lastTime)}</span>` : ''}${unread ? `<span class="unread-badge">${unread}</span>` : ''}</div>`;
-    if (item.isDeleted) return `<div class="contact-item glass" onclick="alert('Этот аккаунт удалён.')" oncontextmenu="return false"><div class="avatar-emoji">🚫</div><div class="dialog-main"><b>Удалённый аккаунт</b><br><small class="st-none">Чат недоступен</small></div></div>`;
-    return `<div class="contact-item glass" onclick="${open}" oncontextmenu="showChatListMenu(event, '${item.id}')">${avatarHtml(item)}<div class="dialog-main"><b>${esc(item.name)}${item.verified ? (badge()) : ''}</b><br><small class="${exactPresenceAllowed(item) && item.online ? 'st-all' : 'st-none'}">${window.getPresenceText(item)}</small></div>${meta.lastTime ? `<span class="dialog-time">${timeLabel(meta.lastTime)}</span>` : ''}${unread ? `<span class="unread-badge">${unread}</span>` : ''}</div>`;
+  if (item.id === 'saved_' + me.id) {
+      return `<div class="contact-item glass" id="fav-chat" onclick="openFavorites()">
+          <div class="fav-icon-box">
+              <svg class="fav-svg-icon" viewBox="0 0 24 24"><path d="M12 2L9.5 9H2L8 13.5L5.5 21L12 16.5L18.5 21L16 13.5L22 9H14.5L12 2Z"/></svg>
+          </div>
+          <div class="dialog-main">
+              <b>Избранное</b><br>
+              <small style="opacity:0.6">Личное хранилище</small>
+          </div>
+      </div>`;
   }
+
+  const key = chatKey(item);
+  const meta = FIX.meta[key] || {};
+  const unread = meta.unread || 0;
+  const open = desktop ? `openPCChat(vibeFix20260524.getItem('${key}'))` : `openMobChat(vibeFix20260524.getItem('${key}'))`;
+  
+  if (isRoom(item)) return `<div class="contact-item glass" onclick="${open}" oncontextmenu="showChatListMenu(event, '${item.id}')">${avatarHtml(item, 'room-avatar')}<div class="dialog-main"><b>${esc(item.name)}</b><br><small>${item.type === 'channel' ? 'Канал' : 'Группа'} · ${Object.keys(item.members || {}).length} участников</small></div>${meta.lastTime ? `<span class="dialog-time">${timeLabel(meta.lastTime)}</span>` : ''}${unread ? `<span class="unread-badge">${unread}</span>` : ''}</div>`;
+  
+  if (item.isDeleted) return `<div class="contact-item glass" onclick="alert('Этот аккаунт удалён.')" oncontextmenu="return false"><div class="avatar-emoji">🚫</div><div class="dialog-main"><b>Удалённый аккаунт</b><br><small class="st-none">Чат недоступен</small></div></div>`;
+  const pinMarkup = (me.pins && me.pins[item.id]) ? `<span class="pin-indicator"><svg viewBox="0 0 24 24"><path d="M16 12V4H17V2H7V4H8V12L6 14V16H11.2V22H12.8V16H18V14L16 12Z"/></svg></span>` : '';
+  const isVibeVerified = item.verified || (item.name && item.name.toLowerCase() === 'vibe');
+  return `<div class="contact-item glass" id="cnt-${item.id}" onclick="${open}" oncontextmenu="showChatListMenu(event, '${item.id}')">${avatarHtml(item)}<div class="dialog-main"><b>${esc(item.name)}${isVibeVerified ? (badge()) : ''}</b><br><small class="${exactPresenceAllowed(item) && item.online ? 'st-all' : 'st-none'}">${window.getPresenceText(item)}</small></div>${pinMarkup}${meta.lastTime ? `<span class="dialog-time">${timeLabel(meta.lastTime)}</span>` : ''}${unread ? `<span class="unread-badge">${unread}</span>` : ''}</div>`;
+}
   function renderDialogsFixed() {
     [['pc-contacts-list', true], ['mob-contacts', false]].forEach(([id, desktop]) => {
       const host = $(id);
       if (!host || !me) return;
-      const items = friends().concat(rooms());
+      
+      // Исключаем архивированные диалоги из общего списка
+      const items = friends().concat(rooms()).filter(item => {
+        return !(me.archives && me.archives[item.id]);
+      });
+      
       items.forEach(attachWatcher);
-      items.sort((a, b) => ((FIX.meta[chatKey(b)] || {}).lastTime || b.createdAt || 0) - ((FIX.meta[chatKey(a)] || {}).lastTime || a.createdAt || 0));
+
+      // Сортировка: сначала закрепленные по времени, затем остальные по времени
+      items.sort((a, b) => {
+        const aPinned = me.pins && me.pins[a.id] ? 1 : 0;
+        const bPinned = me.pins && me.pins[b.id] ? 1 : 0;
+        if (aPinned !== bPinned) return bPinned - aPinned;
+        return ((FIX.meta[chatKey(b)] || {}).lastTime || b.createdAt || 0) - ((FIX.meta[chatKey(a)] || {}).lastTime || a.createdAt || 0);
+      });
+      
       const header = desktop ? `<div class="chat-topbar"><h3>Чаты</h3><button class="chat-plus-btn" onclick="showCreateMenu()">
     <img src="Эконки/Плюс.png" class="chat-plus-icon">
 </button></div>` : '';
+      
+      const favItem = { id: 'saved_' + me.id, name: 'Избранное', avatar: '⭐', isSaved: true };
+      
       const requests = rooms().filter(r => r.ownerId === me.id && r.joinRequests).flatMap(r => Object.keys(r.joinRequests || {}).map(uid => {
         const u = (((window.vibeRoomState || {}).friends || {})[uid]) || { id: uid, name: uid, avatar: '👤' };
         return `<div class="contact-item glass">${avatarHtml(u)}<div class="dialog-main"><b>${esc(u.name)}</b><br><small>Хочет зайти в «${esc(r.name)}»</small></div><button class="settings-save" onclick="approveJoinRequest('${r.id}','${uid}')">+</button><button class="settings-ghost" onclick="denyJoinRequest('${r.id}','${uid}')">✕</button></div>`;
       })).join('');
-      host.innerHTML = header + requests + items.map(item => rowFor(item, desktop)).join('');
+
+      // Отрисовываем папку Архив только если в ней есть скрытые чаты
+      const archivedIds = me.archives ? Object.keys(me.archives) : [];
+      const archiveFolderHTML = archivedIds.length > 0 ? `
+      <div class="archive-folder" onclick="openArchiveModal()">
+          <div class="archive-icon-wrap">
+              <svg viewBox="0 0 24 24"><path d="M20,21H4V10H20M20,5H4V8H20M21,19V17H19V19M19,15H21V13H19M21,11H19V9H21M22,3H2V9H3V22H21V9H22M14,12H10V14H14V12Z"/></svg>
+          </div>
+          <div>
+              <b>Архив</b><br>
+              <small style="opacity:0.7;">Диалогов скрыто: ${archivedIds.length}</small>
+          </div>
+      </div>` : '';
+
+      host.innerHTML = header + requests + archiveFolderHTML + rowFor(favItem, desktop) + items.map(item => rowFor(item, desktop)).join('');
+      
+      // Инициализируем сенсорные зажатия для мобилок
+      bindLongPressHandlers();
     });
   }
   window.renderDialogs = renderDialogsFixed;
@@ -4101,7 +4805,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!host) return;
     if (isRoom(item)) {
       const subtitle = item.type === 'channel' ? (canManage(item) ? 'Можно публиковать' : 'Только чтение') : `${Object.keys(item.members || {}).length} участников`;
-      const html = `<div style="display:flex;align-items:center;gap:10px;" onclick="showPeerProfile()">${mode === 'mob' ? '<button onclick="event.stopPropagation();closeMobChat()" style="font-size:24px;">←</button>' : ''}<div class="avatar-emoji room-avatar" style="width:40px;height:40px;font-size:20px;">${item.avatar || (item.type === 'channel' ? '📣' : '👥')}</div><div><b>${esc(item.name)}</b><div style="font-size:12px;opacity:.66;">${subtitle}</div><div id="${mode}-activity-line" class="activity-line"></div></div></div>`;
+      const html = `<div style="display:flex;align-items:center;gap:10px;" onclick="showPeerProfile()">${mode === 'mob' ? '<button onclick="event.stopPropagation();closeMobChat()" style="font-size:24px;">←</button>' : ''}${avatarHtml(item, 'room-avatar', 'width:40px;height:40px;font-size:20px;')}<div><b>${esc(item.name)}</b><div style="font-size:12px;opacity:.66;">${subtitle}</div><div id="${mode}-activity-line" class="activity-line"></div></div></div>`;
       host.innerHTML = html;
       host.style.pointerEvents = 'auto';
       host.style.cursor = 'pointer';
@@ -4183,7 +4887,11 @@ document.addEventListener('DOMContentLoaded', () => {
       $('pc-active-chat').style.display = 'flex';
       $('pc-no-chat').style.display = 'none';
     } else {
-      $('mob-chat-view').classList.add('active');
+      const mobChatView = $('mob-chat-view');
+      if (mobChatView) {
+        mobChatView.style.display = 'flex'; // Принудительно сбрасываем display: none
+        mobChatView.classList.add('active');
+      }
       document.body.classList.add('chat-open-mobile');
     }
     renderChatHeader(item, mode);
@@ -4210,7 +4918,10 @@ document.addEventListener('DOMContentLoaded', () => {
   window.openMobChat = item => openChatFixed(item, 'mob');
   window.closeMobChat = function() {
     const view = $('mob-chat-view');
-    if (view) view.classList.remove('active');
+    if (view) {
+      view.classList.remove('active');
+      view.style.display = 'none'; // Задаем инлайновый display: none при закрытии
+    }
     document.body.classList.remove('chat-open-mobile');
     clearActiveDisplayListener();
     activePeer = null;
@@ -4629,26 +5340,29 @@ if (ui) {
     if (!host) return;
     host.querySelectorAll('.person-row').forEach(row => { row.style.display = row.innerText.toLowerCase().includes(q) ? 'flex' : 'none'; });
   };
-  window.openCreateGroup = function() {
-    FIX.draft = null;
-    showModal('wide', `<div class="wizard-top"><button class="wizard-x" onclick="closeOverlay()">✕</button><div class="modal-title">Создать группу</div><button class="wizard-next" onclick="openCreateGroupMembers()">Далее</button></div><div class="settings-section"><input id="grp-name" placeholder="Имя группы"><div style="display:flex;gap:10px;align-items:center;"><input id="grp-emoji" placeholder="Эмодзи аватар" maxlength="8" oninput="updateCreateAvatarPreview('grp-emoji','grp-emoji-preview')"><div id="grp-emoji-preview" class="avatar-emoji" style="width:48px;height:48px;font-size:22px;">👥</div></div><textarea id="grp-bio" placeholder="Описание"></textarea></div>`);
+  window.openCreateChannel = function() {
+    FIX.channelDraft = null;
+    FIX.chnDraftPhoto = null;
+    showModal('wide', `<div class="wizard-top"><button class="wizard-x" onclick="closeOverlay()">✕</button><div class="modal-title">Создать канал</div><button class="wizard-next" onclick="openCreateChannelLink()">Далее</button></div><div class="settings-section"><input id="chn-name" placeholder="Имя канала"><div style="display:flex;gap:10px;align-items:center;"><input id="chn-emoji" maxlength="8" placeholder="Эмодзи аватар" oninput="updateCreateAvatarPreview('chn-emoji','chn-emoji-preview')"><div id="chn-emoji-preview" class="avatar-emoji" style="width:48px;height:48px;font-size:22px;">📣</div><button class="settings-ghost" type="button" onclick="uploadDraftPhoto('channel')">Выбрать фото</button></div><textarea id="chn-bio" placeholder="Описание"></textarea></div>`);
   };
-  window.openCreateGroupMembers = function() {
-    const name = $('grp-name').value.trim();
-    if (!name) return alert('Имя группы обязательно.');
-    FIX.draft = { name, avatar: $('grp-emoji').value.trim() || '👥', bio: $('grp-bio').value.trim() };
-    showModal('wide', `<div class="wizard-top"><button class="wizard-x" onclick="closeOverlay()">✕</button><div class="modal-title">Участники</div><button class="wizard-next" onclick="createGroup()">Создать</button></div><input id="grp-search" placeholder="Поиск" oninput="filterSelectableFriends(this.value, 'grp-friends')"><div id="grp-friends" class="people-list" style="margin-top:14px;">${selectableUsers({}, 'data-group-member')}</div>`);
+  window.openCreateChannelLink = function() {
+    const name = $('chn-name').value.trim();
+    if (!name) return alert('Имя канала обязательно.');
+    FIX.channelDraft = { name, bio: $('chn-bio').value.trim(), avatar: $('chn-emoji').value.trim() || '📣', avatarPhoto: FIX.chnDraftPhoto || null, mode: 'private', link: 'join_' + Math.random().toString(36).slice(2, 9) };
+    showModal('wide', `<div class="wizard-top"><button class="wizard-x" onclick="closeOverlay()">✕</button><div class="modal-title">Ссылка канала</div><button class="wizard-next" onclick="createChannel()">Создать</button></div><div class="settings-actions"><button id="mode-private" class="settings-save" onclick="setChannelMode('private')">Частный</button><button id="mode-public" class="settings-ghost" onclick="setChannelMode('public')">Публичный</button></div><input id="chn-link" value="${FIX.channelDraft.link}" readonly placeholder="Ссылка"><div class="section-note" style="margin-top:10px;">Частный канал открывается только по ссылке. Публичный можно найти поиском по имени или ссылке.</div>`);
   };
-  window.createGroup = async function() {
-    const d = FIX.draft;
-    if (!d || !d.name) return openCreateGroup();
-    const members = { [me.id]: true };
-    document.querySelectorAll('[data-group-member]:checked').forEach(item => members[item.getAttribute('data-group-member')] = true);
-    const roomId = 'grp_' + Math.random().toString(36).slice(2, 10);
-    const room = { id: roomId, type: 'group', name: d.name, avatar: d.avatar, bio: d.bio, ownerId: me.id, admins: {}, members, createdAt: now(), updatedAt: now() };
+  window.createChannel = async function() {
+    const d = FIX.channelDraft;
+    if (!d || !d.name) return openCreateChannel();
+    const link = (($('chn-link') && $('chn-link').value.trim()) || d.link).toLowerCase().replace(/\s+/g, '-');
+    if (!link) return alert('Введи ссылку канала.');
+    const exists = await db.ref(`roomLinks/${link}`).once('value');
+    if (exists.exists()) return alert('Эта ссылка уже занята.');
+    const roomId = 'chn_' + Math.random().toString(36).slice(2, 10);
+    const room = { id: roomId, type: 'channel', name: d.name, avatar: d.avatar, bio: d.bio, avatarPhoto: d.avatarPhoto || null, ownerId: me.id, admins: {}, members: { [me.id]: true }, inviteCode: link, isPublic: d.mode === 'public', createdAt: now(), updatedAt: now() };
     await db.ref(`rooms/${roomId}`).set(room);
-    await Promise.all(Object.keys(members).map(id => db.ref(`userRooms/${id}/${roomId}`).set(true)));
-    await db.ref(`rooms/${roomId}/messages`).push({ sender: me.id, val: `${me.name} создал(а) группу «${d.name}»`, time: now(), system: true });
+    await db.ref(`roomLinks/${link}`).set(roomId);
+    await db.ref(`userRooms/${me.id}/${roomId}`).set(true);
     if (window.vibeRoomState && window.vibeRoomState.rooms) window.vibeRoomState.rooms[roomId] = room;
     FIX.meta[`room:${roomId}`] = { unread: 0, lastTime: now(), readAt: now() };
     renderDialogsFixed();
@@ -4778,7 +5492,32 @@ if (ui) {
       const isAdmin = room.admins && room.admins[id];
       return `<div class="person-row"><span class="person-main"><span class="avatar-emoji">${u.avatar || '👤'}</span><span>${esc(u.name)}</span></span><button class="settings-save" onclick="${isAdmin ? `removeRoomAdmin('${roomId}','${id}')` : `addRoomAdmin('${roomId}','${id}')`}">${isAdmin ? 'Убрать админа' : 'Добавить админа'}</button></div>`;
     }).join('') || '<div class="settings-card">Нет участников для назначения</div>';
-    const edit = `<div class="settings-section"><input id="room-name-edit" value="${esc(room.name)}" placeholder="Имя"><button class="settings-save" onclick="saveRoomName('${roomId}')">Сохранить</button><textarea id="room-bio-edit" placeholder="Описание">${esc(room.bio || '')}</textarea><button class="settings-save" onclick="saveRoomBio('${roomId}')">Сохранить</button><input id="room-avatar-edit" value="${esc(room.avatar || '')}" maxlength="8" placeholder="Эмодзи"><button class="settings-save" onclick="saveRoomAvatar('${roomId}')">Сохранить</button></div>`;
+    const hasPhoto = avatarUrl(room);
+    const edit = `<div class="settings-section">
+      <div class="settings-field">
+        <label>Имя</label>
+        <input id="room-name-edit" value="${esc(room.name)}" placeholder="Имя">
+        <button class="settings-save" onclick="saveRoomName('${roomId}')">Сохранить имя</button>
+      </div>
+      <div class="settings-field">
+        <label>Описание</label>
+        <textarea id="room-bio-edit" placeholder="Описание">${esc(room.bio || '')}</textarea>
+        <button class="settings-save" onclick="saveRoomBio('${roomId}')">Сохранить описание</button>
+      </div>
+      <div class="settings-field">
+        <label>Эмодзи аватар</label>
+        <input id="room-avatar-edit" value="${esc(room.avatar || '')}" maxlength="8" placeholder="Эмодзи">
+        <button class="settings-save" onclick="saveRoomAvatar('${roomId}')">Сохранить эмодзи</button>
+      </div>
+      <div class="settings-field">
+        <label>Фото профиля чата</label>
+        <div style="display:flex; gap:12px; align-items:center; margin-top:8px;">
+          ${avatarHtml(room, '', 'width:64px; height:64px; font-size:28px;')}
+          <button class="settings-save" onclick="pickRoomPhoto('${roomId}')">Выбрать фото</button>
+          ${hasPhoto ? `<button class="settings-ghost" style="color:#ff5555;" onclick="removeRoomPhoto('${roomId}')">Убрать фото</button>` : ''}
+        </div>
+      </div>
+    </div>`;
     const add = `<input placeholder="Поиск" oninput="filterSelectableFriends(this.value,'add-members-list')"><div id="add-members-list" class="people-list" style="margin-top:12px;">${selectableUsers(room.members || {}, 'data-add-member')}</div><button class="settings-save" style="margin-top:12px;" onclick="document.querySelectorAll('[data-add-member]:checked').forEach(i=>addRoomMember('${roomId}',i.getAttribute('data-add-member')))">Добавить</button>`;
     const body = tab === 'add' ? add : tab === 'admins' ? `<div class="settings-card"><div class="settings-nav-title">Админы</div><div class="people-list">${adminRows}</div></div>` : tab === 'edit' ? edit : `<div class="settings-card"><div class="settings-nav-title">Участники</div><div class="people-list">${memberRows}</div><button class="settings-save" style="margin-top:12px;" onclick="openRoomSettings('${roomId}','add')">Добавить участника</button></div>`;
     showModal('wide', `<div class="modal-head"><div><div class="modal-title">Настройки группы</div><div class="settings-subtitle">${esc(room.name)}</div></div><button class="modal-close" onclick="closeOverlay()">✕</button></div><div class="room-tabs"><button class="room-tab ${tab === 'members' || tab === 'add' ? 'active' : ''}" onclick="openRoomSettings('${roomId}','members')">Участники</button><button class="room-tab ${tab === 'admins' ? 'active' : ''}" onclick="openRoomSettings('${roomId}','admins')">Админы</button><button class="room-tab ${tab === 'edit' ? 'active' : ''}" onclick="openRoomSettings('${roomId}','edit')">Изменить группу</button></div>${body}`);
@@ -4990,6 +5729,29 @@ window.addEventListener('load', () => {
     }
 });
 
+window.addFavoritesToContacts = function() {
+      const pcList = document.getElementById('pc-contacts-list');
+      const mobList = document.getElementById('mob-contacts');
+      
+      if (document.getElementById('fav-chat')) return;
+
+      const favHTML = `
+      <div class="contact-item glass" id="fav-chat" onclick="openFavorites()">
+          <div class="fav-icon-box">
+              <svg class="fav-svg-icon" viewBox="0 0 24 24"><path d="M12 2L9.5 9H2L8 13.5L5.5 21L12 16.5L18.5 21L16 13.5L22 9H14.5L12 2Z"/></svg>
+          </div>
+          <div style="margin-left:12px">
+              <b>Избранное</b><br>
+              <small style="opacity:0.6">Личное хранилище</small>
+          </div>
+      </div>`;
+
+      if (pcList) pcList.insertAdjacentHTML('afterbegin', favHTML);
+      if (mobList) mobList.insertAdjacentHTML('afterbegin', favHTML);
+  }
+
+ 
+
 // Универсальный обработчик создания меню
 window.showCreateMenu = function() {
     console.log("Вызов showCreateMenu...");
@@ -5057,6 +5819,95 @@ function checkInputs() {
 // Привяжи её к полям
 document.getElementById('l-email-input').addEventListener('input', checkInputs);
 document.getElementById('l-pass-input').addEventListener('input', checkInputs);
+
+window.openArchiveModal = function() {
+    FIX.selectedArchiveIds = {}; // Сброс выбранных
+    FIX.archiveSelectMode = false; // Режим выбора выключен
+    renderArchiveModalContent();
+  };
+
+  window.renderArchiveModalContent = function() {
+    const archivedIds = me.archives ? Object.keys(me.archives) : [];
+    const selectActive = FIX.archiveSelectMode;
+    
+    const listHTML = archivedIds.map(id => {
+      const item = friends().concat(rooms()).find(x => x.id === id) || { id, name: 'Чат ' + id, avatar: '👤' };
+      const checked = FIX.selectedArchiveIds[id] ? 'checked' : '';
+      
+      const clickAction = selectActive 
+        ? `toggleArchiveSelection('${id}')` 
+        : (isPC ? `openPCChat(vibeFix20260524.getItem('user:${id}') || vibeFix20260524.getItem('room:${id}')); closeOverlay();` 
+                 : `openMobChat(vibeFix20260524.getItem('user:${id}') || vibeFix20260524.getItem('room:${id}')); closeOverlay();`);
+
+      return `
+      <div class="contact-item glass" onclick="${clickAction}">
+          ${avatarHtml(item)}
+          <div class="dialog-main">
+              <b>${esc(item.name)}</b>
+          </div>
+          ${selectActive ? `
+          <div class="archive-checkbox ${checked}">
+              <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+          </div>` : ''}
+      </div>`;
+    }).join('') || '<div class="settings-card" style="text-align:center; opacity:0.6;">Архив пуст</div>';
+
+    const selectedCount = Object.keys(FIX.selectedArchiveIds || {}).length;
+
+    showModal('wide', `
+      <div class="modal-head">
+          <div>
+              <div class="modal-title">Архив</div>
+              <div class="settings-subtitle">Скрытые диалоги</div>
+          </div>
+          <div style="display:flex; gap:10px; align-items:center;">
+              <button class="settings-ghost" style="border-radius:14px;" onclick="toggleArchiveSelectMode()">
+                  ${selectActive ? 'Отмена' : 'Выбрать'}
+              </button>
+              <button class="modal-close" onclick="closeOverlay()">✕</button>
+          </div>
+      </div>
+      <div class="people-list ${selectActive ? 'archive-select-mode' : ''}" style="max-height: 60vh; overflow-y: auto; padding-bottom: 80px;">
+          ${listHTML}
+      </div>
+      ${selectActive && selectedCount > 0 ? `
+      <button class="archive-restore-btn" onclick="restoreSelectedArchives()">
+          <svg style="width:20px; height:20px; fill:currentColor;" viewBox="0 0 24 24"><path d="M19,15H15V19H9V15H5V9H9V5H15V9H19V15M21,7H17V3H7V7H3V17H7V21H17V17H21V7Z"/></svg>
+          Вернуть (${selectedCount})
+      </button>` : ''}
+    `);
+  };
+
+  window.toggleArchiveSelectMode = function() {
+    FIX.archiveSelectMode = !FIX.archiveSelectMode;
+    if (!FIX.archiveSelectMode) {
+      FIX.selectedArchiveIds = {};
+    }
+    renderArchiveModalContent();
+  };
+
+  window.toggleArchiveSelection = function(id) {
+    if (FIX.selectedArchiveIds[id]) {
+      delete FIX.selectedArchiveIds[id];
+    } else {
+      FIX.selectedArchiveIds[id] = true;
+    }
+    renderArchiveModalContent();
+  };
+
+  window.restoreSelectedArchives = async function() {
+    const ids = Object.keys(FIX.selectedArchiveIds || {});
+    if (ids.length === 0) return;
+    
+    const updates = {};
+    ids.forEach(id => {
+      updates[`users/${me.id}/archives/${id}`] = null;
+    });
+    await db.ref().update(updates);
+    closeOverlay();
+    alert('Диалоги возвращены на главный экран');
+  };
+
 
 </script>
 </body>
