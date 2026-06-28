@@ -17,7 +17,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
     <style>
-       
+        <style>
 :root {
     --accent: #00f2fe;
     --accent-grad: linear-gradient(90deg, #00f2fe, #4facfe);
@@ -820,26 +820,10 @@ button:disabled {
 
     <!-- Context Menus -->
     <div id="context-menu" class="custom-menu">
-        <div class="menu-item" onclick="prepareReply()">
-            <svg viewBox="0 0 24 24"><path d="M10,9V5L3,12L10,19V14.9C15,14.9 18.5,16.5 21,20C20,15 17,10 10,9Z"/></svg>
-            <span>Ответить</span>
-        </div>
-        <div class="menu-item" onclick="doCopy()">
-            <svg viewBox="0 0 24 24"><path d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"/></svg>
-            <span>Скопировать</span>
-        </div>
-        <div class="menu-item" onclick="sendToFavorites()">
-            <svg viewBox="0 0 24 24"><path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z"/></svg>
-            <span>В избранное</span>
-        </div>
-        <div class="menu-item" style="color:#ea868f" id="btn-del-all" onclick="deleteMessage('all')">
-            <svg viewBox="0 0 24 24"><path d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"/></svg>
-            <span>Удалить у всех</span>
-        </div>
-        <div class="menu-item" style="color:#ea868f" onclick="deleteMessage('me')">
-            <svg viewBox="0 0 24 24"><path d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"/></svg>
-            <span>Удалить у меня</span>
-        </div>
+        <div class="menu-item" onclick="prepareReply()">↪️ Ответить</div>
+        <div class="menu-item" onclick="doCopy()">📋 Скопировать</div>
+        <div class="menu-item" style="color:#ea868f" id="btn-del-all" onclick="deleteMessage('all')">🗑️ Удалить у всех</div>
+        <div class="menu-item" style="color:#ea868f" onclick="deleteMessage('me')">🗑️ Удалить у меня</div>
     </div>
 
     <div id="chat-list-menu" class="custom-menu">
@@ -1087,19 +1071,16 @@ z-index:999;
 </div>
  
 <!-- PROFILE POPUP -->
-    <!-- PROFILE POPUP -->
-<div id="profile-popup" onclick="this.style.display='none'">
-    <div class="glass" style="width:320px; padding:30px; text-align:center;" onclick="event.stopPropagation()">
-        <div class="avatar-emoji" id="pop-ava" style="width:100px; height:100px; font-size:50px; margin:0 auto 15px;">👤</div>
-        <h2 id="pop-name">Имя</h2><p id="pop-handle" style="color:var(--accent); font-size:14px;"></p><p id="pop-bio" style="margin-top:15px; font-size:13px; opacity:0.8;"></p>
-        <div style="margin-top:20px; display:flex; flex-direction:column; gap:10px;">
-            <button id="pop-block-btn" class="save-btn" style="width:100%;" onclick="toggleBlock()">🚫 Заблокировать</button>
-            <button class="save-btn" style="width:100%; background:#ea868f;" onclick="removeChat()">🗑️ Удалить друга</button>
+    <div id="profile-popup" onclick="this.style.display='none'">
+        <div class="glass" style="width:320px; padding:30px; text-align:center;" onclick="event.stopPropagation()">
+            <div class="avatar-emoji" id="pop-ava" style="width:100px; height:100px; font-size:50px; margin:0 auto 15px;">👤</div>
+            <h2 id="pop-name">Имя</h2><p id="pop-handle" style="color:var(--accent); font-size:14px;"></p><p id="pop-bio" style="margin-top:15px; font-size:13px; opacity:0.8;"></p>
+            <div style="margin-top:20px; display:flex; flex-direction:column; gap:10px;">
+                <button id="pop-block-btn" class="save-btn" style="width:100%;" onclick="toggleBlock()">🚫 Заблокировать</button>
+                <button class="save-btn" style="width:100%; background:#ea868f;" onclick="removeChat()">🗑️ Удалить друга</button>
+            </div>
         </div>
     </div>
-</div>
-
-<div id="app-overlay-root" class="overlay-root"></div>
 
     <!-- Модальное окно привязки почты -->
     <div id="link-email-modal" style="display:none; position:fixed; inset:0; z-index:20000; background:rgba(0,0,0,0.8); backdrop-filter:blur(10px); justify-content:center; align-items:center;">
@@ -2421,32 +2402,29 @@ function showPeerProfile() {
 }
 
 window.showChatListMenu = function(e, id) { 
-    if (e) { e.preventDefault(); e.stopPropagation(); }
-    contextPeerId = id; 
-    const m = document.getElementById('chat-list-menu'); 
-    if (!m) return;
-    m.style.display = 'block'; 
-    m.style.left = ((e && e.pageX) || 20) + 'px'; 
-    m.style.top = ((e && e.pageY) || 20) + 'px'; 
+  if (e) { e.preventDefault(); e.stopPropagation(); }
+  contextPeerId = id; 
+  const m = document.getElementById('chat-list-menu'); 
+  if (!m) return;
+  m.style.display = 'block'; 
+  m.style.left = ((e && e.pageX) || 20) + 'px'; 
+  m.style.top = ((e && e.pageY) || 20) + 'px'; 
 
-    const isRoomTarget = id.startsWith('grp_') || id.startsWith('chn_');
+  // Обновляем текст кнопки Закрепить/Открепить
+  const pinBtnTxt = document.getElementById('pin-btn-txt');
+  if (pinBtnTxt) {
+    const isPinned = me.pins && me.pins[id];
+    pinBtnTxt.innerText = isPinned ? 'Открепить чат' : 'Закрепить чат';
+  }
 
-    // Скрываем блокировку для групп/каналов
-    const blockBtn = document.getElementById('block-btn-txt');
-    if (blockBtn) blockBtn.style.display = isRoomTarget ? 'none' : 'flex';
+  // Обновляем текст кнопки Блокировки
+  const blockBtnTxt = document.querySelector('#chat-list-menu #block-btn-txt span');
+  if (blockBtnTxt) {
+    const isBlocked = me.blocks && me.blocks[id];
+    blockBtnTxt.innerText = isBlocked ? 'Разблокировать' : 'Заблокировать';
+  }
+};
 
-    const pinBtnTxt = document.getElementById('pin-btn-txt');
-    if (pinBtnTxt) {
-      const isPinned = me.pins && me.pins[id];
-      pinBtnTxt.innerText = isPinned ? 'Открепить чат' : 'Закрепить чат';
-    }
-
-    const blockBtnTxt = document.querySelector('#chat-list-menu #block-btn-txt span');
-    if (blockBtnTxt) {
-      const isBlocked = me.blocks && me.blocks[id];
-      blockBtnTxt.innerText = isBlocked ? 'Разблокировать' : 'Заблокировать';
-    }
-  };
 // Переключение состояния закрепа в БД
 window.togglePinChat = async function() {
   if (!contextPeerId) return;
@@ -2455,30 +2433,14 @@ window.togglePinChat = async function() {
   document.getElementById('chat-list-menu').style.display = 'none';
 };
 
-window.restoreSelectedArchives = async function() {
-    const ids = Object.keys(FIX.selectedArchiveIds || {});
-    if (ids.length === 0) return;
-    
-    const updates = {};
-    ids.forEach(id => {
-      updates[`users/${me.id}/archives/${id}`] = null;
-    });
-    await db.ref().update(updates);
-    closeOverlay();
-  };
-
-  // ТЕПЕРЬ ФУНКЦИЯ КОРРЕКТНО СТОИТ ВНУТРИ СКРИПТА
-  window.sendToFavorites = async function() {
-      const text = FIX.selectedMsgText || window.selectedMsgText;
-      if (!text || !me || !me.id) return;
-      const favPath = `chats/saved_${me.id}`;
-      await db.ref(favPath).push({
-          sender: me.id,
-          val: text,
-          time: Date.now()
-      });
-      document.getElementById('context-menu').style.display = 'none';
-  };
+// Отправка чата в архив
+window.archiveChat = async function() {
+  if (!contextPeerId) return;
+  await db.ref(`users/${me.id}/pins/${contextPeerId}`).remove(); // убираем из закрепа
+  await db.ref(`users/${me.id}/archives/${contextPeerId}`).set(true);
+  document.getElementById('chat-list-menu').style.display = 'none';
+  alert('Чат перемещен в архив');
+};
 
 // Сенсорный обработчик долгого зажатия на смартфонах без конфликта со скроллом
 function bindLongPressHandlers() {
@@ -2528,31 +2490,26 @@ function bindLongPressHandlers() {
 async function toggleBlock() { 
     const isBlocked = (me.blocks && me.blocks[contextPeerId]);
     await db.ref(`users/${me.id}/blocks/${contextPeerId}`).set(isBlocked ? null : true); 
-    // Уведомление убрано
+    alert(isBlocked ? "Разблокирован" : "Заблокирован");
     document.getElementById('chat-list-menu').style.display='none';
     document.getElementById('profile-popup').style.display='none';
 }
 
 async function removeChat() { 
-    const targetId = contextPeerId || (activePeer && activePeer.id);
-    if (!targetId) return;
-    const isRoomTarget = targetId.startsWith('grp_') || targetId.startsWith('chn_');
-    
-    if (isRoomTarget) {
-        if (confirm("Вы точно хотите выйти из этого чата?")) {
-            await db.ref(`userRooms/${me.id}/${targetId}`).remove();
-            await db.ref(`rooms/${targetId}/members/${me.id}`).remove();
-            document.getElementById('chat-list-menu').style.display='none';
-            location.reload();
-        }
-    } else {
-        if (confirm("Удалить друга и чат?")) {
-            await db.ref(`users/${me.id}/friends/${targetId}`).remove();
-            document.getElementById('chat-list-menu').style.display='none';
-            document.getElementById('profile-popup').style.display='none';
-            location.reload();
-        }
+    if(confirm("Удалить друга и чат?")) {
+        await db.ref(`users/${me.id}/friends/${contextPeerId}`).remove();
+        document.getElementById('chat-list-menu').style.display='none';
+        document.getElementById('profile-popup').style.display='none';
+        location.reload(); // Перезагрузим, чтобы чат исчез из списка
     }
+}
+
+// Функция "Понятно"
+function closeBroadcast() {
+    if (window.currentBroadcastId) {
+        localStorage.setItem('last_broadcast_id', window.currentBroadcastId);
+    }
+    document.getElementById('screen-broadcast').style.display = 'none';
 }
 
 async function updateAnnouncement(active) {
@@ -2743,7 +2700,7 @@ window.openFavorites = function() {
     <div style="font-size:60px;">🚫</div>
     <h2 style="color:white; margin-top:20px;">Ваш аккаунт удалён</h2>
     <p style="color:#888; margin:15px 0;">Вы больше не можете пользоваться мессенджером.</p>
-    <a href="https://t.me/Vibe22772_bot" target="_blank" style="background:#00f2fe; color:#000; padding:14px 30px; border-radius:15px; text-decoration:none; font-weight:bold; font-size:18px;">Поддержка</a>
+    <a href="https://t.me/Vibe2289" target="_blank" style="background:#00f2fe; color:#000; padding:14px 30px; border-radius:15px; text-decoration:none; font-weight:bold; font-size:18px;">Поддержка</a>
 </div>
 
 <!-- 2. Плашка Технического перерыва -->
@@ -2751,7 +2708,7 @@ window.openFavorites = function() {
     <div style="font-size:60px;">⚙️</div>
     <h2 style="color:white; margin-top:20px;">Технический перерыв</h2>
     <p style="color:#888; margin:15px 0;">Извините за неудобства, мы скоро вернемся!</p>
-    <a href="https://t.me/Vibe22772_bot" target="_blank" style="background:#00f2fe; color:#000; padding:14px 30px; border-radius:15px; text-decoration:none; font-weight:bold; font-size:18px;">Поддержка</a>
+    <a href="https://t.me/Vibe2289" target="_blank" style="background:#00f2fe; color:#000; padding:14px 30px; border-radius:15px; text-decoration:none; font-weight:bold; font-size:18px;">Поддержка</a>
 </div>
 
 <!-- 3. Плашка Объявления (Глобальная блокировка) -->
@@ -2759,7 +2716,7 @@ window.openFavorites = function() {
     <div style="font-size:60px; margin-bottom:20px;">📢</div>
     <h2 style="color:white; margin-bottom:15px;">ВАЖНОЕ ОБЪЯВЛЕНИЕ</h2>
     <p id="announcement-display-text" style="color:#fff; font-size:18px; line-height:1.5; margin-bottom:30px; max-width:400px;"></p>
-    <a href="https://t.me/Vibe22772_bot" target="_blank" style="background:var(--accent); color:#000; padding:14px 40px; border-radius:15px; text-decoration:none; font-weight:bold; font-size:16px;">ПОДДЕРЖКА</a>
+    <a href="https://t.me/Vibe2289" target="_blank" style="background:var(--accent); color:#000; padding:14px 40px; border-radius:15px; text-decoration:none; font-weight:bold; font-size:16px;">ПОДДЕРЖКА</a>
 </div>
 
 <!-- 4. Плашка Рассылки (Модальное окно) -->
@@ -3750,17 +3707,12 @@ window.addEventListener('load', () => setTimeout(() => vibeEnhancer.init(), 250)
   function syncPatternPreview() {
     const input = Array.from(document.querySelectorAll('#pattern-emoji-input')).find(el => el.offsetParent !== null) || document.getElementById('pattern-emoji-input');
     const emoji = (input && input.value.trim()) || ((((window.me || {}).settings || {}).appearance || {}).patternEmoji) || '✨';
-    
-    // Ограничиваем применение узора только вашими настройками
-    const targets = document.querySelectorAll('#pc-settings-screen .settings-pattern, #mob-settings .settings-pattern');
-    
-    targets.forEach(layer => {
+    document.querySelectorAll('.settings-preview .settings-pattern').forEach(layer => {
       layer.style.backgroundImage = emojiPattern(emoji);
       layer.style.backgroundSize = '96px 96px';
       layer.style.opacity = '0.55';
     });
-  
-}
+  }
 
   function bindEmojiLivePreview() {
     const input = Array.from(document.querySelectorAll('#pattern-emoji-input')).find(el => el.offsetParent !== null) || document.getElementById('pattern-emoji-input');
@@ -3893,14 +3845,11 @@ document.addEventListener('DOMContentLoaded', () => {
     return handle === '@artem';
   };
   function showModal(width, html) {
-  const root = $('app-overlay-root');
-  if (!root) return;
-  root.className = 'overlay-root active';
-  root.innerHTML = `<div class="app-modal-backdrop" onclick="closeOverlay()"><div class="app-modal ${width || ''}" onclick="event.stopPropagation()">${html}</div></div>`;
-}
-window.showModal = showModal; // Экспортируем глобально
-  window.showModal = showModal; // Экспортируем функцию для открытия Архива
-  window.showModal = showModal; // Экспортируем функцию, чтобы Архив открывался
+    const root = $('app-overlay-root');
+    if (!root) return alert('Окно не найдено. Перезагрузи страницу.');
+    root.className = 'overlay-root active';
+    root.innerHTML = `<div class="app-modal-backdrop" onclick="closeOverlay()"><div class="app-modal ${width || ''}" onclick="event.stopPropagation()">${html}</div></div>`;
+  }
   function chatPathFor(item) {
     if (isRoom(item)) return `rooms/${item.id}/messages`;
     // Если это Избранное, используем личную защищенную ветку
@@ -3962,29 +3911,17 @@ window.showModal = showModal; // Экспортируем глобально
   }
   function applyAppearancePreview() {
     const s = settings();
-    // Безопасное извлечение объекта appearance
-    const appearance = s.appearance || {};
-    const color = appearance.profileColor || '#956634';
+    const color = s.appearance.profileColor || '#956634';
     
-    // Выбираем превью только внутри ваших настроек (ПК и мобильных)
-    const settingsPreviews = document.querySelectorAll('#pc-settings-screen .settings-preview, #mob-settings .settings-preview');
-    
-    settingsPreviews.forEach(preview => { 
+    document.querySelectorAll('.settings-preview').forEach(preview => { 
+        // Если это HEX цвет (начинается с #), добавляем прозрачность 44 (27%)
         if (color.startsWith('#')) {
             preview.style.background = color + '44'; 
         } else {
+            // Если это градиент, оставляем как есть
             preview.style.background = color; 
         }
     });
-    
-    settingsPreviews.forEach(preview => { 
-        const layer = preview.querySelector('.settings-pattern');
-        if (layer) {
-            layer.style.backgroundImage = emojiPattern(appearance.patternEmoji || '✨'); 
-        }
-    });
-  }
-
     
     document.querySelectorAll('.settings-preview .settings-pattern').forEach(layer => { 
         layer.style.backgroundImage = emojiPattern(s.appearance.patternEmoji); 
@@ -4618,12 +4555,11 @@ window.showModal = showModal; // Экспортируем глобально
   const unread = meta.unread || 0;
   const open = desktop ? `openPCChat(vibeFix20260524.getItem('${key}'))` : `openMobChat(vibeFix20260524.getItem('${key}'))`;
   
-  if (isRoom(item)) return `<div class="contact-item glass" onclick="${open}" oncontextmenu="showChatListMenu(event, '${item.id}')">${avatarHtml(item, 'room-avatar')}<div class="dialog-main"><b>${esc(item.name)}</b><br><small>${item.type === 'channel' ? 'Канал' : 'Группа'} · ${Object.keys(item.members || {}).length} участников</small></div>${meta.lastTime ? `<span class="dialog-time">${timeLabel(meta.lastTime)}</span>` : ''}${unread ? `<span class="unread-badge">${unread}</span>` : ''}</div>`;
+  if (isRoom(item)) return `<div class="contact-item glass" onclick="${open}">${avatarHtml(item, 'room-avatar')}<div class="dialog-main"><b>${esc(item.name)}</b><br><small>${item.type === 'channel' ? 'Канал' : 'Группа'} · ${Object.keys(item.members || {}).length} участников</small></div>${meta.lastTime ? `<span class="dialog-time">${timeLabel(meta.lastTime)}</span>` : ''}${unread ? `<span class="unread-badge">${unread}</span>` : ''}</div>`;
   
   if (item.isDeleted) return `<div class="contact-item glass" onclick="alert('Этот аккаунт удалён.')" oncontextmenu="return false"><div class="avatar-emoji">🚫</div><div class="dialog-main"><b>Удалённый аккаунт</b><br><small class="st-none">Чат недоступен</small></div></div>`;
   const pinMarkup = (me.pins && me.pins[item.id]) ? `<span class="pin-indicator"><svg viewBox="0 0 24 24"><path d="M16 12V4H17V2H7V4H8V12L6 14V16H11.2V22H12.8V16H18V14L16 12Z"/></svg></span>` : '';
-  const isVibeVerified = item.verified || (item.name && item.name.toLowerCase() === 'vibe');
-  return `<div class="contact-item glass" id="cnt-${item.id}" onclick="${open}" oncontextmenu="showChatListMenu(event, '${item.id}')">${avatarHtml(item)}<div class="dialog-main"><b>${esc(item.name)}${isVibeVerified ? (badge()) : ''}</b><br><small class="${exactPresenceAllowed(item) && item.online ? 'st-all' : 'st-none'}">${window.getPresenceText(item)}</small></div>${pinMarkup}${meta.lastTime ? `<span class="dialog-time">${timeLabel(meta.lastTime)}</span>` : ''}${unread ? `<span class="unread-badge">${unread}</span>` : ''}</div>`;
+  return `<div class="contact-item glass" id="cnt-${item.id}" onclick="${open}" oncontextmenu="showChatListMenu(event, '${item.id}')">${avatarHtml(item)}<div class="dialog-main"><b>${esc(item.name)}${item.verified ? (badge()) : ''}</b><br><small class="${exactPresenceAllowed(item) && item.online ? 'st-all' : 'st-none'}">${window.getPresenceText(item)}</small></div>${pinMarkup}${meta.lastTime ? `<span class="dialog-time">${timeLabel(meta.lastTime)}</span>` : ''}${unread ? `<span class="unread-badge">${unread}</span>` : ''}</div>`;
 }
   function renderDialogsFixed() {
     [['pc-contacts-list', true], ['mob-contacts', false]].forEach(([id, desktop]) => {
@@ -5612,7 +5548,7 @@ if (ui) {
   };
   function syncSupportLinks() {
     document.querySelectorAll('a[href*="t.me/Artem_8894"], a[href*="t.me/Vibe"]').forEach(a => {
-      a.href = 'https://t.me/Vibe22772_bot';
+      a.href = 'https://t.me/Vibe2289';
       if (/Artem_8894/i.test(a.textContent || '') || /поддерж/i.test(a.textContent || '')) a.textContent = a.textContent || 'Поддержка';
     });
   }
@@ -5927,7 +5863,6 @@ window.openArchiveModal = function() {
     closeOverlay();
     alert('Диалоги возвращены на главный экран');
   };
-
 
 </script>
 </body>
