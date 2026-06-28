@@ -4,10 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Vibe</title>
-    <link rel="shortcut icon" href="Vibe.png" type="image/x-icon">
-
-<link rel="manifest" href="manifest.json">    
-<link rel="icon" href="images/icon-512.png">
+    <link rel="shortcut icon" href="Vibe.png?v=2" type="image/png">
+<link rel="icon" href="images/icon-512.png?v=2" type="image/png">
+<link rel="apple-touch-icon" href="images/icon-512.png?v=2">
 <!-- Системные скрипты -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
@@ -17,7 +16,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
     <style>
-        <style>
+       
 :root {
     --accent: #00f2fe;
     --accent-grad: linear-gradient(90deg, #00f2fe, #4facfe);
@@ -1087,16 +1086,19 @@ z-index:999;
 </div>
  
 <!-- PROFILE POPUP -->
-    <div id="profile-popup" onclick="this.style.display='none'">
-        <div class="glass" style="width:320px; padding:30px; text-align:center;" onclick="event.stopPropagation()">
-            <div class="avatar-emoji" id="pop-ava" style="width:100px; height:100px; font-size:50px; margin:0 auto 15px;">👤</div>
-            <h2 id="pop-name">Имя</h2><p id="pop-handle" style="color:var(--accent); font-size:14px;"></p><p id="pop-bio" style="margin-top:15px; font-size:13px; opacity:0.8;"></p>
-            <div style="margin-top:20px; display:flex; flex-direction:column; gap:10px;">
-                <button id="pop-block-btn" class="save-btn" style="width:100%;" onclick="toggleBlock()">🚫 Заблокировать</button>
-                <button class="save-btn" style="width:100%; background:#ea868f;" onclick="removeChat()">🗑️ Удалить друга</button>
-            </div>
+    <!-- PROFILE POPUP -->
+<div id="profile-popup" onclick="this.style.display='none'">
+    <div class="glass" style="width:320px; padding:30px; text-align:center;" onclick="event.stopPropagation()">
+        <div class="avatar-emoji" id="pop-ava" style="width:100px; height:100px; font-size:50px; margin:0 auto 15px;">👤</div>
+        <h2 id="pop-name">Имя</h2><p id="pop-handle" style="color:var(--accent); font-size:14px;"></p><p id="pop-bio" style="margin-top:15px; font-size:13px; opacity:0.8;"></p>
+        <div style="margin-top:20px; display:flex; flex-direction:column; gap:10px;">
+            <button id="pop-block-btn" class="save-btn" style="width:100%;" onclick="toggleBlock()">🚫 Заблокировать</button>
+            <button class="save-btn" style="width:100%; background:#ea868f;" onclick="removeChat()">🗑️ Удалить друга</button>
         </div>
     </div>
+</div>
+
+<div id="app-overlay-root" class="overlay-root"></div>
 
     <!-- Модальное окно привязки почты -->
     <div id="link-email-modal" style="display:none; position:fixed; inset:0; z-index:20000; background:rgba(0,0,0,0.8); backdrop-filter:blur(10px); justify-content:center; align-items:center;">
@@ -2740,7 +2742,7 @@ window.openFavorites = function() {
     <div style="font-size:60px;">🚫</div>
     <h2 style="color:white; margin-top:20px;">Ваш аккаунт удалён</h2>
     <p style="color:#888; margin:15px 0;">Вы больше не можете пользоваться мессенджером.</p>
-    <a href="https://t.me/Vibe2289" target="_blank" style="background:#00f2fe; color:#000; padding:14px 30px; border-radius:15px; text-decoration:none; font-weight:bold; font-size:18px;">Поддержка</a>
+    <a href="https://t.me/Vibe22772_bot" target="_blank" style="background:#00f2fe; color:#000; padding:14px 30px; border-radius:15px; text-decoration:none; font-weight:bold; font-size:18px;">Поддержка</a>
 </div>
 
 <!-- 2. Плашка Технического перерыва -->
@@ -2748,7 +2750,7 @@ window.openFavorites = function() {
     <div style="font-size:60px;">⚙️</div>
     <h2 style="color:white; margin-top:20px;">Технический перерыв</h2>
     <p style="color:#888; margin:15px 0;">Извините за неудобства, мы скоро вернемся!</p>
-    <a href="https://t.me/Vibe2289" target="_blank" style="background:#00f2fe; color:#000; padding:14px 30px; border-radius:15px; text-decoration:none; font-weight:bold; font-size:18px;">Поддержка</a>
+    <a href="https://t.me/Vibe22772_bot" target="_blank" style="background:#00f2fe; color:#000; padding:14px 30px; border-radius:15px; text-decoration:none; font-weight:bold; font-size:18px;">Поддержка</a>
 </div>
 
 <!-- 3. Плашка Объявления (Глобальная блокировка) -->
@@ -2756,7 +2758,7 @@ window.openFavorites = function() {
     <div style="font-size:60px; margin-bottom:20px;">📢</div>
     <h2 style="color:white; margin-bottom:15px;">ВАЖНОЕ ОБЪЯВЛЕНИЕ</h2>
     <p id="announcement-display-text" style="color:#fff; font-size:18px; line-height:1.5; margin-bottom:30px; max-width:400px;"></p>
-    <a href="https://t.me/Vibe2289" target="_blank" style="background:var(--accent); color:#000; padding:14px 40px; border-radius:15px; text-decoration:none; font-weight:bold; font-size:16px;">ПОДДЕРЖКА</a>
+    <a href="https://t.me/Vibe22772_bot" target="_blank" style="background:var(--accent); color:#000; padding:14px 40px; border-radius:15px; text-decoration:none; font-weight:bold; font-size:16px;">ПОДДЕРЖКА</a>
 </div>
 
 <!-- 4. Плашка Рассылки (Модальное окно) -->
@@ -3747,12 +3749,17 @@ window.addEventListener('load', () => setTimeout(() => vibeEnhancer.init(), 250)
   function syncPatternPreview() {
     const input = Array.from(document.querySelectorAll('#pattern-emoji-input')).find(el => el.offsetParent !== null) || document.getElementById('pattern-emoji-input');
     const emoji = (input && input.value.trim()) || ((((window.me || {}).settings || {}).appearance || {}).patternEmoji) || '✨';
-    document.querySelectorAll('.settings-preview .settings-pattern').forEach(layer => {
+    
+    // Ограничиваем применение узора только вашими настройками
+    const targets = document.querySelectorAll('#pc-settings-screen .settings-pattern, #mob-settings .settings-pattern');
+    
+    targets.forEach(layer => {
       layer.style.backgroundImage = emojiPattern(emoji);
       layer.style.backgroundSize = '96px 96px';
       layer.style.opacity = '0.55';
     });
-  }
+  
+}
 
   function bindEmojiLivePreview() {
     const input = Array.from(document.querySelectorAll('#pattern-emoji-input')).find(el => el.offsetParent !== null) || document.getElementById('pattern-emoji-input');
@@ -3954,17 +3961,29 @@ window.showModal = showModal; // Экспортируем глобально
   }
   function applyAppearancePreview() {
     const s = settings();
-    const color = s.appearance.profileColor || '#956634';
+    // Безопасное извлечение объекта appearance
+    const appearance = s.appearance || {};
+    const color = appearance.profileColor || '#956634';
     
-    document.querySelectorAll('.settings-preview').forEach(preview => { 
-        // Если это HEX цвет (начинается с #), добавляем прозрачность 44 (27%)
+    // Выбираем превью только внутри ваших настроек (ПК и мобильных)
+    const settingsPreviews = document.querySelectorAll('#pc-settings-screen .settings-preview, #mob-settings .settings-preview');
+    
+    settingsPreviews.forEach(preview => { 
         if (color.startsWith('#')) {
             preview.style.background = color + '44'; 
         } else {
-            // Если это градиент, оставляем как есть
             preview.style.background = color; 
         }
     });
+    
+    settingsPreviews.forEach(preview => { 
+        const layer = preview.querySelector('.settings-pattern');
+        if (layer) {
+            layer.style.backgroundImage = emojiPattern(appearance.patternEmoji || '✨'); 
+        }
+    });
+  }
+
     
     document.querySelectorAll('.settings-preview .settings-pattern').forEach(layer => { 
         layer.style.backgroundImage = emojiPattern(s.appearance.patternEmoji); 
@@ -5592,7 +5611,7 @@ if (ui) {
   };
   function syncSupportLinks() {
     document.querySelectorAll('a[href*="t.me/Artem_8894"], a[href*="t.me/Vibe"]').forEach(a => {
-      a.href = 'https://t.me/Vibe2289';
+      a.href = 'https://t.me/Vibe22772_bot';
       if (/Artem_8894/i.test(a.textContent || '') || /поддерж/i.test(a.textContent || '')) a.textContent = a.textContent || 'Поддержка';
     });
   }
