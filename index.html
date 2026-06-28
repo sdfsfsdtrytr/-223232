@@ -1638,9 +1638,38 @@ function mobTab(id) {
             switchAuth('login-email');
         }
 
+async function registerDeviceForPushNotifications(userId) {
+            if (!('Notification' in window) || !firebase.messaging.isSupported()) {
+                console.log("Уведомления не поддерживаются на этом устройстве");
+                return;
+            }
+            try {
+                const permission = await Notification.requestPermission();
+                if (permission === 'granted') {
+                    const messagingInstance = firebase.messaging();
+                    // Замените 'ВАШ_ОТКРЫТЫЙ_КЛЮЧ_VAPID' на ваш ключ из консоли Firebase
+                    const currentToken = await messagingInstance.getToken({ 
+                        vapidKey: 'ВАШ_ОТКРЫТЫЙ_КЛЮЧ_VAPID' 
+                    });
+                    if (currentToken) {
+                        const deviceId = localStorage.getItem('vibe_device_id') || 'default_device';
+                        await db.ref(`users/${userId}/fcmTokens/${deviceId}`).set(currentToken);
+                        console.log("Токен пуш-уведомлений сохранен");
+                    }
+                }
+            } catch (error) {
+                console.log("Ошибка регистрации пушей:", error);
+            }
+        }
+
        async function initApp() {
     if (!me || !me.id) return;
     document.getElementById('auth-page').style.display = 'none';
+    
+    // Вызов функции регистрации пушей
+    registerDeviceForPushNotifications(me.id).catch(e => console.log(e));
+    
+    // Проверяем, привязана ли почта. Если нет - показываем предложение
     
     // Проверяем, привязана ли почта. Если нет - показываем предложение
     if (!me.email && !localStorage.getItem('email_prompt_shown')) {
