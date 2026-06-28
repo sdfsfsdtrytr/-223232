@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Vibe</title>
-    <link rel="shortcut icon" href="Vibe.png?v=2" type="image/png">
-<link rel="icon" href="images/icon-512.png?v=2" type="image/png">
-<link rel="apple-touch-icon" href="images/icon-512.png?v=2">
+    <link rel="shortcut icon" href="Vibe.png" type="image/x-icon">
+
+<link rel="manifest" href="manifest.json">    
+<link rel="icon" href="images/icon-512.png">
 <!-- Системные скрипты -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
@@ -1638,38 +1639,9 @@ function mobTab(id) {
             switchAuth('login-email');
         }
 
-async function registerDeviceForPushNotifications(userId) {
-            if (!('Notification' in window) || !firebase.messaging.isSupported()) {
-                console.log("Уведомления не поддерживаются на этом устройстве");
-                return;
-            }
-            try {
-                const permission = await Notification.requestPermission();
-                if (permission === 'granted') {
-                    const messagingInstance = firebase.messaging();
-                    // Замените 'ВАШ_ОТКРЫТЫЙ_КЛЮЧ_VAPID' на ваш ключ из консоли Firebase
-                    const currentToken = await messagingInstance.getToken({ 
-                        vapidKey: 'ВАШ_ОТКРЫТЫЙ_КЛЮЧ_VAPID' 
-                    });
-                    if (currentToken) {
-                        const deviceId = localStorage.getItem('vibe_device_id') || 'default_device';
-                        await db.ref(`users/${userId}/fcmTokens/${deviceId}`).set(currentToken);
-                        console.log("Токен пуш-уведомлений сохранен");
-                    }
-                }
-            } catch (error) {
-                console.log("Ошибка регистрации пушей:", error);
-            }
-        }
-
        async function initApp() {
     if (!me || !me.id) return;
     document.getElementById('auth-page').style.display = 'none';
-    
-    // Вызов функции регистрации пушей
-    registerDeviceForPushNotifications(me.id).catch(e => console.log(e));
-    
-    // Проверяем, привязана ли почта. Если нет - показываем предложение
     
     // Проверяем, привязана ли почта. Если нет - показываем предложение
     if (!me.email && !localStorage.getItem('email_prompt_shown')) {
