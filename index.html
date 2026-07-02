@@ -346,6 +346,39 @@ button:disabled {
     transform: scale(1.2);
 }
 
+/* Стиль для полей ввода кода подтверждения "Просто Vibe" */
+.vibe-code-input {
+    width: 100% !important;
+    height: 65px !important;
+    background: rgba(255, 255, 255, 0.04) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 22px !important;
+    color: #ffffff !important;
+    text-align: center !important;
+    font-size: 24px !important;
+    font-weight: 700 !important;
+    letter-spacing: 8px !important;
+    margin-bottom: 20px !important;
+    outline: none !important;
+    transition: all 0.3s ease !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+.vibe-code-input::placeholder {
+    color: rgba(255, 255, 255, 0.2) !important;
+    letter-spacing: 4px !important;
+    font-weight: 600 !important;
+    text-transform: uppercase;
+}
+
+.vibe-code-input:focus {
+    border-color: var(--accent) !important;
+    background: rgba(255, 255, 255, 0.07) !important;
+    box-shadow: 0 0 16px rgba(0, 242, 254, 0.2) !important;
+}
+
 
         /* ОТДЕЛЬНЫЙ ЭКРАН АВТОРИЗАЦИИ */
         #auth-page { position: fixed; inset: 0; z-index: 100000; background: var(--bg); display: flex; justify-content: center; align-items: center; padding: 20px; }
@@ -820,10 +853,11 @@ button:disabled {
 
     <!-- Context Menus -->
     <div id="context-menu" class="custom-menu">
-        <div class="menu-item" onclick="prepareReply()">↪️ Ответить</div>
-        <div class="menu-item" onclick="doCopy()">📋 Скопировать</div>
-        <div class="menu-item" style="color:#ea868f" id="btn-del-all" onclick="deleteMessage('all')">🗑️ Удалить у всех</div>
-        <div class="menu-item" style="color:#ea868f" onclick="deleteMessage('me')">🗑️ Удалить у меня</div>
+        <div class="menu-item" onclick="prepareReply()"><svg viewBox="0 0 24 24"><path d="M10.9 5.6L4.5 12l6.4 6.4V14h5.1c2.1 0 3.9 1.7 3.9 3.8V20c0-3.9-2.5-7.3-6.2-8.6V8.2l-3.2-2.6z"/></svg><span>Ответить</span></div>
+        <div class="menu-item" onclick="doCopy()"><svg viewBox="0 0 24 24"><path d="M16 1H6C4.9 1 4 1.9 4 3v12h2V3h10V1zm3 4H10c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h9c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H10V7h9v14z"/></svg><span>Скопировать</span></div>
+        <div class="menu-item" onclick="sendToFavorites()"><svg viewBox="0 0 24 24"><path d="M12 17.3L6.2 21l1.6-6.6L2.8 10l6.8-.6L12 3l2.4 6.4 6.8.6-5 4.4L17.8 21z"/></svg><span>В избранное</span></div>
+        <div class="menu-item" style="color:#ea868f" id="btn-del-all" onclick="deleteMessage('all')"><svg viewBox="0 0 24 24"><path d="M9 3h6l1 2h5v2H3V5h5l1-2zm1 6h2v9h-2V9zm4 0h2v9h-2V9zM6 7h12l-1 13H7L6 7z"/></svg><span>Удалить у всех</span></div>
+        <div class="menu-item" style="color:#ea868f" onclick="deleteMessage('me')"><svg viewBox="0 0 24 24"><path d="M9 3h6l1 2h5v2H3V5h5l1-2zm1 6h2v9h-2V9zm4 0h2v9h-2V9zM6 7h12l-1 13H7L6 7z"/></svg><span>Удалить у меня</span></div>
     </div>
 
     <div id="chat-list-menu" class="custom-menu">
@@ -856,47 +890,105 @@ button:disabled {
     </div>
 
     <!-- AUTH PAGE -->
-<div id="auth-page" style="position: fixed; inset: 0; z-index: 999999; background: #050505; display: flex; justify-content: center; align-items: center; padding: 20px;">
+<div id="auth-page" style="position: fixed; inset: 0; z-index: 999999; background: #050505; display: flex; justify-content: center; align-items: center; padding: 20px; overflow-y: auto;">
     <div style="width: 100%; max-width: 400px; text-align: left;">
-        <h1 style="color: white; font-size: 48px; font-weight: 800; margin-bottom: 10px;">Vibe</h1>
+        <h1 style="color: white; font-size: 48px; font-weight: 800; margin-bottom: 20px;">Vibe</h1>
         
-        <!-- Форма Входа -->
+        <!-- 1. Форма Входа -->
         <div id="form-login-email">
-            <h2 style="color: white; font-size: 40px; font-weight: 700; margin-bottom: 10px;">Вход в аккаунт</h2>
-            <input type="email" id="l-email-input" class="login-input" placeholder="example@mail.com">
-            <input type="password" id="l-pass-input" class="login-input" placeholder="Введите пароль">
+            <h2 style="color: white; font-size: 32px; font-weight: 700; margin-bottom: 20px;">Вход в аккаунт</h2>
+            <input type="email" id="l-email-input" placeholder="example@mail.com" style="width:100%; height:65px; background:#1c1c1e; border-radius:20px; color:white; padding:0 20px; margin-bottom:18px; border: 1px solid rgba(255,255,255,0.1);">
+            <input type="password" id="l-pass-input" placeholder="Введите пароль" style="width:100%; height:65px; background:#1c1c1e; border-radius:20px; color:white; padding:0 20px; margin-bottom:18px; border: 1px solid rgba(255,255,255,0.1);">
             <div style="color:#0A84FF; text-align:right; margin-bottom:35px; cursor:pointer;" onclick="switchAuth('reset')">Забыли пароль?</div>
-            <button id="loginBtn" class="login-btn" onclick="loginWithLoading()" style="width:100%; height:70px; border:none; border-radius:35px; background:#2c2c34; color:#8e8e93; font-size:24px; font-weight:700; transition: 0.3s; cursor:not-allowed;" disabled>Войти</button>
+            <button id="loginBtn" class="login-btn" onclick="loginWithLoading()" style="width:100%; height:70px; border:none; border-radius:35px; background:#2c2c34; color:#8e8e93; font-size:20px; font-weight:700; transition: 0.3s; cursor:not-allowed;" disabled>Войти</button>
             <div style="margin-top: 20px; text-align: center; color: #8e8e93;">
-                Нет аккаунта? <span style="color: #0A84FF; cursor:pointer; font-weight:bold;" onclick="switchAuth('reg')">Зарегистрироваться</span>
+                Нет аккаунта? <span style="color: #0A84FF; cursor:pointer; font-weight:bold;" onclick="switchAuth('reg1')">Зарегистрироваться</span>
             </div>
         </div>
 
-        <!-- Форма Регистрации -->
-        <div id="form-reg" style="display:none;">
-            <h2 style="color: white; font-size: 40px; margin-bottom: 30px;">Регистрация</h2>
-            <input type="email" id="r-email-input" placeholder="Email" style="width:100%; height:65px; background:#1c1c1e; border-radius:20px; color:white; padding:0 20px; margin-bottom:18px;">
-            <input type="password" id="r-pass-input" placeholder="Пароль" style="width:100%; height:65px; background:#1c1c1e; border-radius:20px; color:white; padding:0 20px; margin-bottom:18px;">
-            <button onclick="startEmailFlow('reg')" id="reg-btn-main" class="login-btn active" style="width:100%; height:70px; border-radius:35px; background:#0A84FF; color:white; font-size:24px;">Создать</button>
+        <!-- 2. Регистрация Шаг 1: Почта и пароли -->
+        <div id="form-reg1" style="display:none;">
+            <h2 style="color: white; font-size: 32px; font-weight: 700; margin-bottom: 20px;">Регистрация (1/3)</h2>
+            <input type="email" id="r-email-input" placeholder="Email (example@mail.com)" style="width:100%; height:65px; background:#1c1c1e; border-radius:20px; color:white; padding:0 20px; margin-bottom:18px; border: 1px solid rgba(255,255,255,0.1);">
+            <input type="password" id="r-pass-input" placeholder="Придумайте пароль" style="width:100%; height:65px; background:#1c1c1e; border-radius:20px; color:white; padding:0 20px; margin-bottom:18px; border: 1px solid rgba(255,255,255,0.1);">
+            <input type="password" id="r-pass-confirm-input" placeholder="Повторите пароль" style="width:100%; height:65px; background:#1c1c1e; border-radius:20px; color:white; padding:0 20px; margin-bottom:18px; border: 1px solid rgba(255,255,255,0.1);">
+            <button onclick="nextRegStep(2)" style="width:100%; height:70px; border-radius:35px; background:#0A84FF; color:white; font-size:20px; font-weight:700; border:none; cursor:pointer;">Далее</button>
             <div style="margin-top: 20px; text-align: center; color: #8e8e93;">
                 Есть аккаунт? <span style="color: #0A84FF; cursor:pointer;" onclick="switchAuth('login-email')">Войти</span>
             </div>
         </div>
 
-        <!-- Форма Восстановления -->
-        <div id="form-reset" style="display:none;">
-            <h2 style="color: white; font-size: 32px; margin-bottom: 20px;">Восстановление</h2>
-            <input type="email" id="reset-email" placeholder="Твой email" style="width:100%; height:65px; background:#1c1c1e; border-radius:20px; color:white; padding:0 20px; margin-bottom:18px;">
-            <button class="login-btn active" style="width:100%; height:70px; border-radius:35px; background:#0A84FF; color:white;" onclick="startResetFlow()">Отправить код</button>
+        <!-- 3. Регистрация Шаг 2: Ник и имя -->
+        <div id="form-reg2" style="display:none;">
+            <h2 style="color: white; font-size: 32px; font-weight: 700; margin-bottom: 20px;">Регистрация (2/3)</h2>
+            <input type="text" id="r-n-input" placeholder="Ваше имя" style="width:100%; height:65px; background:#1c1c1e; border-radius:20px; color:white; padding:0 20px; margin-bottom:18px; border: 1px solid rgba(255,255,255,0.1);">
+            <input type="text" id="r-h-input" placeholder="@username" style="width:100%; height:65px; background:#1c1c1e; border-radius:20px; color:white; padding:0 20px; margin-bottom:18px; border: 1px solid rgba(255,255,255,0.1);">
+            <div style="display:flex; gap:10px;">
+                <button onclick="nextRegStep(1)" style="flex:1; height:70px; border-radius:35px; background:#2c2c34; color:white; font-size:18px; font-weight:700; border:none; cursor:pointer;">Назад</button>
+                <button onclick="nextRegStep(3)" style="flex:1; height:70px; border-radius:35px; background:#0A84FF; color:white; font-size:18px; font-weight:700; border:none; cursor:pointer;">Далее</button>
+            </div>
         </div>
 
-        <!-- Окно Верификации -->
-        <div id="auth-verify-view" style="display:none;">
-    <h2 style="color: white; margin-bottom: 20px;">Проверти код в Спаме</h2>
-    <h2 style="color: white; margin-bottom: 20px;">Введите код</h2>
-    <input type="text" id="verify-code-input" placeholder="000000" style="width:100%; height:65px; background:#1c1c1e; border-radius:20px; color:white; text-align:center; font-size:24px; margin-bottom:20px;">
-            <button id="verify-submit-btn" class="login-btn active" style="width:100%; height:70px; border-radius:35px; background:#0A84FF; color:white;" onclick="completeEmailFlow()">Подтвердить</button>
+        <!-- 4. Регистрация Шаг 3: Аватарка -->
+        <div id="form-reg3" style="display:none;">
+            <h2 style="color: white; font-size: 32px; font-weight: 700; margin-bottom: 20px;">Регистрация (3/3)</h2>
+            <div style="display:flex; flex-direction:column; align-items:center; margin-bottom:20px; gap:15px;">
+                <div id="reg-avatar-preview" class="avatar-emoji" style="width:110px; height:110px; font-size:50px; background:rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius:50%; display:flex; align-items:center; justify-content:center; background-size:cover; background-position:center;">👤</div>
+                <div style="display:flex; gap:10px; width:100%;">
+                    <button type="button" onclick="selectRegAvatarFile()" style="flex:1; padding:12px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.12); border-radius:15px; color:white; font-size:13px; font-weight:bold; cursor:pointer;">Выбрать фото</button>
+                    <input type="text" id="r-e-input" placeholder="Или Эмодзи (😊)" maxlength="2" style="flex:1; height:45px; margin:0; text-align:center; background:#1c1c1e; border-radius:15px; color:white; border: 1px solid rgba(255,255,255,0.1);" oninput="document.getElementById('reg-avatar-preview').innerText = this.value; document.getElementById('reg-avatar-preview').style.backgroundImage = 'none';">
+                </div>
+            </div>
+            <div style="display:flex; gap:10px;">
+                <button onclick="nextRegStep(2)" style="flex:1; height:70px; border-radius:35px; background:#2c2c34; color:white; font-size:18px; font-weight:700; border:none; cursor:pointer;">Назад</button>
+                <button id="reg-btn-main" onclick="startRegFlow()" style="flex:1; height:70px; border-radius:35px; background:#0A84FF; color:white; font-size:18px; font-weight:700; border:none; cursor:pointer;">Создать</button>
+            </div>
         </div>
+
+        <!-- 5. Восстановление пароля Шаг 1: Ввод почты -->
+        <div id="form-reset" style="display:none;">
+            <h2 style="color: white; font-size: 32px; font-weight:700; margin-bottom: 20px;">Восстановление</h2>
+            <input type="email" id="reset-email" placeholder="example@mail.com" style="width:100%; height:65px; background:#1c1c1e; border-radius:20px; color:white; padding:0 20px; margin-bottom:18px; border: 1px solid rgba(255,255,255,0.1);">
+            <button id="reset-btn-main" style="width:100%; height:70px; border-radius:35px; background:#0A84FF; color:white; border:none; font-size:20px; font-weight:700; cursor:pointer;" onclick="startResetFlow()">Отправить код</button>
+            <div style="margin-top: 20px; text-align: center; color: #8e8e93;">
+                <span style="color: #0A84FF; cursor:pointer;" onclick="switchAuth('login-email')">Назад к входу</span>
+            </div>
+        </div>
+
+        <!-- 6. Восстановление Шаг 2: Ввод проверочного кода -->
+        <div id="form-reset-verify" style="display:none;">
+            <h2 style="color: white; font-size: 32px; font-weight:700; margin-bottom: 20px;">Проверка кода</h2>
+            <div style="color: #8e8e93; margin-bottom: 20px; font-size: 14px;">Мы отправили проверочный код на вашу почту. Пожалуйста, проверьте папку "Спам".</div>
+            <input type="text" id="reset-verify-code-input" class="vibe-code-input" placeholder="Vibe">
+            <button id="reset-verify-submit-btn" style="width:100%; height:70px; border-radius:35px; background:#0A84FF; color:white; border:none; font-size:20px; font-weight:700; cursor:pointer;" onclick="completeResetVerification()">Подтвердить</button>
+            
+            <div id="reset-timer-container" style="margin-top:20px; text-align:center; font-size:14px; color:#8e8e93;">
+                <span id="reset-timer-text">Отправить код повторно можно через 60 сек.</span>
+                <button id="reset-resend-btn" style="display:none; background:none; border:none; color:#0A84FF; font-weight:bold; cursor:pointer; width:100%; font-size:15px; margin-top:10px;" onclick="resendResetCode()">Отправить заново</button>
+            </div>
+        </div>
+
+        <!-- 7. Восстановление Шаг 3: Ввод нового пароля -->
+        <div id="form-new-password" style="display:none;">
+            <h2 style="color: white; font-size: 32px; font-weight:700; margin-bottom: 20px;">Новый пароль</h2>
+            <input type="password" id="reset-new-pass" placeholder="Новый пароль" style="width:100%; height:65px; background:#1c1c1e; border-radius:20px; color:white; padding:0 20px; margin-bottom:18px; border: 1px solid rgba(255,255,255,0.1);">
+            <input type="password" id="reset-new-pass-confirm" placeholder="Повторите новый пароль" style="width:100%; height:65px; background:#1c1c1e; border-radius:20px; color:white; padding:0 20px; margin-bottom:18px; border: 1px solid rgba(255,255,255,0.1);">
+            <button style="width:100%; height:70px; border-radius:35px; background:#0A84FF; color:white; border:none; font-size:20px; font-weight:700; cursor:pointer;" onclick="saveNewPassword()">Изменить</button>
+        </div>
+
+        <!-- 8. Окно Верификации при Регистрации -->
+        <div id="auth-verify-view" style="display:none;">
+            <h2 style="color: white; font-size: 32px; font-weight:700; margin-bottom: 10px;">Подтверждение</h2>
+            <div style="color: #8e8e93; margin-bottom: 20px; font-size: 14px;">Код отправлен на вашу почту. Проверьте папку "Спам".</div>
+            <input type="text" id="verify-code-input" class="vibe-code-input" placeholder="Vibe">
+            <button id="verify-submit-btn" style="width:100%; height:70px; border-radius:35px; background:#0A84FF; color:white; border:none; font-size:20px; font-weight:700; cursor:pointer;" onclick="completeEmailFlow()">Подтвердить</button>
+            
+            <div id="reg-timer-container" style="margin-top:20px; text-align:center; font-size:14px; color:#8e8e93;">
+                <span id="reg-timer-text">Отправить код повторно можно через 60 сек.</span>
+                <button id="reg-resend-btn" style="display:none; background:none; border:none; color:#0A84FF; font-weight:bold; cursor:pointer; width:100%; font-size:15px; margin-top:10px;" onclick="resendRegCode()">Отправить заново</button>
+            </div>
+        </div>
+
     </div>
 </div>
 
@@ -1096,11 +1188,327 @@ z-index:999;
 
     <script> 
 
+// Глобальный загрузчик изображений для регистрации
+async function uploadToCloudinary(file) {
+    const cloudName = 'dlnpugmak';
+    const apiKey = 't4gaymBobQ2U0a78C-JASkIdEZU';
+    const preset = 'vibe_upload';
+    const form = new FormData();
+    form.append('file', file);
+    form.append('upload_preset', preset);
+    form.append('api_key', apiKey);
+    
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`, { method: 'POST', body: form });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || !data.secure_url) {
+        throw new Error((data.error && data.error.message) || 'Не удалось загрузить файл.');
+    }
+    return data;
+}
+window.uploadToCloudinary = uploadToCloudinary;
+
 // Закрытие всех меню при клике в любое место
 window.addEventListener('click', () => {
     document.getElementById('context-menu').style.display = 'none';
     document.getElementById('chat-list-menu').style.display = 'none';
 });
+
+// Функция безопасного переключения экранов без возникновения ошибок Cannot read properties of null
+function switchAuth(t) {
+    const views = [
+        'form-login-email',
+        'form-reg1',
+        'form-reg2',
+        'form-reg3',
+        'form-reset',
+        'form-reset-verify',
+        'form-new-password',
+        'auth-verify-view'
+    ];
+    
+    views.forEach(v => {
+        const el = document.getElementById(v);
+        if (el) el.style.display = 'none';
+    });
+    
+    let targetId = '';
+    if (t === 'login-email') targetId = 'form-login-email';
+    else if (t === 'reg1') targetId = 'form-reg1';
+    else if (t === 'reg2') targetId = 'form-reg2';
+    else if (t === 'reg3') targetId = 'form-reg3';
+    else if (t === 'reset') targetId = 'form-reset';
+    
+    const targetEl = document.getElementById(targetId);
+    if (targetEl) targetEl.style.display = 'block';
+}
+
+// Переключение шагов многоступенчатой регистрации
+async function nextRegStep(step) {
+    if (step === 2) {
+        const email = document.getElementById('r-email-input').value.trim();
+        const pass = document.getElementById('r-pass-input').value;
+        const confirmPass = document.getElementById('r-pass-confirm-input').value;
+        
+        if (!email || !pass || !confirmPass) return alert("Заполните все поля!");
+        if (pass.length < 6) return alert("Пароль должен быть минимум 6 символов!");
+        if (pass !== confirmPass) return alert("Пароли не совпадают!");
+        
+        try {
+            const emailSnap = await db.ref('emails/' + email.replace(/\./g, '_')).once('value');
+            if (emailSnap.exists()) return alert("Эта почта уже используется!");
+        } catch(e) {
+            console.warn(e);
+        }
+    }
+    if (step === 3) {
+        const name = document.getElementById('r-n-input').value.trim();
+        let handle = document.getElementById('r-h-input').value.toLowerCase().trim();
+        if (!name || !handle) return alert("Заполните все поля!");
+        if (!handle.startsWith('@')) handle = '@' + handle;
+        const hKey = handle.replace('@', '');
+        
+        try {
+            const handleSnap = await db.ref('handles/' + hKey).once('value');
+            if (handleSnap.exists()) return alert("Этот ник уже занят!");
+        } catch(e) {
+            console.warn(e);
+        }
+    }
+    
+    document.getElementById('form-reg1').style.display = step === 1 ? 'block' : 'none';
+    document.getElementById('form-reg2').style.display = step === 2 ? 'block' : 'none';
+    document.getElementById('form-reg3').style.display = step === 3 ? 'block' : 'none';
+}
+
+// Загрузка файла для аватарки при регистрации
+let regAvatarFileUrl = null;
+function selectRegAvatarFile() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = async () => {
+        const file = input.files && input.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = async () => {
+            const preview = document.getElementById('reg-avatar-preview');
+            preview.innerText = '';
+            preview.style.backgroundImage = `url('${reader.result}')`;
+            
+            try {
+                preview.innerText = '⏳';
+                const uploaded = await uploadToCloudinary(file);
+                regAvatarFileUrl = uploaded.secure_url;
+                preview.innerText = '';
+                preview.style.backgroundImage = `url('${regAvatarFileUrl}')`;
+            } catch(e) {
+                alert("Ошибка загрузки фото: " + e.message);
+                preview.innerText = '👤';
+                preview.style.backgroundImage = 'none';
+            }
+        };
+        reader.readAsDataURL(file);
+    };
+    input.click();
+}
+
+// Логика подтверждения регистрации кодом
+let regVerificationData = null;
+let regTimerInterval = null;
+
+async function startRegFlow() {
+    const btn = document.getElementById('reg-btn-main');
+    btn.disabled = true;
+    btn.innerText = "Отправляем...";
+    
+    const email = document.getElementById('r-email-input').value.trim().toLowerCase();
+    const name = document.getElementById('r-n-input').value.trim();
+    const emoji = document.getElementById('r-e-input').value.trim() || '😊';
+    
+    try {
+        const code = generateCode();
+        regVerificationData = { email, code, name, emoji };
+        
+        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+            to_email: email,
+            verification_code: code,
+            user_name: name
+        });
+        
+        document.getElementById('form-reg3').style.display = 'none';
+        document.getElementById('auth-verify-view').style.display = 'block';
+        
+        startRegTimer();
+    } catch(e) {
+        alert("Ошибка отправки кода: " + e.message);
+        btn.disabled = false;
+        btn.innerText = "Создать";
+    }
+}
+
+function startRegTimer() {
+    clearInterval(regTimerInterval);
+    let seconds = 60;
+    const timerText = document.getElementById('reg-timer-text');
+    const resendBtn = document.getElementById('reg-resend-btn');
+    
+    timerText.style.display = 'block';
+    resendBtn.style.display = 'none';
+    timerText.textContent = `Отправить код повторно можно через ${seconds} сек.`;
+    
+    regTimerInterval = setInterval(() => {
+        seconds--;
+        if (seconds <= 0) {
+            clearInterval(regTimerInterval);
+            timerText.style.display = 'none';
+            resendBtn.style.display = 'block';
+        } else {
+            timerText.textContent = `Отправить код повторно можно через ${seconds} сек.`;
+        }
+    }, 1000);
+}
+
+async function resendRegCode() {
+    if (!regVerificationData) return;
+    const resendBtn = document.getElementById('reg-resend-btn');
+    resendBtn.style.display = 'none';
+    
+    try {
+        const code = generateCode();
+        regVerificationData.code = code;
+        
+        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+            to_email: regVerificationData.email,
+            verification_code: code,
+            user_name: regVerificationData.name
+        });
+        
+        alert("Код отправлен повторно!");
+        startRegTimer();
+    } catch(e) {
+        alert("Ошибка: " + e.message);
+        resendBtn.style.display = 'block';
+    }
+}
+
+// Восстановление пароля
+let resetVerificationData = null;
+let resetTimerInterval = null;
+
+async function startResetFlow() {
+    const email = document.getElementById('reset-email').value.trim().toLowerCase();
+    if (!email) return alert("Введите email!");
+    
+    const btn = document.getElementById('reset-btn-main');
+    btn.disabled = true;
+    btn.innerText = "Отправляем...";
+    
+    try {
+        const emailSnap = await db.ref('emails/' + email.replace(/\./g, '_')).once('value');
+        if (!emailSnap.exists()) {
+            alert("Пользователь с такой почтой не найден!");
+            btn.disabled = false;
+            btn.innerText = "Отправить код";
+            return;
+        }
+        
+        const uid = emailSnap.val();
+        const uSnap = await db.ref('users/' + uid).once('value');
+        const user = uSnap.val();
+        
+        const code = generateCode();
+        resetVerificationData = { email, code, uid, name: user.name || 'Пользователь' };
+        
+        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+            to_email: email,
+            verification_code: code,
+            user_name: user.name || 'Пользователь'
+        });
+        
+        document.getElementById('form-reset').style.display = 'none';
+        document.getElementById('form-reset-verify').style.display = 'block';
+        
+        startResetTimer();
+    } catch(e) {
+        alert("Ошибка отправки: " + e.message);
+    } finally {
+        btn.disabled = false;
+        btn.innerText = "Отправить код";
+    }
+}
+
+function startResetTimer() {
+    clearInterval(resetTimerInterval);
+    let seconds = 60;
+    const timerText = document.getElementById('reset-timer-text');
+    const resendBtn = document.getElementById('reset-resend-btn');
+    
+    timerText.style.display = 'block';
+    resendBtn.style.display = 'none';
+    timerText.textContent = `Отправить код повторно можно через ${seconds} сек.`;
+    
+    resetTimerInterval = setInterval(() => {
+        seconds--;
+        if (seconds <= 0) {
+            clearInterval(resetTimerInterval);
+            timerText.style.display = 'none';
+            resendBtn.style.display = 'block';
+        } else {
+            timerText.textContent = `Отправить код повторно можно через ${seconds} сек.`;
+        }
+    }, 1000);
+}
+
+async function resendResetCode() {
+    if (!resetVerificationData) return;
+    const resendBtn = document.getElementById('reset-resend-btn');
+    resendBtn.style.display = 'none';
+    
+    try {
+        const code = generateCode();
+        resetVerificationData.code = code;
+        
+        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+            to_email: resetVerificationData.email,
+            verification_code: code,
+            user_name: resetVerificationData.name
+        });
+        
+        alert("Код отправлен повторно!");
+        startResetTimer();
+    } catch(e) {
+        alert("Ошибка: " + e.message);
+        resendBtn.style.display = 'block';
+    }
+}
+
+function completeResetVerification() {
+    const inputCode = document.getElementById('reset-verify-code-input').value.trim();
+    if (!resetVerificationData || inputCode !== resetVerificationData.code) {
+        return alert("Неверный код проверочный!");
+    }
+    
+    document.getElementById('form-reset-verify').style.display = 'none';
+    document.getElementById('form-new-password').style.display = 'block';
+}
+
+async function saveNewPassword() {
+    const newPass = document.getElementById('reset-new-pass').value;
+    const confirmNewPass = document.getElementById('reset-new-pass-confirm').value;
+    
+    if (!newPass || !confirmNewPass) return alert("Заполните оба поля!");
+    if (newPass.length < 6) return alert("Пароль должен быть не менее 6 символов!");
+    if (newPass !== confirmNewPass) return alert("Пароли не совпадают!");
+    
+    try {
+        const uid = resetVerificationData.uid;
+        await db.ref(`users/${uid}/passwordHash`).set(btoa(newPass));
+        alert("Пароль успешно изменен! Теперь вы можете войти.");
+        switchAuth('login-email');
+    } catch(e) {
+        alert("Ошибка при сохранении: " + e.message);
+    }
+}
 
 // Исправленный показ меню сообщений
 function showMsgMenu(e, id, text, sender) {
@@ -1264,16 +1672,31 @@ function mobTab(id) {
         const themeList = ["dark", "light", "purple", "lime", "ocean", "sunset", "rose", "forest", "midnight", "gold"];
 
         function switchAuth(t) {
-    // Скрываем все формы
-    document.getElementById('form-login-email').style.display = 'none';
-    document.getElementById('form-reg').style.display = 'none';
-    document.getElementById('form-reset').style.display = 'none';
-    document.getElementById('auth-verify-view').style.display = 'none';
-
-    // Показываем нужную
-    if (t === 'login-email') document.getElementById('form-login-email').style.display = 'block';
-    if (t === 'reg') document.getElementById('form-reg').style.display = 'block';
-    if (t === 'reset') document.getElementById('form-reset').style.display = 'block';
+    const views = [
+        'form-login-email',
+        'form-reg1',
+        'form-reg2',
+        'form-reg3',
+        'form-reset',
+        'form-reset-verify',
+        'form-new-password',
+        'auth-verify-view'
+    ];
+    
+    views.forEach(v => {
+        const el = document.getElementById(v);
+        if (el) el.style.display = 'none';
+    });
+    
+    let targetId = '';
+    if (t === 'login-email') targetId = 'form-login-email';
+    else if (t === 'reg1') targetId = 'form-reg1';
+    else if (t === 'reg2') targetId = 'form-reg2';
+    else if (t === 'reg3') targetId = 'form-reg3';
+    else if (t === 'reset') targetId = 'form-reset';
+    
+    const targetEl = document.getElementById(targetId);
+    if (targetEl) targetEl.style.display = 'block';
 }
 
         function generateCode() {
@@ -1338,36 +1761,32 @@ function mobTab(id) {
         }
 
         function showVerifyStep(mode, email, startTime) {
-            const config = getAuthConfig(mode);
-            authFlowMode = mode;
-            document.getElementById('form-login').style.display = 'none';
-            document.getElementById('form-login-email').style.display = 'none';
-            document.getElementById('form-reg').style.display = 'none';
-            document.getElementById('form-link').style.display = 'none';
-            document.getElementById('auth-verify-view').style.display = 'block';
-            document.getElementById('verify-title').textContent = config.title;
-            document.getElementById('verify-subtitle').textContent = `${config.subtitle} ${email}`;
-            document.getElementById('verify-submit-btn').textContent = config.submitText;
-            document.getElementById('verify-code-input').value = '';
-            startResendCountdown(startTime);
-        }
-
-        function closeVerifyStep(silent = false) {
-            clearInterval(authResendTimer);
-            authResendTimer = null;
-            authFlowMode = null;
-            document.getElementById('auth-verify-view').style.display = 'none';
-            document.getElementById('verify-code-input').value = '';
-            document.getElementById('verify-resend-btn').style.display = 'none';
-            if (!silent) {
-                const activeTab = document.getElementById('tab-r').className.includes('active')
-                    ? 'reg'
-                    : document.getElementById('tab-link').className.includes('active')
-                        ? 'link'
-                        : 'login-email';
-                switchAuth(activeTab);
-            }
-        }
+    const config = getAuthConfig(mode);
+    authFlowMode = mode;
+    
+    // Безопасное сокрытие предыдущих форм только если они есть в DOM
+    ['form-login-email', 'form-reg1', 'form-reg2', 'form-reg3', 'form-reset'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+    });
+    
+    const verifyView = document.getElementById('auth-verify-view');
+    if (verifyView) verifyView.style.display = 'block';
+    
+    const titleEl = document.getElementById('verify-title');
+    if (titleEl) titleEl.textContent = config.title;
+    
+    const subtitleEl = document.getElementById('verify-subtitle');
+    if (subtitleEl) subtitleEl.textContent = `${config.subtitle} ${email}`;
+    
+    const submitBtn = document.getElementById('verify-submit-btn');
+    if (submitBtn) submitBtn.textContent = config.submitText;
+    
+    const inputCode = document.getElementById('verify-code-input');
+    if (inputCode) inputCode.value = '';
+    
+    startRegTimer();
+}
 
         async function validateAuthFlow(mode) {
             if (mode === 'login') {
@@ -1413,33 +1832,28 @@ function mobTab(id) {
         }
 
         async function sendVerificationCode(mode, isResend = false) {
-            const data = await validateAuthFlow(mode);
-            const code = generateCode();
-            const now = Date.now();
-            localStorage.setItem('vibe_verify_data', JSON.stringify({
-                email: data.email,
-                code: code,
-                mode: mode,
-                timestamp: now
-            }));
+    const data = await validateAuthFlow(mode);
+    const code = generateCode();
+    const now = Date.now();
+    localStorage.setItem('vibe_verify_data', JSON.stringify({
+        email: data.email,
+        code: code,
+        mode: mode,
+        timestamp: now
+    }));
 
-            await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-                to_email: data.email,
-                verification_code: code,
-                user_name: data.name || 'Пользователь'
-            });
-             
-    document.getElementById('form-login-email').style.display = 'none';
-    document.getElementById('form-reg').style.display = 'none';
-    document.getElementById('form-reset').style.display = 'none';
-    document.getElementById('auth-verify-view').style.display = 'block';
+    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+        to_email: data.email,
+        verification_code: code,
+        user_name: data.name || 'Пользователь'
+    });
 
-
-            showVerifyStep(mode, data.email, now);
-            if (!isResend) {
-                alert('Код отправлен на ' + data.email + '. Проверь почту.');
-            }
-        }
+    // Безопасный показ экрана верификации без вызова ошибок
+    showVerifyStep(mode, data.email, now);
+    if (!isResend) {
+        alert('Код отправлен на ' + data.email + '. Проверь почту.');
+    }
+}
 
         async function startEmailFlow(mode) {
     // Находим кнопку в зависимости от режима
@@ -1494,6 +1908,62 @@ function mobTab(id) {
         }
 
         async function completeEmailFlow() {
+    const inputCode = document.getElementById('verify-code-input').value.trim();
+    
+    // 1. Поток многоступенчатой регистрации
+    if (regVerificationData) {
+        if (inputCode !== regVerificationData.code) {
+            return alert("Неверный проверочный код!");
+        }
+        
+        const btn = document.getElementById('verify-submit-btn');
+        if (btn) {
+            btn.disabled = true;
+            btn.innerText = "Создаем аккаунт...";
+        }
+        
+        try {
+            const email = regVerificationData.email;
+            const password = document.getElementById('r-pass-input').value;
+            const name = regVerificationData.name;
+            const emoji = regVerificationData.emoji;
+            let handle = document.getElementById('r-h-input').value.toLowerCase().trim();
+            if (!handle.startsWith('@')) handle = '@' + handle;
+            const hKey = handle.replace('@', '');
+            
+            const id = Math.random().toString(36).slice(2, 8).toUpperCase();
+            const newUser = {
+                id,
+                name,
+                handle,
+                avatar: emoji,
+                avatarPhoto: regAvatarFileUrl || null,
+                bio: 'Привет, я в Vibe!',
+                verified: false,
+                online: true,
+                email,
+                passwordHash: btoa(password),
+                createdAt: Date.now()
+            };
+
+            await db.ref('users/' + id).set(newUser);
+            await db.ref('handles/' + hKey).set(id);
+            await db.ref('emails/' + email.replace(/\./g, '_')).set(id);
+
+            clearVerifyStorage();
+            localStorage.setItem('liquid_pro_v32', JSON.stringify(newUser));
+            location.reload();
+        } catch(e) {
+            alert("Ошибка при регистрации: " + e.message);
+            if (btn) {
+                btn.disabled = false;
+                btn.innerText = "Подтвердить";
+            }
+        }
+        return;
+    }
+    
+    // 2. Стандартный поток входа (Login / Link)
     if (!authFlowMode) return;
     
     const btn = document.getElementById('verify-submit-btn');
@@ -1515,11 +1985,9 @@ function mobTab(id) {
     } catch (e) {
         console.error('Verify error:', e);
         alert(e.message || 'Не удалось завершить подтверждение.');
-        
-        // Возвращаем кнопку, если код неверный
         if (btn) {
             btn.disabled = false;
-            btn.innerText = btn.dataset.originalText;
+            btn.innerText = btn.dataset.originalText || "Подтвердить";
         }
     }
 }
@@ -1971,7 +2439,7 @@ if (m.type === 'voice') {
 }
 
 d.innerHTML = messageHTML;
-d.oncontextmenu = (e) => showMsgMenu(e, id, m.val, m.sender);
+    d.oncontextmenu = (e) => showMsgMenu(e, id, m.val, m.sender, m);
         
         win.appendChild(d);
         win.scrollTop = win.scrollHeight;
@@ -3376,7 +3844,7 @@ const vibeEnhancer = (() => {
       }
       html += `<div>${m.val}</div>`;
       d.innerHTML = html;
-      d.oncontextmenu = e => showMsgMenu(e, id, m.val, m.sender);
+      d.oncontextmenu = e => showMsgMenu(e, id, m.val, m.sender, m);
       win.appendChild(d);
       win.scrollTop = win.scrollHeight;
     });
@@ -4824,7 +5292,7 @@ document.addEventListener('DOMContentLoaded', () => {
       html += `<span class="msg-status ${isRead ? 'read' : ''}" data-msg-status="1" data-msg-time="${Number(msg.time || 0)}">${isRead ? '✓✓' : '✓'}</span>`;
     }
     d.innerHTML = html;
-    d.oncontextmenu = e => showMsgMenu(e, id, messagePlainText(msg), msg.sender);
+    d.oncontextmenu = e => showMsgMenu(e, id, messagePlainText(msg), msg.sender, msg);
     win.appendChild(d);
     win.scrollTop = win.scrollHeight;
   }
@@ -5864,6 +6332,1407 @@ window.openArchiveModal = function() {
     alert('Диалоги возвращены на главный экран');
   };
 
+<script id="codex-ultimate-ui-fixes">
+(() => {
+  const FIX = window.vibeFix20260524 = window.vibeFix20260524 || {};
+  FIX.selectedArchiveIds = FIX.selectedArchiveIds || {};
+  FIX.archiveSelectMode = !!FIX.archiveSelectMode;
+
+  const $ = id => document.getElementById(id);
+  const esc = v => String(v || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  const now = () => Date.now();
+  const friends = () => Object.values((window.vibeRoomState && window.vibeRoomState.friends) || {});
+  const rooms = () => Object.values((window.vibeRoomState && window.vibeRoomState.rooms) || {});
+  const isRoom = item => item && (item.type === 'group' || item.type === 'channel');
+  const canManage = room => room && (room.ownerId === me.id || (room.admins && room.admins[me.id]));
+  const avatarUrl = user => (user && (user.avatarPhoto || user.photoURL || user.avatarUrl)) || '';
+
+  function injectGlassStyles() {
+    if (document.getElementById('codex-ultimate-ui-style')) return;
+    const style = document.createElement('style');
+    style.id = 'codex-ultimate-ui-style';
+    style.textContent = `
+      .custom-menu, #context-menu, #chat-list-menu {
+        position: fixed !important;
+        min-width: 220px;
+        max-width: min(92vw, 320px);
+        max-height: calc(100vh - 24px);
+        overflow: auto;
+        padding: 10px;
+        border-radius: 22px;
+        background: rgba(12, 18, 30, 0.74) !important;
+        border: 1px solid rgba(255, 255, 255, 0.16) !important;
+        backdrop-filter: blur(26px) saturate(180%);
+        -webkit-backdrop-filter: blur(26px) saturate(180%);
+        box-shadow: 0 24px 64px rgba(0, 0, 0, 0.46) !important;
+        z-index: 1000005 !important;
+      }
+      .custom-menu .menu-item, #context-menu .menu-item, #chat-list-menu .menu-item {
+        border-radius: 14px;
+        margin: 4px 0;
+        padding: 12px 14px;
+        background: rgba(255, 255, 255, 0.06);
+      }
+      .custom-menu .menu-item:hover, #context-menu .menu-item:hover, #chat-list-menu .menu-item:hover {
+        background: rgba(255, 255, 255, 0.12);
+      }
+      .app-modal-backdrop {
+        background: rgba(4, 8, 16, 0.58) !important;
+        backdrop-filter: blur(18px) saturate(140%);
+        -webkit-backdrop-filter: blur(18px) saturate(140%);
+      }
+      .app-modal {
+        background: rgba(12, 18, 30, 0.76) !important;
+        border: 1px solid rgba(255, 255, 255, 0.16) !important;
+        border-radius: 28px !important;
+        box-shadow: 0 28px 80px rgba(0, 0, 0, 0.48) !important;
+        backdrop-filter: blur(28px) saturate(180%);
+        -webkit-backdrop-filter: blur(28px) saturate(180%);
+        color: #fff;
+      }
+      .app-modal .settings-card,
+      .app-modal .choice-card,
+      .app-modal .settings-ghost,
+      .app-modal .settings-save,
+      .app-modal .modal-close,
+      .attach-sheet .attach-choice,
+      .archive-restore-btn {
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(18px) saturate(160%);
+        -webkit-backdrop-filter: blur(18px) saturate(160%);
+      }
+      .attach-sheet {
+        position: absolute;
+        left: 12px;
+        right: 12px;
+        bottom: 76px;
+        z-index: 2100;
+        display: none;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        padding: 12px;
+        border-radius: 24px;
+        background: rgba(10, 14, 24, 0.74);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.38);
+        backdrop-filter: blur(22px) saturate(170%);
+        -webkit-backdrop-filter: blur(22px) saturate(170%);
+      }
+      .attach-sheet.active { display: grid; }
+      .peer-profile-panel {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      .peer-profile-preview {
+        position: relative;
+        overflow: hidden;
+        min-height: 260px;
+        border-radius: 28px;
+        padding: 28px 24px 22px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        gap: 8px;
+        color: #fff;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+      }
+      .peer-profile-pattern {
+        position: absolute;
+        inset: 0;
+        opacity: .22;
+        background-position: center;
+        background-size: 96px 96px;
+        mix-blend-mode: screen;
+        pointer-events: none;
+      }
+      .peer-preview-avatar {
+        position: relative;
+        width: 92px;
+        height: 92px;
+        border-radius: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 44px;
+        background: rgba(255, 255, 255, 0.16);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 18px 30px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+      }
+      .peer-preview-avatar.has-photo {
+        color: transparent;
+      }
+      .peer-preview-name {
+        position: relative;
+        font-size: 42px;
+        font-weight: 900;
+        line-height: 1.1;
+        text-shadow: 0 2px 12px rgba(0, 0, 0, 0.28);
+      }
+      .peer-preview-handle {
+        position: relative;
+        opacity: .84;
+        font-size: 14px;
+      }
+      .archive-restore-btn {
+        position: sticky;
+        bottom: 12px;
+        margin: 14px auto 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        justify-content: center;
+        width: fit-content;
+        min-width: 180px;
+        padding: 14px 18px;
+        border-radius: 18px;
+        color: #fff;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  injectGlassStyles();
+
+  function avatarHtml(user) {
+    const photo = avatarUrl(user);
+    if (photo) {
+      return `<div class="avatar-emoji has-photo" style="background-image:url('${esc(photo)}');background-size:cover;background-position:center;color:transparent;"></div>`;
+    }
+    if (isRoom(user)) {
+      return `<div class="avatar-emoji room-avatar" style="width:48px;height:48px;font-size:22px;">${esc(user.avatar || (user.type === 'channel' ? '📣' : '👥'))}</div>`;
+    }
+    return `<div class="avatar-emoji">${esc((user && user.avatar) || '👤')}</div>`;
+  }
+
+  function closeAttachSheets() {
+    document.querySelectorAll('.attach-sheet').forEach(sheet => sheet.classList.remove('active'));
+    document.querySelectorAll('.codex-attach-overlay').forEach(node => node.remove());
+  }
+
+  function closeMenus() {
+    const context = $('context-menu');
+    const chatMenu = $('chat-list-menu');
+    if (context) context.style.display = 'none';
+    if (chatMenu) chatMenu.style.display = 'none';
+    closeAttachSheets();
+  }
+
+  function clampMenu(menu, x, y) {
+    if (!menu) return;
+    menu.style.position = 'fixed';
+    menu.style.visibility = 'hidden';
+    menu.style.display = 'block';
+    menu.style.left = '0px';
+    menu.style.top = '0px';
+    const rect = menu.getBoundingClientRect();
+    const pad = 12;
+    const vw = window.innerWidth || document.documentElement.clientWidth || 0;
+    const vh = window.innerHeight || document.documentElement.clientHeight || 0;
+    let left = Math.max(pad, Math.min(x + 8, vw - rect.width - pad));
+    let top = y + 8;
+    if (top + rect.height > vh - pad) top = Math.max(pad, y - rect.height - 8);
+    top = Math.max(pad, Math.min(top, vh - rect.height - pad));
+    menu.style.left = `${left}px`;
+    menu.style.top = `${top}px`;
+    menu.style.visibility = 'visible';
+  }
+
+  async function resolveItemForArchive(id) {
+    const room = (window.vibeRoomState && window.vibeRoomState.rooms && window.vibeRoomState.rooms[id]) || null;
+    if (room) return room;
+    const friend = (window.vibeRoomState && window.vibeRoomState.friends && window.vibeRoomState.friends[id]) || null;
+    if (friend) return friend;
+    try {
+      const userSnap = await db.ref(`users/${id}`).once('value');
+      if (userSnap.exists()) return userSnap.val();
+      const roomSnap = await db.ref(`rooms/${id}`).once('value');
+      if (roomSnap.exists()) return roomSnap.val();
+    } catch (e) {}
+    return null;
+  }
+
+  async function syncArchiveCache() {
+    if (!me || !me.id) return;
+    try {
+      const snap = await db.ref(`users/${me.id}/archives`).once('value');
+      me.archives = snap.val() || me.archives || {};
+    } catch (e) {
+      me.archives = me.archives || {};
+    }
+  }
+
+  window.showMsgMenu = function(e, id, text, sender, msgData) {
+    if (e) { e.preventDefault(); e.stopPropagation(); }
+    selectedMsgId = id;
+    selectedMsgText = text || '';
+    FIX.selectedMsgId = id;
+    FIX.selectedMsgText = text || '';
+    FIX.selectedMsgSender = sender || '';
+    FIX.selectedMsgData = msgData ? JSON.parse(JSON.stringify(msgData)) : null;
+    window.selectedMsgId = id;
+    window.selectedMsgText = text || '';
+    window.selectedMsgSender = sender || '';
+    window.selectedMsgData = FIX.selectedMsgData;
+
+    const menu = $('context-menu');
+    if (!menu) return false;
+    const point = e && e.touches && e.touches[0] ? e.touches[0] : (e || {});
+    menu.style.display = 'block';
+    clampMenu(menu, point.clientX ?? point.pageX ?? 20, point.clientY ?? point.pageY ?? 20);
+
+    const delAll = $('btn-del-all');
+    if (delAll) delAll.style.display = (sender === me.id || (isRoom(activePeer) && canManage(activePeer))) ? 'flex' : 'none';
+
+    if (!FIX.selectedMsgData && activePeer && typeof chatPathFor === 'function') {
+      db.ref(`${chatPathFor(activePeer)}/${id}`).once('value').then(snap => {
+        if (FIX.selectedMsgId === id && snap.exists()) {
+          FIX.selectedMsgData = snap.val();
+          window.selectedMsgData = FIX.selectedMsgData;
+        }
+      }).catch(() => {});
+    }
+    return false;
+  };
+
+  window.sendToFavorites = async function() {
+    if (!me || !me.id) return;
+    const msgId = FIX.selectedMsgId || selectedMsgId || window.selectedMsgId;
+    let payload = FIX.selectedMsgData || window.selectedMsgData || null;
+
+    if (!payload && msgId && activePeer && typeof chatPathFor === 'function') {
+      try {
+        const snap = await db.ref(`${chatPathFor(activePeer)}/${msgId}`).once('value');
+        payload = snap.val();
+      } catch (e) {}
+    }
+
+    if (!payload) {
+      const text = FIX.selectedMsgText || selectedMsgText || window.selectedMsgText || '';
+      if (!text) return;
+      payload = { sender: me.id, val: text, time: now() };
+    }
+
+    if (payload.system) return;
+
+    const copy = JSON.parse(JSON.stringify(payload));
+    copy.sender = me.id;
+    copy.senderName = me.name || '';
+    copy.time = now();
+    copy.savedFrom = activePeer && activePeer.id ? activePeer.id : '';
+    copy.savedFromName = activePeer && activePeer.name ? activePeer.name : '';
+    delete copy.system;
+
+    await db.ref(`chats/saved_${me.id}`).push(copy);
+    FIX.meta = FIX.meta || {};
+    FIX.meta[`saved_${me.id}`] = FIX.meta[`saved_${me.id}`] || {};
+    FIX.meta[`saved_${me.id}`].lastTime = copy.time;
+    if (typeof renderDialogsFixed === 'function') renderDialogsFixed();
+    closeMenus();
+  };
+
+  window.archiveChat = async function() {
+    if (!me || !me.id) return;
+    const targetId = (typeof contextPeerId !== 'undefined' && contextPeerId) || (activePeer && activePeer.id);
+    if (!targetId || targetId === `saved_${me.id}`) return;
+    await db.ref(`users/${me.id}/pins/${targetId}`).remove().catch(() => {});
+    await db.ref(`users/${me.id}/archives/${targetId}`).set(true);
+    me.archives = me.archives || {};
+    me.archives[targetId] = true;
+    if (me.pins) delete me.pins[targetId];
+    closeMenus();
+    if (typeof renderDialogsFixed === 'function') renderDialogsFixed();
+  };
+
+  window.openArchivedChat = async function(id) {
+    const item = await resolveItemForArchive(id);
+    if (!item) return;
+    if (window.isPC) window.openPCChat(item);
+    else window.openMobChat(item);
+    if (typeof closeOverlay === 'function') closeOverlay();
+  };
+
+  window.openArchiveModal = async function() {
+    FIX.selectedArchiveIds = {};
+    FIX.archiveSelectMode = false;
+    await syncArchiveCache();
+    renderArchiveModalContent();
+  };
+
+  window.toggleArchiveSelectMode = function() {
+    FIX.archiveSelectMode = !FIX.archiveSelectMode;
+    if (!FIX.archiveSelectMode) FIX.selectedArchiveIds = {};
+    renderArchiveModalContent();
+  };
+
+  window.toggleArchiveSelection = function(id) {
+    FIX.selectedArchiveIds = FIX.selectedArchiveIds || {};
+    if (FIX.selectedArchiveIds[id]) delete FIX.selectedArchiveIds[id];
+    else FIX.selectedArchiveIds[id] = true;
+    renderArchiveModalContent();
+  };
+
+  window.renderArchiveModalContent = function() {
+    const archivedIds = me && me.archives ? Object.keys(me.archives) : [];
+    const selectActive = !!FIX.archiveSelectMode;
+    const listHTML = archivedIds.map(id => {
+      const item = (window.vibeRoomState && window.vibeRoomState.friends && window.vibeRoomState.friends[id]) ||
+        (window.vibeRoomState && window.vibeRoomState.rooms && window.vibeRoomState.rooms[id]) ||
+        { id, name: 'Чат ' + id, avatar: '👤' };
+      const checked = FIX.selectedArchiveIds && FIX.selectedArchiveIds[id] ? 'checked' : '';
+      return `
+        <div class="contact-item glass" onclick="${selectActive ? `toggleArchiveSelection('${id}')` : `openArchivedChat('${id}')`}">
+          ${avatarHtml(item)}
+          <div class="dialog-main">
+            <b>${esc(item.name || 'Чат')}</b>
+          </div>
+          ${selectActive ? `<div class="archive-checkbox ${checked}"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>` : ''}
+        </div>`;
+    }).join('') || '<div class="settings-card" style="text-align:center; opacity:0.6;">Архив пуст</div>';
+    const selectedCount = Object.keys(FIX.selectedArchiveIds || {}).length;
+    showModal('wide', `
+      <div class="modal-head">
+        <div>
+          <div class="modal-title">Архив</div>
+          <div class="settings-subtitle">Скрытые диалоги</div>
+        </div>
+        <div style="display:flex; gap:10px; align-items:center;">
+          <button class="settings-ghost" style="border-radius:14px;" onclick="toggleArchiveSelectMode()">${selectActive ? 'Отмена' : 'Выбрать'}</button>
+          <button class="modal-close" onclick="closeOverlay()">✕</button>
+        </div>
+      </div>
+      <div class="people-list ${selectActive ? 'archive-select-mode' : ''}" style="max-height:60vh; overflow-y:auto; padding-bottom:100px;">
+        ${listHTML}
+      </div>
+      ${selectActive && selectedCount > 0 ? `<button class="archive-restore-btn" onclick="restoreSelectedArchives()"><svg style="width:20px;height:20px;fill:currentColor;" viewBox="0 0 24 24"><path d="M19,15H15V19H9V15H5V9H9V5H15V9H19V15M21,7H17V3H7V7H3V17H7V21H17V17H21V7Z"/></svg>Вернуть (${selectedCount})</button>` : ''}
+    `);
+  };
+
+  window.restoreSelectedArchives = async function() {
+    const ids = Object.keys(FIX.selectedArchiveIds || {});
+    if (!ids.length) return;
+    await Promise.all(ids.map(id => db.ref(`users/${me.id}/archives/${id}`).remove().catch(() => {})));
+    me.archives = me.archives || {};
+    ids.forEach(id => delete me.archives[id]);
+    FIX.selectedArchiveIds = {};
+    FIX.archiveSelectMode = false;
+    if (typeof renderDialogsFixed === 'function') renderDialogsFixed();
+    if (typeof closeOverlay === 'function') closeOverlay();
+  };
+
+  window.showPeerProfile = async function() {
+    if (!activePeer) return;
+    if (isRoom(activePeer)) {
+      if (window.vibeEnhancer && typeof window.vibeEnhancer.showPeerProfile === 'function') {
+        return window.vibeEnhancer.showPeerProfile();
+      }
+      return;
+    }
+
+    let user = { ...activePeer };
+    try {
+      const snap = await db.ref(`users/${activePeer.id}`).once('value');
+      if (snap.exists()) user = { ...user, ...(snap.val() || {}) };
+    } catch (e) {}
+
+    const appearance = (user.settings && user.settings.appearance) || {};
+    const bg = appearance.profileColor || '#956634';
+    const emoji = appearance.patternEmoji || '✨';
+    const encodedEmoji = encodeURIComponent(emoji);
+    const pattern = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='88' height='88' viewBox='0 0 88 88'%3E%3Ctext x='44' y='52' font-size='24' text-anchor='middle' fill='rgba(255,255,255,0.22)'%3E${encodedEmoji}%3C/text%3E%3C/svg%3E")`;
+    const photo = avatarUrl(user);
+    const verBadge = typeof badge === 'function' ? badge() : (typeof vBadge !== 'undefined' ? vBadge : '');
+    const avatar = photo
+      ? `<div class="peer-preview-avatar has-photo" style="background-image:url('${esc(photo)}');background-size:cover;background-position:center;color:transparent;"></div>`
+      : `<div class="peer-preview-avatar">${esc(user.avatar || '👤')}</div>`;
+
+    showModal('wide', `
+      <div class="peer-profile-panel">
+        <div class="peer-profile-preview" style="background:${bg};">
+          <div class="peer-profile-pattern" style="background-image:${pattern};"></div>
+          ${avatar}
+          <div class="peer-preview-name">${esc(user.name || 'Без имени')}${user.verified ? verBadge : ''}</div>
+          <div class="peer-preview-handle">${esc(user.handle || '')}</div>
+        </div>
+        <div class="settings-card" style="margin-top:16px;">
+          <div class="settings-nav-title">Описание</div>
+          <div class="section-note" style="margin-top:10px; font-size:14px; opacity:0.86;">${esc(user.bio || 'Нет описания')}</div>
+          <div class="settings-actions" style="margin-top:18px;">
+            <button class="settings-save" onclick="toggleBlock()">Заблокировать</button>
+            <button class="settings-ghost" style="color:#ff8a8a;" onclick="removeChat()">Удалить чат</button>
+          </div>
+        </div>
+      </div>
+    `);
+  };
+
+  function showAttachSheet(mode) {
+    mode = mode || (document.body.classList.contains('chat-open-mobile') ? 'mob' : (window.isPC ? 'pc' : 'mob'));
+    const sheet = $(`${mode}-attach-sheet`);
+    if (!sheet) return;
+    const opening = !sheet.classList.contains('active');
+    closeMenus();
+    const bar = sheet.parentElement;
+    if (bar) {
+      bar.style.position = 'relative';
+      bar.style.overflow = 'visible';
+    }
+    if (opening) sheet.classList.add('active');
+    else sheet.classList.remove('active');
+  }
+
+  window.showAttachSheet = showAttachSheet;
+  window.openChatAttachPc = () => showAttachSheet('pc');
+  window.openChatAttachMob = () => showAttachSheet('mob');
+  window.closeAttachSheet = closeAttachSheets;
+  closeAttachSheets();
+
+  if (!window.__codexUltimateMenuCloser) {
+    window.__codexUltimateMenuCloser = true;
+    window.addEventListener('click', () => closeMenus(), true);
+  }
+})();
+</script>
+<script id="codex-ui-hardening">
+(() => {
+  const $ = id => document.getElementById(id);
+  const esc = value => String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+  const safeUrl = value => encodeURI(String(value ?? ''));
+  const currentMe = () => (typeof me !== 'undefined' ? me : window.me);
+  const currentPeer = () => (typeof activePeer !== 'undefined' ? activePeer : window.activePeer);
+  const currentContextPeerId = () => (typeof contextPeerId !== 'undefined' ? contextPeerId : window.contextPeerId);
+  const fix = window.vibeFix20260524 = window.vibeFix20260524 || {};
+  fix.archiveSelectMode = !!fix.archiveSelectMode;
+  fix.selectedArchiveIds = fix.selectedArchiveIds || {};
+
+  const clone = value => {
+    if (!value) return null;
+    try {
+      return JSON.parse(JSON.stringify(value));
+    } catch (error) {
+      return { ...value };
+    }
+  };
+
+  const isRoomItem = item => !!item && (item.type === 'group' || item.type === 'channel');
+  const getState = () => window.vibeRoomState || { friends: {}, rooms: {} };
+  const getPhoto = user => (user && (user.avatarPhoto || user.photoURL || user.avatarUrl || user.photo || user.image)) || '';
+  const getAppearance = user => {
+    const settingsAppearance = (user && user.settings && user.settings.appearance) || {};
+    const directAppearance = (user && user.appearance) || {};
+    return {
+      profileColor: settingsAppearance.profileColor || directAppearance.profileColor || (user && user.profileColor) || '#956634',
+      patternEmoji: settingsAppearance.patternEmoji || directAppearance.patternEmoji || (user && user.patternEmoji) || '✨',
+    };
+  };
+  const makePattern = emoji => {
+    const encoded = encodeURIComponent(emoji || '✨');
+    return `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='88' height='88' viewBox='0 0 88 88'%3E%3Ctext x='44' y='52' font-size='24' text-anchor='middle' fill='rgba(255,255,255,0.22)'%3E${encoded}%3C/text%3E%3C/svg%3E")`;
+  };
+  const avatarMarkup = (user, extraClass = 'avatar-emoji', extraStyle = '') => {
+    const photo = getPhoto(user);
+    if (photo) {
+      return `<div class="${extraClass} has-photo" style="background-image:url('${safeUrl(photo)}');background-size:cover;background-position:center;color:transparent;${extraStyle}"></div>`;
+    }
+    const fallback = isRoomItem(user)
+      ? (user.avatar || (user.type === 'channel' ? '📣' : '👥'))
+      : ((user && user.avatar) || '👤');
+    return `<div class="${extraClass}" style="${extraStyle}">${esc(fallback)}</div>`;
+  };
+  const getChatPath = item => {
+    if (!item) return '';
+    if (isRoomItem(item)) return `rooms/${item.id}/messages`;
+    const user = currentMe();
+    if (item.id === `saved_${user && user.id}` || item.isSaved) return `chats/saved_${user && user.id}`;
+    const idA = String((user && user.id) || '');
+    const idB = String(item.id || '');
+    return `chats/${idA < idB ? `${idA}_${idB}` : `${idB}_${idA}`}`;
+  };
+  const closeExtraOverlays = () => {
+    document.querySelectorAll('.codex-attach-overlay').forEach(node => node.remove());
+    const legacyProfile = $('profile-popup');
+    if (legacyProfile) legacyProfile.style.display = 'none';
+    ['context-menu', 'chat-list-menu'].forEach(id => {
+      const node = $(id);
+      if (node) node.style.display = 'none';
+    });
+  };
+  const ensureOverlayRoot = () => {
+    let root = $('app-overlay-root');
+    if (!root) {
+      root = document.createElement('div');
+      root.id = 'app-overlay-root';
+      root.className = 'overlay-root';
+      document.body.appendChild(root);
+    }
+    return root;
+  };
+  const openGlassModal = (width, html) => {
+    if (typeof window.closeOverlay === 'function') window.closeOverlay();
+    const root = ensureOverlayRoot();
+    root.className = 'overlay-root active';
+    root.innerHTML = `<div class="app-modal-backdrop codex-glass-backdrop" onclick="closeOverlay()"><div class="app-modal ${width || ''}" onclick="event.stopPropagation()">${html}</div></div>`;
+  };
+  const getRoomMembersHtml = room => {
+    const state = getState();
+    return Object.keys(room.members || {}).map(id => {
+      const user = state.friends[id] || (id === ((currentMe() && currentMe().id) || '') ? currentMe() : null) || { id, name: id, avatar: '👤' };
+      const badge = id === room.ownerId
+        ? '<span class="star-owner">★ владелец</span>'
+        : room.admins && room.admins[id]
+          ? '<span class="star-admin">★ админ</span>'
+          : '';
+      return `<div class="person-row"><span class="person-main">${avatarMarkup(user, 'avatar-emoji', 'width:48px;height:48px;font-size:22px;')}<span><div>${esc(user.name || id)}</div><div class="settings-nav-meta">${badge}</div></span></span></div>`;
+    }).join('');
+  };
+  async function ensureArchiveCache() {
+    const user = currentMe();
+    if (!user || !user.id || typeof db === 'undefined') return {};
+    try {
+      const snap = await db.ref(`users/${user.id}/archives`).once('value');
+      user.archives = snap.val() || user.archives || {};
+    } catch (error) {
+      user.archives = user.archives || {};
+    }
+    return user.archives || {};
+  }
+  async function resolveArchiveItem(id) {
+    const state = getState();
+    if (state.friends && state.friends[id]) return { ...clone(state.friends[id]), id };
+    if (state.rooms && state.rooms[id]) return { ...clone(state.rooms[id]), id };
+    if (typeof db !== 'undefined') {
+      try {
+        const userSnap = await db.ref(`users/${id}`).once('value');
+        if (userSnap.exists()) return { id, ...(userSnap.val() || {}) };
+        const roomSnap = await db.ref(`rooms/${id}`).once('value');
+        if (roomSnap.exists()) return { id, ...(roomSnap.val() || {}) };
+      } catch (error) {}
+    }
+    return { id, name: id, avatar: '👤' };
+  }
+  async function renderArchiveModalContent() {
+    const user = currentMe();
+    if (!user || !user.id) return;
+    const archivedIds = Object.keys(await ensureArchiveCache());
+    const selectActive = !!fix.archiveSelectMode;
+    const items = await Promise.all(archivedIds.map(resolveArchiveItem));
+    const listHTML = items.map(item => {
+      const checked = fix.selectedArchiveIds[item.id] ? 'checked' : '';
+      const clickAction = selectActive ? `toggleArchiveSelection('${item.id}')` : `openArchivedChat('${item.id}')`;
+      return `
+        <div class="contact-item glass" onclick="${clickAction}">
+          ${avatarMarkup(item)}
+          <div class="dialog-main">
+            <b>${esc(item.name || 'Чат')}</b>
+            <br>
+            <small style="opacity:.66;">${esc(item.handle || item.bio || (isRoomItem(item) ? (item.type === 'channel' ? 'Канал' : 'Группа') : 'Диалог'))}</small>
+          </div>
+          ${selectActive ? `<div class="archive-checkbox ${checked}"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>` : ''}
+        </div>`;
+    }).join('') || '<div class="settings-card" style="text-align:center;opacity:.72;">Архив пуст</div>';
+    const selectedCount = Object.keys(fix.selectedArchiveIds || {}).length;
+    openGlassModal('wide', `
+      <div class="modal-head">
+        <div>
+          <div class="modal-title">Архив</div>
+          <div class="settings-subtitle">Скрытые диалоги</div>
+        </div>
+        <div style="display:flex; gap:10px; align-items:center;">
+          <button class="settings-ghost" style="border-radius:14px;" onclick="toggleArchiveSelectMode()">${selectActive ? 'Отмена' : 'Выбрать'}</button>
+          <button class="modal-close" onclick="closeOverlay()">✕</button>
+        </div>
+      </div>
+      <div class="people-list ${selectActive ? 'archive-select-mode' : ''}" style="max-height:60vh; overflow-y:auto; padding-bottom:100px;">
+        ${listHTML}
+      </div>
+      ${selectActive && selectedCount > 0 ? `
+        <button class="archive-restore-btn" onclick="restoreSelectedArchives()">
+          <svg style="width:20px;height:20px;fill:currentColor;" viewBox="0 0 24 24"><path d="M19,15H15V19H9V15H5V9H9V5H15V9H19V15M21,7H17V3H7V7H3V17H7V21H17V17H21V7Z"/></svg>
+          Вернуть (${selectedCount})
+        </button>` : ''}
+    `);
+  }
+
+  window.renderArchiveModalContent = renderArchiveModalContent;
+
+  if (typeof window.closeOverlay === 'function' && !window.__codexCloseOverlayWrapped) {
+    window.__codexCloseOverlayWrapped = true;
+    const originalCloseOverlay = window.closeOverlay.bind(window);
+    window.closeOverlay = function() {
+      originalCloseOverlay();
+      closeExtraOverlays();
+    };
+  } else if (typeof window.closeOverlay !== 'function') {
+    window.closeOverlay = function() {
+      closeExtraOverlays();
+    };
+  }
+
+  if (!document.getElementById('codex-ui-hardening-style')) {
+    const style = document.createElement('style');
+    style.id = 'codex-ui-hardening-style';
+    style.textContent = `
+      .custom-menu, #context-menu, #chat-list-menu {
+        background: rgba(12, 18, 30, 0.78) !important;
+        border: 1px solid rgba(255, 255, 255, 0.16) !important;
+        border-radius: 24px !important;
+        box-shadow: 0 24px 80px rgba(0, 0, 0, 0.48) !important;
+        backdrop-filter: blur(24px) saturate(180%) !important;
+        -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+        overflow: hidden !important;
+        padding: 6px !important;
+        color: #fff !important;
+        max-width: min(92vw, 340px);
+        max-height: min(70vh, 520px);
+      }
+      .custom-menu .menu-item, #context-menu .menu-item, #chat-list-menu .menu-item {
+        margin: 6px !important;
+        border-radius: 16px !important;
+        background: rgba(255, 255, 255, 0.08) !important;
+        border: 1px solid rgba(255, 255, 255, 0.10) !important;
+        color: #fff !important;
+      }
+      .custom-menu .menu-item:hover, #context-menu .menu-item:hover, #chat-list-menu .menu-item:hover {
+        background: rgba(255, 255, 255, 0.14) !important;
+        color: #fff !important;
+      }
+      .reply-bar-ui, .archive-folder, .archive-restore-btn, .attach-sheet, .choice-card, .settings-save, .settings-ghost, .modal-close, .wizard-x, .wizard-next, .person-row, .person-row button {
+        backdrop-filter: blur(22px) saturate(170%) !important;
+        -webkit-backdrop-filter: blur(22px) saturate(170%) !important;
+      }
+      .reply-bar-ui {
+        background: rgba(12, 18, 30, 0.66) !important;
+        border: 1px solid rgba(255, 255, 255, 0.12) !important;
+      }
+      .archive-folder {
+        background: rgba(255, 255, 255, 0.06) !important;
+        border: 1px solid rgba(255, 255, 255, 0.12) !important;
+        border-radius: 22px !important;
+        box-shadow: 0 14px 44px rgba(0, 0, 0, 0.22) !important;
+      }
+      .archive-checkbox {
+        background: rgba(255, 255, 255, 0.08) !important;
+        border: 1px solid rgba(255, 255, 255, 0.12) !important;
+      }
+      .archive-checkbox.checked {
+        background: var(--accent) !important;
+        color: #000 !important;
+      }
+      .archive-restore-btn {
+        background: rgba(255, 255, 255, 0.08) !important;
+        border: 1px solid rgba(255, 255, 255, 0.16) !important;
+        color: #fff !important;
+      }
+      .attach-sheet {
+        background: rgba(12, 18, 30, 0.74) !important;
+        border: 1px solid rgba(255, 255, 255, 0.16) !important;
+        box-shadow: 0 28px 80px rgba(0, 0, 0, 0.42) !important;
+      }
+      .codex-attach-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 1000008 !important;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        padding: 18px 16px calc(18px + env(safe-area-inset-bottom));
+        background: rgba(4, 8, 16, 0.45);
+        backdrop-filter: blur(18px) saturate(140%);
+        -webkit-backdrop-filter: blur(18px) saturate(140%);
+      }
+      .codex-attach-overlay .codex-ui-sheet {
+        width: min(560px, 100%);
+        padding: 16px;
+        border-radius: 28px;
+        background: rgba(12, 18, 30, 0.78);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        box-shadow: 0 28px 80px rgba(0, 0, 0, 0.48);
+      }
+      .peer-profile-panel {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      .peer-profile-preview {
+        position: relative;
+        overflow: hidden;
+        min-height: 260px;
+        border-radius: 28px;
+        padding: 28px 24px 22px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        gap: 8px;
+        color: #fff;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+      }
+      .peer-profile-pattern {
+        position: absolute;
+        inset: 0;
+        opacity: .22;
+        background-position: center;
+        background-size: 96px 96px;
+        mix-blend-mode: screen;
+        pointer-events: none;
+      }
+      .peer-preview-avatar {
+        position: relative;
+        width: 92px;
+        height: 92px;
+        border-radius: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 44px;
+        background: rgba(255, 255, 255, 0.16);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 18px 30px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+      }
+      .peer-preview-avatar.has-photo {
+        color: transparent;
+      }
+      .peer-preview-name {
+        position: relative;
+        font-size: 42px;
+        font-weight: 900;
+        line-height: 1.1;
+        text-shadow: 0 2px 12px rgba(0, 0, 0, 0.28);
+      }
+      .peer-preview-handle {
+        position: relative;
+        opacity: .84;
+        font-size: 14px;
+      }
+      .peer-profile-panel .settings-card {
+        background: rgba(255, 255, 255, 0.06) !important;
+        border: 1px solid rgba(255, 255, 255, 0.12) !important;
+      }
+      #profile-popup {
+        backdrop-filter: blur(18px) saturate(140%);
+        -webkit-backdrop-filter: blur(18px) saturate(140%);
+      }
+      #profile-popup .glass {
+        background: rgba(12, 18, 30, 0.76) !important;
+        border: 1px solid rgba(255, 255, 255, 0.16) !important;
+        box-shadow: 0 28px 80px rgba(0, 0, 0, 0.48) !important;
+      }
+      @media (max-width: 768px) {
+        .codex-attach-overlay .codex-ui-sheet {
+          width: 100%;
+          border-radius: 28px 28px 22px 22px;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  window.closeAttachSheet = function() {
+    document.querySelectorAll('.codex-attach-overlay').forEach(node => node.remove());
+  };
+  window.openChatAttachPc = () => window.showAttachSheet('pc');
+  window.openChatAttachMob = () => window.showAttachSheet('mob');
+
+  window.showPeerProfile = async function() {
+    const peer = clone(currentPeer());
+    if (!peer) return;
+
+    if (isRoomItem(peer)) {
+      if (window.vibeEnhancer && typeof window.vibeEnhancer.showPeerProfile === 'function') {
+        return window.vibeEnhancer.showPeerProfile();
+      }
+      const roomName = esc(peer.name || 'Комната');
+      const roomBio = esc(peer.bio || 'Без описания');
+      const roomMembers = getRoomMembersHtml(peer);
+      const owner = peer.ownerId === ((currentMe() && currentMe().id) || '');
+      const admin = owner || !!(peer.admins && peer.admins[(currentMe() && currentMe().id) || '']);
+      const actions = owner
+        ? `<div class="settings-actions"><button class="settings-save" onclick="openRoomSettings('${peer.id}')">Настройки</button><button class="settings-ghost" style="color:#ff8a8a;" onclick="deleteRoom('${peer.id}')">${peer.type === 'group' ? 'Удалить группу' : 'Удалить канал'}</button></div>`
+        : admin
+          ? `<div class="settings-actions"><button class="settings-save" onclick="openRoomSettings('${peer.id}')">Настройки</button><button class="settings-ghost" style="color:#ff8a8a;" onclick="leaveRoom('${peer.id}')">Выйти из группы</button></div>`
+          : `<div class="settings-actions"><button class="settings-ghost" style="color:#ff8a8a;" onclick="leaveRoom('${peer.id}')">Выйти из группы</button></div>`;
+      openGlassModal('wide', `
+        <div class="modal-head">
+          <div>
+            <div class="modal-title">${roomName}</div>
+            <div class="settings-subtitle">${roomBio}</div>
+          </div>
+          <button class="modal-close" onclick="closeOverlay()">✕</button>
+        </div>
+        <div class="settings-card" style="margin-top:16px;">
+          <div class="settings-nav-title" style="margin-bottom:12px;">Участники</div>
+          <div class="people-list">${roomMembers || '<div class="settings-card">Пока никого</div>'}</div>
+        </div>
+        ${actions}
+      `);
+      return;
+    }
+
+    const targetId = peer.id;
+    if (!peer.settings || !peer.settings.appearance) {
+      try {
+        if (typeof db !== 'undefined' && targetId) {
+          const freshSnap = await db.ref(`users/${targetId}`).once('value');
+          if (freshSnap.exists()) {
+            const fresh = freshSnap.val() || {};
+            if (fresh.settings && fresh.settings.appearance) {
+              Object.assign(peer, fresh);
+            }
+          }
+        }
+      } catch (error) {}
+    }
+
+    const appearance = getAppearance(peer);
+    const photo = getPhoto(peer);
+    const verBadge = typeof badge === 'function'
+      ? badge()
+      : (typeof vBadge !== 'undefined' ? vBadge : '');
+    const popup = $('profile-popup');
+    if (popup) popup.style.display = 'none';
+    openGlassModal('wide', `
+      <div class="peer-profile-panel">
+        <div class="peer-profile-preview" style="background:${appearance.profileColor};">
+          <div class="peer-profile-pattern" style="background-image:${makePattern(appearance.patternEmoji)};"></div>
+          ${photo
+            ? `<div class="peer-preview-avatar has-photo" style="background-image:url('${safeUrl(photo)}');background-size:cover;background-position:center;color:transparent;"></div>`
+            : `<div class="peer-preview-avatar">${esc(peer.avatar || '👤')}</div>`}
+          <div class="peer-preview-name">${esc(peer.name || 'Без имени')}${peer.verified ? verBadge : ''}</div>
+          <div class="peer-preview-handle">${esc(peer.handle || '')}</div>
+        </div>
+        <div class="settings-card">
+          <div class="settings-nav-title">Описание</div>
+          <div class="section-note" style="margin-top:10px; font-size:14px; opacity:.86;">${esc(peer.bio || 'Нет описания')}</div>
+          <div class="settings-actions" style="margin-top:18px;">
+            <button class="settings-save" onclick="toggleBlock()">Заблокировать</button>
+            <button class="settings-ghost" style="color:#ff8a8a;" onclick="removeChat()">Удалить чат</button>
+          </div>
+        </div>
+      </div>
+    `);
+  };
+
+  window.openArchivedChat = async function(id) {
+    const item = await resolveArchiveItem(id);
+    if (!item) return;
+    if (window.isPC) window.openPCChat(item);
+    else window.openMobChat(item);
+    if (typeof window.closeOverlay === 'function') window.closeOverlay();
+  };
+  window.openArchiveModal = async function() {
+    const user = currentMe();
+    if (!user || !user.id) return;
+    await ensureArchiveCache();
+    await renderArchiveModalContent();
+  };
+  window.toggleArchiveSelectMode = function() {
+    fix.archiveSelectMode = !fix.archiveSelectMode;
+    if (!fix.archiveSelectMode) fix.selectedArchiveIds = {};
+    renderArchiveModalContent();
+  };
+  window.toggleArchiveSelection = function(id) {
+    if (!fix.selectedArchiveIds) fix.selectedArchiveIds = {};
+    if (fix.selectedArchiveIds[id]) delete fix.selectedArchiveIds[id];
+    else fix.selectedArchiveIds[id] = true;
+    renderArchiveModalContent();
+  };
+  window.restoreSelectedArchives = async function() {
+    const user = currentMe();
+    if (!user || !user.id) return;
+    const ids = Object.keys(fix.selectedArchiveIds || {});
+    if (!ids.length) return;
+    const updates = {};
+    ids.forEach(id => { updates[`users/${user.id}/archives/${id}`] = null; });
+    await db.ref().update(updates);
+    user.archives = user.archives || {};
+    ids.forEach(id => delete user.archives[id]);
+    fix.selectedArchiveIds = {};
+    fix.archiveSelectMode = false;
+    if (typeof renderDialogsFixed === 'function') renderDialogsFixed();
+    if (typeof window.closeOverlay === 'function') window.closeOverlay();
+  };
+  window.archiveChat = async function() {
+    const user = currentMe();
+    if (!user || !user.id) return;
+    const targetId = currentContextPeerId() || (currentPeer() && currentPeer().id);
+    if (!targetId || targetId === `saved_${user.id}`) return;
+    await db.ref(`users/${user.id}/pins/${targetId}`).remove().catch(() => {});
+    await db.ref(`users/${user.id}/archives/${targetId}`).set(true);
+    user.archives = user.archives || {};
+    user.archives[targetId] = true;
+    if (user.pins) delete user.pins[targetId];
+    if (typeof renderDialogsFixed === 'function') renderDialogsFixed();
+    if (typeof window.closeOverlay === 'function') window.closeOverlay();
+  };
+
+  window.sendToFavorites = async function() {
+    const user = currentMe();
+    if (!user || !user.id) return;
+    const peer = currentPeer();
+    const msgId = fix.selectedMsgId || window.selectedMsgId || (typeof selectedMsgId !== 'undefined' ? selectedMsgId : null);
+    let payload = fix.selectedMsgData || window.selectedMsgData || null;
+
+    if (!payload && msgId && peer) {
+      try {
+        const snap = await db.ref(`${getChatPath(peer)}/${msgId}`).once('value');
+        payload = snap.val();
+      } catch (error) {}
+    }
+
+    if (!payload) {
+      const text = fix.selectedMsgText || window.selectedMsgText || (typeof selectedMsgText !== 'undefined' ? selectedMsgText : '');
+      if (!text) return;
+      payload = { sender: user.id, val: text, time: Date.now() };
+    }
+
+    if (payload.system) return;
+
+    const copy = clone(payload) || {};
+    copy.sender = user.id;
+    copy.senderName = user.name || '';
+    copy.time = Date.now();
+    copy.savedAt = copy.time;
+    copy.savedFrom = peer && peer.id ? peer.id : '';
+    copy.savedFromName = peer && peer.name ? peer.name : '';
+    delete copy.system;
+
+    await db.ref(`chats/saved_${user.id}`).push(copy);
+    fix.meta = fix.meta || {};
+    fix.meta[`saved_${user.id}`] = fix.meta[`saved_${user.id}`] || {};
+    fix.meta[`saved_${user.id}`].lastTime = copy.time;
+    if (typeof renderDialogsFixed === 'function') renderDialogsFixed();
+    ['context-menu', 'chat-list-menu'].forEach(id => {
+      const node = $(id);
+      if (node) node.style.display = 'none';
+    });
+  };
+
+  window.showAttachSheet = function(mode) {
+    const user = currentMe();
+    const peer = currentPeer();
+    if (!user || !user.id || !peer) return;
+    const resolvedMode = mode || (document.body.classList.contains('chat-open-mobile') ? 'mob' : (window.isPC ? 'pc' : 'mob'));
+    if (typeof window.closeOverlay === 'function') window.closeOverlay();
+    window.closeAttachSheet();
+    const overlay = document.createElement('div');
+    overlay.className = 'codex-attach-overlay';
+    overlay.innerHTML = `
+      <div class="codex-ui-sheet">
+        <div class="modal-head" style="margin-bottom:12px;">
+          <div class="modal-title">Прикрепить</div>
+          <button class="modal-close" type="button">✕</button>
+        </div>
+        <div class="choice-stack">
+          <button class="choice-card" type="button" data-attach-action="media"><b>Фото/видео</b><br><span class="settings-nav-meta">Загрузить изображение или ролик</span></button>
+          <button class="choice-card" type="button" data-attach-action="file"><b>Файлы</b><br><span class="settings-nav-meta">Документы, архивы и другие файлы</span></button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+    const removeOverlay = () => overlay.remove();
+    overlay.addEventListener('click', event => { if (event.target === overlay) removeOverlay(); });
+    overlay.querySelector('.modal-close').onclick = removeOverlay;
+    overlay.querySelector('[data-attach-action="media"]').onclick = () => { removeOverlay(); if (typeof window.pickChatMedia === 'function') window.pickChatMedia(resolvedMode); };
+    overlay.querySelector('[data-attach-action="file"]').onclick = () => { removeOverlay(); if (typeof window.pickChatFile === 'function') window.pickChatFile(resolvedMode); };
+  };
+  window.openChatAttachPc = () => window.showAttachSheet('pc');
+  window.openChatAttachMob = () => window.showAttachSheet('mob');
+  window.closeAttachSheet = function() {
+    document.querySelectorAll('.codex-attach-overlay').forEach(node => node.remove());
+  };
+
+  const EMOJI_PACK = [
+    '😀','😃','😄','😁','😆','😅','😂','🤣','😊','😇','🙂','🙃','😉','😍','🥰','😘','😗','😙','😚','😋',
+    '😜','😝','🤪','🤨','🧐','🤓','😎','🥳','😤','😡','🤯','😱','🥺','😢','😭','😮','😯','😲','🤠','😴',
+    '👋','👍','👎','👏','🙏','💪','🫶','💖','💘','💝','💗','💓','💞','💕','💥','🔥','✨','🌟','⚡','🌈',
+    '🍓','🍒','🍉','🍍','🍋','🍕','🍔','🍟','🌭','🍩','🍪','🍫','☕','🍿','🎧','🎮','🎲','🏆','⚽','🏀',
+    '🚗','✈️','🚀','🛸','📸','🎬','🎵','🎤','📱','💻','📌','📎','🧸','🎁','🎉','🎈','🌸','🌺','🌊','⛄'
+  ];
+  const BUILTIN_STICKERS = [
+    ['spark', '#0ea5e9', '✨'],
+    ['heart', '#ef4444', '💖'],
+    ['smile', '#22c55e', '😄'],
+    ['cool', '#111827', '😎'],
+    ['cat', '#f59e0b', '🐱'],
+    ['dog', '#8b5cf6', '🐶'],
+    ['fire', '#f97316', '🔥'],
+    ['star', '#eab308', '⭐'],
+    ['ok', '#14b8a6', '👌'],
+    ['wow', '#f43f5e', '🤯'],
+    ['love', '#ec4899', '💘'],
+    ['party', '#06b6d4', '🥳']
+  ].map(([name, color, label]) => {
+    const svg = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+        <defs>
+          <linearGradient id="g-${name}" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="${color}"/>
+            <stop offset="1" stop-color="#ffffff"/>
+          </linearGradient>
+        </defs>
+        <rect width="256" height="256" rx="64" fill="${color}"/>
+        <circle cx="86" cy="78" r="28" fill="rgba(255,255,255,.18)"/>
+        <circle cx="172" cy="78" r="18" fill="rgba(255,255,255,.12)"/>
+        <circle cx="186" cy="186" r="34" fill="rgba(0,0,0,.08)"/>
+        <text x="128" y="154" text-anchor="middle" font-size="92" font-family="system-ui,Segoe UI Emoji,Apple Color Emoji,sans-serif" fill="#ffffff">${label}</text>
+      </svg>`;
+    return {
+      id: `builtin_${name}`,
+      name: label,
+      url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`,
+      builtin: true,
+    };
+  });
+
+  function readCustomStickers() {
+    try {
+      return JSON.parse(localStorage.getItem('vibe_custom_stickers_v1') || '[]') || [];
+    } catch (error) {
+      return [];
+    }
+  }
+  function saveCustomStickers(list) {
+    localStorage.setItem('vibe_custom_stickers_v1', JSON.stringify(list || []));
+  }
+  function stickerList() {
+    return BUILTIN_STICKERS.concat(readCustomStickers());
+  }
+  function stickerItemHtml(sticker) {
+    const scale = sticker.scale || 1;
+    return `<button class="sticker-chip" type="button" data-sticker-url="${esc(sticker.url)}" data-sticker-name="${esc(sticker.name || 'Стикер')}" data-sticker-scale="${scale}"><img src="${esc(sticker.url)}" alt="${esc(sticker.name || 'Стикер')}" style="transform:scale(${scale});"></button>`;
+  }
+  function renderPicker(mode) {
+    const root = $(`${mode}-emoji-picker`);
+    if (!root) return;
+    const activeTab = root.dataset.activeTab || 'emoji';
+    const stickers = stickerList();
+    const customCount = readCustomStickers().length;
+    root.innerHTML = `
+      <div class="picker-shell">
+        <div class="picker-tabs">
+          <button type="button" class="picker-tab ${activeTab === 'emoji' ? 'active' : ''}" data-picker-tab="emoji">Эмодзи</button>
+          <button type="button" class="picker-tab ${activeTab === 'stickers' ? 'active' : ''}" data-picker-tab="stickers">Стикеры</button>
+          <button type="button" class="picker-add" data-picker-add="1">＋</button>
+        </div>
+        <div class="picker-panel ${activeTab === 'emoji' ? 'active' : ''}" data-picker-panel="emoji">
+          ${EMOJI_PACK.map(item => `<button class="emoji-chip" type="button" data-emoji="${esc(item)}">${item}</button>`).join('')}
+        </div>
+        <div class="picker-panel ${activeTab === 'stickers' ? 'active' : ''}" data-picker-panel="stickers">
+          <div class="sticker-grid">
+            ${stickers.map(stickerItemHtml).join('')}
+          </div>
+          <div class="picker-note">Своих стикеров: ${customCount}</div>
+        </div>
+      </div>
+    `;
+    root.querySelectorAll('[data-picker-tab]').forEach(btn => {
+      btn.onclick = () => {
+        root.dataset.activeTab = btn.getAttribute('data-picker-tab') || 'emoji';
+        renderPicker(mode);
+      };
+    });
+    root.querySelectorAll('[data-emoji]').forEach(btn => {
+      btn.onclick = () => {
+        const input = $(`${mode}-input`);
+        if (input) {
+          input.value = (input.value || '') + btn.getAttribute('data-emoji');
+          input.focus();
+          updateSendButton(mode);
+        }
+      };
+    });
+    root.querySelectorAll('[data-sticker-url]').forEach(btn => {
+      btn.onclick = async () => {
+        const url = btn.getAttribute('data-sticker-url');
+        const name = btn.getAttribute('data-sticker-name') || 'Стикер';
+        const scale = Number(btn.getAttribute('data-sticker-scale') || '1') || 1;
+        await sendStickerMessage(url, name, scale);
+        closeEmojiPicker(mode);
+      };
+    });
+    const addBtn = root.querySelector('[data-picker-add="1"]');
+    if (addBtn) addBtn.onclick = () => openStickerUploader(mode);
+  }
+  async function sendStickerMessage(url, name, scale) {
+    const user = currentMe();
+    const peer = currentPeer();
+    if (!user || !user.id || !peer) return;
+    const path = getChatPath(peer);
+    if (!path || typeof db === 'undefined') return;
+    await db.ref(path).push({
+      sender: user.id,
+      senderName: user.name || '',
+      type: 'image',
+      sticker: true,
+      val: url,
+      media: { url, name, size: 0, scale },
+      time: Date.now(),
+    });
+  }
+  function placeMessageMenu(menu, event) {
+    if (!menu) return;
+    const point = (event && event.touches && event.touches[0]) ? event.touches[0] : (event || {});
+    menu.style.position = 'fixed';
+    menu.style.visibility = 'hidden';
+    menu.style.display = 'block';
+    menu.style.left = '0px';
+    menu.style.top = '0px';
+    const rect = menu.getBoundingClientRect();
+    const vw = window.innerWidth || document.documentElement.clientWidth || 0;
+    const vh = window.innerHeight || document.documentElement.clientHeight || 0;
+    const pad = 12;
+    let left = Math.max(pad, Math.min((point.clientX ?? point.pageX ?? 20) + 8, vw - rect.width - pad));
+    let top = (point.clientY ?? point.pageY ?? 20) + 8;
+    if (top + rect.height > vh - pad) top = Math.max(pad, (point.clientY ?? point.pageY ?? 20) - rect.height - 8);
+    top = Math.max(pad, Math.min(top, vh - rect.height - pad));
+    menu.style.left = `${left}px`;
+    menu.style.top = `${top}px`;
+    menu.style.visibility = 'visible';
+  }
+  window.showMsgMenu = function(event, id, text, sender, msgData) {
+    if (event) { event.preventDefault(); event.stopPropagation(); }
+    const user = currentMe();
+    fix.selectedMsgId = id;
+    fix.selectedMsgText = text || '';
+    fix.selectedMsgSender = sender || '';
+    fix.selectedMsgData = msgData ? clone(msgData) : null;
+    window.selectedMsgId = id;
+    window.selectedMsgText = text || '';
+    window.selectedMsgSender = sender || '';
+    window.selectedMsgData = fix.selectedMsgData;
+    const menu = $('context-menu');
+    if (!menu) return false;
+    placeMessageMenu(menu, event);
+    const delAll = $('btn-del-all');
+    if (delAll) delAll.style.display = (sender === (user && user.id) || (currentPeer() && isRoomItem(currentPeer()) && ((currentPeer().ownerId === (user && user.id)) || (currentPeer().admins && currentPeer().admins[user && user.id])))) ? 'flex' : 'none';
+    if (!fix.selectedMsgData && currentPeer() && typeof getChatPath === 'function') {
+      db.ref(`${getChatPath(currentPeer())}/${id}`).once('value').then(snap => {
+        if (fix.selectedMsgId === id && snap.exists()) {
+          fix.selectedMsgData = snap.val();
+          window.selectedMsgData = fix.selectedMsgData;
+        }
+      }).catch(() => {});
+    }
+    return false;
+  };
+  function closeEmojiPicker(mode) {
+    const picker = $(`${mode}-emoji-picker`);
+    if (picker) picker.style.display = 'none';
+  }
+  function openStickerUploader(mode) {
+    const overlay = document.createElement('div');
+    overlay.className = 'codex-attach-overlay';
+    overlay.innerHTML = `
+      <div class="codex-ui-sheet">
+        <div class="modal-head" style="margin-bottom:12px;">
+          <div class="modal-title">Новый стикер</div>
+          <button class="modal-close" type="button">✕</button>
+        </div>
+        <div class="settings-card" style="display:grid;gap:12px;">
+          <input type="file" accept="image/*" data-sticker-file>
+          <div class="sticker-preview-wrap">
+            <img data-sticker-preview style="max-width:100%;max-height:240px;border-radius:22px;display:none;">
+          </div>
+          <label class="picker-note">Размер</label>
+          <input type="range" min="0.35" max="1.5" step="0.05" value="1" data-sticker-scale>
+          <div class="settings-actions">
+            <button class="settings-save" type="button" data-sticker-save disabled>Сохранить</button>
+          </div>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+    const remove = () => overlay.remove();
+    overlay.addEventListener('click', e => { if (e.target === overlay) remove(); });
+    overlay.querySelector('.modal-close').onclick = remove;
+    const fileInput = overlay.querySelector('[data-sticker-file]');
+    const preview = overlay.querySelector('[data-sticker-preview]');
+    const scaleInput = overlay.querySelector('[data-sticker-scale]');
+    const saveBtn = overlay.querySelector('[data-sticker-save]');
+    let fileData = '';
+    let fileName = 'sticker.png';
+    fileInput.onchange = () => {
+      const file = fileInput.files && fileInput.files[0];
+      if (!file) return;
+      fileName = file.name || fileName;
+      const reader = new FileReader();
+      reader.onload = () => {
+        fileData = String(reader.result || '');
+        preview.src = fileData;
+        preview.style.display = 'block';
+        saveBtn.disabled = false;
+      };
+      reader.readAsDataURL(file);
+    };
+    saveBtn.onclick = () => {
+      if (!fileData) return;
+      const scale = Number(scaleInput.value || '1') || 1;
+      const list = readCustomStickers();
+      const img = new Image();
+      img.onload = () => {
+        const base = Math.max(img.naturalWidth || img.width || 512, img.naturalHeight || img.height || 512);
+        const size = Math.max(160, Math.min(1024, Math.round(base * scale)));
+        const canvas = document.createElement('canvas');
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          list.unshift({ id: `custom_${Date.now()}`, name: fileName, url: fileData, scale });
+          saveCustomStickers(list.slice(0, 120));
+          remove();
+          renderPicker(mode);
+          return;
+        }
+        ctx.clearRect(0, 0, size, size);
+        const ratio = Math.min(size / img.naturalWidth, size / img.naturalHeight) * scale;
+        const drawW = img.naturalWidth * ratio;
+        const drawH = img.naturalHeight * ratio;
+        const x = (size - drawW) / 2;
+        const y = (size - drawH) / 2;
+        ctx.drawImage(img, x, y, drawW, drawH);
+        const output = canvas.toDataURL('image/png');
+        list.unshift({
+          id: `custom_${Date.now()}`,
+          name: fileName,
+          url: output,
+          scale,
+        });
+        saveCustomStickers(list.slice(0, 120));
+        remove();
+        renderPicker(mode);
+      };
+      img.src = fileData;
+    };
+  }
+
+  window.loadEmojis = function() {
+    ['pc', 'mob'].forEach(renderPicker);
+  };
+  window.toggleEmoji = function(mode) {
+    const picker = $(`${mode === 'pc' ? 'pc' : 'mob'}-emoji-picker`);
+    if (!picker) return;
+    const next = picker.style.display === 'block' ? 'none' : 'block';
+    picker.style.display = next;
+    renderPicker(mode);
+  };
+  window.openFavorites = function() {
+    const user = currentMe();
+    if (!user || !user.id) return alert('Подожди загрузки данных...');
+    const favUser = { id: `saved_${user.id}`, name: 'Избранное', avatar: '⭐', isSaved: true };
+    if (window.isPC) window.openPCChat(favUser);
+    else window.openMobChat(favUser);
+  };
+  window.sendStickerMessage = sendStickerMessage;
+  window.openStickerUploader = openStickerUploader;
+  window.closeEmojiPicker = closeEmojiPicker;
+  window.refreshEmojiPickers = () => ['pc', 'mob'].forEach(renderPicker);
+  if (!document.getElementById('codex-sticker-picker-style')) {
+    const style = document.createElement('style');
+    style.id = 'codex-sticker-picker-style';
+    style.textContent = `
+      .emoji-picker{
+        display:none;
+        position:absolute;
+        bottom:80px;
+        left:12px;
+        right:12px;
+        width:auto;
+        height:auto;
+        max-height:min(52vh,420px);
+        padding:12px;
+        border-radius:24px;
+        background:rgba(12,18,30,.82);
+        border:1px solid rgba(255,255,255,.14);
+        box-shadow:0 24px 80px rgba(0,0,0,.42);
+        backdrop-filter:blur(22px) saturate(170%);
+        -webkit-backdrop-filter:blur(22px) saturate(170%);
+        overflow:hidden;
+        z-index:4000;
+      }
+      .picker-shell{display:flex;flex-direction:column;gap:10px;height:100%}
+      .picker-tabs{display:flex;gap:8px;align-items:center}
+      .picker-tab,.picker-add{
+        flex:1;
+        border-radius:16px;
+        padding:10px 12px;
+        background:rgba(255,255,255,.08);
+        border:1px solid rgba(255,255,255,.12);
+        color:#fff;
+        font-weight:800;
+      }
+      .picker-tab.active{background:var(--accent);color:#000}
+      .picker-add{flex:0 0 48px;line-height:1}
+      .picker-panel{display:none;overflow:auto;max-height:calc(min(52vh,420px) - 58px)}
+      .picker-panel.active{display:block}
+      .emoji-chip{
+        width:42px;height:42px;
+        border-radius:14px;
+        display:flex;align-items:center;justify-content:center;
+        font-size:24px;
+        background:rgba(255,255,255,.06);
+        border:1px solid rgba(255,255,255,.08);
+      }
+      .picker-panel.active[data-picker-panel="emoji"]{
+        display:grid;
+        grid-template-columns:repeat(7,minmax(0,1fr));
+        gap:8px;
+        padding-right:2px;
+      }
+      .sticker-grid{
+        display:grid;
+        grid-template-columns:repeat(3,minmax(0,1fr));
+        gap:10px;
+      }
+      .sticker-chip{
+        min-height:96px;
+        border-radius:20px;
+        padding:10px;
+        background:rgba(255,255,255,.06);
+        border:1px solid rgba(255,255,255,.08);
+        display:flex;align-items:center;justify-content:center;
+        overflow:hidden;
+      }
+      .sticker-chip img{
+        width:100%;
+        height:100%;
+        object-fit:contain;
+        transform-origin:center;
+      }
+      .picker-note{
+        font-size:12px;
+        opacity:.7;
+        margin-top:4px;
+      }
+      .sticker-preview-wrap{
+        min-height:120px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+      }
+      .msg .msg-media[data-sticker="1"],
+      .msg img.msg-media{
+        max-width:min(280px,68vw);
+        background:transparent;
+      }
+      .msg .msg-media[data-sticker="1"]{
+        transform-origin:center;
+      }
+      @media (max-width:768px){
+        .emoji-picker{max-height:56vh}
+        .picker-panel.active[data-picker-panel="emoji"]{grid-template-columns:repeat(6,minmax(0,1fr))}
+      }
+    `;
+    document.head.appendChild(style);
+  }
+  window.addEventListener('load', () => setTimeout(() => window.loadEmojis(), 300));
+  if (typeof window.openFavorites !== 'function') window.openFavorites = () => {};
+})();
 </script>
 </body>
 </html>
