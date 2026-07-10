@@ -72,14 +72,14 @@ body {
 }
 
 #mob-chat-view {
-    display: none; /* Изначально скрыт */
+    display: none; /* ?значально скрыт */
     flex-direction: column;
     z-index: 999999999 !important; /* Очень высокий приоритет */
     background: var(--bg);
 }
 
 
-        /* --- 10 ТЕМ ОФОРМЛЕНИЯ --- */
+        /* --- 10 ТЕМ ОФОРМЛЕН?Я --- */
         body.theme-light { --bg: #f1f5f9; --text: #0f172a; --glass: rgba(0,0,0,0.05); --msg-in: #e2e8f0; --accent: #2563eb; --accent-grad: linear-gradient(90deg, #2563eb, #3b82f6); }
         body.theme-purple { --bg: #110724; --text: #f8fafc; --glass: rgba(255,255,255,0.08); --msg-in: #2d1b4d; --accent: #a855f7; --accent-grad: linear-gradient(90deg, #a855f7, #c084fc); }
         body.theme-lime { --bg: #050a02; --text: #ecfccb; --glass: rgba(163,230,53,0.05); --msg-in: #1a2e05; --accent: #bef264; --accent-grad: linear-gradient(90deg, #bef264, #84cc16); }
@@ -159,7 +159,7 @@ box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1) !important;
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
 
-/* Иконка плюса в кружочке */
+/* ?конка плюса в кружочке */
 .chat-plus-btn {
     background: rgba(255, 255, 255, 0.1) !important;
     backdrop-filter: blur(10px) !important;
@@ -245,7 +245,7 @@ box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1) !important;
     border-radius: 20px !important;
     word-wrap: break-word;
     position: relative;
-    /* УБИРАЕМ overflow: hidden отсюда, чтобы не резать контент */
+    /* УБ?РАЕМ overflow: hidden отсюда, чтобы не резать контент */
 }
 
 /* 2. Настраиваем картинки отдельно */
@@ -346,41 +346,8 @@ button:disabled {
     transform: scale(1.2);
 }
 
-/* Стиль для полей ввода кода подтверждения "Просто Vibe" */
-.vibe-code-input {
-    width: 100% !important;
-    height: 65px !important;
-    background: rgba(255, 255, 255, 0.04) !important;
-    backdrop-filter: blur(20px) !important;
-    -webkit-backdrop-filter: blur(20px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-    border-radius: 22px !important;
-    color: #ffffff !important;
-    text-align: center !important;
-    font-size: 24px !important;
-    font-weight: 700 !important;
-    letter-spacing: 8px !important;
-    margin-bottom: 20px !important;
-    outline: none !important;
-    transition: all 0.3s ease !important;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
-}
 
-.vibe-code-input::placeholder {
-    color: rgba(255, 255, 255, 0.2) !important;
-    letter-spacing: 4px !important;
-    font-weight: 600 !important;
-    text-transform: uppercase;
-}
-
-.vibe-code-input:focus {
-    border-color: var(--accent) !important;
-    background: rgba(255, 255, 255, 0.07) !important;
-    box-shadow: 0 0 16px rgba(0, 242, 254, 0.2) !important;
-}
-
-
-        /* ОТДЕЛЬНЫЙ ЭКРАН АВТОРИЗАЦИИ */
+        /* ОТДЕЛЬНЫЙ ЭКРАН АВТОР?Р—РђИли */
         #auth-page { position: fixed; inset: 0; z-index: 100000; background: var(--bg); display: flex; justify-content: center; align-items: center; padding: 20px; }
         .auth-card { width: 400px; padding: 40px; text-align: center; border-radius: 30px; border: 1px solid rgba(255,255,255,0.1); }
         .auth-tabs { display: flex; gap: 10px; margin-bottom: 25px; background: rgba(0,0,0,0.3); padding: 5px; border-radius: 16px; }
@@ -579,7 +546,7 @@ button:disabled {
             margin-bottom: 5px;
         }
 
-        /* Плашка ответа ВНУТРИ сообщения (как на фото) */
+        /* Плашка ответа ВНУТР? сообщения (как на фото) */
 .reply-quote { 
     font-size: 13px; 
     background: rgba(0, 0, 0, 0.25); /* Темный фон */
@@ -643,7 +610,7 @@ button:disabled {
         .chat-input-bar { padding: 15px; display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
         .circle-btn { width: 45px; height: 45px; border-radius: 50%; background: var(--msg-in); display: flex; align-items: center; justify-content: center; font-size: 20px; transition: 0.2s; user-select: none; }
         
-        /* ПЛАШКА ЭМОДЗИ (ФИКС РАЗМЕРА) */
+        /* ПЛАШКА ЭМОДЗ? (Ф?КС РАЗМЕРА) */
         .emoji-picker { display: none; grid-template-columns: repeat(6, 1fr); gap: 5px; padding: 10px; position: absolute; bottom: 80px; left: 20px; width: 280px; height: 200px; overflow-y: auto; z-index: 2000; border: 1px solid var(--accent); background: #111827; border-radius: 15px; }
         .emoji { font-size: 24px; cursor: pointer; text-align: center; }
 
@@ -890,105 +857,47 @@ button:disabled {
     </div>
 
     <!-- AUTH PAGE -->
-<div id="auth-page" style="position: fixed; inset: 0; z-index: 999999; background: #050505; display: flex; justify-content: center; align-items: center; padding: 20px; overflow-y: auto;">
+<div id="auth-page" style="position: fixed; inset: 0; z-index: 999999; background: #050505; display: flex; justify-content: center; align-items: center; padding: 20px;">
     <div style="width: 100%; max-width: 400px; text-align: left;">
-        <h1 style="color: white; font-size: 48px; font-weight: 800; margin-bottom: 20px;">Vibe</h1>
+        <h1 style="color: white; font-size: 48px; font-weight: 800; margin-bottom: 10px;">Vibe</h1>
         
-        <!-- 1. Форма Входа -->
+        <!-- Форма Входа -->
         <div id="form-login-email">
-            <h2 style="color: white; font-size: 32px; font-weight: 700; margin-bottom: 20px;">Вход в аккаунт</h2>
-            <input type="email" id="l-email-input" placeholder="example@mail.com" style="width:100%; height:65px; background:#1c1c1e; border-radius:20px; color:white; padding:0 20px; margin-bottom:18px; border: 1px solid rgba(255,255,255,0.1);">
-            <input type="password" id="l-pass-input" placeholder="Введите пароль" style="width:100%; height:65px; background:#1c1c1e; border-radius:20px; color:white; padding:0 20px; margin-bottom:18px; border: 1px solid rgba(255,255,255,0.1);">
+            <h2 style="color: white; font-size: 40px; font-weight: 700; margin-bottom: 10px;">Вход в аккаунт</h2>
+            <input type="email" id="l-email-input" class="login-input" placeholder="example@mail.com">
+            <input type="password" id="l-pass-input" class="login-input" placeholder="Введите пароль">
             <div style="color:#0A84FF; text-align:right; margin-bottom:35px; cursor:pointer;" onclick="switchAuth('reset')">Забыли пароль?</div>
-            <button id="loginBtn" class="login-btn" onclick="loginWithLoading()" style="width:100%; height:70px; border:none; border-radius:35px; background:#2c2c34; color:#8e8e93; font-size:20px; font-weight:700; transition: 0.3s; cursor:not-allowed;" disabled>Войти</button>
+            <button id="loginBtn" class="login-btn" onclick="loginWithLoading()" style="width:100%; height:70px; border:none; border-radius:35px; background:#2c2c34; color:#8e8e93; font-size:24px; font-weight:700; transition: 0.3s; cursor:not-allowed;" disabled>Войти</button>
             <div style="margin-top: 20px; text-align: center; color: #8e8e93;">
-                Нет аккаунта? <span style="color: #0A84FF; cursor:pointer; font-weight:bold;" onclick="switchAuth('reg1')">Зарегистрироваться</span>
+                Нет аккаунта? <span style="color: #0A84FF; cursor:pointer; font-weight:bold;" onclick="switchAuth('reg')">Зарегистрироваться</span>
             </div>
         </div>
 
-        <!-- 2. Регистрация Шаг 1: Почта и пароли -->
-        <div id="form-reg1" style="display:none;">
-            <h2 style="color: white; font-size: 32px; font-weight: 700; margin-bottom: 20px;">Регистрация (1/3)</h2>
-            <input type="email" id="r-email-input" placeholder="Email (example@mail.com)" style="width:100%; height:65px; background:#1c1c1e; border-radius:20px; color:white; padding:0 20px; margin-bottom:18px; border: 1px solid rgba(255,255,255,0.1);">
-            <input type="password" id="r-pass-input" placeholder="Придумайте пароль" style="width:100%; height:65px; background:#1c1c1e; border-radius:20px; color:white; padding:0 20px; margin-bottom:18px; border: 1px solid rgba(255,255,255,0.1);">
-            <input type="password" id="r-pass-confirm-input" placeholder="Повторите пароль" style="width:100%; height:65px; background:#1c1c1e; border-radius:20px; color:white; padding:0 20px; margin-bottom:18px; border: 1px solid rgba(255,255,255,0.1);">
-            <button onclick="nextRegStep(2)" style="width:100%; height:70px; border-radius:35px; background:#0A84FF; color:white; font-size:20px; font-weight:700; border:none; cursor:pointer;">Далее</button>
+        <!-- Форма Регистрации -->
+        <div id="form-reg" style="display:none;">
+            <h2 style="color: white; font-size: 40px; margin-bottom: 30px;">Регистрация</h2>
+            <input type="email" id="r-email-input" placeholder="Email" style="width:100%; height:65px; background:#1c1c1e; border-radius:20px; color:white; padding:0 20px; margin-bottom:18px;">
+            <input type="password" id="r-pass-input" placeholder="Пароль" style="width:100%; height:65px; background:#1c1c1e; border-radius:20px; color:white; padding:0 20px; margin-bottom:18px;">
+            <button onclick="startEmailFlow('reg')" id="reg-btn-main" class="login-btn active" style="width:100%; height:70px; border-radius:35px; background:#0A84FF; color:white; font-size:24px;">Создать</button>
             <div style="margin-top: 20px; text-align: center; color: #8e8e93;">
                 Есть аккаунт? <span style="color: #0A84FF; cursor:pointer;" onclick="switchAuth('login-email')">Войти</span>
             </div>
         </div>
 
-        <!-- 3. Регистрация Шаг 2: Ник и имя -->
-        <div id="form-reg2" style="display:none;">
-            <h2 style="color: white; font-size: 32px; font-weight: 700; margin-bottom: 20px;">Регистрация (2/3)</h2>
-            <input type="text" id="r-n-input" placeholder="Ваше имя" style="width:100%; height:65px; background:#1c1c1e; border-radius:20px; color:white; padding:0 20px; margin-bottom:18px; border: 1px solid rgba(255,255,255,0.1);">
-            <input type="text" id="r-h-input" placeholder="@username" style="width:100%; height:65px; background:#1c1c1e; border-radius:20px; color:white; padding:0 20px; margin-bottom:18px; border: 1px solid rgba(255,255,255,0.1);">
-            <div style="display:flex; gap:10px;">
-                <button onclick="nextRegStep(1)" style="flex:1; height:70px; border-radius:35px; background:#2c2c34; color:white; font-size:18px; font-weight:700; border:none; cursor:pointer;">Назад</button>
-                <button onclick="nextRegStep(3)" style="flex:1; height:70px; border-radius:35px; background:#0A84FF; color:white; font-size:18px; font-weight:700; border:none; cursor:pointer;">Далее</button>
-            </div>
-        </div>
-
-        <!-- 4. Регистрация Шаг 3: Аватарка -->
-        <div id="form-reg3" style="display:none;">
-            <h2 style="color: white; font-size: 32px; font-weight: 700; margin-bottom: 20px;">Регистрация (3/3)</h2>
-            <div style="display:flex; flex-direction:column; align-items:center; margin-bottom:20px; gap:15px;">
-                <div id="reg-avatar-preview" class="avatar-emoji" style="width:110px; height:110px; font-size:50px; background:rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius:50%; display:flex; align-items:center; justify-content:center; background-size:cover; background-position:center;">👤</div>
-                <div style="display:flex; gap:10px; width:100%;">
-                    <button type="button" onclick="selectRegAvatarFile()" style="flex:1; padding:12px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.12); border-radius:15px; color:white; font-size:13px; font-weight:bold; cursor:pointer;">Выбрать фото</button>
-                    <input type="text" id="r-e-input" placeholder="Или Эмодзи (😊)" maxlength="2" style="flex:1; height:45px; margin:0; text-align:center; background:#1c1c1e; border-radius:15px; color:white; border: 1px solid rgba(255,255,255,0.1);" oninput="document.getElementById('reg-avatar-preview').innerText = this.value; document.getElementById('reg-avatar-preview').style.backgroundImage = 'none';">
-                </div>
-            </div>
-            <div style="display:flex; gap:10px;">
-                <button onclick="nextRegStep(2)" style="flex:1; height:70px; border-radius:35px; background:#2c2c34; color:white; font-size:18px; font-weight:700; border:none; cursor:pointer;">Назад</button>
-                <button id="reg-btn-main" onclick="startRegFlow()" style="flex:1; height:70px; border-radius:35px; background:#0A84FF; color:white; font-size:18px; font-weight:700; border:none; cursor:pointer;">Создать</button>
-            </div>
-        </div>
-
-        <!-- 5. Восстановление пароля Шаг 1: Ввод почты -->
+        <!-- Форма Восстановления -->
         <div id="form-reset" style="display:none;">
-            <h2 style="color: white; font-size: 32px; font-weight:700; margin-bottom: 20px;">Восстановление</h2>
-            <input type="email" id="reset-email" placeholder="example@mail.com" style="width:100%; height:65px; background:#1c1c1e; border-radius:20px; color:white; padding:0 20px; margin-bottom:18px; border: 1px solid rgba(255,255,255,0.1);">
-            <button id="reset-btn-main" style="width:100%; height:70px; border-radius:35px; background:#0A84FF; color:white; border:none; font-size:20px; font-weight:700; cursor:pointer;" onclick="startResetFlow()">Отправить код</button>
-            <div style="margin-top: 20px; text-align: center; color: #8e8e93;">
-                <span style="color: #0A84FF; cursor:pointer;" onclick="switchAuth('login-email')">Назад к входу</span>
-            </div>
+            <h2 style="color: white; font-size: 32px; margin-bottom: 20px;">Восстановление</h2>
+            <input type="email" id="reset-email" placeholder="Твой email" style="width:100%; height:65px; background:#1c1c1e; border-radius:20px; color:white; padding:0 20px; margin-bottom:18px;">
+            <button class="login-btn active" style="width:100%; height:70px; border-radius:35px; background:#0A84FF; color:white;" onclick="startResetFlow()">Отправить код</button>
         </div>
 
-        <!-- 6. Восстановление Шаг 2: Ввод проверочного кода -->
-        <div id="form-reset-verify" style="display:none;">
-            <h2 style="color: white; font-size: 32px; font-weight:700; margin-bottom: 20px;">Проверка кода</h2>
-            <div style="color: #8e8e93; margin-bottom: 20px; font-size: 14px;">Мы отправили проверочный код на вашу почту. Пожалуйста, проверьте папку "Спам".</div>
-            <input type="text" id="reset-verify-code-input" class="vibe-code-input" placeholder="Vibe">
-            <button id="reset-verify-submit-btn" style="width:100%; height:70px; border-radius:35px; background:#0A84FF; color:white; border:none; font-size:20px; font-weight:700; cursor:pointer;" onclick="completeResetVerification()">Подтвердить</button>
-            
-            <div id="reset-timer-container" style="margin-top:20px; text-align:center; font-size:14px; color:#8e8e93;">
-                <span id="reset-timer-text">Отправить код повторно можно через 60 сек.</span>
-                <button id="reset-resend-btn" style="display:none; background:none; border:none; color:#0A84FF; font-weight:bold; cursor:pointer; width:100%; font-size:15px; margin-top:10px;" onclick="resendResetCode()">Отправить заново</button>
-            </div>
-        </div>
-
-        <!-- 7. Восстановление Шаг 3: Ввод нового пароля -->
-        <div id="form-new-password" style="display:none;">
-            <h2 style="color: white; font-size: 32px; font-weight:700; margin-bottom: 20px;">Новый пароль</h2>
-            <input type="password" id="reset-new-pass" placeholder="Новый пароль" style="width:100%; height:65px; background:#1c1c1e; border-radius:20px; color:white; padding:0 20px; margin-bottom:18px; border: 1px solid rgba(255,255,255,0.1);">
-            <input type="password" id="reset-new-pass-confirm" placeholder="Повторите новый пароль" style="width:100%; height:65px; background:#1c1c1e; border-radius:20px; color:white; padding:0 20px; margin-bottom:18px; border: 1px solid rgba(255,255,255,0.1);">
-            <button style="width:100%; height:70px; border-radius:35px; background:#0A84FF; color:white; border:none; font-size:20px; font-weight:700; cursor:pointer;" onclick="saveNewPassword()">Изменить</button>
-        </div>
-
-        <!-- 8. Окно Верификации при Регистрации -->
+        <!-- Окно Верификации -->
         <div id="auth-verify-view" style="display:none;">
-            <h2 style="color: white; font-size: 32px; font-weight:700; margin-bottom: 10px;">Подтверждение</h2>
-            <div style="color: #8e8e93; margin-bottom: 20px; font-size: 14px;">Код отправлен на вашу почту. Проверьте папку "Спам".</div>
-            <input type="text" id="verify-code-input" class="vibe-code-input" placeholder="Vibe">
-            <button id="verify-submit-btn" style="width:100%; height:70px; border-radius:35px; background:#0A84FF; color:white; border:none; font-size:20px; font-weight:700; cursor:pointer;" onclick="completeEmailFlow()">Подтвердить</button>
-            
-            <div id="reg-timer-container" style="margin-top:20px; text-align:center; font-size:14px; color:#8e8e93;">
-                <span id="reg-timer-text">Отправить код повторно можно через 60 сек.</span>
-                <button id="reg-resend-btn" style="display:none; background:none; border:none; color:#0A84FF; font-weight:bold; cursor:pointer; width:100%; font-size:15px; margin-top:10px;" onclick="resendRegCode()">Отправить заново</button>
-            </div>
+    <h2 style="color: white; margin-bottom: 20px;">Проверти код в Спаме</h2>
+    <h2 style="color: white; margin-bottom: 20px;">Введите код</h2>
+    <input type="text" id="verify-code-input" placeholder="000000" style="width:100%; height:65px; background:#1c1c1e; border-radius:20px; color:white; text-align:center; font-size:24px; margin-bottom:20px;">
+            <button id="verify-submit-btn" class="login-btn active" style="width:100%; height:70px; border-radius:35px; background:#0A84FF; color:white;" onclick="completeEmailFlow()">Подтвердить</button>
         </div>
-
     </div>
 </div>
 
@@ -1181,31 +1090,12 @@ z-index:999;
             <p style="font-size:13px; opacity:0.7; margin-bottom:20px;">Привяжи почту чтобы входить в аккаунт без @ника</p>
             <input type="email" id="modal-link-email" placeholder="📧 Email" style="text-align:center;">
             <input type="password" id="modal-link-pass" placeholder="🔑 Пароль (мин. 6 символов)" style="text-align:center;">
-            <button onclick="doLinkEmail()" class="save-btn" style="width:100%; background:var(--accent); color:#000; margin-top:10px;">ПРИВЯЗАТЬ</button>
+            <button onclick="doLinkEmail()" class="save-btn" style="width:100%; background:var(--accent); color:#000; margin-top:10px;">ПР?ВЯЗАТЬ</button>
             <button onclick="closeLinkEmailModal()" style="margin-top:15px; opacity:0.6; font-size:13px;">Отмена</button>
         </div>
     </div>
 
     <script> 
-
-// Глобальный загрузчик изображений для регистрации
-async function uploadToCloudinary(file) {
-    const cloudName = 'dlnpugmak';
-    const apiKey = 't4gaymBobQ2U0a78C-JASkIdEZU';
-    const preset = 'vibe_upload';
-    const form = new FormData();
-    form.append('file', file);
-    form.append('upload_preset', preset);
-    form.append('api_key', apiKey);
-    
-    const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`, { method: 'POST', body: form });
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok || !data.secure_url) {
-        throw new Error((data.error && data.error.message) || 'Не удалось загрузить файл.');
-    }
-    return data;
-}
-window.uploadToCloudinary = uploadToCloudinary;
 
 // Закрытие всех меню при клике в любое место
 window.addEventListener('click', () => {
@@ -1213,304 +1103,7 @@ window.addEventListener('click', () => {
     document.getElementById('chat-list-menu').style.display = 'none';
 });
 
-// Функция безопасного переключения экранов без возникновения ошибок Cannot read properties of null
-function switchAuth(t) {
-    const views = [
-        'form-login-email',
-        'form-reg1',
-        'form-reg2',
-        'form-reg3',
-        'form-reset',
-        'form-reset-verify',
-        'form-new-password',
-        'auth-verify-view'
-    ];
-    
-    views.forEach(v => {
-        const el = document.getElementById(v);
-        if (el) el.style.display = 'none';
-    });
-    
-    let targetId = '';
-    if (t === 'login-email') targetId = 'form-login-email';
-    else if (t === 'reg1') targetId = 'form-reg1';
-    else if (t === 'reg2') targetId = 'form-reg2';
-    else if (t === 'reg3') targetId = 'form-reg3';
-    else if (t === 'reset') targetId = 'form-reset';
-    
-    const targetEl = document.getElementById(targetId);
-    if (targetEl) targetEl.style.display = 'block';
-}
-
-// Переключение шагов многоступенчатой регистрации
-async function nextRegStep(step) {
-    if (step === 2) {
-        const email = document.getElementById('r-email-input').value.trim();
-        const pass = document.getElementById('r-pass-input').value;
-        const confirmPass = document.getElementById('r-pass-confirm-input').value;
-        
-        if (!email || !pass || !confirmPass) return alert("Заполните все поля!");
-        if (pass.length < 6) return alert("Пароль должен быть минимум 6 символов!");
-        if (pass !== confirmPass) return alert("Пароли не совпадают!");
-        
-        try {
-            const emailSnap = await db.ref('emails/' + email.replace(/\./g, '_')).once('value');
-            if (emailSnap.exists()) return alert("Эта почта уже используется!");
-        } catch(e) {
-            console.warn(e);
-        }
-    }
-    if (step === 3) {
-        const name = document.getElementById('r-n-input').value.trim();
-        let handle = document.getElementById('r-h-input').value.toLowerCase().trim();
-        if (!name || !handle) return alert("Заполните все поля!");
-        if (!handle.startsWith('@')) handle = '@' + handle;
-        const hKey = handle.replace('@', '');
-        
-        try {
-            const handleSnap = await db.ref('handles/' + hKey).once('value');
-            if (handleSnap.exists()) return alert("Этот ник уже занят!");
-        } catch(e) {
-            console.warn(e);
-        }
-    }
-    
-    document.getElementById('form-reg1').style.display = step === 1 ? 'block' : 'none';
-    document.getElementById('form-reg2').style.display = step === 2 ? 'block' : 'none';
-    document.getElementById('form-reg3').style.display = step === 3 ? 'block' : 'none';
-}
-
-// Загрузка файла для аватарки при регистрации
-let regAvatarFileUrl = null;
-function selectRegAvatarFile() {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
-    input.onchange = async () => {
-        const file = input.files && input.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = async () => {
-            const preview = document.getElementById('reg-avatar-preview');
-            preview.innerText = '';
-            preview.style.backgroundImage = `url('${reader.result}')`;
-            
-            try {
-                preview.innerText = '⏳';
-                const uploaded = await uploadToCloudinary(file);
-                regAvatarFileUrl = uploaded.secure_url;
-                preview.innerText = '';
-                preview.style.backgroundImage = `url('${regAvatarFileUrl}')`;
-            } catch(e) {
-                alert("Ошибка загрузки фото: " + e.message);
-                preview.innerText = '👤';
-                preview.style.backgroundImage = 'none';
-            }
-        };
-        reader.readAsDataURL(file);
-    };
-    input.click();
-}
-
-// Логика подтверждения регистрации кодом
-let regVerificationData = null;
-let regTimerInterval = null;
-
-async function startRegFlow() {
-    const btn = document.getElementById('reg-btn-main');
-    btn.disabled = true;
-    btn.innerText = "Отправляем...";
-    
-    const email = document.getElementById('r-email-input').value.trim().toLowerCase();
-    const name = document.getElementById('r-n-input').value.trim();
-    const emoji = document.getElementById('r-e-input').value.trim() || '😊';
-    
-    try {
-        const code = generateCode();
-        regVerificationData = { email, code, name, emoji };
-        
-        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-            to_email: email,
-            verification_code: code,
-            user_name: name
-        });
-        
-        document.getElementById('form-reg3').style.display = 'none';
-        document.getElementById('auth-verify-view').style.display = 'block';
-        
-        startRegTimer();
-    } catch(e) {
-        alert("Ошибка отправки кода: " + e.message);
-        btn.disabled = false;
-        btn.innerText = "Создать";
-    }
-}
-
-function startRegTimer() {
-    clearInterval(regTimerInterval);
-    let seconds = 60;
-    const timerText = document.getElementById('reg-timer-text');
-    const resendBtn = document.getElementById('reg-resend-btn');
-    
-    timerText.style.display = 'block';
-    resendBtn.style.display = 'none';
-    timerText.textContent = `Отправить код повторно можно через ${seconds} сек.`;
-    
-    regTimerInterval = setInterval(() => {
-        seconds--;
-        if (seconds <= 0) {
-            clearInterval(regTimerInterval);
-            timerText.style.display = 'none';
-            resendBtn.style.display = 'block';
-        } else {
-            timerText.textContent = `Отправить код повторно можно через ${seconds} сек.`;
-        }
-    }, 1000);
-}
-
-async function resendRegCode() {
-    if (!regVerificationData) return;
-    const resendBtn = document.getElementById('reg-resend-btn');
-    resendBtn.style.display = 'none';
-    
-    try {
-        const code = generateCode();
-        regVerificationData.code = code;
-        
-        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-            to_email: regVerificationData.email,
-            verification_code: code,
-            user_name: regVerificationData.name
-        });
-        
-        alert("Код отправлен повторно!");
-        startRegTimer();
-    } catch(e) {
-        alert("Ошибка: " + e.message);
-        resendBtn.style.display = 'block';
-    }
-}
-
-// Восстановление пароля
-let resetVerificationData = null;
-let resetTimerInterval = null;
-
-async function startResetFlow() {
-    const email = document.getElementById('reset-email').value.trim().toLowerCase();
-    if (!email) return alert("Введите email!");
-    
-    const btn = document.getElementById('reset-btn-main');
-    btn.disabled = true;
-    btn.innerText = "Отправляем...";
-    
-    try {
-        const emailSnap = await db.ref('emails/' + email.replace(/\./g, '_')).once('value');
-        if (!emailSnap.exists()) {
-            alert("Пользователь с такой почтой не найден!");
-            btn.disabled = false;
-            btn.innerText = "Отправить код";
-            return;
-        }
-        
-        const uid = emailSnap.val();
-        const uSnap = await db.ref('users/' + uid).once('value');
-        const user = uSnap.val();
-        
-        const code = generateCode();
-        resetVerificationData = { email, code, uid, name: user.name || 'Пользователь' };
-        
-        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-            to_email: email,
-            verification_code: code,
-            user_name: user.name || 'Пользователь'
-        });
-        
-        document.getElementById('form-reset').style.display = 'none';
-        document.getElementById('form-reset-verify').style.display = 'block';
-        
-        startResetTimer();
-    } catch(e) {
-        alert("Ошибка отправки: " + e.message);
-    } finally {
-        btn.disabled = false;
-        btn.innerText = "Отправить код";
-    }
-}
-
-function startResetTimer() {
-    clearInterval(resetTimerInterval);
-    let seconds = 60;
-    const timerText = document.getElementById('reset-timer-text');
-    const resendBtn = document.getElementById('reset-resend-btn');
-    
-    timerText.style.display = 'block';
-    resendBtn.style.display = 'none';
-    timerText.textContent = `Отправить код повторно можно через ${seconds} сек.`;
-    
-    resetTimerInterval = setInterval(() => {
-        seconds--;
-        if (seconds <= 0) {
-            clearInterval(resetTimerInterval);
-            timerText.style.display = 'none';
-            resendBtn.style.display = 'block';
-        } else {
-            timerText.textContent = `Отправить код повторно можно через ${seconds} сек.`;
-        }
-    }, 1000);
-}
-
-async function resendResetCode() {
-    if (!resetVerificationData) return;
-    const resendBtn = document.getElementById('reset-resend-btn');
-    resendBtn.style.display = 'none';
-    
-    try {
-        const code = generateCode();
-        resetVerificationData.code = code;
-        
-        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-            to_email: resetVerificationData.email,
-            verification_code: code,
-            user_name: resetVerificationData.name
-        });
-        
-        alert("Код отправлен повторно!");
-        startResetTimer();
-    } catch(e) {
-        alert("Ошибка: " + e.message);
-        resendBtn.style.display = 'block';
-    }
-}
-
-function completeResetVerification() {
-    const inputCode = document.getElementById('reset-verify-code-input').value.trim();
-    if (!resetVerificationData || inputCode !== resetVerificationData.code) {
-        return alert("Неверный код проверочный!");
-    }
-    
-    document.getElementById('form-reset-verify').style.display = 'none';
-    document.getElementById('form-new-password').style.display = 'block';
-}
-
-async function saveNewPassword() {
-    const newPass = document.getElementById('reset-new-pass').value;
-    const confirmNewPass = document.getElementById('reset-new-pass-confirm').value;
-    
-    if (!newPass || !confirmNewPass) return alert("Заполните оба поля!");
-    if (newPass.length < 6) return alert("Пароль должен быть не менее 6 символов!");
-    if (newPass !== confirmNewPass) return alert("Пароли не совпадают!");
-    
-    try {
-        const uid = resetVerificationData.uid;
-        await db.ref(`users/${uid}/passwordHash`).set(btoa(newPass));
-        alert("Пароль успешно изменен! Теперь вы можете войти.");
-        switchAuth('login-email');
-    } catch(e) {
-        alert("Ошибка при сохранении: " + e.message);
-    }
-}
-
-// Исправленный показ меню сообщений
+// ?справленный показ меню сообщений
 function showMsgMenu(e, id, text, sender) {
     e.preventDefault();
     e.stopPropagation(); // Чтобы меню не закрылось сразу от клика выше
@@ -1549,7 +1142,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Исправленная отправка текста (теперь с поддержкой ответов)
+// ?справленная отправка текста (теперь с поддержкой ответов)
 async function sendText(mode) {
     const inp = document.getElementById(mode + '-input');
     if (!inp || !inp.value || !activePeer) return;
@@ -1599,7 +1192,7 @@ const firebaseConfig = {
     storageBucket: "vtcty-6c839.firebasestorage.app"
 };
 
-// 2. Инициализация (создаем ту самую db, которую он не видит)
+// 2. ?нициализация (создаем ту самую db, которую он не видит)
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
@@ -1609,7 +1202,7 @@ const EMAILJS_PUBLIC_KEY = "Nx7G0SMyg2yP2bvBW";
 const EMAILJS_SERVICE_ID = "default_service";
 const EMAILJS_TEMPLATE_ID = "template_4yxrnid";
 
-// 3. Инициализация EmailJS
+// 3. ?нициализация EmailJS
 (function() {
     emailjs.init(EMAILJS_PUBLIC_KEY);
 })();
@@ -1622,7 +1215,7 @@ try {
     }
 } catch (e) { console.log("Push не поддерживаются"); }
 
-// 4. ПОЧИНКА ПАНЕЛИ (Нижние кнопки телефона)
+// 4. ПОЧ?НКА ПАНЕЛ? (Нижние кнопки телефона)
 function mobNavControl(id, index) {
     const indicator = document.getElementById('mob-nav-indicator');
     const items = document.querySelectorAll('.bottom-nav .nav-item');
@@ -1645,7 +1238,7 @@ function mobNavControl(id, index) {
     closeMobChat();
 }
 
-// ФУНКЦИЯ ВЫХОДА ИЗ ЧАТА
+// ФУНКЦ?Я ВЫХОДА ?З ЧАТА
 function closeMobChat() {
     const view = document.getElementById('mob-chat-view');
     if(view) {
@@ -1672,31 +1265,16 @@ function mobTab(id) {
         const themeList = ["dark", "light", "purple", "lime", "ocean", "sunset", "rose", "forest", "midnight", "gold"];
 
         function switchAuth(t) {
-    const views = [
-        'form-login-email',
-        'form-reg1',
-        'form-reg2',
-        'form-reg3',
-        'form-reset',
-        'form-reset-verify',
-        'form-new-password',
-        'auth-verify-view'
-    ];
-    
-    views.forEach(v => {
-        const el = document.getElementById(v);
-        if (el) el.style.display = 'none';
-    });
-    
-    let targetId = '';
-    if (t === 'login-email') targetId = 'form-login-email';
-    else if (t === 'reg1') targetId = 'form-reg1';
-    else if (t === 'reg2') targetId = 'form-reg2';
-    else if (t === 'reg3') targetId = 'form-reg3';
-    else if (t === 'reset') targetId = 'form-reset';
-    
-    const targetEl = document.getElementById(targetId);
-    if (targetEl) targetEl.style.display = 'block';
+    // Скрываем все формы
+    document.getElementById('form-login-email').style.display = 'none';
+    document.getElementById('form-reg').style.display = 'none';
+    document.getElementById('form-reset').style.display = 'none';
+    document.getElementById('auth-verify-view').style.display = 'none';
+
+    // Показываем нужную
+    if (t === 'login-email') document.getElementById('form-login-email').style.display = 'block';
+    if (t === 'reg') document.getElementById('form-reg').style.display = 'block';
+    if (t === 'reset') document.getElementById('form-reset').style.display = 'block';
 }
 
         function generateCode() {
@@ -1722,19 +1300,19 @@ function mobTab(id) {
                     emailId: 'l-email-input',
                     title: 'Вход по почте',
                     subtitle: 'Мы отправили код на эту почту. Введи его, чтобы войти в аккаунт.',
-                    submitText: 'ВОЙТИ'
+                    submitText: 'ВОЙТ?'
                 },
                 reg: {
                     emailId: 'r-email-input',
                     title: 'Подтверди регистрацию',
                     subtitle: 'Код уже отправлен на почту. После подтверждения аккаунт сохранится в базе.',
-                    submitText: 'ЗАРЕГИСТРИРОВАТЬСЯ'
+                    submitText: 'ЗАРЕГ?РЎРў??РОВАТЬСЯ'
                 },
                 link: {
                     emailId: 'link-email-input',
                     title: 'Привязка почты',
                     subtitle: 'Подтверди почту кодом, и старый аккаунт сможет входить по email и паролю.',
-                    submitText: 'ПРИВЯЗАТЬ ПОЧТУ'
+                    submitText: 'ПР?ВЯЗАТЬ ПОЧТУ'
                 }
             };
             return map[mode];
@@ -1761,32 +1339,36 @@ function mobTab(id) {
         }
 
         function showVerifyStep(mode, email, startTime) {
-    const config = getAuthConfig(mode);
-    authFlowMode = mode;
-    
-    // Безопасное сокрытие предыдущих форм только если они есть в DOM
-    ['form-login-email', 'form-reg1', 'form-reg2', 'form-reg3', 'form-reset'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.style.display = 'none';
-    });
-    
-    const verifyView = document.getElementById('auth-verify-view');
-    if (verifyView) verifyView.style.display = 'block';
-    
-    const titleEl = document.getElementById('verify-title');
-    if (titleEl) titleEl.textContent = config.title;
-    
-    const subtitleEl = document.getElementById('verify-subtitle');
-    if (subtitleEl) subtitleEl.textContent = `${config.subtitle} ${email}`;
-    
-    const submitBtn = document.getElementById('verify-submit-btn');
-    if (submitBtn) submitBtn.textContent = config.submitText;
-    
-    const inputCode = document.getElementById('verify-code-input');
-    if (inputCode) inputCode.value = '';
-    
-    startRegTimer();
-}
+            const config = getAuthConfig(mode);
+            authFlowMode = mode;
+            document.getElementById('form-login').style.display = 'none';
+            document.getElementById('form-login-email').style.display = 'none';
+            document.getElementById('form-reg').style.display = 'none';
+            document.getElementById('form-link').style.display = 'none';
+            document.getElementById('auth-verify-view').style.display = 'block';
+            document.getElementById('verify-title').textContent = config.title;
+            document.getElementById('verify-subtitle').textContent = `${config.subtitle} ${email}`;
+            document.getElementById('verify-submit-btn').textContent = config.submitText;
+            document.getElementById('verify-code-input').value = '';
+            startResendCountdown(startTime);
+        }
+
+        function closeVerifyStep(silent = false) {
+            clearInterval(authResendTimer);
+            authResendTimer = null;
+            authFlowMode = null;
+            document.getElementById('auth-verify-view').style.display = 'none';
+            document.getElementById('verify-code-input').value = '';
+            document.getElementById('verify-resend-btn').style.display = 'none';
+            if (!silent) {
+                const activeTab = document.getElementById('tab-r').className.includes('active')
+                    ? 'reg'
+                    : document.getElementById('tab-link').className.includes('active')
+                        ? 'link'
+                        : 'login-email';
+                switchAuth(activeTab);
+            }
+        }
 
         async function validateAuthFlow(mode) {
             if (mode === 'login') {
@@ -1832,28 +1414,33 @@ function mobTab(id) {
         }
 
         async function sendVerificationCode(mode, isResend = false) {
-    const data = await validateAuthFlow(mode);
-    const code = generateCode();
-    const now = Date.now();
-    localStorage.setItem('vibe_verify_data', JSON.stringify({
-        email: data.email,
-        code: code,
-        mode: mode,
-        timestamp: now
-    }));
+            const data = await validateAuthFlow(mode);
+            const code = generateCode();
+            const now = Date.now();
+            localStorage.setItem('vibe_verify_data', JSON.stringify({
+                email: data.email,
+                code: code,
+                mode: mode,
+                timestamp: now
+            }));
 
-    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-        to_email: data.email,
-        verification_code: code,
-        user_name: data.name || 'Пользователь'
-    });
+            await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+                to_email: data.email,
+                verification_code: code,
+                user_name: data.name || 'Пользователь'
+            });
+             
+    document.getElementById('form-login-email').style.display = 'none';
+    document.getElementById('form-reg').style.display = 'none';
+    document.getElementById('form-reset').style.display = 'none';
+    document.getElementById('auth-verify-view').style.display = 'block';
 
-    // Безопасный показ экрана верификации без вызова ошибок
-    showVerifyStep(mode, data.email, now);
-    if (!isResend) {
-        alert('Код отправлен на ' + data.email + '. Проверь почту.');
-    }
-}
+
+            showVerifyStep(mode, data.email, now);
+            if (!isResend) {
+                alert('Код отправлен на ' + data.email + '. Проверь почту.');
+            }
+        }
 
         async function startEmailFlow(mode) {
     // Находим кнопку в зависимости от режима
@@ -1908,62 +1495,6 @@ function mobTab(id) {
         }
 
         async function completeEmailFlow() {
-    const inputCode = document.getElementById('verify-code-input').value.trim();
-    
-    // 1. Поток многоступенчатой регистрации
-    if (regVerificationData) {
-        if (inputCode !== regVerificationData.code) {
-            return alert("Неверный проверочный код!");
-        }
-        
-        const btn = document.getElementById('verify-submit-btn');
-        if (btn) {
-            btn.disabled = true;
-            btn.innerText = "Создаем аккаунт...";
-        }
-        
-        try {
-            const email = regVerificationData.email;
-            const password = document.getElementById('r-pass-input').value;
-            const name = regVerificationData.name;
-            const emoji = regVerificationData.emoji;
-            let handle = document.getElementById('r-h-input').value.toLowerCase().trim();
-            if (!handle.startsWith('@')) handle = '@' + handle;
-            const hKey = handle.replace('@', '');
-            
-            const id = Math.random().toString(36).slice(2, 8).toUpperCase();
-            const newUser = {
-                id,
-                name,
-                handle,
-                avatar: emoji,
-                avatarPhoto: regAvatarFileUrl || null,
-                bio: 'Привет, я в Vibe!',
-                verified: false,
-                online: true,
-                email,
-                passwordHash: btoa(password),
-                createdAt: Date.now()
-            };
-
-            await db.ref('users/' + id).set(newUser);
-            await db.ref('handles/' + hKey).set(id);
-            await db.ref('emails/' + email.replace(/\./g, '_')).set(id);
-
-            clearVerifyStorage();
-            localStorage.setItem('liquid_pro_v32', JSON.stringify(newUser));
-            location.reload();
-        } catch(e) {
-            alert("Ошибка при регистрации: " + e.message);
-            if (btn) {
-                btn.disabled = false;
-                btn.innerText = "Подтвердить";
-            }
-        }
-        return;
-    }
-    
-    // 2. Стандартный поток входа (Login / Link)
     if (!authFlowMode) return;
     
     const btn = document.getElementById('verify-submit-btn');
@@ -1985,9 +1516,11 @@ function mobTab(id) {
     } catch (e) {
         console.error('Verify error:', e);
         alert(e.message || 'Не удалось завершить подтверждение.');
+        
+        // Возвращаем кнопку, если код неверный
         if (btn) {
             btn.disabled = false;
-            btn.innerText = btn.dataset.originalText || "Подтвердить";
+            btn.innerText = btn.dataset.originalText;
         }
     }
 }
@@ -1996,7 +1529,7 @@ function mobTab(id) {
             const email = document.getElementById('r-email-input').value.trim().toLowerCase();
             const password = document.getElementById('r-pass-input').value;
             const name = document.getElementById('r-n-input').value.trim();
-            const emoji = document.getElementById('r-e-input').value || '😊';
+            const emoji = document.getElementById('r-e-input').value || '??';
             let handle = document.getElementById('r-h-input').value.toLowerCase().trim();
 
             if (!handle.startsWith('@')) handle = '@' + handle;
@@ -2129,7 +1662,7 @@ function mobTab(id) {
         if(techScreen) techScreen.style.display = (isBreak && !isPrivileged) ? 'flex' : 'none';
     });
 
-    // 1. Слушатель ОБЪЯВЛЕНИЯ (Блокирующий экран)
+    // 1. Слушатель ОБЪЯВЛЕН?Я (Блокирующий экран)
     db.ref('settings/announcement').on('value', snap => {
         const data = snap.val();
         const screen = document.getElementById('screen-announcement');
@@ -2144,7 +1677,7 @@ function mobTab(id) {
         }
     });
 
-    // 2. Слушатель РАССЫЛКИ (Модальное окно "Понятно")
+    // 2. Слушатель РАССЫЛК? (Модальное окно "Понятно")
     db.ref('settings/broadcast').on('value', snap => {
         const data = snap.val();
         if (!data || !data.id) return;
@@ -2188,7 +1721,7 @@ addFavoritesToContacts();
     if(document.getElementById('pc-my-name')) document.getElementById('pc-my-name').innerHTML = me.name + (me.verified?vBadge:'');
     if(document.getElementById('pc-my-handle')) document.getElementById('pc-my-handle').innerText = me.handle;
 
-    // 2. НАСТРОЙКИ (Твой код со скриншота, но с защитой от ошибок)
+    // 2. НАСТРОЙК? (Твой код со скриншота, но с защитой от ошибок)
     if(document.getElementById('set-emoji-pc')) document.getElementById('set-emoji-pc').value = me.avatar;
     if(document.getElementById('set-name-pc')) document.getElementById('set-name-pc').value = me.name;
     if(document.getElementById('set-bio-pc')) document.getElementById('set-bio-pc').value = me.bio || '';
@@ -2202,7 +1735,7 @@ addFavoritesToContacts();
         if(document.getElementById('mob-v-btn-real')) document.getElementById('mob-v-btn-real').style.display = me.verified ? 'none' : 'block';
     }
 
-    // 3. ПОЯВЛЕНИЕ КНОПКИ АДМИН-ПАНЕЛИ (ДЛЯ ТЕБЯ И ТВОИХ АДМИНОВ)
+    // 3. ПОЯВЛЕН?Е КНОПК? АДМ?Н-ПАНЕЛ? (ДЛЯ ТЕБЯ ? ТВО?Х АДМ?НОВ)
     const isPrivileged = (me.handle === '@artem' || me.isAdmin);
 
     if (isPrivileged) {
@@ -2211,12 +1744,12 @@ addFavoritesToContacts();
             const adminBtn = document.createElement('button');
             adminBtn.id = 'admin-btn-global';
             adminBtn.textContent = "👑 Админ-панель";
-            adminBtn.className = "verify-btn"; // Используем твой стиль
+            adminBtn.className = "verify-btn"; // ?спользуем твой стиль
             adminBtn.style.display = "block";
             adminBtn.style.background = "#ff00ff"; // Розовый цвет для отличия
             adminBtn.onclick = showAdminPanel;
 
-            // Ищем, куда вставить кнопку в настройках
+            // ?щем, куда вставить кнопку в настройках
             const pcTarget = document.querySelector('#pc-settings-screen div');
             const mobTarget = document.getElementById('mob-settings');
 
@@ -2306,7 +1839,7 @@ async function doLinkEmail() {
                     div.id = 'cnt-'+fId;
                     div.innerHTML = html;
                     div.onclick = () => isPC ? openPCChat(u) : openMobChat(u);
-                    // ВОЗВРАЩАЕМ МЕНЮ БЛОКИРОВКИ:
+                    // ВОЗВРАЩАЕМ МЕНЮ БЛОК??РћР’Рљ?:
                     div.oncontextmenu = (e) => showChatListMenu(e, fId);
                     if(isPC) pcC.appendChild(div); else mobC.appendChild(div);
                 }
@@ -2325,7 +1858,7 @@ async function doLinkEmail() {
     view.style.display = 'flex';
     view.classList.add('active'); // Убедись, что класс активен
     
-    // ЛОГИКА ИЗБРАННОГО
+    // ЛОГ?КА ?ЗБРАННОГО
     if (user.id === 'saved_' + me.id) {
         header.innerHTML = `
             <div style="display:flex; align-items:center; gap:10px;">
@@ -2338,7 +1871,7 @@ async function doLinkEmail() {
         return;
     }
 
-    // ЛОГИКА ОБЫЧНОГО ЧАТА
+    // ЛОГ?КА ОБЫЧНОГО ЧАТА
     const badge = user.verified ? vBadge : '';
     header.innerHTML = `
         <div style="display:flex;align-items:center;gap:10px;" onclick="showPeerProfile()">
@@ -2391,7 +1924,7 @@ if (user.id === 'saved_' + me.id) {
         header.innerHTML = `<div class="avatar-emoji" style="width:40px;height:40px;font-size:20px;">${user.avatar}</div><b style="margin-left:10px">${user.name}${badge}</b>`;
         document.querySelector('.main-area .chat-input-bar').style.display = 'flex';
     }
-    // ВОТ ЭТО ВКЛЮЧАЕТ ПРОФИЛЬ НА ПК:
+    // ВОТ ЭТО ВКЛЮЧАЕТ ПРОФ?ЛЬ НА ПК:
     header.onclick = () => showPeerProfile(); 
     startChatListener(user.id, 'pc');
 }
@@ -2445,7 +1978,7 @@ d.innerHTML = messageHTML;
         win.scrollTop = win.scrollHeight;
     });
 
-    // 2. СЛУШАТЕЛЬ УДАЛЕНИЯ (Чтобы исчезало моментально у всех)
+    // 2. СЛУШАТЕЛЬ УДАЛЕН?Я (Чтобы исчезало моментально у всех)
     db.ref('chats/' + rid).on('child_removed', (snap) => {
         const id = snap.key;
         const el = document.getElementById("msg-" + id);
@@ -2453,7 +1986,7 @@ d.innerHTML = messageHTML;
     });
 }
 
-// --- ФУНКЦИИ ОТПРАВКИ И ПРОФИЛЯ ---
+// --- ФУНКЦ?? ОТПРАВК? ? ПРОФ?ЛЯ ---
 
 async function sendText(mode) {
     const inp = document.getElementById(mode + '-input');
@@ -2625,7 +2158,7 @@ async function saveBio(m) {
         function loadEmojis() {
             ['pc','mob'].forEach(m => {
                 const p = document.getElementById(m==='pc'?'pc-emoji-picker':'mob-emoji-picker'); if(!p) return; p.innerHTML = "";
-                const ems = ["😀","😂","🥰","😎","🤔","😊","🔥","👍","❤️","✨","👋","🚀","💀","👀","🎉","🤡","☁️","💤","⬜️","🧸","🎀","🎁","🐾"];
+                const ems = ["рџЂ","рџ‚","🥰","рџЋ","🤔","??","🔥","👍","❤️","✨","👋","🚀","💀","👀","🎉","🤡","вЃпёЏ","💤","⬜️","🧸","🎀","🎁","🐾"];
                 ems.forEach(e => { const s = document.createElement('span'); s.className="emoji"; s.innerText = e; s.onclick = () => document.getElementById(m==='pc'?'pc-input':'mob-input').value += e; p.appendChild(s); });
             });
         }
@@ -2635,7 +2168,7 @@ async function saveBio(m) {
         function showCelebration() { document.getElementById('celebration-overlay').style.display = 'flex'; for(let i=0; i<60; i++) { const c = document.createElement('div'); c.className = 'confetti'; c.style.left = Math.random() * 100 + 'vw'; c.style.backgroundColor = `hsl(${Math.random()*360}, 100%, 50%)`; document.body.appendChild(c); c.animate([{top:'-10px'},{top:'100vh'}], {duration: 3000}).onfinish = () => c.remove(); } }
         async function closeCelebration() { document.getElementById('celebration-overlay').style.display = 'none'; await db.ref(`users/${me.id}/hasSeenVerifyNotif`).set(true); me.hasSeenVerifyNotif = true; localStorage.setItem('liquid_pro_v32', JSON.stringify(me)); }
 
-    // === ЛОКАЛЬНЫЕ PUSH-УВЕДОМЛЕНИЯ ПРИ НОВОМ СООБЩЕНИИ ===
+    // === ЛОКАЛЬНЫЕ PUSH-УВЕДОМЛЕН?Я ПР? НОВОМ СООБЩЕН?? ===
 async function initPushNotifications() {
     // Если уведомления не поддерживаются — просто выходим без ошибок
     if (!('Notification' in window)) return;
@@ -2715,7 +2248,7 @@ function sendNotifReply(btn, peerId) {
     alert('Сообщение отправлено!');
 }
 
-// === АДМИН-ПАНЕЛЬ (только для @artem) ===
+// === АДМ?Н-ПАНЕЛЬ (только для @artem) ===
 function showAdminPanel() {
     if (me.handle !== '@artem') return alert("Доступ запрещён");
 
@@ -2744,7 +2277,7 @@ function showAdminPanel() {
     showAdminSection(1);
 }
 
-// === ФУНКЦИИ АДМИН-ПАНЕЛИ ===
+// === ФУНКЦ?? АДМ?Н-ПАНЕЛ? ===
 function showAdminSection(section) {
     const content = document.getElementById('admin-content');
     if (section === 1) {
@@ -2766,8 +2299,8 @@ function showAdminSection(section) {
             <p><small>Это заблокирует экран у всех пользователей.</small></p>
             <textarea id="admin-ann-text" placeholder="Текст объявления..." style="height:150px; margin-bottom:15px;"></textarea>
             <div style="display:flex; gap:10px;">
-                <button onclick="updateAnnouncement(true)" style="background:#00cc00; flex:1; padding:15px; border-radius:12px; color:black; font-weight:bold;">ВКЛЮЧИТЬ У ВСЕХ</button>
-                <button onclick="updateAnnouncement(false)" style="background:#ff4444; flex:1; padding:15px; border-radius:12px; color:white; font-weight:bold;">ВЫКЛЮЧИТЬ</button>
+                <button onclick="updateAnnouncement(true)" style="background:#00cc00; flex:1; padding:15px; border-radius:12px; color:black; font-weight:bold;">ВКЛЮЧ?ТЬ У ВСЕХ</button>
+                <button onclick="updateAnnouncement(false)" style="background:#ff4444; flex:1; padding:15px; border-radius:12px; color:white; font-weight:bold;">ВЫКЛЮЧ?ТЬ</button>
             </div>
             <p style="margin-top:15px; color:#888;">Ссылка на поддержку: https://t.me/Vibe2289</p>`;
     } else if (section === 6) {
@@ -2775,7 +2308,7 @@ function showAdminSection(section) {
             <h3>Рассылка сообщения</h3>
             <p><small>Появится как окно с кнопкой "Понятно".</small></p>
             <textarea id="admin-brd-text" placeholder="Текст сообщения..." style="height:150px; margin-bottom:15px;"></textarea>
-            <button onclick="sendGlobalBroadcast()" style="background:var(--accent); width:100%; padding:15px; border-radius:12px; color:black; font-weight:bold;">ОТПРАВИТЬ ВСЕМ</button>`;
+            <button onclick="sendGlobalBroadcast()" style="background:var(--accent); width:100%; padding:15px; border-radius:12px; color:black; font-weight:bold;">ОТПРАВ?ТЬ ВСЕМ</button>`;
     }
 }
 
@@ -2795,15 +2328,15 @@ async function loadAllUsers(section) {
                 if (section === 4 && u.handle === '@artem') return;
 
                 let action = '';
-                if (section === 1) { // РАЗДЕЛ: ГАЛОЧКИ
+                if (section === 1) { // РАЗДЕЛ: ГАЛОЧК?
                     action = `<button onclick="giveVerify('${uid}')" style="background:var(--accent); color:black; padding:5px 10px; border-radius:8px; border:none; font-weight:bold;">${u.verified ? 'Снять [V]' : 'Дать [V]'}</button>`;
                 } 
-                else if (section === 2) { // РАЗДЕЛ: АДМИНЫ
+                else if (section === 2) { // РАЗДЕЛ: АДМ?НЫ
                     action = u.isAdmin 
                         ? `<button onclick="toggleAdmin('${uid}', false)" style="background:#ff4444; color:white; padding:5px 10px; border-radius:8px; border:none;">Удалить админа</button>` 
                         : `<button onclick="toggleAdmin('${uid}', true)" style="background:lime; color:black; width:35px; height:35px; border-radius:50%; border:none; font-size:20px; font-weight:bold;">+</button>`;
                 } 
-                else if (section === 4) { // РАЗДЕЛ: УДАЛЕНИЕ
+                else if (section === 4) { // РАЗДЕЛ: УДАЛЕН?Е
                     action = u.isDeleted 
                         ? `<button onclick="restoreAccount('${uid}')" style="background:lime; color:black; width:35px; height:35px; border-radius:50%; border:none; font-size:20px; font-weight:bold;">+</button>` 
                         : `<button onclick="deleteAccount('${uid}')" style="background:rgba(255,0,0,0.2); color:#ff4444; padding:5px 10px; border-radius:8px; border:none;">🗑 Удалить</button>`;
@@ -2814,7 +2347,7 @@ async function loadAllUsers(section) {
                     <div>
                         <b style="color:white; display:block;">${u.name}</b>
                         <small style="color:var(--accent);">${u.handle}</small>
-                        ${u.isAdmin ? '<span style="color:#ff00ff; font-size:10px; margin-left:5px;">[АДМИН]</span>' : ''}
+                        ${u.isAdmin ? '<span style="color:#ff00ff; font-size:10px; margin-left:5px;">[АДМ?Н]</span>' : ''}
                     </div>
                     <div>${action}</div>
                 </div>`;
@@ -2858,7 +2391,7 @@ async function giveVerify(id) {
     loadAllUsers(1); 
 }
 
-// --- ЛОГИКА ПРОФИЛЯ, БЛОКИРОВКИ И УДАЛЕНИЯ ДРУЗЕЙ ---
+// --- ЛОГ?КА ПРОФ?ЛЯ, БЛОК??РћР’Рљ? ? УДАЛЕН?Я ДРУЗЕЙ ---
 function showPeerProfile() {
     if(!activePeer) return;
     contextPeerId = activePeer.id; 
@@ -3001,7 +2534,7 @@ async function sendGlobalBroadcast() {
     alert("Рассылка отправлена!");
 }
 
-// --- ЗАПУСК ПРИЛОЖЕНИЯ ---
+// --- ЗАПУСК ПР?Р›РћР–Р•Рќ?Я ---
 function showLinkEmailModal() {
     const authPage = document.getElementById('auth-page');
     if (authPage) authPage.style.display = 'flex';
@@ -3042,13 +2575,13 @@ const loginBtn = document.getElementById("loginBtn");
 document.addEventListener('input', function(e) {
     if (e.target.id === 'l-email-input' || e.target.id === 'l-pass-input') {
         if (emailInput.value.length > 5 && passInput.value.length > 5) {
-            // Кнопка АКТИВНА
+            // Кнопка АКТ?ВНА
             loginBtn.style.background = "#0A84FF";
             loginBtn.style.color = "white";
             loginBtn.style.cursor = "pointer";
             loginBtn.disabled = false;
         } else {
-            // Кнопка НЕАКТИВНА
+            // Кнопка НЕАКТ?ВНА
             loginBtn.style.background = "#2c2c34";
             loginBtn.style.color = "#8e8e93";
             loginBtn.style.cursor = "not-allowed";
@@ -3079,7 +2612,7 @@ window.onload = () => {
     }
 };
 
-// Добавление Избранного в список
+// Добавление ?збранного в список
 function addFavoritesToContacts() {
     const pcList = document.getElementById('pc-contacts-list');
     const mobList = document.getElementById('mob-contacts');
@@ -3161,7 +2694,7 @@ window.openFavorites = function() {
 })();
 </script>
 
-<!-- ПРАВИЛЬНЫЙ БЛОК ПЛАШЕК (ВНУТРИ BODY) -->
+<!-- ПРАВ?ЛЬНЫЙ БЛОК ПЛАШЕК (ВНУТР? BODY) -->
 
 <!-- 1. Плашка Удаления -->
 <div id="screen-deleted" style="display:none; position:fixed; inset:0; background:#000; z-index:1000000; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:20px;">
@@ -3182,7 +2715,7 @@ window.openFavorites = function() {
 <!-- 3. Плашка Объявления (Глобальная блокировка) -->
 <div id="screen-announcement" style="display:none; position:fixed; inset:0; background:rgba(11, 17, 29, 0.98); backdrop-filter:blur(25px); z-index:999998; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:30px;">
     <div style="font-size:60px; margin-bottom:20px;">📢</div>
-    <h2 style="color:white; margin-bottom:15px;">ВАЖНОЕ ОБЪЯВЛЕНИЕ</h2>
+    <h2 style="color:white; margin-bottom:15px;">ВАЖНОЕ ОБЪЯВЛЕН?Е</h2>
     <p id="announcement-display-text" style="color:#fff; font-size:18px; line-height:1.5; margin-bottom:30px; max-width:400px;"></p>
     <a href="https://t.me/Vibe2289" target="_blank" style="background:var(--accent); color:#000; padding:14px 40px; border-radius:15px; text-decoration:none; font-weight:bold; font-size:16px;">ПОДДЕРЖКА</a>
 </div>
@@ -3201,8 +2734,8 @@ window.openFavorites = function() {
 <script>
 const vibeEnhancer = (() => {
   const SWATCHS = ['#3a83c5','#3aa41e','#cf7a20','#bd4d46','#8659c9','#44a3b6','#b44f89','#8797aa','linear-gradient(135deg, #67cdf0, #4e83d4)','linear-gradient(135deg, #b7dc5b, #3f9c48)','linear-gradient(135deg, #f6b43f, #da6b42)','linear-gradient(135deg, #ff9b69, #d54b67)','linear-gradient(135deg, #d87cff, #6d57d5)','linear-gradient(135deg, #70e0c4, #3b9cd7)','linear-gradient(135deg, #f693ae, #cb4c95)','linear-gradient(135deg, #c7d0d8, #9cabb8)'];
-  const PATTERNS = ['✦','☼','✿','♫','☁','✈','❤','⚡'];
-  const APP_ICONS = ['💬','▶','✨','🎵'];
+  const PATTERNS = ['✦','вј','✿','в™«','вЃ','✈','❤','⚡'];
+  const APP_ICONS = ['💬','в–¶','✨','🎵'];
   const state = { settingsView: 'home', friends: {}, rooms: {}, scanStream: null, currentQrSession: null };
   let channelMode = 'private';
 
@@ -3221,7 +2754,7 @@ const vibeEnhancer = (() => {
     s.privacy = s.privacy || {};
     s.devices = s.devices || {};
     if (!s.appearance.profileColor) s.appearance.profileColor = SWATCHS[2];
-    if (!s.appearance.patternEmoji) s.appearance.patternEmoji = '☼';
+    if (!s.appearance.patternEmoji) s.appearance.patternEmoji = 'вј';
     if (!s.appearance.appIcon) s.appearance.appIcon = APP_ICONS[0];
     if (!s.privacy.lastSeenMode) s.privacy.lastSeenMode = 'all';
     if (!s.privacy.lastSeenExceptions) s.privacy.lastSeenExceptions = {};
@@ -3239,10 +2772,10 @@ const vibeEnhancer = (() => {
     const ua = navigator.userAgent || '';
     const platform = /iPhone|iPad|iPod/.test(ua) ? 'iPhone' : /Android/.test(ua) ? 'Android' : /Windows/.test(ua) ? 'Windows PC' : /Mac OS/.test(ua) ? 'Mac' : 'Устройство';
     const browser = /Chrome/.test(ua) ? 'Chrome' : /Safari/.test(ua) ? 'Safari' : /Firefox/.test(ua) ? 'Firefox' : 'Browser';
-    return `${platform} · ${browser}`;
+    return `${platform} В· ${browser}`;
   }
   function profilePatternCss(emoji) {
-    const encoded = encodeURIComponent(emoji || '☼');
+    const encoded = encodeURIComponent(emoji || 'вј');
     return `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='88' height='88' viewBox='0 0 88 88'%3E%3Ctext x='44' y='52' font-size='24' text-anchor='middle' fill='rgba(0,0,0,0.45)'%3E${encoded}%3C/text%3E%3C/svg%3E")`;
   }
   function nowTs() { return Date.now(); }
@@ -3288,7 +2821,7 @@ const vibeEnhancer = (() => {
   function renderDevices() {
     const devices = Object.values(safeSettings().devices || {}).sort((a, b) => (b.lastSeenAt || 0) - (a.lastSeenAt || 0));
     if (!devices.length) return `<div class="settings-card">Устройств пока нет</div>`;
-    return devices.map(device => `<div class="device-row"><div class="device-main"><div class="device-icon-box">🖥</div><div><div>${device.name || 'Устройство'}${device.id === getDeviceId() ? ' · это устройство' : ''}</div><div class="settings-nav-meta">${device.lastSeenAt ? new Date(device.lastSeenAt).toLocaleString() : 'Сейчас активно'}</div></div></div><button class="three-dot" onclick="showDeviceMenu('${device.id}')">⋯</button></div>`).join('');
+    return devices.map(device => `<div class="device-row"><div class="device-main"><div class="device-icon-box">🖥</div><div><div>${device.name || 'Устройство'}${device.id === getDeviceId() ? ' В· это устройство' : ''}</div><div class="settings-nav-meta">${device.lastSeenAt ? new Date(device.lastSeenAt).toLocaleString() : 'Сейчас активно'}</div></div></div><button class="three-dot" onclick="showDeviceMenu('${device.id}')">⋯</button></div>`).join('');
   }
   function renderPresenceFriends() {
     const selected = safeSettings().privacy.lastSeenExceptions || {};
@@ -3309,7 +2842,7 @@ const vibeEnhancer = (() => {
 )}${navItem(
   'auth',
   '<img src="Эконки/Аудификация.png" class="nav-icon">',
-  'Аундификация',
+  'Аудификация',
   s.auth.loginCode ? 'Код входа включён' : 'Дополнительная защита'
 )}${navItem(
   'appearance',
@@ -3321,9 +2854,9 @@ const vibeEnhancer = (() => {
   '<img src="Эконки/Время захода.png" class="nav-icon">',
   'Время захода',
   presenceLabel(s.privacy.lastSeenMode)
-)}</div><div style="margin-top:18px;" class="settings-actions">${!me.email ? `<button class="settings-ghost" onclick="showLinkEmailModal()">Привязать почту</button>` : ''}${!me.verified ? `<button class="verify-btn" style="display:block; margin-top:0;" onclick="window.open('https://forms.yandex.ru/cloud/69c657e1493639ae65329446','_blank')">ВЕРИФИКАЦИЯ</button>` : ''}<button class="settings-ghost" style="color:#ff8a8a;" onclick="logout()">Выйти с аккаунта</button></div></div></div></div>`,
+)}</div><div style="margin-top:18px;" class="settings-actions">${!me.email ? `<button class="settings-ghost" onclick="showLinkEmailModal()">Привязать почту</button>` : ''}${!me.verified ? `<button class="verify-btn" style="display:block; margin-top:0;" onclick="window.open('https://forms.yandex.ru/cloud/69c657e1493639ae65329446','_blank')">ВЕРИлиРљРђ??Я</button>` : ''}<button class="settings-ghost" style="color:#ff8a8a;" onclick="logout()">Выйти с аккаунта</button></div></div></div></div>`,
       devices: subPage('Устройства', 'Подключай новые экраны по QR и управляй активными входами', `<div class="settings-card"><div class="settings-actions"><button class="settings-save" onclick="startDeviceScanner()">Подключить устройство</button><button class="settings-ghost" onclick="openQrLogin()">Войти по QR на ПК</button></div><p class="section-note" style="margin-top:12px;">На ПК открой вход по QR-коду. На телефоне нажми «Подключить устройство», отсканируй код и подтверди вход.</p></div><div class="device-list">${renderDevices()}</div>`),
-      auth: subPage('Аундификация', 'Код для входа, пароль приложения и мобильная защита', `<div class="settings-card settings-section"><div class="settings-field"><label>Код для входа</label><input id="login-code-input-setting" type="password" placeholder="${s.auth.loginCode ? 'Код уже создан' : 'Придумай код для входа'}"></div><div class="settings-actions"><button class="settings-save" onclick="saveLoginCode()">Сохранить</button>${s.auth.loginCode ? `<button class="settings-ghost" onclick="removeLoginCode()">Удалить код</button>` : ''}</div><p class="section-note">Этот код будет спрашиваться после входа по почте и после сканирования QR.</p></div><div class="settings-card settings-section"><div class="settings-field"><label>Пароль для входа в приложение</label><input id="app-lock-password" type="password" placeholder="${s.auth.appLockPassword ? 'Новый пароль или оставь как есть' : 'Пароль для открытия приложения'}"></div><div class="settings-actions"><button class="settings-save" onclick="saveAppLockPassword()">Установить</button>${s.auth.appLockPassword ? `<button class="settings-ghost" onclick="toggleAppLock(false)">Отключить</button>` : ''}${!isPC ? `<button class="settings-ghost" onclick="setupBiometric()">Лицо / отпечаток</button>` : ''}</div><p class="section-note">${!isPC ? 'На мобильном устройстве можно включить локальную разблокировку через системный биометрический датчик.' : 'Эта функция работает только на телефоне.'}</p></div>`),
+      auth: subPage('Аудификация', 'Код для входа, пароль приложения и мобильная защита', `<div class="settings-card settings-section"><div class="settings-field"><label>Код для входа</label><input id="login-code-input-setting" type="password" placeholder="${s.auth.loginCode ? 'Код уже создан' : 'Придумай код для входа'}"></div><div class="settings-actions"><button class="settings-save" onclick="saveLoginCode()">Сохранить</button>${s.auth.loginCode ? `<button class="settings-ghost" onclick="removeLoginCode()">Удалить код</button>` : ''}</div><p class="section-note">Этот код будет спрашиваться после входа по почте и после сканирования QR.</p></div><div class="settings-card settings-section"><div class="settings-field"><label>Пароль для входа в приложение</label><input id="app-lock-password" type="password" placeholder="${s.auth.appLockPassword ? 'Новый пароль или оставь как есть' : 'Пароль для открытия приложения'}"></div><div class="settings-actions"><button class="settings-save" onclick="saveAppLockPassword()">Установить</button>${s.auth.appLockPassword ? `<button class="settings-ghost" onclick="toggleAppLock(false)">Отключить</button>` : ''}${!isPC ? `<button class="settings-ghost" onclick="setupBiometric()">Лицо / отпечаток</button>` : ''}</div><p class="section-note">${!isPC ? 'На мобильном устройстве можно включить локальную разблокировку через системный биометрический датчик.' : 'Эта функция работает только на телефоне.'}</p></div>`),
       appearance: subPage('Оформления', 'Фон профиля, фоновый эмодзи, тема и иконка приложения', `<div class="settings-card"><div class="settings-preview" style="background:${color}; min-height:260px;"><div class="settings-pattern" style="background-image:${pattern};"></div><div class="settings-preview-avatar">${me.avatar || '👤'}</div><div class="settings-preview-name" style="font-size:44px;">${me.name || 'Без имени'}${me.verified ? vBadge : ''}</div><div class="settings-preview-handle">${me.handle || '@user'}</div></div></div><div class="settings-card settings-section"><div class="settings-field"><label>Поменять цвет фона</label><div class="swatch-grid">${SWATCHS.map((item, idx) => `<button class="swatch-btn ${item === s.appearance.profileColor ? 'active' : ''}" onclick="pickProfileColor(${idx})" style="background:${item};"></button>`).join('')}</div></div><div class="settings-field"><label>Поменять эмодзи в фоне</label><div class="pattern-chip-row">${PATTERNS.map(item => `<button class="pattern-chip ${item === s.appearance.patternEmoji ? 'active' : ''}" onclick="pickPatternEmoji('${item}')">${item}</button>`).join('')}</div></div><div class="settings-field"><label>Тема</label><select id="appearance-theme-sel">${themeList.map(t => `<option value="${t}" ${t === (localStorage.getItem('theme') || 'dark') ? 'selected' : ''}>${t.toUpperCase()}</option>`).join('')}</select></div><div class="settings-field"><label>Вид иконки приложения</label><div class="icon-grid">${APP_ICONS.map((icon, idx) => `<button class="icon-card ${icon === s.appearance.appIcon ? 'active' : ''}" onclick="pickAppIcon(${idx})">${icon}</button>`).join('')}</div></div><div class="settings-actions"><button class="settings-save" onclick="saveAppearanceSettings()">Сохранить изменения</button></div></div><div class="settings-card settings-section"><div class="settings-field"><label>Изменить профиль</label><input id="profile-name-edit" value="${escapeHtml(me.name || '')}" placeholder="Имя"><button class="settings-save" onclick="saveProfileNameFromSettings()">Сохранить имя</button></div><div class="settings-field"><textarea id="profile-bio-edit" placeholder="Описание">${escapeHtml(me.bio || '')}</textarea><button class="settings-save" onclick="saveProfileBioFromSettings()">Сохранить описание</button></div></div>`),
       presence: subPage('Время захода', 'Кто видит, когда ты в сети или когда был(а) недавно', `<div class="settings-card settings-section"><div class="settings-actions"><button class="${s.privacy.lastSeenMode === 'all' ? 'settings-save' : 'settings-ghost'}" onclick="setPresenceMode('all')">Все</button><button class="${s.privacy.lastSeenMode === 'friends' ? 'settings-save' : 'settings-ghost'}" onclick="setPresenceMode('friends')">Друзья</button><button class="${s.privacy.lastSeenMode === 'nobody' ? 'settings-save' : 'settings-ghost'}" onclick="setPresenceMode('nobody')">Никто</button></div>${s.privacy.lastSeenMode === 'nobody' ? `<button class="settings-ghost" onclick="openPresenceExceptions()">Исключения</button>` : ''}</div>`),
       presenceExceptions: subPage('Исключения', 'Выбери друзей, которым можно показывать точное время захода', `<div class="settings-card"><div class="people-list">${renderPresenceFriends()}</div><div class="settings-actions" style="margin-top:16px;"><button class="settings-save" onclick="savePresenceExceptions()">Сохранить</button></div></div>`)
@@ -3516,7 +3049,7 @@ const vibeEnhancer = (() => {
     if (!host) return;
     const header = desktop ? `<div class="chat-topbar"><h3>Чаты</h3><button class="chat-plus-btn" onclick="showCreateMenu()">+</button></div>` : '';
     const users = Object.values(state.friends).map(user => `<div class="contact-item glass" onclick="${desktop ? `openPCChat(vibeRoomState.friends['${user.id}'])` : `openMobChat(vibeRoomState.friends['${user.id}'])`}" oncontextmenu="showChatListMenu(event, '${user.id}')"><div class="avatar-emoji">${user.avatar || '👤'}</div><div style="min-width:0;"><b>${user.name}${user.verified ? vBadge : ''}</b><br><small class="${user.online ? 'st-all' : 'st-none'}">${getPresenceText(user)}</small></div></div>`).join('');
-    const rooms = Object.values(state.rooms).map(room => `<div class="contact-item glass" onclick="${desktop ? `openPCChat(vibeRoomState.rooms['${room.id}'])` : `openMobChat(vibeRoomState.rooms['${room.id}'])`}"><div class="avatar-emoji room-avatar">${room.avatar || (room.type === 'channel' ? '📣' : '👥')}</div><div style="min-width:0; flex:1;"><b>${room.name}</b><br><small>${room.type === 'channel' ? 'Канал' : 'Группа'} · ${Object.keys(room.members || {}).length} участников</small></div><span class="meta-pill">${room.type === 'channel' ? 'Канал' : 'Группа'}</span></div>`).join('');
+    const rooms = Object.values(state.rooms).map(room => `<div class="contact-item glass" onclick="${desktop ? `openPCChat(vibeRoomState.rooms['${room.id}'])` : `openMobChat(vibeRoomState.rooms['${room.id}'])`}"><div class="avatar-emoji room-avatar">${room.avatar || (room.type === 'channel' ? '📣' : '👥')}</div><div style="min-width:0; flex:1;"><b>${room.name}</b><br><small>${room.type === 'channel' ? 'Канал' : 'Группа'} В· ${Object.keys(room.members || {}).length} участников</small></div><span class="meta-pill">${room.type === 'channel' ? 'Канал' : 'Группа'}</span></div>`).join('');
     host.innerHTML = header + users + rooms;
   }
   function renderDialogs() { renderDialogList('pc-contacts-list', true); renderDialogList('mob-contacts', false); }
@@ -3575,7 +3108,7 @@ const vibeEnhancer = (() => {
     await db.ref(`rooms/${roomId}`).set(room);
     await Promise.all(Object.keys(members).map(id => db.ref(`userRooms/${id}/${roomId}`).set(true)));
     // Системное сообщение о создании группы
-    await db.ref(`rooms/${roomId}/messages`).push({ sender: me.id, val: `${me.name} создал(а) группу «${name}»`, time: nowTs(), system: true });
+    await db.ref(`rooms/${roomId}/messages`).push({ sender: me.id, val: `${me.name} создал(а) группу В«${name}В»`, time: nowTs(), system: true });
     closeOverlay();
     alert('Группа создана.');
   }
@@ -3865,7 +3398,7 @@ const vibeEnhancer = (() => {
     const members = Object.keys(activePeer.members || {});
     const list = members.map(id => {
       const user = state.friends[id] || (id === me.id ? me : null);
-      const badge = activePeer.ownerId === id ? '★ владелец' : activePeer.admins && activePeer.admins[id] ? '☆ админ' : '';
+      const badge = activePeer.ownerId === id ? 'в… владелец' : activePeer.admins && activePeer.admins[id] ? 'в† админ' : '';
       return `<div class="person-row"><span class="person-main"><span class="avatar-emoji">${(user && user.avatar) || '👤'}</span><span><div>${(user && user.name) || id}</div><div class="settings-nav-meta">${(user && user.handle) || ''} ${badge}</div></span></span>${ownsRoom(activePeer) && id !== me.id && activePeer.type === 'group' ? `<button class="settings-ghost" onclick="removeGroupMember('${activePeer.id}','${id}')">Удалить</button>` : ''}</div>`;
     }).join('');
     const actions = ownsRoom(activePeer) ? `<div class="settings-actions"><button class="settings-save" onclick="openRoomSettings('${activePeer.id}')">Настройки</button><button class="settings-ghost" style="color:#ff8a8a;" onclick="deleteRoom('${activePeer.id}')">${activePeer.type === 'group' ? 'Удалить группу' : 'Удалить канал'}</button></div>` : `<div class="settings-actions"><button class="settings-ghost" style="color:#ff8a8a;" onclick="leaveRoom('${activePeer.id}')">${activePeer.type === 'group' ? 'Выйти из группы' : 'Покинуть канал'}</button></div>`;
@@ -3906,7 +3439,7 @@ window.addEventListener('load', () => setTimeout(() => vibeEnhancer.init(), 250)
       row.dataset.replaced = '1';
       const wrapper = document.createElement('div');
       wrapper.className = 'settings-field';
-      wrapper.innerHTML = `<input id="pattern-emoji-input" maxlength="2" value="${((me.settings && me.settings.appearance && me.settings.appearance.patternEmoji) || '☼')}" placeholder="Введи свой эмодзи">`;
+      wrapper.innerHTML = `<input id="pattern-emoji-input" maxlength="2" value="${((me.settings && me.settings.appearance && me.settings.appearance.patternEmoji) || 'вј')}" placeholder="Введи свой эмодзи">`;
       row.parentNode.replaceChild(wrapper, row);
     });
     document.querySelectorAll('.settings-actions').forEach(actions => {
@@ -3937,7 +3470,7 @@ window.addEventListener('load', () => setTimeout(() => vibeEnhancer.init(), 250)
       changeTheme(themeSelect.value);
       me.settings.appearance.themeName = themeSelect.value;
     }
-    me.settings.appearance.patternEmoji = (patternInput && patternInput.value.trim()) || '☼';
+    me.settings.appearance.patternEmoji = (patternInput && patternInput.value.trim()) || 'вј';
     localStorage.setItem('liquid_pro_v32', JSON.stringify(me));
     await db.ref(`users/${me.id}/settings`).set(me.settings);
     updateUI();
@@ -4012,7 +3545,7 @@ window.addEventListener('load', () => setTimeout(() => vibeEnhancer.init(), 250)
     const user = activePeer;
     const appearance = (user.settings && user.settings.appearance) || {};
     const bg = appearance.profileColor || '#956634';
-    const emoji = appearance.patternEmoji || '☼';
+    const emoji = appearance.patternEmoji || 'вј';
     const pattern = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='88' height='88' viewBox='0 0 88 88'%3E%3Ctext x='44' y='52' font-size='24' text-anchor='middle' fill='rgba(0,0,0,0.45)'%3E${encodeURIComponent(emoji)}%3C/text%3E%3C/svg%3E")`;
     closeOverlay();
     const root = document.getElementById('app-overlay-root');
@@ -4025,7 +3558,7 @@ window.addEventListener('load', () => setTimeout(() => vibeEnhancer.init(), 250)
     try {
       const snd = document.getElementById('snd-msg');
       if (snd) { snd.currentTime = 0; snd.play().catch(() => {}); }
-      // Используем нашу новую функцию showNotification с интерактивностью
+      // ?спользуем нашу новую функцию showNotification с интерактивностью
       if (typeof showNotification === 'function') {
         showNotification(title, body, { });
       } else if ('Notification' in window) {
@@ -4553,6 +4086,19 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 // Выбор фото при создании группы/канала с сохранением уже написанных данных
+  window.openAvatarPhotoView = function() {
+    const html = avatarPhotoViewHtml();
+    const hosts = settingsHosts();
+    const visibleHost = hosts.find(host => host.offsetParent !== null) || hosts[0];
+    if (visibleHost) {
+      visibleHost.innerHTML = html;
+      applyAppearancePreview();
+      syncAvatarSurfaces();
+      return;
+    }
+    if (typeof showModal === 'function') showModal('wide', html);
+  };
+
   window.uploadDraftPhoto = async function(type) {
     // Временно сохраняем уже введенный текст, чтобы он не стерся при переходе в обрезку
     FIX.tempDraftValues = {
@@ -4668,7 +4214,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initInteractiveCrop();
   };
 
-  // 2. Инициализация обработки жестов перемещения картинки
+  // 2. ?нициализация обработки жестов перемещения картинки
   window.initInteractiveCrop = function() {
     const viewport = $('crop-viewport');
     const img = $('avatar-crop-img');
@@ -5023,7 +4569,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const unread = meta.unread || 0;
   const open = desktop ? `openPCChat(vibeFix20260524.getItem('${key}'))` : `openMobChat(vibeFix20260524.getItem('${key}'))`;
   
-  if (isRoom(item)) return `<div class="contact-item glass" onclick="${open}">${avatarHtml(item, 'room-avatar')}<div class="dialog-main"><b>${esc(item.name)}</b><br><small>${item.type === 'channel' ? 'Канал' : 'Группа'} · ${Object.keys(item.members || {}).length} участников</small></div>${meta.lastTime ? `<span class="dialog-time">${timeLabel(meta.lastTime)}</span>` : ''}${unread ? `<span class="unread-badge">${unread}</span>` : ''}</div>`;
+  if (isRoom(item)) return `<div class="contact-item glass" onclick="${open}">${avatarHtml(item, 'room-avatar')}<div class="dialog-main"><b>${esc(item.name)}</b><br><small>${item.type === 'channel' ? 'Канал' : 'Группа'} В· ${Object.keys(item.members || {}).length} участников</small></div>${meta.lastTime ? `<span class="dialog-time">${timeLabel(meta.lastTime)}</span>` : ''}${unread ? `<span class="unread-badge">${unread}</span>` : ''}</div>`;
   
   if (item.isDeleted) return `<div class="contact-item glass" onclick="alert('Этот аккаунт удалён.')" oncontextmenu="return false"><div class="avatar-emoji">🚫</div><div class="dialog-main"><b>Удалённый аккаунт</b><br><small class="st-none">Чат недоступен</small></div></div>`;
   const pinMarkup = (me.pins && me.pins[item.id]) ? `<span class="pin-indicator"><svg viewBox="0 0 24 24"><path d="M16 12V4H17V2H7V4H8V12L6 14V16H11.2V22H12.8V16H18V14L16 12Z"/></svg></span>` : '';
@@ -5034,7 +4580,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const host = $(id);
       if (!host || !me) return;
       
-      // Исключаем архивированные диалоги из общего списка
+      // ?сключаем архивированные диалоги из общего списка
       const items = friends().concat(rooms()).filter(item => {
         return !(me.archives && me.archives[item.id]);
       });
@@ -5057,7 +4603,7 @@ document.addEventListener('DOMContentLoaded', () => {
       
       const requests = rooms().filter(r => r.ownerId === me.id && r.joinRequests).flatMap(r => Object.keys(r.joinRequests || {}).map(uid => {
         const u = (((window.vibeRoomState || {}).friends || {})[uid]) || { id: uid, name: uid, avatar: '👤' };
-        return `<div class="contact-item glass">${avatarHtml(u)}<div class="dialog-main"><b>${esc(u.name)}</b><br><small>Хочет зайти в «${esc(r.name)}»</small></div><button class="settings-save" onclick="approveJoinRequest('${r.id}','${uid}')">+</button><button class="settings-ghost" onclick="denyJoinRequest('${r.id}','${uid}')">✕</button></div>`;
+        return `<div class="contact-item glass">${avatarHtml(u)}<div class="dialog-main"><b>${esc(u.name)}</b><br><small>Хочет зайти в В«${esc(r.name)}В»</small></div><button class="settings-save" onclick="approveJoinRequest('${r.id}','${uid}')">+</button><button class="settings-ghost" onclick="denyJoinRequest('${r.id}','${uid}')">✕</button></div>`;
       })).join('');
 
       // Отрисовываем папку Архив только если в ней есть скрытые чаты
@@ -5075,7 +4621,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       host.innerHTML = header + requests + archiveFolderHTML + rowFor(favItem, desktop) + items.map(item => rowFor(item, desktop)).join('');
       
-      // Инициализируем сенсорные зажатия для мобилок
+      // ?нициализируем сенсорные зажатия для мобилок
       bindLongPressHandlers();
     });
   }
@@ -5908,7 +5454,7 @@ if (ui) {
     const memberRows = memberIds.map(id => {
       const u = friends().find(x => x.id === id) || (id === me.id ? me : { id, name: id });
       const owner = id === room.ownerId;
-      const badge = owner ? '<span class="star-owner">★ владелец</span>' : (room.admins && room.admins[id] ? '<span class="star-admin">★ админ</span>' : '');
+      const badge = owner ? '<span class="star-owner">в… владелец</span>' : (room.admins && room.admins[id] ? '<span class="star-admin">в… админ</span>' : '');
       return `<div class="person-row"><span class="person-main"><span class="avatar-emoji">${u.avatar || '👤'}</span><span><div>${esc(u.name)}</div><div class="settings-nav-meta">${badge}</div></span></span>${!owner ? `<button class="settings-ghost" onclick="removeGroupMember('${roomId}','${id}')">Удалить участника</button>` : ''}</div>`;
     }).join('');
     const adminRows = memberIds.filter(id => id !== room.ownerId).map(id => {
@@ -5944,7 +5490,7 @@ if (ui) {
     </div>`;
     const add = `<input placeholder="Поиск" oninput="filterSelectableFriends(this.value,'add-members-list')"><div id="add-members-list" class="people-list" style="margin-top:12px;">${selectableUsers(room.members || {}, 'data-add-member')}</div><button class="settings-save" style="margin-top:12px;" onclick="document.querySelectorAll('[data-add-member]:checked').forEach(i=>addRoomMember('${roomId}',i.getAttribute('data-add-member')))">Добавить</button>`;
     const body = tab === 'add' ? add : tab === 'admins' ? `<div class="settings-card"><div class="settings-nav-title">Админы</div><div class="people-list">${adminRows}</div></div>` : tab === 'edit' ? edit : `<div class="settings-card"><div class="settings-nav-title">Участники</div><div class="people-list">${memberRows}</div><button class="settings-save" style="margin-top:12px;" onclick="openRoomSettings('${roomId}','add')">Добавить участника</button></div>`;
-    showModal('wide', `<div class="modal-head"><div><div class="modal-title">Настройки группы</div><div class="settings-subtitle">${esc(room.name)}</div></div><button class="modal-close" onclick="closeOverlay()">✕</button></div><div class="room-tabs"><button class="room-tab ${tab === 'members' || tab === 'add' ? 'active' : ''}" onclick="openRoomSettings('${roomId}','members')">Участники</button><button class="room-tab ${tab === 'admins' ? 'active' : ''}" onclick="openRoomSettings('${roomId}','admins')">Админы</button><button class="room-tab ${tab === 'edit' ? 'active' : ''}" onclick="openRoomSettings('${roomId}','edit')">Изменить группу</button></div>${body}`);
+    showModal('wide', `<div class="modal-head"><div><div class="modal-title">Настройки группы</div><div class="settings-subtitle">${esc(room.name)}</div></div><button class="modal-close" onclick="closeOverlay()">✕</button></div><div class="room-tabs"><button class="room-tab ${tab === 'members' || tab === 'add' ? 'active' : ''}" onclick="openRoomSettings('${roomId}','members')">Участники</button><button class="room-tab ${tab === 'admins' ? 'active' : ''}" onclick="openRoomSettings('${roomId}','admins')">Админы</button><button class="room-tab ${tab === 'edit' ? 'active' : ''}" onclick="openRoomSettings('${roomId}','edit')">?зменить группу</button></div>${body}`);
   };
   window.saveRoomName = async roomId => { await db.ref(`rooms/${roomId}/name`).set($('room-name-edit').value.trim()); closeOverlay(); };
   window.saveRoomBio = async roomId => { await db.ref(`rooms/${roomId}/bio`).set($('room-bio-edit').value.trim()); closeOverlay(); };
@@ -5971,7 +5517,7 @@ if (ui) {
     const room = activePeer;
     const list = Object.keys(room.members || {}).map(id => {
       const u = friends().find(x => x.id === id) || (id === me.id ? me : { id, name: id });
-      const badge = id === room.ownerId ? '<span class="star-owner">★ владелец</span>' : (room.admins && room.admins[id] ? '<span class="star-admin">★ админ</span>' : '');
+      const badge = id === room.ownerId ? '<span class="star-owner">в… владелец</span>' : (room.admins && room.admins[id] ? '<span class="star-admin">в… админ</span>' : '');
       return `<div class="person-row"><span class="person-main"><span class="avatar-emoji">${u.avatar || '👤'}</span><span><div>${esc(u.name)}</div><div class="settings-nav-meta">${badge}</div></span></span></div>`;
     }).join('');
     const owner = room.ownerId === me.id;
@@ -5998,7 +5544,7 @@ if (ui) {
       location.reload();
     });
     const qrUrl = `https://quickchart.io/qr?text=${encodeURIComponent(token)}&size=320`;
-    showModal('', `<div class="modal-head"><div><div class="modal-title">Войти по QR-коду</div><div class="settings-subtitle">На телефоне: Настройки → Устройства → Подключить устройство, затем наведи камеру на этот код.</div></div><button class="modal-close" onclick="closeOverlay()">✕</button></div><div class="qr-box"><img src="${qrUrl}" alt="QR" onerror="this.outerHTML='<div style=&quot;color:#000;text-align:center;font-weight:800;padding:30px;&quot;>QR не загрузился<br><br>${token}</div>'"></div><div class="settings-card" style="text-align:center;">Код: <b>${token}</b></div>`);
+    showModal('', `<div class="modal-head"><div><div class="modal-title">Войти по QR-коду</div><div class="settings-subtitle">На телефоне: Настройки в†’ Устройства в†’ Подключить устройство, затем наведи камеру на этот код.</div></div><button class="modal-close" onclick="closeOverlay()">✕</button></div><div class="qr-box"><img src="${qrUrl}" alt="QR" onerror="this.outerHTML='<div style=&quot;color:#000;text-align:center;font-weight:800;padding:30px;&quot;>QR не загрузился<br><br>${token}</div>'"></div><div class="settings-card" style="text-align:center;">Код: <b>${token}</b></div>`);
   };
   const baseStartDeviceScanner = window.startDeviceScanner;
   window.startDeviceScanner = async function() {
@@ -6138,7 +5684,7 @@ if (ui) {
     });
   }
 
-// ПРИНУДИТЕЛЬНО выносим нужные функции в глобальную область window
+// ПР?РќРЈР”?ТЕЛЬНО выносим нужные функции в глобальную область window
 // Это исправляет ошибку "is not defined" при клике на кнопки в модалках
 window.addEventListener('load', () => {
     if (typeof vibeEnhancer !== 'undefined') {
@@ -6203,8 +5749,8 @@ window.showCreateMenu = function() {
     }
 };
 
-// Исправление всех кнопок "+"
-const bindPlus = () => {
+// ?справление всех кнопок "+"
+const bindPlusStrong = () => {
     document.querySelectorAll('.chat-plus-btn, .fab-plus').forEach(btn => {
         btn.onclick = null; 
         btn.removeEventListener('click', window.showCreateMenu);
@@ -6216,8 +5762,8 @@ const bindPlus = () => {
     });
 };
 
-document.addEventListener('DOMContentLoaded', bindPlus);
-setInterval(bindPlus, 1000);
+document.addEventListener('DOMContentLoaded', bindPlusStrong);
+setInterval(bindPlusStrong, 1000);
 
 if (window.innerWidth > 768) {
     document.getElementById("intro-screen").remove();
@@ -6331,6 +5877,9 @@ window.openArchiveModal = function() {
     closeOverlay();
     alert('Диалоги возвращены на главный экран');
   };
+
+})();
+</script>
 
 <script id="codex-ultimate-ui-fixes">
 (() => {
@@ -6869,10 +6418,15 @@ window.openArchiveModal = function() {
       root = document.createElement('div');
       root.id = 'app-overlay-root';
       root.className = 'overlay-root';
-      document.body.appendChild(root);
     }
+    document.querySelectorAll('#app-overlay-root').forEach(node => {
+      if (node !== root) node.remove();
+    });
+    if (root.parentNode !== document.body) document.body.appendChild(root);
+    root.className = root.className || 'overlay-root';
     return root;
   };
+  ensureOverlayRoot();
   const openGlassModal = (width, html) => {
     if (typeof window.closeOverlay === 'function') window.closeOverlay();
     const root = ensureOverlayRoot();
@@ -6884,9 +6438,9 @@ window.openArchiveModal = function() {
     return Object.keys(room.members || {}).map(id => {
       const user = state.friends[id] || (id === ((currentMe() && currentMe().id) || '') ? currentMe() : null) || { id, name: id, avatar: '👤' };
       const badge = id === room.ownerId
-        ? '<span class="star-owner">★ владелец</span>'
+        ? '<span class="star-owner">в… владелец</span>'
         : room.admins && room.admins[id]
-          ? '<span class="star-admin">★ админ</span>'
+          ? '<span class="star-admin">в… админ</span>'
           : '';
       return `<div class="person-row"><span class="person-main">${avatarMarkup(user, 'avatar-emoji', 'width:48px;height:48px;font-size:22px;')}<span><div>${esc(user.name || id)}</div><div class="settings-nav-meta">${badge}</div></span></span></div>`;
     }).join('');
@@ -7348,24 +6902,24 @@ window.openArchiveModal = function() {
   };
 
   const EMOJI_PACK = [
-    '😀','😃','😄','😁','😆','😅','😂','🤣','😊','😇','🙂','🙃','😉','😍','🥰','😘','😗','😙','😚','😋',
-    '😜','😝','🤪','🤨','🧐','🤓','😎','🥳','😤','😡','🤯','😱','🥺','😢','😭','😮','😯','😲','🤠','😴',
-    '👋','👍','👎','👏','🙏','💪','🫶','💖','💘','💝','💗','💓','💞','💕','💥','🔥','✨','🌟','⚡','🌈',
-    '🍓','🍒','🍉','🍍','🍋','🍕','🍔','🍟','🌭','🍩','🍪','🍫','☕','🍿','🎧','🎮','🎲','🏆','⚽','🏀',
-    '🚗','✈️','🚀','🛸','📸','🎬','🎵','🎤','📱','💻','📌','📎','🧸','🎁','🎉','🎈','🌸','🌺','🌊','⛄'
+    'рџЂ','рџѓ','рџ„','рџЃ','рџ†','рџ…','рџ‚','🤣','??','рџ‡','🙂','🙃','рџ‰','рџЌ','🥰','рџ','рџ—','рџ™','рџљ','рџ‹',
+    'рџњ','рџќ','🤪','🤨','🧐','🤓','рџЋ','🥳','рџ¤','рџЎ','🤯','рџ±','🥺','рџў','рџ­','рџ®','рџЇ','рџІ','🤠','рџґ',
+    '👋','👍','👎','👏','🙏','💪','🫶','💖','рџ’','💝','💗','💓','💞','💕','💥','🔥','✨','🌟','⚡','🌈',
+    '🍓','🍒','🍉','🍍','🍋','🍕','🍔','🍟','🌭','🍩','🍪','🍫','в•','🍿','🎧','🎮','🎲','🏆','⚽','🏀',
+    '🚗','✈️','🚀','🛸','📸','🎬','🎵','🎤','📱','💻','📌','📎','🧸','🎁','🎉','🎈','🌸','🌺','🌊','в›„'
   ];
   const BUILTIN_STICKERS = [
     ['spark', '#0ea5e9', '✨'],
     ['heart', '#ef4444', '💖'],
-    ['smile', '#22c55e', '😄'],
-    ['cool', '#111827', '😎'],
+    ['smile', '#22c55e', 'рџ„'],
+    ['cool', '#111827', 'рџЋ'],
     ['cat', '#f59e0b', '🐱'],
     ['dog', '#8b5cf6', '🐶'],
     ['fire', '#f97316', '🔥'],
     ['star', '#eab308', '⭐'],
     ['ok', '#14b8a6', '👌'],
     ['wow', '#f43f5e', '🤯'],
-    ['love', '#ec4899', '💘'],
+    ['love', '#ec4899', 'рџ’'],
     ['party', '#06b6d4', '🥳']
   ].map(([name, color, label]) => {
     const svg = `
@@ -7418,7 +6972,7 @@ window.openArchiveModal = function() {
         <div class="picker-tabs">
           <button type="button" class="picker-tab ${activeTab === 'emoji' ? 'active' : ''}" data-picker-tab="emoji">Эмодзи</button>
           <button type="button" class="picker-tab ${activeTab === 'stickers' ? 'active' : ''}" data-picker-tab="stickers">Стикеры</button>
-          <button type="button" class="picker-add" data-picker-add="1">＋</button>
+          <button type="button" class="picker-add" data-picker-add="1">пј‹</button>
         </div>
         <div class="picker-panel ${activeTab === 'emoji' ? 'active' : ''}" data-picker-panel="emoji">
           ${EMOJI_PACK.map(item => `<button class="emoji-chip" type="button" data-emoji="${esc(item)}">${item}</button>`).join('')}
@@ -7732,6 +7286,416 @@ window.openArchiveModal = function() {
   }
   window.addEventListener('load', () => setTimeout(() => window.loadEmojis(), 300));
   if (typeof window.openFavorites !== 'function') window.openFavorites = () => {};
+})();
+</script>
+<script id="codex-peer-popup-in-chat-fix">
+(() => {
+  const $ = id => document.getElementById(id);
+  const esc = value => String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+  const safeUrl = value => encodeURI(String(value ?? ''));
+  const getPeer = () => (typeof activePeer !== 'undefined' ? activePeer : window.activePeer);
+  const getMe = () => (typeof me !== 'undefined' ? me : window.me);
+  const isRoom = item => item && (item.type === 'group' || item.type === 'channel');
+  const getPhoto = user => (user && (user.avatarPhoto || user.photoURL || user.avatarUrl || user.photo || user.image)) || '';
+  const getAppearance = user => {
+    const fromSettings = (user && user.settings && user.settings.appearance) || {};
+    const direct = (user && user.appearance) || {};
+    return {
+      profileColor: fromSettings.profileColor || direct.profileColor || user?.profileColor || '#956634',
+      patternEmoji: fromSettings.patternEmoji || direct.patternEmoji || user?.patternEmoji || '✨'
+    };
+  };
+  const makePattern = emoji => {
+    const encoded = encodeURIComponent(emoji || '✨');
+    return `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' viewBox='0 0 96 96'%3E%3Ctext x='48' y='58' font-size='28' text-anchor='middle' fill='rgba(255,255,255,0.26)'%3E${encoded}%3C/text%3E%3C/svg%3E")`;
+  };
+
+  function chatHost() {
+    const mob = $('mob-chat-view');
+    if (mob && mob.classList.contains('active')) return mob;
+    const pc = $('pc-active-chat');
+    if (pc && pc.style.display !== 'none') return pc;
+    return document.body;
+  }
+
+  function ensureStyle() {
+    if ($('codex-peer-popup-in-chat-style')) return;
+    const style = document.createElement('style');
+    style.id = 'codex-peer-popup-in-chat-style';
+    style.textContent = `
+      #pc-active-chat,#mob-chat-view{position:relative}
+      #profile-popup.codex-in-chat-profile{
+        position:absolute!important;
+        inset:0!important;
+        z-index:6000!important;
+        background:rgba(0,0,0,.58)!important;
+        backdrop-filter:blur(10px)!important;
+        -webkit-backdrop-filter:blur(10px)!important;
+        align-items:center!important;
+        justify-content:center!important;
+        padding:18px!important;
+      }
+      #profile-popup.codex-in-chat-profile .glass{
+        width:min(340px,100%)!important;
+        padding:0!important;
+        border-radius:24px!important;
+        overflow:hidden!important;
+        background:rgba(16,22,34,.88)!important;
+        border:1px solid rgba(255,255,255,.16)!important;
+        box-shadow:0 24px 70px rgba(0,0,0,.46)!important;
+      }
+      .codex-peer-cover{
+        position:relative;
+        min-height:190px;
+        padding:26px 22px 20px;
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        justify-content:flex-end;
+        gap:8px;
+        color:#fff;
+        overflow:hidden;
+      }
+      .codex-peer-pattern{
+        position:absolute;
+        inset:0;
+        opacity:.55;
+        background-size:96px 96px;
+        background-position:center;
+        pointer-events:none;
+      }
+      .codex-peer-body{
+        padding:18px 24px 24px;
+        text-align:center;
+      }
+      #profile-popup.codex-in-chat-profile #pop-ava{
+        position:relative;
+        width:100px!important;
+        height:100px!important;
+        margin:0 auto 8px!important;
+        border:2px solid rgba(255,255,255,.34)!important;
+        box-shadow:0 14px 34px rgba(0,0,0,.28)!important;
+      }
+      #profile-popup.codex-in-chat-profile #pop-ava.has-photo{
+        background-size:cover!important;
+        background-position:center!important;
+        color:transparent!important;
+      }
+      #profile-popup.codex-in-chat-profile #pop-name{
+        position:relative;
+        margin:0;
+        font-size:28px;
+        font-weight:900;
+      }
+      #profile-popup.codex-in-chat-profile #pop-handle{
+        position:relative;
+        margin:0;
+      }
+      #profile-popup.codex-in-chat-profile #pop-bio{
+        margin:0 0 18px!important;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  function mountPopup() {
+    const popup = $('profile-popup');
+    if (!popup) return null;
+    const host = chatHost();
+    if (popup.parentNode !== host) host.appendChild(popup);
+    host.style.position = host.style.position || 'relative';
+    popup.classList.add('codex-in-chat-profile');
+    return popup;
+  }
+
+  function renderLegacyPopup(user) {
+    ensureStyle();
+    const popup = mountPopup();
+    if (!popup) return;
+    const card = popup.querySelector('.glass');
+    const appearance = getAppearance(user);
+    const photo = getPhoto(user);
+    const verBadge = typeof badge === 'function' ? badge() : (typeof vBadge !== 'undefined' ? vBadge : '');
+    card.innerHTML = `
+      <div class="codex-peer-cover" style="background:${appearance.profileColor};">
+        <div class="codex-peer-pattern" style="background-image:${makePattern(appearance.patternEmoji)};"></div>
+        <div class="avatar-emoji${photo ? ' has-photo' : ''}" id="pop-ava" style="${photo ? `background-image:url('${safeUrl(photo)}');` : ''}">${photo ? '' : esc(user.avatar || '👤')}</div>
+        <h2 id="pop-name">${esc(user.name || 'Без имени')}${user.verified ? verBadge : ''}</h2>
+        <p id="pop-handle" style="color:rgba(255,255,255,.86); font-size:14px;">${esc(user.handle || '')}</p>
+      </div>
+      <div class="codex-peer-body">
+        <p id="pop-bio" style="font-size:13px; opacity:0.82;">${esc(user.isDeleted ? 'Этот аккаунт заблокирован.' : (user.bio || 'Нет описания'))}</p>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <button id="pop-block-btn" class="save-btn" style="width:100%;" onclick="toggleBlock()">🚫 Заблокировать</button>
+          <button class="save-btn" style="width:100%; background:#ea868f;" onclick="removeChat()">🗑️ Удалить чат</button>
+        </div>
+      </div>`;
+    const my = getMe();
+    const blockBtn = $('pop-block-btn');
+    if (blockBtn && my && my.blocks) {
+      blockBtn.textContent = my.blocks[user.id] ? '🔓 Разблокировать' : '🚫 Заблокировать';
+    }
+    if (typeof contextPeerId !== 'undefined') contextPeerId = user.id;
+    window.contextPeerId = user.id;
+    popup.style.display = 'flex';
+  }
+
+  const roomProfile = window.showPeerProfile;
+  window.showPeerProfile = async function() {
+    const peer = getPeer();
+    if (!peer) return;
+    if (isRoom(peer) && typeof roomProfile === 'function') return roomProfile();
+    let user = { ...peer };
+    try {
+      if (typeof db !== 'undefined' && peer.id) {
+        const snap = await db.ref(`users/${peer.id}`).once('value');
+        if (snap.exists()) user = { ...user, ...(snap.val() || {}) };
+      }
+    } catch (error) {}
+    renderLegacyPopup(user);
+  };
+})();
+</script>
+<script id="codex-peer-popup-stable-final">
+(() => {
+  const $ = id => document.getElementById(id);
+  const esc = value => String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+  const safeUrl = value => encodeURI(String(value ?? ''));
+  const peerNow = () => (typeof activePeer !== 'undefined' ? activePeer : window.activePeer);
+  const meNow = () => (typeof me !== 'undefined' ? me : window.me);
+  const isRoomItem = item => item && (item.type === 'group' || item.type === 'channel');
+  const photoOf = user => (user && (user.avatarPhoto || user.photoURL || user.avatarUrl || user.photo || user.image)) || '';
+  const appearanceOf = user => {
+    const settingsAppearance = (user && user.settings && user.settings.appearance) || {};
+    const directAppearance = (user && user.appearance) || {};
+    return {
+      color: settingsAppearance.profileColor || directAppearance.profileColor || (user && user.profileColor) || '#956634',
+      emoji: settingsAppearance.patternEmoji || directAppearance.patternEmoji || (user && user.patternEmoji) || '✨'
+    };
+  };
+  const patternOf = emoji => {
+    const encoded = encodeURIComponent(emoji || '✨');
+    return `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' viewBox='0 0 96 96'%3E%3Ctext x='48' y='58' font-size='28' text-anchor='middle' fill='rgba(255,255,255,0.22)'%3E${encoded}%3C/text%3E%3C/svg%3E")`;
+  };
+
+  function installPopupStyle() {
+    if ($('codex-peer-popup-stable-style')) return;
+    const style = document.createElement('style');
+    style.id = 'codex-peer-popup-stable-style';
+    style.textContent = `
+      body > #profile-popup.codex-peer-popup-stable {
+        position:fixed!important;
+        inset:0!important;
+        z-index:2147483000!important;
+        display:none;
+        align-items:center!important;
+        justify-content:center!important;
+        padding:18px!important;
+        background:rgba(0,0,0,.72)!important;
+        backdrop-filter:blur(12px)!important;
+        -webkit-backdrop-filter:blur(12px)!important;
+        transform:none!important;
+        overflow:auto!important;
+      }
+      body > #profile-popup.codex-peer-popup-stable .glass {
+        position:relative!important;
+        width:min(688px,calc(100vw - 20px))!important;
+        max-height:calc(100vh - 20px)!important;
+        padding:24px!important;
+        text-align:left!important;
+        border-radius:32px!important;
+        overflow:hidden!important;
+        background:rgba(18,18,18,.96)!important;
+        border:1px solid rgba(255,255,255,.18)!important;
+        box-shadow:0 28px 90px rgba(0,0,0,.58)!important;
+      }
+      body > #profile-popup.codex-peer-popup-stable .glass::before {
+        content:none!important;
+      }
+      body > #profile-popup.codex-peer-popup-stable .glass > * {
+        position:relative;
+        z-index:1;
+      }
+      .codex-peer-profile-cover {
+        position:relative;
+        min-height:260px;
+        border-radius:26px;
+        padding:64px 24px 22px;
+        display:flex;
+        flex-direction:column;
+        align-items:flex-start;
+        justify-content:flex-end;
+        overflow:hidden;
+        color:#fff;
+      }
+      .codex-peer-profile-cover::before {
+        content:"";
+        position:absolute;
+        inset:0;
+        background-image:var(--peer-pattern);
+        background-size:96px 96px;
+        background-position:center;
+        opacity:.48;
+        pointer-events:none;
+      }
+      .codex-peer-profile-cover > * {
+        position:relative;
+        z-index:1;
+      }
+      .codex-peer-profile-cover #pop-ava {
+        width:90px!important;
+        height:90px!important;
+        border-radius:28px!important;
+        margin:0 0 14px!important;
+        border:2px solid rgba(255,255,255,.34)!important;
+        box-shadow:0 12px 26px rgba(0,0,0,.26)!important;
+        background-color:#000!important;
+      }
+      body > #profile-popup.codex-peer-popup-stable #pop-ava.has-photo {
+        background-size:cover!important;
+        background-position:center!important;
+        color:transparent!important;
+      }
+      .codex-peer-profile-cover #pop-name {
+        margin:0!important;
+        font-size:42px!important;
+        line-height:1!important;
+        font-weight:900!important;
+        letter-spacing:0!important;
+      }
+      .codex-peer-profile-cover #pop-handle {
+        margin:10px 0 0!important;
+        color:rgba(255,255,255,.88)!important;
+        font-size:14px!important;
+        font-weight:700!important;
+      }
+      .codex-peer-info-card {
+        margin-top:16px;
+        padding:24px 22px;
+        border-radius:24px;
+        background:rgba(255,255,255,.07);
+        border:1px solid rgba(255,255,255,.14);
+        color:#fff;
+      }
+      .codex-peer-info-title {
+        font-size:16px;
+        font-weight:900;
+        margin-bottom:12px;
+      }
+      .codex-peer-info-card #pop-bio {
+        margin:0!important;
+        font-size:14px!important;
+        opacity:.9!important;
+      }
+      .codex-peer-actions {
+        margin-top:20px;
+        display:flex;
+        gap:10px;
+        flex-wrap:wrap;
+      }
+      .codex-peer-actions .save-btn {
+        width:auto!important;
+        min-width:132px;
+        border-radius:14px!important;
+        padding:13px 16px!important;
+        font-weight:900!important;
+      }
+      .codex-peer-actions #pop-block-btn {
+        background:var(--accent)!important;
+        color:#000!important;
+      }
+      @media (max-width:768px) {
+        body > #profile-popup.codex-peer-popup-stable {
+          padding:10px!important;
+        }
+        body > #profile-popup.codex-peer-popup-stable .glass {
+          width:calc(100vw - 20px)!important;
+          padding:16px!important;
+          border-radius:28px!important;
+        }
+        .codex-peer-profile-cover {
+          min-height:238px;
+          border-radius:24px;
+          padding:54px 22px 20px;
+        }
+        .codex-peer-profile-cover #pop-name {
+          font-size:38px!important;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  function popupToBody() {
+    installPopupStyle();
+    const popup = $('profile-popup');
+    if (!popup) return null;
+    if (popup.parentNode !== document.body) document.body.appendChild(popup);
+    popup.classList.remove('codex-in-chat-profile');
+    popup.classList.add('codex-peer-popup-stable');
+    popup.style.cssText = '';
+    return popup;
+  }
+
+  function renderPopup(user) {
+    const popup = popupToBody();
+    if (!popup) return;
+    const card = popup.querySelector('.glass');
+    if (!card) return;
+    const appearance = appearanceOf(user);
+    const photo = photoOf(user);
+    const verify = typeof badge === 'function' ? badge() : (typeof vBadge !== 'undefined' ? vBadge : '');
+    card.style.background = '';
+    card.style.setProperty('--peer-pattern', patternOf(appearance.emoji));
+    card.innerHTML = `
+      <div class="codex-peer-profile-cover" style="background:${appearance.color};">
+        <div class="avatar-emoji${photo ? ' has-photo' : ''}" id="pop-ava" style="${photo ? `background-image:url('${safeUrl(photo)}');` : ''}">${photo ? '' : esc(user.avatar || '👤')}</div>
+        <h2 id="pop-name">${esc(user.name || 'Без имени')}${user.verified ? verify : ''}</h2>
+        <p id="pop-handle">${esc(user.handle || '')}</p>
+      </div>
+      <div class="codex-peer-info-card">
+        <div class="codex-peer-info-title">Описание</div>
+        <p id="pop-bio">${esc(user.isDeleted ? 'Этот аккаунт заблокирован.' : (user.bio || 'Нет описания'))}</p>
+        <div class="codex-peer-actions">
+          <button id="pop-block-btn" class="save-btn" onclick="toggleBlock()">Заблокировать</button>
+          <button class="save-btn" style="background:rgba(255,255,255,.18);color:#ff8a8a;" onclick="removeChat()">Удалить чат</button>
+        </div>
+      </div>`;    const currentMe = meNow();
+    const blockBtn = $('pop-block-btn');
+    if (blockBtn && currentMe && currentMe.blocks) {
+      blockBtn.textContent = currentMe.blocks[user.id] ? 'Разблокировать' : 'Заблокировать';
+    }
+    try {
+      if (typeof contextPeerId !== 'undefined') contextPeerId = user.id;
+    } catch (error) {}
+    window.contextPeerId = user.id;
+    popup.style.display = 'flex';
+  }
+
+  const previousShowPeerProfile = window.showPeerProfile;
+  window.showPeerProfile = async function() {
+    const peer = peerNow();
+    if (!peer) return;
+    if (isRoomItem(peer) && typeof previousShowPeerProfile === 'function') {
+      return previousShowPeerProfile();
+    }
+    let user = { ...peer };
+    try {
+      if (typeof db !== 'undefined' && peer.id) {
+        const snap = await db.ref(`users/${peer.id}`).once('value');
+        if (snap.exists()) user = { ...user, ...(snap.val() || {}) };
+      }
+    } catch (error) {}
+    renderPopup(user);
+  };
 })();
 </script>
 </body>
