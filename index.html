@@ -843,6 +843,33 @@ button:disabled {
 
 
     </style>
+<style>
+    #auth-page .auth-wizard h2 { color:#fff; font-size:38px; line-height:1.05; margin:0; font-weight:850; letter-spacing:0; }
+    #auth-page .auth-wizard h3 { color:#fff; font-size:22px; line-height:1.2; margin:0 0 18px; font-weight:750; letter-spacing:0; }
+    #auth-page .auth-wizard p { color:#8e8e93; margin:6px 0 0; font-size:14px; }
+    #auth-page .auth-wizard-head { display:flex; align-items:center; gap:14px; margin-bottom:22px; }
+    #auth-page .auth-back-mini { width:44px; height:44px; border-radius:50%; border:1px solid rgba(255,255,255,.12); background:#151518; color:#fff; font-size:34px; line-height:1; display:flex; align-items:center; justify-content:center; }
+    #auth-page .auth-progress { height:6px; border-radius:999px; overflow:hidden; background:#1c1c1e; margin-bottom:28px; }
+    #auth-page .auth-progress span { display:block; height:100%; width:33%; border-radius:999px; background:#0A84FF; transition:width .28s ease; }
+    #auth-page .auth-step { display:none; opacity:0; transform:translateY(8px); transition:opacity .22s ease, transform .22s ease; }
+    #auth-page .auth-step.active { display:block; opacity:1; transform:translateY(0); animation:authStepIn .24s ease both; }
+    #auth-page .auth-row { display:grid; grid-template-columns:1fr 1.25fr; gap:12px; align-items:center; }
+    #auth-page .auth-secondary-btn { height:70px; border:none; border-radius:35px; background:#1c1c1e; color:#fff; font-size:20px; font-weight:750; }
+    #auth-page .auth-next-btn { width:100%; height:70px; border-radius:35px; background:#0A84FF; color:white; font-size:22px; font-weight:800; }
+    #auth-page .auth-avatar-preview { width:92px; height:92px; border-radius:28px; background:#151518; border:1px solid rgba(255,255,255,.12); display:flex; align-items:center; justify-content:center; color:#fff; font-size:42px; margin:0 auto 18px; box-shadow:0 18px 40px rgba(10,132,255,.16); background-size:cover; background-position:center; overflow:hidden; }
+    #auth-page .auth-avatar-tabs { display:grid; grid-template-columns:1fr 1fr; gap:8px; padding:4px; border-radius:20px; background:#151518; margin-bottom:14px; }
+    #auth-page .auth-avatar-tabs button { height:48px; border:0; border-radius:16px; background:transparent; color:#8e8e93; font-size:16px; font-weight:800; transition:.2s ease; }
+    #auth-page .auth-avatar-tabs button.active { background:#0A84FF; color:#fff; box-shadow:0 10px 25px rgba(10,132,255,.25); }
+    #auth-page .auth-photo-pick, #auth-page .auth-photo-clear { width:100%; height:62px; border:0; border-radius:22px; font-size:18px; font-weight:800; margin-bottom:12px; }
+    #auth-page .auth-photo-pick { background:#1c1c1e; color:#fff; border:1px solid rgba(255,255,255,.1); }
+    #auth-page .auth-photo-clear { background:rgba(255,69,58,.15); color:#ff6b61; }
+    @keyframes authStepIn { from { opacity:0; transform:translateY(10px) scale(.99); } to { opacity:1; transform:translateY(0) scale(1); } }
+    @media (max-width: 520px) {
+        #auth-page .auth-wizard h2 { font-size:34px; }
+        #auth-page .auth-row { grid-template-columns:1fr; }
+        #auth-page .auth-secondary-btn, #auth-page .auth-next-btn { height:64px; }
+    }
+</style>
 </head>
 <body class="theme-dark">
 
@@ -910,21 +937,92 @@ button:disabled {
         </div>
 
         <!-- Форма Регистрации -->
-        <div id="form-reg" style="display:none;">
-            <h2 style="color: white; font-size: 40px; margin-bottom: 30px;">Регистрация</h2>
-            <input type="email" id="r-email-input" placeholder="Email" style="width:100%; height:65px; background:#1c1c1e; border-radius:20px; color:white; padding:0 20px; margin-bottom:18px;">
-            <input type="password" id="r-pass-input" placeholder="Пароль" style="width:100%; height:65px; background:#1c1c1e; border-radius:20px; color:white; padding:0 20px; margin-bottom:18px;">
-            <button onclick="startEmailFlow('reg')" id="reg-btn-main" class="login-btn active" style="width:100%; height:70px; border-radius:35px; background:#0A84FF; color:white; font-size:24px;">Создать</button>
+        <div id="form-reg" class="auth-wizard" style="display:none;">
+            <div class="auth-wizard-head">
+                <button class="auth-back-mini" onclick="switchAuth('login-email')" type="button">‹</button>
+                <div>
+                    <h2>Регистрация</h2>
+                    <p id="reg-step-label">Шаг 1 из 3</p>
+                </div>
+            </div>
+            <div class="auth-progress"><span id="reg-progress-fill"></span></div>
+
+            <div class="auth-step active" data-reg-step="1">
+                <h3>Как тебя зовут?</h3>
+                <input type="text" id="r-n-input" class="login-input" placeholder="Имя">
+                <input type="text" id="r-h-input" class="login-input" placeholder="@ник">
+                <button class="login-btn active auth-next-btn" type="button" onclick="nextRegStep()">Далее</button>
+            </div>
+
+            <div class="auth-step" data-reg-step="2">
+                <h3>Выбери аватарку</h3>
+                <div class="auth-avatar-preview" id="reg-avatar-preview">😎</div>
+                <div class="auth-avatar-tabs">
+                    <button id="reg-avatar-emoji-tab" class="active" type="button" onclick="setRegAvatarMode('emoji')">Эмодзи</button>
+                    <button id="reg-avatar-photo-tab" type="button" onclick="setRegAvatarMode('photo')">Фото</button>
+                </div>
+                <div id="reg-avatar-emoji-panel">
+                    <input type="text" id="r-e-input" class="login-input" placeholder="Аватарка, например 😎" maxlength="4" oninput="updateRegAvatarPreview()">
+                </div>
+                <div id="reg-avatar-photo-panel" style="display:none;">
+                    <input type="file" id="r-photo-input" accept="image/*" style="display:none;" onchange="handleRegAvatarPhoto(this)">
+                    <button class="auth-photo-pick" type="button" onclick="document.getElementById('r-photo-input').click()">Выбрать фото</button>
+                    <button id="reg-photo-clear" class="auth-photo-clear" type="button" onclick="clearRegAvatarPhoto()" style="display:none;">Убрать фото</button>
+                </div>
+                <div class="auth-row">
+                    <button class="auth-secondary-btn" type="button" onclick="prevRegStep()">Назад</button>
+                    <button class="login-btn active auth-next-btn" type="button" onclick="nextRegStep()">Далее</button>
+                </div>
+            </div>
+
+            <div class="auth-step" data-reg-step="3">
+                <h3>Почта и пароль</h3>
+                <input type="email" id="r-email-input" class="login-input" placeholder="Email">
+                <input type="password" id="r-pass-input" class="login-input" placeholder="Пароль">
+                <input type="password" id="r-pass-confirm-input" class="login-input" placeholder="Повторите пароль">
+                <div class="auth-row">
+                    <button class="auth-secondary-btn" type="button" onclick="prevRegStep()">Назад</button>
+                    <button onclick="startEmailFlow('reg')" id="reg-btn-main" class="login-btn active auth-next-btn" type="button">Создать</button>
+                </div>
+            </div>
+
             <div style="margin-top: 20px; text-align: center; color: #8e8e93;">
                 Есть аккаунт? <span style="color: #0A84FF; cursor:pointer;" onclick="switchAuth('login-email')">Войти</span>
             </div>
         </div>
 
         <!-- Форма Восстановления -->
-        <div id="form-reset" style="display:none;">
-            <h2 style="color: white; font-size: 32px; margin-bottom: 20px;">Восстановление</h2>
-            <input type="email" id="reset-email" placeholder="Твой email" style="width:100%; height:65px; background:#1c1c1e; border-radius:20px; color:white; padding:0 20px; margin-bottom:18px;">
-            <button class="login-btn active" style="width:100%; height:70px; border-radius:35px; background:#0A84FF; color:white;" onclick="startResetFlow()">Отправить код</button>
+        <div id="form-reset" class="auth-wizard" style="display:none;">
+            <div class="auth-wizard-head">
+                <button class="auth-back-mini" onclick="switchAuth('login-email')" type="button">‹</button>
+                <div>
+                    <h2>Восстановление</h2>
+                    <p>Шаг 1 из 3</p>
+                </div>
+            </div>
+            <div class="auth-progress"><span style="width:33%;"></span></div>
+            <div class="auth-step active">
+                <h3>Введи почту аккаунта</h3>
+                <input type="email" id="reset-email" class="login-input" placeholder="Твой email">
+                <button id="reset-btn-main" class="login-btn active auth-next-btn" type="button" onclick="startResetFlow()">Отправить код</button>
+            </div>
+        </div>
+
+        <div id="form-reset-password" class="auth-wizard" style="display:none;">
+            <div class="auth-wizard-head">
+                <button class="auth-back-mini" onclick="switchAuth('reset')" type="button">‹</button>
+                <div>
+                    <h2>Новый пароль</h2>
+                    <p>Шаг 3 из 3</p>
+                </div>
+            </div>
+            <div class="auth-progress"><span style="width:100%;"></span></div>
+            <div class="auth-step active">
+                <h3>Придумай новый пароль</h3>
+                <input type="password" id="reset-new-pass" class="login-input" placeholder="Новый пароль">
+                <input type="password" id="reset-new-pass-confirm" class="login-input" placeholder="Повторите пароль">
+                <button id="reset-finish-btn" class="login-btn active auth-next-btn" type="button" onclick="finishResetPassword()">Сохранить пароль</button>
+            </div>
         </div>
 
         <!-- Окно Верификации -->
@@ -1308,13 +1406,105 @@ function mobTab(id) {
     document.getElementById('form-login-email').style.display = 'none';
     document.getElementById('form-reg').style.display = 'none';
     document.getElementById('form-reset').style.display = 'none';
+    const resetPasswordForm = document.getElementById('form-reset-password');
+    if (resetPasswordForm) resetPasswordForm.style.display = 'none';
     document.getElementById('auth-verify-view').style.display = 'none';
 
     // Показываем нужную
     if (t === 'login-email') document.getElementById('form-login-email').style.display = 'block';
-    if (t === 'reg') document.getElementById('form-reg').style.display = 'block';
+    if (t === 'reg') {
+        document.getElementById('form-reg').style.display = 'block';
+        setRegStep(1);
+    }
     if (t === 'reset') document.getElementById('form-reset').style.display = 'block';
 }
+
+        let regAuthStep = 1;
+        let regAvatarMode = 'emoji';
+        let regAvatarPhotoData = '';
+
+        function setRegStep(step) {
+            regAuthStep = Math.max(1, Math.min(3, step));
+            document.querySelectorAll('[data-reg-step]').forEach(el => {
+                el.classList.toggle('active', Number(el.dataset.regStep) === regAuthStep);
+            });
+            const label = document.getElementById('reg-step-label');
+            const fill = document.getElementById('reg-progress-fill');
+            if (label) label.textContent = `Шаг ${regAuthStep} из 3`;
+            if (fill) fill.style.width = `${(regAuthStep / 3) * 100}%`;
+            updateRegAvatarPreview();
+        }
+
+        function updateRegAvatarPreview() {
+            const input = document.getElementById('r-e-input');
+            const preview = document.getElementById('reg-avatar-preview');
+            if (!preview) return;
+            if (regAvatarMode === 'photo' && regAvatarPhotoData) {
+                preview.textContent = '';
+                preview.style.backgroundImage = `url("${regAvatarPhotoData}")`;
+            } else {
+                preview.style.backgroundImage = '';
+                preview.textContent = (input && input.value.trim()) || '😎';
+            }
+        }
+
+        function setRegAvatarMode(mode) {
+            regAvatarMode = mode === 'photo' ? 'photo' : 'emoji';
+            const emojiPanel = document.getElementById('reg-avatar-emoji-panel');
+            const photoPanel = document.getElementById('reg-avatar-photo-panel');
+            const emojiTab = document.getElementById('reg-avatar-emoji-tab');
+            const photoTab = document.getElementById('reg-avatar-photo-tab');
+            if (emojiPanel) emojiPanel.style.display = regAvatarMode === 'emoji' ? 'block' : 'none';
+            if (photoPanel) photoPanel.style.display = regAvatarMode === 'photo' ? 'block' : 'none';
+            if (emojiTab) emojiTab.classList.toggle('active', regAvatarMode === 'emoji');
+            if (photoTab) photoTab.classList.toggle('active', regAvatarMode === 'photo');
+            updateRegAvatarPreview();
+        }
+
+        function handleRegAvatarPhoto(input) {
+            const file = input && input.files && input.files[0];
+            if (!file) return;
+            if (!file.type || !file.type.startsWith('image/')) {
+                input.value = '';
+                return alert('Выбери именно фото.');
+            }
+            if (file.size > 2 * 1024 * 1024) {
+                input.value = '';
+                return alert('Фото слишком большое. Выбери картинку до 2 МБ.');
+            }
+            const reader = new FileReader();
+            reader.onload = () => {
+                regAvatarPhotoData = String(reader.result || '');
+                const clearBtn = document.getElementById('reg-photo-clear');
+                if (clearBtn) clearBtn.style.display = regAvatarPhotoData ? 'block' : 'none';
+                updateRegAvatarPreview();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function clearRegAvatarPhoto() {
+            regAvatarPhotoData = '';
+            const input = document.getElementById('r-photo-input');
+            const clearBtn = document.getElementById('reg-photo-clear');
+            if (input) input.value = '';
+            if (clearBtn) clearBtn.style.display = 'none';
+            updateRegAvatarPreview();
+        }
+
+        function nextRegStep() {
+            if (regAuthStep === 1) {
+                const name = document.getElementById('r-n-input').value.trim();
+                let handle = document.getElementById('r-h-input').value.trim();
+                if (!name || !handle) return alert('Заполни имя и ник!');
+                if (!handle.startsWith('@')) document.getElementById('r-h-input').value = '@' + handle;
+            }
+            if (regAuthStep === 2) updateRegAvatarPreview();
+            setRegStep(regAuthStep + 1);
+        }
+
+        function prevRegStep() {
+            setRegStep(regAuthStep - 1);
+        }
 
         function generateCode() {
             return Math.floor(100000 + Math.random() * 900000).toString();
@@ -1346,6 +1536,12 @@ function mobTab(id) {
                     title: 'Подтверждение',
                     subtitle: 'Код отправлен на вашу почту. Проверьте папку "Спам".',
                     submitText: 'СОЗДАТЬ'
+                },
+                reset: {
+                    emailId: 'reset-email',
+                    title: 'Подтверждение',
+                    subtitle: 'Код отправлен на вашу почту. Проверьте папку "Спам".',
+                    submitText: 'СБРОСИТЬ'
                 },
                 link: {
                     emailId: 'link-email-input',
@@ -1381,7 +1577,7 @@ function mobTab(id) {
         function showVerifyStep(mode, email, startTime) {
             const config = getAuthConfig(mode);
             authFlowMode = mode;
-            ['form-login', 'form-login-email', 'form-reg', 'form-link', 'form-reset'].forEach(id => {
+            ['form-login', 'form-login-email', 'form-reg', 'form-link', 'form-reset', 'form-reset-password'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.style.display = 'none';
             });
@@ -1447,6 +1643,14 @@ function mobTab(id) {
                 return { email, name };
             }
 
+            if (mode === 'reset') {
+                const email = document.getElementById('reset-email').value.trim().toLowerCase();
+                if (!email) throw new Error('Введи email!');
+                const emailSnap = await db.ref('emails/' + email.replace(/\./g, '_')).once('value');
+                if (!emailSnap.exists()) throw new Error('Пользователь с такой почтой не найден!');
+                return { email, name: 'Пользователь' };
+            }
+
             const rawHandle = document.getElementById('link-h-input').value.trim().toLowerCase();
             const email = document.getElementById('link-email-input').value.trim().toLowerCase();
             const password = document.getElementById('link-pass-input').value;
@@ -1480,6 +1684,8 @@ function mobTab(id) {
     document.getElementById('form-login-email').style.display = 'none';
     document.getElementById('form-reg').style.display = 'none';
     document.getElementById('form-reset').style.display = 'none';
+    const resetPasswordForm = document.getElementById('form-reset-password');
+    if (resetPasswordForm) resetPasswordForm.style.display = 'none';
     document.getElementById('auth-verify-view').style.display = 'block';
 
 
@@ -1492,7 +1698,8 @@ function mobTab(id) {
         async function startEmailFlow(mode) {
     // Находим кнопку в зависимости от режима
     const btn = document.getElementById(mode === 'login' ? 'login-btn-main' : 
-                                       mode === 'reg' ? 'reg-btn-main' : 'link-btn-main');
+                                       mode === 'reg' ? 'reg-btn-main' :
+                                       mode === 'reset' ? 'reset-btn-main' : 'link-btn-main');
     
     if (btn) {
         btn.disabled = true;
@@ -1513,6 +1720,10 @@ function mobTab(id) {
         }
     }
 }
+
+        async function startResetFlow() {
+            await startEmailFlow('reset');
+        }
 
         async function resendVerificationCode() {
             if (!authFlowMode) return;
@@ -1557,6 +1768,8 @@ function mobTab(id) {
             await loginWithEmail();
         } else if (authFlowMode === 'reg') {
             await registerWithEmail();
+        } else if (authFlowMode === 'reset') {
+            await resetPasswordWithEmail();
         } else if (authFlowMode === 'link') {
             await linkEmailToAccount();
         }
@@ -1572,11 +1785,63 @@ function mobTab(id) {
     }
 }
 
+        async function resetPasswordWithEmail() {
+            document.getElementById('auth-verify-view').style.display = 'none';
+            const resetForm = document.getElementById('form-reset-password');
+            if (resetForm) resetForm.style.display = 'block';
+            const verifyBtn = document.getElementById('verify-submit-btn');
+            if (verifyBtn) {
+                verifyBtn.disabled = false;
+                verifyBtn.innerText = verifyBtn.dataset.originalText || 'СБРОСИТЬ';
+            }
+            const firstPass = document.getElementById('reset-new-pass');
+            if (firstPass) firstPass.focus();
+        }
+
+        async function finishResetPassword() {
+            const email = document.getElementById('reset-email').value.trim().toLowerCase();
+            const newPassword = document.getElementById('reset-new-pass').value;
+            const confirmPassword = document.getElementById('reset-new-pass-confirm').value;
+            const btn = document.getElementById('reset-finish-btn');
+
+            try {
+                if (btn) {
+                    btn.disabled = true;
+                    btn.dataset.originalText = btn.innerText;
+                    btn.innerText = 'Сохраняем...';
+                }
+                assertVerification('reset');
+                if (!newPassword || !confirmPassword) throw new Error('Введи новый пароль два раза!');
+                if (newPassword.length < 6) throw new Error('Пароль должен быть минимум 6 символов!');
+                if (newPassword !== confirmPassword) throw new Error('Пароли не совпадают!');
+
+                const emailSnap = await db.ref('emails/' + email.replace(/\./g, '_')).once('value');
+                if (!emailSnap.exists()) throw new Error('Пользователь с такой почтой не найден!');
+
+                const uid = emailSnap.val();
+                await db.ref('users/' + uid + '/passwordHash').set(btoa(newPassword));
+
+                clearVerifyStorage();
+                document.getElementById('reset-new-pass').value = '';
+                document.getElementById('reset-new-pass-confirm').value = '';
+                switchAuth('login-email');
+                alert('Пароль изменён. Теперь можно войти.');
+            } catch (e) {
+                console.error('Reset password error:', e);
+                alert(e.message || 'Не удалось сохранить пароль.');
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerText = btn.dataset.originalText || 'Сохранить пароль';
+                }
+            }
+        }
+
         async function registerWithEmail() {
             const email = document.getElementById('r-email-input').value.trim().toLowerCase();
             const password = document.getElementById('r-pass-input').value;
             const name = document.getElementById('r-n-input').value.trim();
-            const emoji = document.getElementById('r-e-input').value || '??';
+            const emoji = (document.getElementById('r-e-input')?.value || '😎').trim() || '😎';
+            const avatarPhoto = regAvatarMode === 'photo' ? regAvatarPhotoData : '';
             let handle = document.getElementById('r-h-input').value.toLowerCase().trim();
 
             if (!handle.startsWith('@')) handle = '@' + handle;
@@ -1596,6 +1861,7 @@ function mobTab(id) {
                 name,
                 handle,
                 avatar: emoji,
+                avatarPhoto: avatarPhoto || null,
                 bio: 'Привет, я в Vibe!',
                 verified: false,
                 online: true,
@@ -5694,7 +5960,7 @@ if (ui) {
     rooms().forEach(attachWatcher);
   }
   window.addEventListener('load', () => { setTimeout(boot, 800); setTimeout(boot, 1800); });
-  setInterval(boot, 3500);
+  // Не перерисовываем список чатов по таймеру: это вызывало мерцание.
 })();
 
 
@@ -7748,7 +8014,7 @@ window.openArchiveModal = function() {
 <script id="codex-mobile-chat-actions-final">
 (() => {
   const $ = id => document.getElementById(id);
-  const LONG_PRESS_MS = 520;
+  const LONG_PRESS_MS = 420;
   let longPressTimer = null;
   let longPressFired = false;
   let touchStartPoint = null;
@@ -7897,16 +8163,30 @@ window.openArchiveModal = function() {
     message.dataset.codexMobileHold = '1';
     message.addEventListener('touchstart', event => {
       if (activeMode() !== 'mob') return;
+      if (event.target.closest('a, button, audio, video, input, textarea')) return;
       const touch = event.touches && event.touches[0];
       if (!touch) return;
+      clearTimeout(longPressTimer);
       longPressFired = false;
       touchStartPoint = { x: touch.clientX, y: touch.clientY };
       const msgId = message.dataset.msgId || message.id.replace(/^mob-msgs-/, '').replace(/^pc-msgs-/, '').replace(/^msg-/, '');
       const sender = message.dataset.sender || (message.classList.contains('sent') && getMe() ? getMe().id : '');
       const text = message.dataset.msgText || message.innerText.replace(/[✓\s]+$/g, '').trim();
+      const holdEvent = {
+        clientX: touch.clientX,
+        clientY: touch.clientY,
+        pageX: touch.pageX,
+        pageY: touch.pageY,
+        preventDefault() {},
+        stopPropagation() {}
+      };
       longPressTimer = setTimeout(() => {
         longPressFired = true;
-        window.showMsgMenu(event, msgId, text, sender);
+        if (window.getSelection) {
+          const selection = window.getSelection();
+          if (selection && selection.removeAllRanges) selection.removeAllRanges();
+        }
+        window.showMsgMenu(holdEvent, msgId, text, sender);
       }, LONG_PRESS_MS);
     }, { passive: false });
     message.addEventListener('touchmove', event => {
@@ -7925,17 +8205,12 @@ window.openArchiveModal = function() {
     }, { passive: false });
     message.addEventListener('touchcancel', () => clearTimeout(longPressTimer), { passive: true });
     message.addEventListener('click', event => {
-      if (activeMode() !== 'mob') return;
-      if (longPressFired) {
+      if (activeMode() === 'mob' && longPressFired) {
         longPressFired = false;
-        return;
+        event.preventDefault();
+        event.stopPropagation();
       }
-      if (event.target.closest('a, button, audio, video, input, textarea')) return;
-      const msgId = message.dataset.msgId || message.id.replace(/^mob-msgs-/, '').replace(/^pc-msgs-/, '').replace(/^msg-/, '');
-      const sender = message.dataset.sender || (message.classList.contains('sent') && getMe() ? getMe().id : '');
-      const text = message.dataset.msgText || message.innerText.replace(/[✓\s]+$/g, '').trim();
-      window.showMsgMenu(event, msgId, text, sender);
-    });
+    }, true);
   }
 
   function bindAllMessages(root = document) {
@@ -8035,6 +8310,1654 @@ window.openArchiveModal = function() {
   }, { passive: true, capture: true });
 
   installStyle();
+})();
+</script>
+<script id="codex-main-menu-folders-final">
+(() => {
+  const $ = id => document.getElementById(id);
+  const STORE_KEY = 'vibe_main_menu_active_folder';
+  const DEFAULT_NAV = ['home', 'search', 'settings'];
+  const FOLDER_TYPES = {
+    new: { label: 'Новые', icon: '', meta: 'Непрочитанные сообщения' },
+    channels: { label: 'Каналы', icon: '', meta: 'Все каналы' },
+    groups: { label: 'Группы', icon: '', meta: 'Все группы' },
+    friends: { label: 'Друзья', icon: '', meta: 'Все друзья' }
+  };
+  const NAV_ITEMS = {
+    home: { label: 'Чаты', icon: 'Эконки/Чаты.jpg' },
+    search: { label: 'Поиск', icon: 'Эконки/Лупа.png' },
+    settings: { label: 'Настройки', icon: 'Эконки/Настройки.png' }
+  };
+  let rendering = false;
+  let lastDialogsSignature = '';
+  const folderScrollMemory = { pc: 0, mob: 0 };
+
+  const esc = value => String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+
+  function currentMe() {
+    return (typeof me !== 'undefined' && me) ? me : window.me;
+  }
+
+  function stateFix() {
+    window.vibeFix20260524 = window.vibeFix20260524 || {};
+    window.vibeFix20260524.meta = window.vibeFix20260524.meta || {};
+    if (typeof window.vibeFix20260524.getItem !== 'function') {
+      window.vibeFix20260524.getItem = key => {
+        const user = currentMe();
+        if (key && key.startsWith('user:saved_')) return { id: key.slice(5), name: 'Избранное', avatar: '⭐', isSaved: true };
+        if (key && key.startsWith('room:')) return (((window.vibeRoomState || {}).rooms || {})[key.slice(5)]);
+        if (key && key.startsWith('user:')) return (((window.vibeRoomState || {}).friends || {})[key.slice(5)]);
+        if (key === `saved_${user && user.id}`) return { id: key, name: 'Избранное', avatar: '⭐', isSaved: true };
+        return null;
+      };
+    }
+    return window.vibeFix20260524;
+  }
+
+  function mainMenuSettings() {
+    const user = currentMe();
+    if (!user) return { folders: [], navOrder: DEFAULT_NAV.slice() };
+    user.settings = user.settings || {};
+    try {
+      const saved = JSON.parse(localStorage.getItem(`vibe_main_menu_config_${user.id}`) || 'null');
+      if ((!user.settings.mainMenu || !Array.isArray(user.settings.mainMenu.folders)) && saved) {
+        user.settings.mainMenu = saved;
+      }
+    } catch (error) {}
+    user.settings.mainMenu = user.settings.mainMenu || {};
+    const cfg = user.settings.mainMenu;
+    cfg.folders = Array.isArray(cfg.folders) ? cfg.folders : [];
+    cfg.navOrder = Array.isArray(cfg.navOrder) && cfg.navOrder.length ? cfg.navOrder : DEFAULT_NAV.slice();
+    cfg.navOrder = cfg.navOrder.filter(id => NAV_ITEMS[id]);
+    DEFAULT_NAV.forEach(id => { if (!cfg.navOrder.includes(id)) cfg.navOrder.push(id); });
+    return cfg;
+  }
+
+  async function saveMainMenuSettings() {
+    const user = currentMe();
+    if (!user || !user.id) return;
+    user.settings = user.settings || {};
+    user.settings.mainMenu = mainMenuSettings();
+    try {
+      localStorage.setItem('liquid_pro_v32', JSON.stringify(user));
+      localStorage.setItem(`vibe_main_menu_config_${user.id}`, JSON.stringify(user.settings.mainMenu));
+    } catch (error) {}
+    if (typeof db !== 'undefined') {
+      await db.ref(`users/${user.id}/settings/mainMenu`).set(user.settings.mainMenu);
+    }
+  }
+
+  function friendsList() {
+    const fromState = Object.values(((window.vibeRoomState || {}).friends) || {});
+    if (fromState.length) return fromState.filter(Boolean);
+    const user = currentMe();
+    return Object.keys((user && user.friends) || {}).map(id => ({ id, name: id, avatar: '👤' }));
+  }
+
+  function roomsList() {
+    return Object.values(((window.vibeRoomState || {}).rooms) || {}).filter(Boolean);
+  }
+
+  function findItemByKey(key) {
+    const user = currentMe();
+    if (!key) return null;
+    if (key.startsWith('user:saved_') || key === `saved_${user && user.id}`) {
+      return { id: `saved_${user && user.id}`, name: 'Избранное', avatar: '⭐', isSaved: true };
+    }
+    if (key.startsWith('room:')) {
+      const id = key.slice(5);
+      return (((window.vibeRoomState || {}).rooms || {})[id]) || roomsList().find(item => item.id === id) || null;
+    }
+    if (key.startsWith('user:')) {
+      const id = key.slice(5);
+      return (((window.vibeRoomState || {}).friends || {})[id]) || friendsList().find(item => item.id === id) || null;
+    }
+    return friendsList().concat(roomsList()).find(item => item.id === key) || null;
+  }
+
+  function isRoom(item) {
+    return item && (item.type === 'group' || item.type === 'channel');
+  }
+
+  function itemKey(item) {
+    const user = currentMe();
+    if (!item) return '';
+    if (item.isSaved || item.id === `saved_${user && user.id}`) return `saved_${user && user.id}`;
+    if (isRoom(item)) return `room:${item.id}`;
+    return `user:${item.id}`;
+  }
+
+  function metaFor(item) {
+    return stateFix().meta[itemKey(item)] || {};
+  }
+
+  function avatarHtml(item) {
+    const photo = item && (item.avatarPhoto || item.photoURL || item.avatarUrl || item.photo || item.image);
+    if (photo) return `<div class="avatar-emoji has-photo" style="background-image:url('${esc(photo)}');background-size:cover;background-position:center;color:transparent;"></div>`;
+    const icon = isRoom(item) ? (item.avatar || (item.type === 'channel' ? '📣' : '👥')) : ((item && item.avatar) || '👤');
+    return `<div class="avatar-emoji">${esc(icon)}</div>`;
+  }
+
+  function openCall(item, desktop) {
+    if (item.isSaved) return 'openFavorites()';
+    const key = itemKey(item);
+    return `openMainMenuItem('${key}', ${desktop ? 'true' : 'false'})`;
+  }
+
+  function rowFor(item, desktop) {
+    const meta = metaFor(item);
+    const unread = Number(meta.unread || 0);
+    const time = meta.lastTime ? `<span class="dialog-time">${new Date(meta.lastTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>` : '';
+    const unreadBadge = unread ? `<span class="unread-badge">${unread}</span>` : '';
+    if (item.isSaved) {
+      return `<div class="contact-item glass" onclick="openFavorites()"><div class="fav-icon-box">⭐</div><div class="dialog-main"><b>Избранное</b><br><small style="opacity:.66">Личное хранилище</small></div></div>`;
+    }
+    if (isRoom(item)) {
+      const typeLabel = item.type === 'channel' ? 'Канал' : 'Группа';
+      const count = Object.keys(item.members || {}).length;
+      return `<div class="contact-item glass" onclick="${openCall(item, desktop)}">${avatarHtml(item)}<div class="dialog-main"><b>${esc(item.name || typeLabel)}</b><br><small>${typeLabel}${count ? ` · ${count} участников` : ''}</small></div>${time}${unreadBadge}</div>`;
+    }
+    return `<div class="contact-item glass" id="cnt-${esc(item.id || '')}" onclick="${openCall(item, desktop)}" oncontextmenu="showChatListMenu(event, '${esc(item.id || '')}')">${avatarHtml(item)}<div class="dialog-main"><b>${esc(item.name || 'Без имени')}</b><br><small class="${item.online ? 'st-all' : 'st-none'}">${typeof getPresenceText === 'function' ? esc(getPresenceText(item)) : (item.online ? 'онлайн' : 'не в сети')}</small></div>${time}${unreadBadge}</div>`;
+  }
+
+  function folderItems(folderId) {
+    const user = currentMe();
+    const folders = mainMenuSettings().folders;
+    if (folderId === 'all') {
+      return [{ id: `saved_${user && user.id}`, name: 'Избранное', avatar: '⭐', isSaved: true }]
+        .concat(friendsList(), roomsList());
+    }
+    const folder = folders.find(item => item.id === folderId);
+    if (!folder) return folderItems('all');
+    if (folder.type === 'new') return friendsList().concat(roomsList()).filter(item => Number(metaFor(item).unread || 0) > 0);
+    if (folder.type === 'channels') return roomsList().filter(item => item.type === 'channel');
+    if (folder.type === 'groups') return roomsList().filter(item => item.type === 'group');
+    if (folder.type === 'friends') return friendsList();
+    return [];
+  }
+
+  function folderCount(folder) {
+    return folderItems(folder.id).reduce((sum, item) => sum + Number(metaFor(item).unread || 0), 0);
+  }
+
+  function activeFolder() {
+    const cfg = mainMenuSettings();
+    const saved = localStorage.getItem(STORE_KEY) || 'all';
+    if (saved === 'all' || cfg.folders.some(folder => folder.id === saved)) return saved;
+    return 'all';
+  }
+
+  function folderTabsHtml() {
+    const cfg = mainMenuSettings();
+    if (!cfg.folders.length) return '';
+    const active = activeFolder();
+    const buttons = [
+      `<button class="vibe-folder-tab ${active === 'all' ? 'active' : ''}" onclick="setMainMenuFolder('all')">Все</button>`
+    ].concat(cfg.folders.map(folder => {
+      const count = folderCount(folder);
+      const type = FOLDER_TYPES[folder.type] || FOLDER_TYPES.friends;
+      return `<button class="vibe-folder-tab ${active === folder.id ? 'active' : ''}" onclick="setMainMenuFolder('${folder.id}')"><span>${esc(folder.name)}</span><small>${type.icon}</small>${count ? `<b>${count}</b>` : ''}</button>`;
+    }));
+    return `<div class="vibe-folder-tabs">${buttons.join('')}</div>`;
+  }
+
+  function folderTabsShell(desktop) {
+    const tabs = folderTabsHtml();
+    if (!tabs) return '';
+    if (!desktop) return tabs;
+    return `<div class="vibe-folder-tabs-shell"><button type="button" class="vibe-folder-arrow" onclick="scrollMainFolderTabs(this, -1, event)">‹</button>${tabs}<button type="button" class="vibe-folder-arrow" onclick="scrollMainFolderTabs(this, 1, event)">›</button></div>`;
+  }
+
+  function archiveFolderHtml(user) {
+    const archivedIds = user && user.archives ? Object.keys(user.archives) : [];
+    if (!archivedIds.length) return '';
+    return `<div class="archive-folder" onclick="openArchiveModal()">
+      <div class="archive-icon-wrap">
+        <svg viewBox="0 0 24 24"><path d="M20,21H4V10H20M20,5H4V8H20M21,19V17H19V19M19,15H21V13H19M21,11H19V9H21M22,3H2V9H3V22H21V9H22M14,12H10V14H14V12Z"/></svg>
+      </div>
+      <div><b>Архив</b><br><small style="opacity:0.7;">Диалогов скрыто: ${archivedIds.length}</small></div>
+    </div>`;
+  }
+
+  function chatHeader(desktop) {
+    const plus = `<button class="chat-plus-btn" onclick="showCreateMenu()"><img src="Эконки/Плюс.png" class="chat-plus-icon"></button>`;
+    return desktop ? `<div class="chat-topbar"><h3>Чаты</h3>${plus}</div>` : '';
+  }
+
+  function renderFolderedDialogs(force = false) {
+    if (rendering) return;
+    const user = currentMe();
+    if (!user) return;
+    const cfg = mainMenuSettings();
+    const meta = stateFix().meta || {};
+    const signature = JSON.stringify({
+      folder: activeFolder(),
+      folders: cfg.folders,
+      archives: user.archives || {},
+      pins: user.pins || {},
+      friends: friendsList().map(item => [item.id, item.name, item.online, meta[itemKey(item)] && meta[itemKey(item)].unread, meta[itemKey(item)] && meta[itemKey(item)].lastTime]),
+      rooms: roomsList().map(item => [item.id, item.name, item.type, Object.keys(item.members || {}).length, meta[itemKey(item)] && meta[itemKey(item)].unread, meta[itemKey(item)] && meta[itemKey(item)].lastTime])
+    });
+    if (!force && signature === lastDialogsSignature) return;
+    lastDialogsSignature = signature;
+    document.querySelectorAll('#pc-contacts-list .vibe-folder-tabs, #mob-contacts .vibe-folder-tabs').forEach(tabs => {
+      const key = tabs.closest('#pc-contacts-list') ? 'pc' : 'mob';
+      folderScrollMemory[key] = tabs.scrollLeft || 0;
+    });
+    rendering = true;
+    try {
+      [['pc-contacts-list', true], ['mob-contacts', false]].forEach(([id, desktop]) => {
+        const host = $(id);
+        if (!host) return;
+        const folderId = activeFolder();
+        const items = folderItems(folderId).filter(item => folderId !== 'all' || !(user.archives && user.archives[item.id]));
+        items.sort((a, b) => {
+          const aPinned = user.pins && user.pins[a.id] ? 1 : 0;
+          const bPinned = user.pins && user.pins[b.id] ? 1 : 0;
+          if (aPinned !== bPinned) return bPinned - aPinned;
+          return Number(metaFor(b).lastTime || b.createdAt || 0) - Number(metaFor(a).lastTime || a.createdAt || 0);
+        });
+        const empty = `<div class="settings-card vibe-folder-empty">Здесь пока пусто</div>`;
+        const archive = folderId === 'all' ? archiveFolderHtml(user) : '';
+        host.innerHTML = chatHeader(desktop) + folderTabsShell(desktop) + archive + (items.length ? items.map(item => rowFor(item, desktop)).join('') : empty);
+        const tabs = host.querySelector('.vibe-folder-tabs');
+        if (tabs) tabs.scrollLeft = folderScrollMemory[desktop ? 'pc' : 'mob'] || 0;
+      });
+    } finally {
+      rendering = false;
+    }
+    if (typeof bindLongPressHandlers === 'function') bindLongPressHandlers();
+  }
+
+  function installStyle() {
+    if ($('codex-main-menu-folders-style')) return;
+    const style = document.createElement('style');
+    style.id = 'codex-main-menu-folders-style';
+    style.textContent = `
+      .vibe-folder-tabs {
+        display:flex;
+        gap:8px;
+        overflow-x:auto;
+        padding:4px 2px 14px;
+        margin-bottom:4px;
+        scrollbar-width:none;
+      }
+      .vibe-folder-tabs::-webkit-scrollbar { display:none; }
+      .vibe-folder-tabs-shell {
+        display:grid;
+        grid-template-columns:42px minmax(0,1fr) 42px;
+        gap:8px;
+        align-items:center;
+      }
+      .vibe-folder-tabs-shell .vibe-folder-tabs {
+        min-width:0;
+      }
+      .vibe-folder-arrow {
+        width:42px;
+        height:42px;
+        border-radius:50%;
+        background:rgba(255,255,255,.08);
+        border:1px solid rgba(255,255,255,.12);
+        color:#fff;
+        font-size:28px;
+        line-height:1;
+        box-shadow:0 10px 28px rgba(0,0,0,.18);
+      }
+      .vibe-folder-tab {
+        position:relative;
+        flex:0 0 auto;
+        display:flex;
+        align-items:center;
+        gap:7px;
+        min-height:44px;
+        padding:0 18px;
+        border-radius:24px;
+        background:rgba(255,255,255,.07);
+        border:1px solid rgba(255,255,255,.12);
+        color:#fff;
+        font-size:16px;
+        font-weight:850;
+        transform:translateY(0);
+        transition:transform .22s ease, background .22s ease, box-shadow .22s ease;
+      }
+      .vibe-folder-tab.active {
+        background:rgba(255,255,255,.18);
+        box-shadow:inset 0 0 0 1px rgba(255,255,255,.18), 0 12px 34px rgba(0,0,0,.22);
+        transform:translateY(-1px);
+      }
+      .vibe-folder-tab b {
+        min-width:22px;
+        height:22px;
+        border-radius:999px;
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        background:#1e90ff;
+        color:#fff;
+        font-size:12px;
+      }
+      .vibe-folder-empty { text-align:center; opacity:.72; animation:vibeFadeUp .25s ease both; }
+      .vibe-main-hero {
+        position:relative;
+        overflow:hidden;
+        min-height:190px;
+        border-radius:28px;
+        padding:24px;
+        background:radial-gradient(circle at 20% 10%, rgba(30,144,255,.55), transparent 34%), linear-gradient(135deg, #101727, #111);
+        display:flex;
+        align-items:flex-end;
+        gap:18px;
+      }
+      .vibe-main-hero::after {
+        content:"";
+        position:absolute;
+        inset:-40%;
+        background:linear-gradient(120deg, transparent, rgba(255,255,255,.12), transparent);
+        transform:rotate(12deg);
+        animation:vibeShine 5s linear infinite;
+      }
+      .vibe-main-avatar {
+        position:relative;
+        z-index:1;
+        width:94px;
+        height:94px;
+        border-radius:30px;
+        background:linear-gradient(135deg, #2de2e6, #1e90ff 55%, #b96cff);
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        box-shadow:0 18px 48px rgba(0,0,0,.35);
+      }
+      .vibe-main-avatar svg { width:62px; height:62px; }
+      .vibe-main-hero-text { position:relative; z-index:1; }
+      .vibe-folder-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+      .vibe-folder-option {
+        min-height:86px;
+        border-radius:20px;
+        padding:14px;
+        background:rgba(255,255,255,.06);
+        border:1px solid rgba(255,255,255,.1);
+        text-align:left;
+      }
+      .vibe-folder-option.active { background:rgba(30,144,255,.22); border-color:rgba(30,144,255,.7); }
+      .vibe-folder-list, .vibe-nav-editor { display:flex; flex-direction:column; gap:10px; }
+      .vibe-folder-row, .vibe-nav-row {
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:12px;
+        padding:14px 16px;
+        border-radius:20px;
+        background:rgba(255,255,255,.06);
+        border:1px solid rgba(255,255,255,.1);
+        animation:vibeFadeUp .25s ease both;
+      }
+      .vibe-nav-row { cursor:grab; }
+      .vibe-nav-row.dragging { opacity:.5; transform:scale(.98); }
+      .vibe-mini-actions { display:flex; gap:7px; }
+      .vibe-mini-actions button {
+        width:36px;
+        height:36px;
+        border-radius:12px;
+        background:rgba(255,255,255,.09);
+        font-size:16px;
+      }
+      #pc-settings-screen .vibe-mobile-only-settings {
+        display:none !important;
+      }
+      @keyframes vibeFadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+      @keyframes vibeShine { from { transform:translateX(-40%) rotate(12deg); } to { transform:translateX(40%) rotate(12deg); } }
+      @media (max-width:520px) {
+        .vibe-folder-grid { grid-template-columns:1fr; }
+        .vibe-main-hero { min-height:170px; }
+        .vibe-main-avatar { width:78px; height:78px; border-radius:24px; }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  function renderMainMenuSettings(isMobileHost = false) {
+    const cfg = mainMenuSettings();
+    const folderRows = cfg.folders.map(folder => {
+      const type = FOLDER_TYPES[folder.type] || FOLDER_TYPES.friends;
+      const count = folder.type === 'new' ? folderCount(folder) : folderItems(folder.id).length;
+      return `<div class="vibe-folder-row"><div><div class="settings-nav-title">${type.icon} ${esc(folder.name)}</div><div class="settings-nav-meta">${type.meta}${count ? ` · ${count}` : ''}</div></div><button class="settings-ghost" style="color:#ff8a8a;" onclick="deleteMainMenuFolder('${folder.id}')">Удалить</button></div>`;
+    }).join('') || '<div class="settings-card" style="opacity:.72;">Папок пока нет. Создай первую, и она появится над списком чатов.</div>';
+    const navRows = cfg.navOrder.map((id, index) => {
+      const item = NAV_ITEMS[id];
+      return `<div class="vibe-nav-row" draggable="true" data-nav-id="${id}">
+        <span class="person-main"><span class="settings-nav-icon"><img src="${item.icon}" style="width:24px;height:24px;border-radius:7px;object-fit:cover;"></span><span><div class="settings-nav-title">${item.label}</div><div class="settings-nav-meta">Позиция ${index + 1}</div></span></span>
+        <span class="vibe-mini-actions"><button onclick="moveMainNavItem('${id}', -1)">↑</button><button onclick="moveMainNavItem('${id}', 1)">↓</button></span>
+      </div>`;
+    }).join('');
+    const navPanel = isMobileHost ? `<div class="settings-card settings-section vibe-mobile-only-settings">
+        <div><div class="settings-nav-title">Панель мессенджера</div><div class="settings-nav-meta">Перетаскивай пункты или двигай стрелками, затем сохрани.</div></div>
+        <div class="vibe-nav-editor" id="main-nav-editor">${navRows}</div>
+        <div class="settings-actions"><button class="settings-save" onclick="saveMainNavOrder()">Сохранить</button><button class="settings-ghost" onclick="resetMainNavOrder()">Сброс панельки</button></div>
+      </div>` : '';
+    return `<div class="settings-shell">
+      <div class="settings-topbar"><button class="settings-back" onclick="openSettingsView('home')">←</button><div><div class="settings-title">Главное меню</div><div class="settings-subtitle">${isMobileHost ? 'Папки над чатами и порядок нижней панели' : 'Папки над списком чатов'}</div></div></div>
+      <div class="settings-card vibe-main-hero">
+        <div class="vibe-main-avatar" aria-hidden="true">
+          <svg viewBox="0 0 96 96" fill="none"><rect x="18" y="18" width="60" height="60" rx="22" fill="rgba(255,255,255,.18)"/><path d="M30 38h36M30 50h25M30 62h30" stroke="white" stroke-width="7" stroke-linecap="round"/><circle cx="68" cy="30" r="10" fill="#fff"/><path d="M65 30l2 2 5-6" stroke="#1e90ff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="vibe-main-hero-text"><div class="settings-title">Собери свой вход</div><div class="settings-subtitle">Папки, счётчики и панель навигации будут сохраняться в аккаунте.</div></div>
+      </div>
+      <div class="settings-card settings-section">
+        <div class="settings-nav-title">Создание папки</div>
+        <input id="main-folder-name" maxlength="22" placeholder="Название папки">
+        <div class="vibe-folder-grid">${Object.entries(FOLDER_TYPES).map(([id, type], index) => `<button class="vibe-folder-option ${index === 0 ? 'active' : ''}" type="button" data-folder-type="${id}" onclick="pickMainFolderType('${id}')"><b>${type.icon} ${type.label}</b><br><span class="settings-nav-meta">${type.meta}</span></button>`).join('')}</div>
+        <button class="settings-save" onclick="createMainMenuFolder()">Создать новую папку</button>
+      </div>
+      <div class="settings-card"><div class="settings-nav-title" style="margin-bottom:12px;">Мои папки</div><div class="vibe-folder-list">${folderRows}</div></div>
+      ${navPanel}
+    </div>`;
+  }
+
+  function settingsHosts() {
+    return ['pc-settings-screen', 'mob-settings'].map($).filter(Boolean);
+  }
+
+  function patchSettingsButton() {
+    settingsHosts().forEach((host, index) => {
+      if (!host || host.querySelector('[data-main-menu-settings-entry="1"]')) return;
+      const list = host.querySelector('.settings-list');
+      if (!list) return;
+      const btn = document.createElement('button');
+      btn.className = 'settings-nav-item';
+      btn.id = `main-menu-settings-entry-${index}`;
+      btn.dataset.mainMenuSettingsEntry = '1';
+      btn.type = 'button';
+      btn.onclick = () => window.openSettingsView('mainMenu');
+      btn.innerHTML = `<span class="settings-nav-main"><span class="settings-nav-icon">🧭</span><span><div class="settings-nav-title">Главное меню</div><div class="settings-nav-meta">Папки чатов и нижняя панель</div></span></span><span>›</span>`;
+      list.appendChild(btn);
+    });
+  }
+
+  function applyBottomNav() {
+    const nav = document.querySelector('.bottom-nav');
+    if (!nav) return;
+    const cfg = mainMenuSettings();
+    nav.innerHTML = `<div class="nav-indicator" id="mob-nav-indicator"></div>` + cfg.navOrder.map((id, index) => {
+      const item = NAV_ITEMS[id];
+      return `<div class="nav-item" data-nav-id="${id}" onclick="mobNavControl('${id}', ${index})"><img class="nav-icon" src="${item.icon}" alt="${item.label}"></div>`;
+    }).join('');
+    const activeId = document.querySelector('.mob-screen.active')?.id?.replace('mob-', '') || cfg.navOrder[0] || 'home';
+    const activeIndex = Math.max(0, cfg.navOrder.indexOf(activeId));
+    if (typeof window.mobNavControl === 'function') {
+      const screen = document.querySelector('.mob-screen.active');
+      if (!screen || !document.body.classList.contains('chat-open-mobile')) window.mobNavControl(cfg.navOrder[activeIndex] || 'home', activeIndex);
+    }
+  }
+
+  function setupDragEditor() {
+    const editor = $('main-nav-editor');
+    if (!editor || editor.dataset.dragReady === '1') return;
+    editor.dataset.dragReady = '1';
+    let dragging = null;
+    editor.addEventListener('dragstart', event => {
+      dragging = event.target.closest('.vibe-nav-row');
+      if (!dragging) return;
+      dragging.classList.add('dragging');
+      event.dataTransfer.effectAllowed = 'move';
+    });
+    editor.addEventListener('dragend', () => {
+      if (dragging) dragging.classList.remove('dragging');
+      dragging = null;
+      syncNavOrderFromEditor();
+    });
+    editor.addEventListener('dragover', event => {
+      event.preventDefault();
+      const after = Array.from(editor.querySelectorAll('.vibe-nav-row:not(.dragging)')).find(row => {
+        const box = row.getBoundingClientRect();
+        return event.clientY < box.top + box.height / 2;
+      });
+      if (!dragging) return;
+      if (after) editor.insertBefore(dragging, after);
+      else editor.appendChild(dragging);
+    });
+  }
+
+  function syncNavOrderFromEditor() {
+    const editor = $('main-nav-editor');
+    if (!editor) return;
+    mainMenuSettings().navOrder = Array.from(editor.querySelectorAll('.vibe-nav-row')).map(row => row.dataset.navId).filter(Boolean);
+  }
+
+  window.pickMainFolderType = function(type) {
+    document.querySelectorAll('.vibe-folder-option').forEach(btn => btn.classList.toggle('active', btn.dataset.folderType === type));
+  };
+
+  window.createMainMenuFolder = async function() {
+    const input = Array.from(document.querySelectorAll('#main-folder-name')).find(el => {
+      const rect = el.getBoundingClientRect();
+      return rect.width > 0 && rect.height > 0;
+    }) || $('main-folder-name');
+    const name = (input && input.value.trim()) || '';
+    const activeType = document.querySelector('.vibe-folder-option.active')?.dataset.folderType || 'new';
+    if (!name) return alert('Напиши название папки.');
+    const cfg = mainMenuSettings();
+    cfg.folders.push({ id: `folder_${Date.now()}`, name, type: activeType });
+    await saveMainMenuSettings();
+    localStorage.setItem(STORE_KEY, cfg.folders[cfg.folders.length - 1].id);
+    window.openSettingsView('mainMenu');
+    renderFolderedDialogs(true);
+  };
+
+  window.deleteMainMenuFolder = async function(id) {
+    const cfg = mainMenuSettings();
+    cfg.folders = cfg.folders.filter(folder => folder.id !== id);
+    if (activeFolder() === id) localStorage.setItem(STORE_KEY, 'all');
+    await saveMainMenuSettings();
+    window.openSettingsView('mainMenu');
+    renderFolderedDialogs(true);
+  };
+
+  window.setMainMenuFolder = function(id) {
+    localStorage.setItem(STORE_KEY, id);
+    renderFolderedDialogs(true);
+  };
+
+  window.openMainMenuItem = function(key, desktop) {
+    const item = findItemByKey(key) || (stateFix().getItem && stateFix().getItem(key));
+    if (!item) {
+      alert('Чат ещё загружается. Попробуй ещё раз.');
+      return;
+    }
+    if (item.isSaved) return window.openFavorites && window.openFavorites();
+    if (desktop && typeof window.openPCChat === 'function') return window.openPCChat(item);
+    if (!desktop && typeof window.openMobChat === 'function') return window.openMobChat(item);
+  };
+
+  window.scrollMainFolderTabs = function(button, direction, event) {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    const shell = button && button.closest('.vibe-folder-tabs-shell');
+    const tabs = shell && shell.querySelector('.vibe-folder-tabs');
+    if (!tabs) return;
+    tabs.scrollBy({ left: direction * Math.max(180, tabs.clientWidth * 0.7), behavior: 'smooth' });
+  };
+
+  function openCreateMenuStable(event) {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+      if (typeof event.stopImmediatePropagation === 'function') event.stopImmediatePropagation();
+    }
+    const before = document.querySelectorAll('.codex-create-overlay, .app-modal-backdrop').length;
+    try {
+      if (window.vibeEnhancer && typeof window.vibeEnhancer.showCreateMenu === 'function') {
+        window.vibeEnhancer.showCreateMenu();
+      } else if (typeof window.showCreateMenu === 'function' && window.showCreateMenu !== openCreateMenuStable) {
+        window.showCreateMenu();
+      } else if (typeof showCreateMenu === 'function') {
+        showCreateMenu();
+      }
+    } catch (error) {}
+    setTimeout(() => {
+      const after = document.querySelectorAll('.codex-create-overlay, .app-modal-backdrop').length;
+      if (after > before) return;
+      const overlay = document.createElement('div');
+      overlay.className = 'codex-create-overlay';
+      overlay.innerHTML = `
+        <div class="codex-ui-sheet">
+          <div class="modal-head" style="margin-bottom:12px;">
+            <div class="modal-title">Создать</div>
+            <button class="modal-close" type="button" onclick="this.closest('.codex-create-overlay').remove()">✕</button>
+          </div>
+          <div class="choice-stack">
+            <button class="choice-card" type="button" onclick="this.closest('.codex-create-overlay').remove(); openCreateGroup();"><b>Создать группу</b><br><span class="settings-nav-meta">Общий чат для друзей</span></button>
+            <button class="choice-card" type="button" onclick="this.closest('.codex-create-overlay').remove(); openCreateChannel();"><b>Создать канал</b><br><span class="settings-nav-meta">Публикации и подписчики</span></button>
+          </div>
+        </div>`;
+      document.body.appendChild(overlay);
+    }, 60);
+  }
+
+  function installPlusDelegation() {
+    if (window.__mainMenuPlusDelegated) return;
+    window.__mainMenuPlusDelegated = true;
+    document.addEventListener('click', event => {
+      const btn = event.target && event.target.closest && event.target.closest('.chat-plus-btn, .fab-plus');
+      if (!btn) return;
+      openCreateMenuStable(event);
+    }, true);
+  }
+
+  window.moveMainNavItem = function(id, direction) {
+    const cfg = mainMenuSettings();
+    const index = cfg.navOrder.indexOf(id);
+    const next = index + direction;
+    if (index < 0 || next < 0 || next >= cfg.navOrder.length) return;
+    const copy = cfg.navOrder.slice();
+    [copy[index], copy[next]] = [copy[next], copy[index]];
+    cfg.navOrder = copy;
+    window.openSettingsView('mainMenu');
+  };
+
+  window.saveMainNavOrder = async function() {
+    syncNavOrderFromEditor();
+    await saveMainMenuSettings();
+    applyBottomNav();
+    alert('Панель сохранена.');
+  };
+
+  window.resetMainNavOrder = async function() {
+    mainMenuSettings().navOrder = DEFAULT_NAV.slice();
+    await saveMainMenuSettings();
+    applyBottomNav();
+    window.openSettingsView('mainMenu');
+  };
+
+  function patchSettingsOpen() {
+    if (window.__mainMenuSettingsWrapped) return;
+    window.__mainMenuSettingsWrapped = true;
+    const baseOpen = window.openSettingsView;
+    window.openSettingsView = function(view) {
+      if (view === 'mainMenu') {
+        installStyle();
+        settingsHosts().forEach(host => { host.innerHTML = renderMainMenuSettings(host.id === 'mob-settings'); });
+        setupDragEditor();
+        return;
+      }
+      if (typeof baseOpen === 'function') baseOpen(view);
+      setTimeout(() => { patchSettingsButton(); setupDragEditor(); }, 0);
+    };
+    const baseRender = window.renderSettings;
+    window.renderSettings = function() {
+      if (typeof baseRender === 'function') baseRender();
+      setTimeout(patchSettingsButton, 0);
+    };
+  }
+
+  function patchRenderDialogs() {
+    if (window.__mainMenuDialogsWrapped) return;
+    window.__mainMenuDialogsWrapped = true;
+    const baseRender = window.renderDialogsFixed || window.renderDialogs;
+    window.renderDialogsFixed = function(...args) {
+      if (typeof baseRender === 'function') baseRender.apply(this, args);
+      renderFolderedDialogs(true);
+    };
+    window.renderDialogs = window.renderDialogsFixed;
+  }
+
+  function boot() {
+    installStyle();
+    patchSettingsOpen();
+    patchRenderDialogs();
+    patchSettingsButton();
+    installPlusDelegation();
+    applyBottomNav();
+    renderFolderedDialogs(true);
+  }
+
+  window.addEventListener('load', () => { setTimeout(boot, 700); setTimeout(boot, 1800); });
+  // Папки обновляются событиями чатов и действиями пользователя, без таймера.
+})();
+</script>
+<script id="codex-mobile-message-menu-delegated-final">
+(() => {
+  const $ = id => document.getElementById(id);
+  const HOLD_MS = 380;
+  let holdTimer = null;
+  let startPoint = null;
+  let didHold = false;
+
+  function meNow() {
+    return (typeof me !== 'undefined' && me) ? me : window.me;
+  }
+
+  function mobileChatOpen() {
+    const view = $('mob-chat-view');
+    return !!(view && (view.classList.contains('active') || view.style.display === 'flex' || document.body.classList.contains('chat-open-mobile')));
+  }
+
+  function messageFromTarget(target) {
+    return target && target.closest ? target.closest('#mob-msgs .msg') : null;
+  }
+
+  function cleanMsgId(message) {
+    return (message.dataset.msgId || message.id || '')
+      .replace(/^mob-msgs-/, '')
+      .replace(/^pc-msgs-/, '')
+      .replace(/^msg-/, '');
+  }
+
+  function msgText(message) {
+    return (message.dataset.msgText || message.innerText || '')
+      .replace(/[✓\s]+$/g, '')
+      .trim();
+  }
+
+  function msgSender(message) {
+    const user = meNow();
+    return message.dataset.sender || (message.classList.contains('sent') && user ? user.id : '');
+  }
+
+  function installStyle() {
+    if ($('codex-mobile-message-menu-delegated-style')) return;
+    const style = document.createElement('style');
+    style.id = 'codex-mobile-message-menu-delegated-style';
+    style.textContent = `
+      #mob-chat-view { position: fixed !important; }
+      #mob-chat-view #context-menu,
+      body > #context-menu.codex-mobile-context-menu {
+        display:none;
+        position:fixed !important;
+        z-index:2147483200 !important;
+        min-width:210px;
+        max-width:min(280px, calc(100vw - 24px));
+        transform:translateZ(0);
+      }
+      #mob-msgs .msg {
+        -webkit-user-select:none !important;
+        user-select:none !important;
+        -webkit-touch-callout:none !important;
+        touch-action:pan-y;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  function placeMenu(menu, point) {
+    if (!menu) return;
+    if (menu.parentNode !== document.body) document.body.appendChild(menu);
+    menu.classList.add('codex-mobile-context-menu');
+    menu.style.display = 'block';
+    menu.style.visibility = 'hidden';
+    menu.style.position = 'fixed';
+    menu.style.left = '0px';
+    menu.style.top = '0px';
+
+    const rect = menu.getBoundingClientRect();
+    const vw = window.innerWidth || document.documentElement.clientWidth;
+    const vh = window.innerHeight || document.documentElement.clientHeight;
+    const pad = 12;
+    let left = (point.clientX || 24) + 8;
+    let top = (point.clientY || 24) + 8;
+    if (left + rect.width > vw - pad) left = vw - rect.width - pad;
+    if (top + rect.height > vh - pad) top = (point.clientY || 24) - rect.height - 8;
+    left = Math.max(pad, left);
+    top = Math.max(pad, Math.min(top, vh - rect.height - pad));
+    menu.style.left = `${left}px`;
+    menu.style.top = `${top}px`;
+    menu.style.visibility = 'visible';
+  }
+
+  function selectedFix() {
+    window.vibeFix20260524 = window.vibeFix20260524 || {};
+    return window.vibeFix20260524;
+  }
+
+  function openMenuFor(message, point, originalEvent) {
+    if (!message || !mobileChatOpen()) return false;
+    const id = cleanMsgId(message);
+    if (!id) return false;
+    const text = msgText(message);
+    const sender = msgSender(message);
+    const fix = selectedFix();
+    fix.selectedMsgId = id;
+    fix.selectedMsgText = text;
+    fix.selectedMsgSender = sender;
+    fix.selectedMsgData = null;
+    window.selectedMsgId = id;
+    window.selectedMsgText = text;
+    window.selectedMsgSender = sender;
+
+    if (window.getSelection) {
+      const selection = window.getSelection();
+      if (selection && selection.removeAllRanges) selection.removeAllRanges();
+    }
+
+    if (typeof window.showMsgMenu === 'function') {
+      const synthetic = {
+        clientX: point.clientX,
+        clientY: point.clientY,
+        pageX: point.pageX || point.clientX,
+        pageY: point.pageY || point.clientY,
+        preventDefault() {},
+        stopPropagation() {}
+      };
+      window.showMsgMenu(synthetic, id, text, sender);
+    }
+
+    const menu = $('context-menu');
+    if (!menu) return false;
+    placeMenu(menu, point);
+    const user = meNow();
+    const delAll = $('btn-del-all');
+    if (delAll) delAll.style.display = sender && user && sender === user.id ? 'flex' : 'none';
+    if (originalEvent) {
+      originalEvent.preventDefault();
+      originalEvent.stopPropagation();
+    }
+    return false;
+  }
+
+  function pointFromTouch(event) {
+    const touch = event.changedTouches && event.changedTouches[0]
+      ? event.changedTouches[0]
+      : event.touches && event.touches[0]
+        ? event.touches[0]
+        : event;
+    return {
+      clientX: touch.clientX || 24,
+      clientY: touch.clientY || 24,
+      pageX: touch.pageX || touch.clientX || 24,
+      pageY: touch.pageY || touch.clientY || 24
+    };
+  }
+
+  function cancelHold() {
+    clearTimeout(holdTimer);
+    holdTimer = null;
+  }
+
+  document.addEventListener('touchstart', event => {
+    const message = messageFromTarget(event.target);
+    if (!message || !mobileChatOpen()) return;
+    if (event.target.closest('a, button, audio, video, input, textarea')) return;
+    const point = pointFromTouch(event);
+    startPoint = point;
+    didHold = false;
+    cancelHold();
+    holdTimer = setTimeout(() => {
+      didHold = true;
+      openMenuFor(message, point, event);
+    }, HOLD_MS);
+  }, { passive: false, capture: true });
+
+  document.addEventListener('touchmove', event => {
+    if (!holdTimer || !startPoint) return;
+    const point = pointFromTouch(event);
+    if (Math.abs(point.clientX - startPoint.clientX) > 14 || Math.abs(point.clientY - startPoint.clientY) > 14) cancelHold();
+  }, { passive: true, capture: true });
+
+  document.addEventListener('touchend', event => {
+    const message = messageFromTarget(event.target);
+    if (didHold) {
+      event.preventDefault();
+      event.stopPropagation();
+      didHold = false;
+    }
+    cancelHold();
+    startPoint = null;
+    if (!message || !mobileChatOpen()) return;
+  }, { passive: false, capture: true });
+
+  document.addEventListener('contextmenu', event => {
+    const message = messageFromTarget(event.target);
+    if (!message || !mobileChatOpen()) return;
+    openMenuFor(message, pointFromTouch(event), event);
+  }, true);
+
+  document.addEventListener('click', event => {
+    const menu = $('context-menu');
+    const message = messageFromTarget(event.target);
+    if (message && mobileChatOpen()) {
+      openMenuFor(message, pointFromTouch(event), event);
+      return;
+    }
+    if (menu && menu.style.display !== 'none' && !menu.contains(event.target)) {
+      menu.style.display = 'none';
+    }
+  }, true);
+
+  installStyle();
+})();
+</script>
+<script id="codex-emergency-plus-folders-emoji-final">
+(() => {
+  const $ = id => document.getElementById(id);
+
+  function sheet(html) {
+    document.querySelectorAll('.codex-create-overlay[data-emergency-create="1"]').forEach(node => node.remove());
+    const overlay = document.createElement('div');
+    overlay.className = 'codex-create-overlay';
+    overlay.dataset.emergencyCreate = '1';
+    overlay.innerHTML = `<div class="codex-ui-sheet">${html}</div>`;
+    overlay.addEventListener('click', event => {
+      if (event.target === overlay) overlay.remove();
+    });
+    document.body.appendChild(overlay);
+    return overlay;
+  }
+
+  window.showCreateMenu = function() {
+    sheet(`
+      <div class="modal-head" style="margin-bottom:12px;">
+        <div class="modal-title">Создать</div>
+        <button class="modal-close" type="button" data-close-create>✕</button>
+      </div>
+      <div class="choice-stack">
+        <button class="choice-card" type="button" data-create-group><b>Создать группу</b><br><span class="settings-nav-meta">Общий чат для друзей</span></button>
+        <button class="choice-card" type="button" data-create-channel><b>Создать канал</b><br><span class="settings-nav-meta">Публикации и подписчики</span></button>
+      </div>
+    `);
+    const overlay = document.querySelector('.codex-create-overlay[data-emergency-create="1"]');
+    if (!overlay) return;
+    overlay.querySelector('[data-close-create]').onclick = () => overlay.remove();
+    overlay.querySelector('[data-create-group]').onclick = () => {
+      overlay.remove();
+      if (typeof window.openCreateGroup === 'function') window.openCreateGroup();
+      else if (window.vibeEnhancer && typeof window.vibeEnhancer.openCreateGroup === 'function') window.vibeEnhancer.openCreateGroup();
+    };
+    overlay.querySelector('[data-create-channel]').onclick = () => {
+      overlay.remove();
+      if (typeof window.openCreateChannel === 'function') window.openCreateChannel();
+      else if (window.vibeEnhancer && typeof window.vibeEnhancer.openCreateChannel === 'function') window.vibeEnhancer.openCreateChannel();
+    };
+  };
+
+  function isTopCreateButton(btn) {
+    return !!(btn && (
+      btn.closest('.chat-topbar') ||
+      btn.closest('#mob-home header') ||
+      btn.classList.contains('fab-plus')
+    ));
+  }
+
+  document.addEventListener('click', event => {
+    const attach = event.target.closest && event.target.closest('#pc-attach-btn,#mob-attach-btn,.attach-plus');
+    if (attach) {
+      event.preventDefault();
+      event.stopPropagation();
+      if (typeof event.stopImmediatePropagation === 'function') event.stopImmediatePropagation();
+      const mode = attach.dataset.attachMode || (attach.id && attach.id.startsWith('pc') ? 'pc' : (document.body.classList.contains('chat-open-mobile') ? 'mob' : 'pc'));
+      if (typeof window.showAttachSheet === 'function') window.showAttachSheet(mode);
+      return;
+    }
+
+    const plus = event.target.closest && event.target.closest('.chat-plus-btn,.fab-plus');
+    if (!isTopCreateButton(plus)) return;
+    event.preventDefault();
+    event.stopPropagation();
+    if (typeof event.stopImmediatePropagation === 'function') event.stopImmediatePropagation();
+    window.showCreateMenu();
+  }, true);
+
+  function configuredFolders() {
+    const user = (typeof me !== 'undefined' && me) ? me : window.me;
+    const cfg = user && user.settings && user.settings.mainMenu;
+    if (cfg && Array.isArray(cfg.folders) && cfg.folders.length) return cfg.folders;
+    try {
+      const saved = JSON.parse(localStorage.getItem(`vibe_main_menu_config_${user && user.id}`) || 'null');
+      return saved && Array.isArray(saved.folders) ? saved.folders : [];
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function foldersMissing() {
+    if (!configuredFolders().length) return false;
+    const pc = $('pc-contacts-list');
+    const mob = $('mob-contacts');
+    return !!((pc && !pc.querySelector('.vibe-folder-tabs')) || (mob && !mob.querySelector('.vibe-folder-tabs')));
+  }
+
+  window.addEventListener('load', () => setTimeout(() => {
+    if (foldersMissing() && typeof window.renderDialogsFixed === 'function') {
+      try { window.renderDialogsFixed(); } catch (error) {}
+    }
+  }, 1600));
+
+  const EMOJIS = '😀 😃 😄 😁 😆 😅 😂 🤣 😊 😇 🙂 🙃 😉 😌 😍 🥰 😘 😗 😙 😚 😋 😛 😝 😜 🤪 🤨 🧐 🤓 😎 🥳 😏 😒 😞 😔 😟 😕 🙁 ☹️ 😣 😖 😫 😩 🥺 😢 😭 😤 😠 😡 🤯 😳 🥵 🥶 😱 😨 😰 😥 😓 🤗 🤔 🤭 🤫 🤥 😶 😐 😑 😬 🙄 😯 😦 😧 😮 😲 🥱 😴 🤤 😪 😵 🤐 🥴 🤢 🤮 🤧 😷 🤒 🤕 🤑 🤠 😈 👿 👻 💀 ☠️ 🤖 🎉 ❤️ 🧡 💛 💚 💙 💜 🖤 🤍 👍 👎 👏 🙌 💪 🔥 ⭐'.split(' ');
+
+  function customStickers() {
+    try {
+      return JSON.parse(localStorage.getItem('vibe_custom_stickers_v1') || '[]');
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function saveCustomStickers(list) {
+    localStorage.setItem('vibe_custom_stickers_v1', JSON.stringify((list || []).slice(0, 120)));
+  }
+
+  function picker(mode) {
+    const root = $(`${mode}-emoji-picker`);
+    if (!root) return;
+    const tab = root.dataset.activeTab || 'emoji';
+    const stickers = customStickers();
+    root.innerHTML = `
+      <div class="picker-shell">
+        <div class="picker-tabs">
+          <button type="button" class="picker-tab ${tab === 'emoji' ? 'active' : ''}" data-tab="emoji">Эмодзи</button>
+          <button type="button" class="picker-tab ${tab === 'stickers' ? 'active' : ''}" data-tab="stickers">Стикеры</button>
+          <button type="button" class="picker-add" data-add-sticker>+</button>
+        </div>
+        <div class="picker-panel ${tab === 'emoji' ? 'active' : ''}" data-panel="emoji">
+          ${EMOJIS.map(e => `<button class="emoji-chip" type="button" data-emoji="${e}">${e}</button>`).join('')}
+        </div>
+        <div class="picker-panel ${tab === 'stickers' ? 'active' : ''}" data-panel="stickers">
+          <div class="sticker-grid">${stickers.map(sticker => `<button class="sticker-chip" type="button" data-sticker="${sticker.url || ''}" data-name="${sticker.name || 'Стикер'}"><img src="${sticker.url || ''}" alt=""></button>`).join('') || '<div class="picker-note">Добавь свой первый стикер кнопкой +</div>'}</div>
+        </div>
+      </div>`;
+    root.querySelectorAll('[data-tab]').forEach(btn => {
+      btn.onclick = () => {
+        root.dataset.activeTab = btn.dataset.tab || 'emoji';
+        picker(mode);
+      };
+    });
+    root.querySelectorAll('[data-emoji]').forEach(btn => {
+      btn.onclick = () => {
+        const input = $(`${mode}-input`);
+        if (input) {
+          input.value = (input.value || '') + btn.dataset.emoji;
+          input.focus();
+          if (typeof window.updateSendButton === 'function') window.updateSendButton(mode);
+        }
+      };
+    });
+    root.querySelectorAll('[data-sticker]').forEach(btn => {
+      btn.onclick = async () => {
+        const url = btn.dataset.sticker;
+        if (!url) return;
+        if (typeof window.sendStickerMessage === 'function') await window.sendStickerMessage(url, btn.dataset.name || 'Стикер', 1);
+        root.style.display = 'none';
+      };
+    });
+    const add = root.querySelector('[data-add-sticker]');
+    if (add) add.onclick = () => uploadSticker(mode);
+  }
+
+  function uploadSticker(mode) {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = () => {
+      const file = input.files && input.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        const list = customStickers();
+        list.unshift({ id: `custom_${Date.now()}`, name: file.name || 'Стикер', url: String(reader.result || '') });
+        saveCustomStickers(list);
+        picker(mode);
+      };
+      reader.readAsDataURL(file);
+    };
+    input.click();
+  }
+
+  window.loadEmojis = function() {
+    picker('pc');
+    picker('mob');
+  };
+  window.toggleEmoji = function(mode) {
+    const fixedMode = mode === 'pc' ? 'pc' : 'mob';
+    const root = $(`${fixedMode}-emoji-picker`);
+    if (!root) return;
+    picker(fixedMode);
+    root.style.display = root.style.display === 'block' ? 'none' : 'block';
+  };
+
+  window.addEventListener('load', () => setTimeout(window.loadEmojis, 200));
+})();
+</script>
+<script id="codex-chat-create-plus-only-final">
+(() => {
+  const $ = id => document.getElementById(id);
+
+  function ensureStyle() {
+    if ($('codex-chat-create-plus-only-style')) return;
+    const style = document.createElement('style');
+    style.id = 'codex-chat-create-plus-only-style';
+    style.textContent = `
+      .vibe-create-plus {
+        width:42px;
+        height:42px;
+        border-radius:14px;
+        background:rgba(255,255,255,.1);
+        border:1px solid rgba(255,255,255,.16);
+        color:var(--accent);
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:26px;
+        font-weight:900;
+        flex-shrink:0;
+        cursor:pointer;
+      }
+      .vibe-create-plus img {
+        width:22px;
+        height:22px;
+        object-fit:contain;
+        pointer-events:none;
+      }
+      .codex-create-overlay {
+        position:fixed;
+        inset:0;
+        z-index:2147483300;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        padding:18px;
+        background:rgba(0,0,0,.62);
+        backdrop-filter:blur(14px);
+        -webkit-backdrop-filter:blur(14px);
+      }
+      .codex-create-overlay .codex-ui-sheet {
+        width:min(390px,100%);
+        border-radius:28px;
+        padding:20px;
+        background:rgba(18,24,35,.96);
+        border:1px solid rgba(255,255,255,.16);
+        box-shadow:0 28px 90px rgba(0,0,0,.5);
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  function openCreate() {
+    document.querySelectorAll('.codex-create-overlay[data-create-plus-final="1"]').forEach(node => node.remove());
+    const overlay = document.createElement('div');
+    overlay.className = 'codex-create-overlay';
+    overlay.dataset.createPlusFinal = '1';
+    overlay.innerHTML = `
+      <div class="codex-ui-sheet">
+        <div class="modal-head" style="margin-bottom:12px;">
+          <div class="modal-title">Создать</div>
+          <button class="modal-close" type="button" data-close>✕</button>
+        </div>
+        <div class="choice-stack">
+          <button class="choice-card" type="button" data-group><b>Создать группу</b><br><span class="settings-nav-meta">Общий чат для друзей</span></button>
+          <button class="choice-card" type="button" data-channel><b>Создать канал</b><br><span class="settings-nav-meta">Публикации и подписчики</span></button>
+        </div>
+      </div>`;
+    document.body.appendChild(overlay);
+    overlay.addEventListener('click', event => { if (event.target === overlay) overlay.remove(); });
+    overlay.querySelector('[data-close]').onclick = () => overlay.remove();
+    overlay.querySelector('[data-group]').onclick = event => {
+      event.preventDefault();
+      overlay.remove();
+      if (typeof window.openCreateGroup === 'function') window.openCreateGroup();
+      else if (window.vibeEnhancer && typeof window.vibeEnhancer.openCreateGroup === 'function') window.vibeEnhancer.openCreateGroup();
+    };
+    overlay.querySelector('[data-channel]').onclick = event => {
+      event.preventDefault();
+      overlay.remove();
+      if (typeof window.openCreateChannel === 'function') window.openCreateChannel();
+      else if (window.vibeEnhancer && typeof window.vibeEnhancer.openCreateChannel === 'function') window.vibeEnhancer.openCreateChannel();
+    };
+  }
+
+  window.showCreateMenu = openCreate;
+
+  function makeCreateButton(oldButton) {
+    if (!oldButton || oldButton.classList.contains('vibe-create-plus')) return;
+    const fresh = oldButton.cloneNode(true);
+    fresh.className = 'vibe-create-plus';
+    fresh.removeAttribute('onclick');
+    fresh.type = 'button';
+    if (!fresh.innerHTML.trim() || fresh.textContent.trim() === '+') {
+      fresh.innerHTML = oldButton.querySelector('img') ? oldButton.innerHTML : '+';
+    }
+    fresh.addEventListener('click', event => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (typeof event.stopImmediatePropagation === 'function') event.stopImmediatePropagation();
+      openCreate();
+      return false;
+    }, true);
+    oldButton.replaceWith(fresh);
+  }
+
+  function normalizeCreateButtons() {
+    ensureStyle();
+    document.querySelectorAll('.chat-topbar > .chat-plus-btn, #mob-home header .chat-plus-btn').forEach(makeCreateButton);
+  }
+
+  document.addEventListener('click', event => {
+    const btn = event.target.closest && event.target.closest('.vibe-create-plus');
+    if (!btn) return;
+    event.preventDefault();
+    event.stopPropagation();
+    if (typeof event.stopImmediatePropagation === 'function') event.stopImmediatePropagation();
+    openCreate();
+    return false;
+  }, true);
+
+  window.addEventListener('load', () => {
+    normalizeCreateButtons();
+    setTimeout(normalizeCreateButtons, 300);
+    setTimeout(normalizeCreateButtons, 1200);
+  });
+  setInterval(normalizeCreateButtons, 500);
+})();
+</script>
+<script id="codex-emoji-sticker-grid-final">
+(() => {
+  const $ = id => document.getElementById(id);
+  const EMOJIS = '😀 😃 😄 😁 😆 😅 😂 🤣 😊 😇 🙂 🙃 😉 😌 😍 🥰 😘 😋 😛 😜 🤪 🤨 🧐 🤓 😎 🥳 😏 😒 😞 😔 😟 😕 🙁 😣 😖 😫 😩 🥺 😢 😭 😤 😠 😡 🤯 😳 🥵 🥶 😱 😨 😰 😥 😓 🤗 🤔 🤭 🤫 😶 😐 😑 🙄 😯 😲 🥱 😴 🤤 🥴 😷 🤒 🤑 🤠 😈 👻 💀 🤖 🎉 ✨ ❤️ 🧡 💛 💚 💙 💜 🖤 🤍 👍 👎 👏 🙌 💪 🔥 ⭐ 🚀'.split(' ');
+  const STICKER_EMOJIS = ['😂','😍','🥳','😎','😭','😡','🤯','🥺','🔥','❤️','👍','👏','🚀','⭐','💎','🎉','🤖','👻','💀','😈','🤩','😴','🙌','💪'];
+
+  function esc(value) {
+    return String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function stickerSvg(emoji, bgA, bgB) {
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256"><defs><linearGradient id="g" x1="32" y1="24" x2="224" y2="232" gradientUnits="userSpaceOnUse"><stop stop-color="${bgA}"/><stop offset="1" stop-color="${bgB}"/></linearGradient><filter id="s" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="14" stdDeviation="14" flood-color="rgba(0,0,0,.35)"/></filter></defs><rect width="256" height="256" rx="64" fill="url(#g)"/><circle cx="190" cy="58" r="26" fill="rgba(255,255,255,.24)"/><circle cx="62" cy="194" r="20" fill="rgba(255,255,255,.18)"/><text x="128" y="158" text-anchor="middle" font-size="112" font-family="Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji, sans-serif" filter="url(#s)">${emoji}</text></svg>`;
+    return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+  }
+
+  function builtinStickers() {
+    const colors = [
+      ['#12d8fa', '#7b2ff7'], ['#ff9a9e', '#fad0c4'], ['#f6d365', '#fda085'],
+      ['#84fab0', '#8fd3f4'], ['#a18cd1', '#fbc2eb'], ['#f093fb', '#f5576c'],
+      ['#4facfe', '#00f2fe'], ['#43e97b', '#38f9d7']
+    ];
+    return STICKER_EMOJIS.map((emoji, index) => {
+      const pair = colors[index % colors.length];
+      return { id: `builtin_${index}`, name: `Vibe ${emoji}`, url: stickerSvg(emoji, pair[0], pair[1]), scale: 1 };
+    });
+  }
+
+  function customStickers() {
+    try {
+      return JSON.parse(localStorage.getItem('vibe_custom_stickers_v1') || '[]') || [];
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function saveCustomStickers(list) {
+    localStorage.setItem('vibe_custom_stickers_v1', JSON.stringify((list || []).slice(0, 120)));
+  }
+
+  function allStickers() {
+    return builtinStickers().concat(customStickers());
+  }
+
+  function installStyle() {
+    if ($('codex-emoji-sticker-grid-style')) return;
+    const style = document.createElement('style');
+    style.id = 'codex-emoji-sticker-grid-style';
+    style.textContent = `
+      .emoji-picker {
+        display:none;
+        position:absolute;
+        bottom:80px;
+        left:12px;
+        right:12px;
+        width:auto;
+        height:auto;
+        max-height:min(56vh,440px);
+        padding:12px;
+        border-radius:24px;
+        background:rgba(12,18,30,.9);
+        border:1px solid rgba(255,255,255,.14);
+        box-shadow:0 24px 80px rgba(0,0,0,.46);
+        backdrop-filter:blur(22px) saturate(170%);
+        -webkit-backdrop-filter:blur(22px) saturate(170%);
+        overflow:hidden;
+        z-index:2147482000;
+      }
+      .picker-shell{display:flex;flex-direction:column;gap:10px;height:100%}
+      .picker-tabs{display:flex;gap:8px;align-items:center}
+      .picker-tab,.picker-add{
+        flex:1;
+        border-radius:16px;
+        padding:10px 12px;
+        background:rgba(255,255,255,.08);
+        border:1px solid rgba(255,255,255,.12);
+        color:#fff;
+        font-weight:900;
+      }
+      .picker-tab.active{background:var(--accent);color:#000}
+      .picker-add{flex:0 0 48px}
+      .picker-panel{display:none;overflow:auto;max-height:calc(min(56vh,440px) - 62px);padding-right:2px}
+      .picker-panel.active[data-picker-panel="emoji"]{
+        display:grid;
+        grid-template-columns:repeat(7,minmax(0,1fr));
+        gap:8px;
+      }
+      .picker-panel.active[data-picker-panel="stickers"]{display:block}
+      .emoji-chip{
+        width:42px;
+        height:42px;
+        border-radius:14px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:24px;
+        background:rgba(255,255,255,.07);
+        border:1px solid rgba(255,255,255,.1);
+      }
+      .sticker-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+      .sticker-chip{
+        min-height:96px;
+        border-radius:20px;
+        padding:10px;
+        background:rgba(255,255,255,.07);
+        border:1px solid rgba(255,255,255,.1);
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        overflow:hidden;
+      }
+      .sticker-chip img{width:100%;height:100%;object-fit:contain}
+      @media (max-width:768px){
+        .picker-panel.active[data-picker-panel="emoji"]{grid-template-columns:repeat(6,minmax(0,1fr))}
+        .emoji-picker{max-height:58vh}
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  function render(mode) {
+    installStyle();
+    const root = $(`${mode}-emoji-picker`);
+    if (!root) return;
+    const active = root.dataset.activeTab || 'emoji';
+    const stickers = allStickers();
+    root.innerHTML = `
+      <div class="picker-shell">
+        <div class="picker-tabs">
+          <button type="button" class="picker-tab ${active === 'emoji' ? 'active' : ''}" data-picker-tab="emoji">Эмодзи</button>
+          <button type="button" class="picker-tab ${active === 'stickers' ? 'active' : ''}" data-picker-tab="stickers">Стикеры</button>
+          <button type="button" class="picker-add" data-sticker-add>+</button>
+        </div>
+        <div class="picker-panel ${active === 'emoji' ? 'active' : ''}" data-picker-panel="emoji">
+          ${EMOJIS.map(item => `<button class="emoji-chip" type="button" data-emoji="${esc(item)}">${item}</button>`).join('')}
+        </div>
+        <div class="picker-panel ${active === 'stickers' ? 'active' : ''}" data-picker-panel="stickers">
+          <div class="sticker-grid">${stickers.map(sticker => `<button class="sticker-chip" type="button" data-sticker-url="${esc(sticker.url)}" data-sticker-name="${esc(sticker.name)}"><img src="${esc(sticker.url)}" alt="${esc(sticker.name)}"></button>`).join('')}</div>
+        </div>
+      </div>`;
+    root.querySelectorAll('[data-picker-tab]').forEach(btn => {
+      btn.onclick = () => {
+        root.dataset.activeTab = btn.dataset.pickerTab || 'emoji';
+        render(mode);
+      };
+    });
+    root.querySelectorAll('[data-emoji]').forEach(btn => {
+      btn.onclick = () => {
+        const input = $(`${mode}-input`);
+        if (!input) return;
+        input.value = (input.value || '') + btn.dataset.emoji;
+        input.focus();
+        if (typeof window.updateSendButton === 'function') window.updateSendButton(mode);
+      };
+    });
+    root.querySelectorAll('[data-sticker-url]').forEach(btn => {
+      btn.onclick = async () => {
+        const url = btn.dataset.stickerUrl;
+        const name = btn.dataset.stickerName || 'Стикер';
+        if (typeof window.sendStickerMessage === 'function') await window.sendStickerMessage(url, name, 1);
+        root.style.display = 'none';
+      };
+    });
+    const add = root.querySelector('[data-sticker-add]');
+    if (add) add.onclick = () => addSticker(mode);
+  }
+
+  function addSticker(mode) {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = () => {
+      const file = input.files && input.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        const list = customStickers();
+        list.unshift({ id: `custom_${Date.now()}`, name: file.name || 'Стикер', url: String(reader.result || ''), scale: 1 });
+        saveCustomStickers(list);
+        const root = $(`${mode}-emoji-picker`);
+        if (root) root.dataset.activeTab = 'stickers';
+        render(mode);
+      };
+      reader.readAsDataURL(file);
+    };
+    input.click();
+  }
+
+  window.loadEmojis = function() {
+    render('pc');
+    render('mob');
+  };
+  window.toggleEmoji = function(mode) {
+    const fixed = mode === 'pc' ? 'pc' : 'mob';
+    const root = $(`${fixed}-emoji-picker`);
+    if (!root) return;
+    render(fixed);
+    root.style.display = root.style.display === 'block' ? 'none' : 'block';
+  };
+  window.refreshEmojiPickers = window.loadEmojis;
+  window.addEventListener('load', () => setTimeout(window.loadEmojis, 250));
+})();
+</script>
+<script id="codex-attach-plus-priority-final">
+(() => {
+  const $ = id => document.getElementById(id);
+
+  function modeFromButton(btn) {
+    if (!btn) return document.body.classList.contains('chat-open-mobile') ? 'mob' : 'pc';
+    if (btn.id === 'pc-attach-btn' || btn.closest('#pc-active-chat') || btn.closest('.main-area')) return 'pc';
+    if (btn.id === 'mob-attach-btn' || btn.closest('#mob-chat-view')) return 'mob';
+    return document.body.classList.contains('chat-open-mobile') ? 'mob' : 'pc';
+  }
+
+  function openAttach(mode) {
+    if (typeof window.showAttachSheet === 'function') {
+      window.showAttachSheet(mode);
+      return;
+    }
+    if (typeof window.openChatAttachPc === 'function' && mode === 'pc') return window.openChatAttachPc();
+    if (typeof window.openChatAttachMob === 'function' && mode === 'mob') return window.openChatAttachMob();
+  }
+
+  function fixAttachButtons() {
+    document.querySelectorAll('#pc-attach-btn,#mob-attach-btn,.chat-input-bar .attach-plus').forEach(btn => {
+      btn.classList.add('attach-plus');
+      btn.classList.remove('chat-plus-btn', 'vibe-create-plus', 'fab-plus');
+      btn.removeAttribute('onclick');
+      btn.type = 'button';
+      btn.dataset.attachMode = modeFromButton(btn);
+    });
+  }
+
+  document.addEventListener('pointerdown', event => {
+    const btn = event.target.closest && event.target.closest('#pc-attach-btn,#mob-attach-btn,.chat-input-bar .attach-plus');
+    if (!btn) return;
+    event.stopPropagation();
+  }, true);
+
+  document.addEventListener('click', event => {
+    const btn = event.target.closest && event.target.closest('#pc-attach-btn,#mob-attach-btn,.chat-input-bar .attach-plus');
+    if (!btn) return;
+    event.preventDefault();
+    event.stopPropagation();
+    if (typeof event.stopImmediatePropagation === 'function') event.stopImmediatePropagation();
+    const mode = btn.dataset.attachMode || modeFromButton(btn);
+    openAttach(mode);
+    return false;
+  }, true);
+
+  window.addEventListener('load', () => {
+    fixAttachButtons();
+    setTimeout(fixAttachButtons, 300);
+    setTimeout(fixAttachButtons, 1200);
+  });
+  setInterval(fixAttachButtons, 700);
+})();
+</script>
+<script id="codex-attach-sheet-inline-restore-final">
+(() => {
+  const $ = id => document.getElementById(id);
+
+  function activeMode() {
+    return document.body.classList.contains('chat-open-mobile') ? 'mob' : 'pc';
+  }
+
+  function inputBar(mode) {
+    return mode === 'pc'
+      ? document.querySelector('#pc-active-chat .chat-input-bar') || document.querySelector('.main-area .chat-input-bar')
+      : document.querySelector('#mob-chat-view .chat-input-bar');
+  }
+
+  function ensureSheet(mode) {
+    const bar = inputBar(mode);
+    if (!bar) return null;
+    bar.style.position = 'relative';
+    bar.style.overflow = 'visible';
+
+    let sheet = $(`${mode}-attach-sheet`);
+    if (!sheet || sheet.parentElement !== bar) {
+      if (sheet) sheet.remove();
+      sheet = document.createElement('div');
+      sheet.className = 'attach-sheet';
+      sheet.id = `${mode}-attach-sheet`;
+      sheet.innerHTML = `
+        <button class="attach-choice" type="button" data-attach-media><b>Фото/видео</b><span>Загрузить изображение или ролик</span></button>
+        <button class="attach-choice" type="button" data-attach-file><b>Файлы</b><span>Документ, архив или другой файл</span></button>
+      `;
+      bar.appendChild(sheet);
+      sheet.querySelector('[data-attach-media]').onclick = event => {
+        event.preventDefault();
+        event.stopPropagation();
+        sheet.classList.remove('active');
+        if (typeof window.pickChatMedia === 'function') window.pickChatMedia(mode);
+      };
+      sheet.querySelector('[data-attach-file]').onclick = event => {
+        event.preventDefault();
+        event.stopPropagation();
+        sheet.classList.remove('active');
+        if (typeof window.pickChatFile === 'function') window.pickChatFile(mode);
+      };
+    }
+    return sheet;
+  }
+
+  function closeSheets(except = null) {
+    document.querySelectorAll('.attach-sheet').forEach(sheet => {
+      if (sheet !== except) sheet.classList.remove('active');
+    });
+    document.querySelectorAll('.codex-attach-overlay').forEach(node => node.remove());
+  }
+
+  function showInlineAttach(mode) {
+    const fixedMode = mode === 'pc' || mode === 'mob' ? mode : activeMode();
+    const sheet = ensureSheet(fixedMode);
+    if (!sheet) return;
+    const willOpen = !sheet.classList.contains('active');
+    closeSheets(sheet);
+    sheet.classList.toggle('active', willOpen);
+  }
+
+  function fixButtons() {
+    ['pc', 'mob'].forEach(mode => {
+      const bar = inputBar(mode);
+      if (!bar) return;
+      bar.querySelectorAll('#pc-attach-btn,#mob-attach-btn,.attach-plus').forEach(btn => {
+        btn.classList.add('attach-plus');
+        btn.classList.remove('chat-plus-btn', 'vibe-create-plus', 'fab-plus');
+        btn.type = 'button';
+        btn.dataset.attachMode = mode;
+        btn.removeAttribute('onclick');
+      });
+      ensureSheet(mode);
+    });
+  }
+
+  window.showAttachSheet = showInlineAttach;
+  window.openChatAttachPc = () => showInlineAttach('pc');
+  window.openChatAttachMob = () => showInlineAttach('mob');
+  window.closeAttachSheet = () => closeSheets();
+
+  document.addEventListener('click', event => {
+    const attach = event.target.closest && event.target.closest('#pc-attach-btn,#mob-attach-btn,.chat-input-bar .attach-plus');
+    if (attach) {
+      event.preventDefault();
+      event.stopPropagation();
+      if (typeof event.stopImmediatePropagation === 'function') event.stopImmediatePropagation();
+      showInlineAttach(attach.dataset.attachMode || (attach.id === 'pc-attach-btn' ? 'pc' : attach.id === 'mob-attach-btn' ? 'mob' : activeMode()));
+      return false;
+    }
+    const sheet = event.target.closest && event.target.closest('.attach-sheet');
+    if (!sheet) closeSheets();
+  }, true);
+
+  document.addEventListener('pointerdown', event => {
+    const attach = event.target.closest && event.target.closest('#pc-attach-btn,#mob-attach-btn,.chat-input-bar .attach-plus');
+    if (!attach) return;
+    event.stopPropagation();
+    if (typeof event.stopImmediatePropagation === 'function') event.stopImmediatePropagation();
+  }, true);
+
+  window.addEventListener('load', () => {
+    fixButtons();
+    setTimeout(fixButtons, 300);
+    setTimeout(fixButtons, 1200);
+  });
+  setInterval(fixButtons, 900);
+})();
+</script>
+<script id="codex-attach-choice-actions-final">
+(() => {
+  function modeFromSheet(sheet) {
+    if (!sheet) return document.body.classList.contains('chat-open-mobile') ? 'mob' : 'pc';
+    if (sheet.id && sheet.id.startsWith('pc')) return 'pc';
+    if (sheet.id && sheet.id.startsWith('mob')) return 'mob';
+    return sheet.closest('#mob-chat-view') ? 'mob' : 'pc';
+  }
+
+  function runChoice(choice, event) {
+    if (!choice) return;
+    event.preventDefault();
+    event.stopPropagation();
+    if (typeof event.stopImmediatePropagation === 'function') event.stopImmediatePropagation();
+
+    const sheet = choice.closest('.attach-sheet');
+    const mode = modeFromSheet(sheet);
+    if (sheet) sheet.classList.remove('active');
+
+    const isMedia = choice.matches('[data-attach-media]') || /фото|видео/i.test(choice.textContent || '');
+    if (isMedia && typeof window.pickChatMedia === 'function') {
+      window.pickChatMedia(mode);
+      return false;
+    }
+    if (!isMedia && typeof window.pickChatFile === 'function') {
+      window.pickChatFile(mode);
+      return false;
+    }
+
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = isMedia ? 'image/*,video/*' : '';
+    input.onchange = async () => {
+      const file = input.files && input.files[0];
+      if (!file) return;
+      alert('Загрузка файла недоступна: старая функция pickChatMedia/pickChatFile не найдена.');
+    };
+    input.click();
+    return false;
+  }
+
+  document.addEventListener('pointerdown', event => {
+    const choice = event.target.closest && event.target.closest('.attach-sheet .attach-choice');
+    if (!choice) return;
+    event.stopPropagation();
+    if (typeof event.stopImmediatePropagation === 'function') event.stopImmediatePropagation();
+  }, true);
+
+  document.addEventListener('click', event => {
+    const choice = event.target.closest && event.target.closest('.attach-sheet .attach-choice');
+    if (!choice) return;
+    return runChoice(choice, event);
+  }, true);
 })();
 </script>
 </body>
