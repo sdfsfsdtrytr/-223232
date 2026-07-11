@@ -8572,6 +8572,7 @@ window.openArchiveModal = function() {
     }
     if (typeof bindLongPressHandlers === 'function') bindLongPressHandlers();
   }
+  window.renderFolderedDialogs = renderFolderedDialogs;
 
   function installStyle() {
     if ($('codex-main-menu-folders-style')) return;
@@ -8979,9 +8980,7 @@ window.openArchiveModal = function() {
   function patchRenderDialogs() {
     if (window.__mainMenuDialogsWrapped) return;
     window.__mainMenuDialogsWrapped = true;
-    const baseRender = window.renderDialogsFixed || window.renderDialogs;
     window.renderDialogsFixed = function(...args) {
-      if (typeof baseRender === 'function') baseRender.apply(this, args);
       renderFolderedDialogs(true);
     };
     window.renderDialogs = window.renderDialogsFixed;
@@ -9958,6 +9957,91 @@ window.openArchiveModal = function() {
     if (!choice) return;
     return runChoice(choice, event);
   }, true);
+})();
+</script>
+<script id="codex-folders-archive-stability-guard">
+(() => {
+  const $ = id => document.getElementById(id);
+
+  function user() {
+    return (typeof me !== 'undefined' && me) ? me : window.me;
+  }
+
+  function folderConfig() {
+    const u = user();
+    const cfg = u && u.settings && u.settings.mainMenu;
+    if (cfg && Array.isArray(cfg.folders)) return cfg.folders;
+    try {
+      const saved = JSON.parse(localStorage.getItem(`vibe_main_menu_config_${u && u.id}`) || 'null');
+      return saved && Array.isArray(saved.folders) ? saved.folders : [];
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function activeFolder() {
+    return localStorage.getItem('vibe_main_menu_active_folder') || 'all';
+  }
+
+  function archives() {
+    const u = user();
+    return u && u.archives ? Object.keys(u.archives) : [];
+  }
+
+  function needsRestore() {
+    const folders = folderConfig();
+    const archived = archives();
+    const hosts = [$('pc-contacts-list'), $('mob-contacts')].filter(Boolean);
+    if (!hosts.length || !user()) return false;
+    return hosts.some(host => {
+      const missingFolders = folders.length > 0 && !host.querySelector('.vibe-folder-tabs');
+      const missingArchive = archived.length > 0 && activeFolder() === 'all' && !host.querySelector('.archive-folder');
+      return missingFolders || missingArchive;
+    });
+  }
+
+  function restore(reason) {
+    if (!needsRestore()) return;
+    try {
+      if (typeof window.renderFolderedDialogs === 'function') window.renderFolderedDialogs(true);
+      else if (typeof window.renderDialogsFixed === 'function') window.renderDialogsFixed();
+    } catch (error) {
+      console.warn('folders/archive restore failed', reason, error);
+    }
+  }
+
+  function installRenderLock() {
+    if (window.__foldersArchiveRenderLocked) return;
+    window.__foldersArchiveRenderLocked = true;
+    const render = function() {
+      if (typeof window.renderFolderedDialogs === 'function') window.renderFolderedDialogs(true);
+    };
+    window.renderDialogsFixed = render;
+    window.renderDialogs = render;
+  }
+
+  function boot() {
+    installRenderLock();
+    restore('boot');
+    [400, 1200, 2200, 3400].forEach(ms => setTimeout(() => {
+      installRenderLock();
+      restore(`timer-${ms}`);
+    }, ms));
+    const targets = [$('pc-contacts-list'), $('mob-contacts')].filter(Boolean);
+    if (!targets.length || window.__foldersArchiveObserver) return;
+    window.__foldersArchiveObserver = new MutationObserver(() => {
+      clearTimeout(window.__foldersArchiveRestoreTimer);
+      window.__foldersArchiveRestoreTimer = setTimeout(() => restore('mutation'), 80);
+    });
+    targets.forEach(target => window.__foldersArchiveObserver.observe(target, { childList: true, subtree: false }));
+  }
+
+  if (document.readyState === 'loading') {
+    window.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
+  window.addEventListener('load', boot);
 })();
 </script>
 </body>
