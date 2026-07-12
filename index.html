@@ -6400,6 +6400,8 @@ window.openArchiveModal = function() {
     menu.style.left = `${left}px`;
     menu.style.top = `${top}px`;
     menu.style.visibility = 'visible';
+    menu.classList.remove('hold-open');
+    requestAnimationFrame(() => menu.classList.add('hold-open'));
   }
 
   async function resolveItemForArchive(id) {
@@ -9007,6 +9009,7 @@ window.openArchiveModal = function() {
   let holdTimer = null;
   let startPoint = null;
   let didHold = false;
+  const HAPTIC_KEY = 'vibe_haptics_allowed';
 
   function meNow() {
     return (typeof me !== 'undefined' && me) ? me : window.me;
@@ -9052,7 +9055,14 @@ window.openArchiveModal = function() {
         z-index:2147483200 !important;
         min-width:210px;
         max-width:min(280px, calc(100vw - 24px));
-        transform:translateZ(0);
+        transform:translate3d(0,8px,0) scale(.97);
+        opacity:0;
+        transform-origin:top center;
+        transition:opacity .16s ease, transform .2s cubic-bezier(.18,.9,.24,1);
+      }
+      body > #context-menu.codex-mobile-context-menu.hold-open {
+        opacity:1;
+        transform:translate3d(0,0,0) scale(1);
       }
       #mob-msgs .msg {
         -webkit-user-select:none !important;
@@ -9063,6 +9073,26 @@ window.openArchiveModal = function() {
     `;
     document.head.appendChild(style);
   }
+
+  function hapticsAllowed() {
+    return localStorage.getItem(HAPTIC_KEY) === 'yes';
+  }
+
+  function askHapticsOnce() {
+    if (!('vibrate' in navigator)) return false;
+    const saved = localStorage.getItem(HAPTIC_KEY);
+    if (saved === 'yes') return true;
+    if (saved === 'no') return false;
+    const ok = confirm('Разрешить быструю вибрацию для реакций и долгого зажатия сообщений?');
+    localStorage.setItem(HAPTIC_KEY, ok ? 'yes' : 'no');
+    return ok;
+  }
+
+  window.vibeHaptic = function(pattern = [12, 18, 10]) {
+    if (!('vibrate' in navigator)) return;
+    if (!hapticsAllowed() && !askHapticsOnce()) return;
+    try { navigator.vibrate(pattern); } catch (error) {}
+  };
 
   function placeMenu(menu, point) {
     if (!menu) return;
@@ -9168,6 +9198,7 @@ window.openArchiveModal = function() {
     cancelHold();
     holdTimer = setTimeout(() => {
       didHold = true;
+      if (typeof window.vibeHaptic === 'function') window.vibeHaptic([18, 20, 14]);
       openMenuFor(message, point, event);
     }, HOLD_MS);
   }, { passive: false, capture: true });
@@ -9193,18 +9224,18 @@ window.openArchiveModal = function() {
   document.addEventListener('contextmenu', event => {
     const message = messageFromTarget(event.target);
     if (!message || !mobileChatOpen()) return;
-    openMenuFor(message, pointFromTouch(event), event);
+    event.preventDefault();
+    event.stopPropagation();
   }, true);
 
   document.addEventListener('click', event => {
     const menu = $('context-menu');
-    const message = messageFromTarget(event.target);
-    if (message && mobileChatOpen()) {
-      openMenuFor(message, pointFromTouch(event), event);
+    if (event.target.closest && event.target.closest('.vibe-reaction-chip,.vibe-message-reactions,.vibe-reaction-panel')) {
       return;
     }
     if (menu && menu.style.display !== 'none' && !menu.contains(event.target)) {
       menu.style.display = 'none';
+      menu.classList.remove('hold-open');
     }
   }, true);
 
@@ -10205,8 +10236,11 @@ window.openArchiveModal = function() {
     if (window.__vibeReactionAnimationGuard[guardKey] && now - window.__vibeReactionAnimationGuard[guardKey] < 700) return;
     window.__vibeReactionAnimationGuard[guardKey] = now;
     const isTouchDevice = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
-    if (options.vibrate && isTouchDevice && navigator.vibrate) {
-      try { navigator.vibrate([12, 18, 10]); } catch (error) {}
+    if (options.vibrate && isTouchDevice) {
+      if (typeof window.vibeHaptic === 'function') window.vibeHaptic([12, 18, 10]);
+      else if (navigator.vibrate) {
+        try { navigator.vibrate([12, 18, 10]); } catch (error) {}
+      }
     }
     targets.forEach(el => {
       el.querySelectorAll('.vibe-reaction-fly').forEach(node => node.remove());
