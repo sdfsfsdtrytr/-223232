@@ -10044,5 +10044,780 @@ window.openArchiveModal = function() {
   window.addEventListener('load', boot);
 })();
 </script>
+<script id="codex-message-reactions-final">
+(() => {
+  const $ = id => document.getElementById(id);
+  const QUICK = ['⭐', '❤️', '👏', '👍', '🔥', '🥰', '😁', '🤔', '🤯'];
+  const ALL = '⭐ ❤️ 👏 👍 🔥 🥰 😁 🤔 🤯 😱 😢 🎉 🤩 🙏 👌 🕊️ 🤡 😳 😉 😍 🐳 💖 🪩 🌭 💯 🤣 ⚡ 🍌 🏆 💔 😐 🍓 🍾 💋 😈 😴 🤓 👻 🕯️ 👀 🥵 🙈 😎 😭 🤝 ✍️ 🤷 🤬 🎄 ☃️ 💅 🗿 🆒 💘 🙉 🦄 😘 🙊 😇 🕶️ 👾 🫂 🧑‍💻'.split(' ');
+  let expanded = false;
+  let changedRef = null;
+  let changedCb = null;
+
+  function user() {
+    return (typeof me !== 'undefined' && me) ? me : window.me;
+  }
+
+  function peer() {
+    return (typeof activePeer !== 'undefined' && activePeer) ? activePeer : window.activePeer;
+  }
+
+  function fix() {
+    window.vibeFix20260524 = window.vibeFix20260524 || {};
+    return window.vibeFix20260524;
+  }
+
+  function esc(value) {
+    return String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function chatPath() {
+    const item = peer();
+    const meNow = user();
+    if (!item || !meNow) return '';
+    if (typeof window.chatPathFor === 'function') return window.chatPathFor(item);
+    if (typeof chatPathFor === 'function') return chatPathFor(item);
+    if (item.type === 'group' || item.type === 'channel') return `rooms/${item.id}/messages`;
+    return `chats/${meNow.id < item.id ? meNow.id + '_' + item.id : item.id + '_' + meNow.id}`;
+  }
+
+  function selectedMsgId() {
+    const f = fix();
+    if (f.selectedMsgId) return f.selectedMsgId;
+    if (window.selectedMsgId && typeof window.selectedMsgId !== 'function') return window.selectedMsgId;
+    try {
+      if (typeof selectedMsgId !== 'undefined' && typeof selectedMsgId !== 'function') return selectedMsgId;
+    } catch (error) {}
+    const panel = document.querySelector('.vibe-reaction-panel');
+    return (panel && panel.dataset && panel.dataset.messageId) || '';
+  }
+
+  function reactionSummary(reactions) {
+    const grouped = {};
+    Object.entries(reactions || {}).forEach(([uid, value]) => {
+      normalizeUserReactions(value).forEach(emoji => {
+        if (!emoji) return;
+        grouped[emoji] = grouped[emoji] || { count: 0, users: [] };
+        grouped[emoji].count += 1;
+        grouped[emoji].users.push(uid);
+      });
+    });
+    return Object.entries(grouped);
+  }
+
+  function reactionCounts(reactions) {
+    const counts = {};
+    Object.entries(reactions || {}).forEach(([, value]) => {
+      normalizeUserReactions(value).forEach(emoji => {
+        if (!emoji) return;
+        counts[emoji] = (counts[emoji] || 0) + 1;
+      });
+    });
+    return counts;
+  }
+
+  function reactionSignature(reactions) {
+    const counts = reactionCounts(reactions);
+    return Object.keys(counts).sort().map(emoji => `${emoji}:${counts[emoji]}`).join('|');
+  }
+
+  function reactionSeenKey(id) {
+    const meNow = user();
+    const path = chatPath();
+    if (!meNow || !id || !path) return '';
+    return `vibe_seen_reactions_${meNow.id}_${btoa(unescape(encodeURIComponent(path))).replace(/=+$/,'')}_${id}`;
+  }
+
+  function newlySeenReactionEmoji(id, reactions) {
+    const key = reactionSeenKey(id);
+    if (!key) return '';
+    const nextSig = reactionSignature(reactions);
+    const prevSig = localStorage.getItem(key) || '';
+    if (prevSig === nextSig) return '';
+    localStorage.setItem(key, nextSig);
+    if (!nextSig) return '';
+    const prevCounts = {};
+    prevSig.split('|').filter(Boolean).forEach(part => {
+      const idx = part.lastIndexOf(':');
+      if (idx > -1) prevCounts[part.slice(0, idx)] = Number(part.slice(idx + 1)) || 0;
+    });
+    const nextCounts = reactionCounts(reactions);
+    const added = Object.keys(nextCounts).find(emoji => nextCounts[emoji] > (prevCounts[emoji] || 0));
+    return added || Object.keys(nextCounts).slice(-1)[0] || '';
+  }
+
+  function normalizeUserReactions(value) {
+    if (!value) return [];
+    if (typeof value === 'string') return [value];
+    if (Array.isArray(value)) return value.filter(Boolean).slice(0, 3);
+    if (typeof value === 'object') {
+      return Object.entries(value)
+        .filter(([, enabled]) => enabled !== false && enabled !== null)
+        .map(([emoji, enabled]) => typeof enabled === 'string' ? enabled : emoji)
+        .filter(Boolean)
+        .slice(0, 3);
+    }
+    return [];
+  }
+
+  function reactionTargetId(forcedId) {
+    if (forcedId) return forcedId;
+    const panel = document.querySelector('.vibe-reaction-panel');
+    if (panel && panel.dataset && panel.dataset.messageId) return panel.dataset.messageId;
+    return selectedMsgId();
+  }
+
+  function messageEls(id) {
+    return ['pc-msgs', 'mob-msgs'].map(prefix => $(`${prefix}-${id}`)).filter(Boolean);
+  }
+
+  function reactionColor(emoji) {
+    const colors = {
+      '👍': '#2d9cff',
+      '❤️': '#00ead3',
+      '🔥': '#ff7a18',
+      '⭐': '#ffd447',
+      '👏': '#ffbf5b',
+      '🥰': '#ff5db8',
+      '😁': '#ffe36e',
+      '🤔': '#b993ff',
+      '🤯': '#ff6b6b',
+      '🎉': '#8bff70',
+      '🙏': '#70a7ff',
+      '💔': '#ff4f73',
+      '💯': '#ff3b30',
+      '⚡': '#ffe066'
+    };
+    if (colors[emoji]) return colors[emoji];
+    let hash = 0;
+    Array.from(emoji).forEach(ch => { hash = (hash * 31 + ch.codePointAt(0)) >>> 0; });
+    return `hsl(${hash % 360} 88% 62%)`;
+  }
+
+  function animateReactionSet(emoji, id, options = {}) {
+    const targets = messageEls(id);
+    window.__vibeReactionAnimationGuard = window.__vibeReactionAnimationGuard || {};
+    const guardKey = `${id}:${emoji}`;
+    const now = performance && performance.now ? performance.now() : Date.now();
+    if (window.__vibeReactionAnimationGuard[guardKey] && now - window.__vibeReactionAnimationGuard[guardKey] < 700) return;
+    window.__vibeReactionAnimationGuard[guardKey] = now;
+    const isTouchDevice = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+    if (options.vibrate && isTouchDevice && navigator.vibrate) {
+      try { navigator.vibrate([12, 18, 10]); } catch (error) {}
+    }
+    targets.forEach(el => {
+      el.querySelectorAll('.vibe-reaction-fly').forEach(node => node.remove());
+      const drift = el.classList.contains('sent') ? -10 : 10;
+      const safeEmoji = (typeof CSS !== 'undefined' && CSS.escape) ? CSS.escape(emoji) : emoji;
+      const chip = el.querySelector(`.vibe-reaction-chip[data-reaction="${safeEmoji}"]`);
+      if (chip) {
+        const elRect = el.getBoundingClientRect();
+        const chipRect = chip.getBoundingClientRect();
+        const left = chipRect.left - elRect.left + chipRect.width / 2 - 14;
+        const top = chipRect.top - elRect.top + chipRect.height / 2 - 14;
+        el.style.position = el.style.position || 'relative';
+        el.style.overflow = 'visible';
+        el.dataset.reactionAnchor = 'chip';
+        el.style.setProperty('--reaction-fly-left', `${left}px`);
+        el.style.setProperty('--reaction-fly-top', `${top}px`);
+      } else {
+        el.dataset.reactionAnchor = '';
+      }
+      const particles = [
+        { x: drift * .3, y: -42, s: .98, r: -14, d: 0 },
+        { x: drift * 1.35, y: -34, s: .72, r: 16, d: 36 },
+        { x: -drift * .9, y: -30, s: .66, r: -20, d: 56 },
+        { x: drift * .7, y: -52, s: .58, r: 9, d: 82 },
+        { x: -drift * .35, y: -46, s: .52, r: -8, d: 112 }
+      ];
+      particles.forEach((particle, index) => {
+        const burst = document.createElement('div');
+        burst.className = 'vibe-reaction-fly multi';
+        burst.textContent = emoji;
+        burst.style.setProperty('--reaction-color', reactionColor(emoji));
+        burst.style.setProperty('--reaction-delay', `${particle.d}ms`);
+        el.appendChild(burst);
+        const frames = [
+          { opacity: 0, transform: `translate3d(${drift * .12}px, 12px, 0) scale(.72) rotate(0deg)` },
+          { opacity: 1, transform: `translate3d(${particle.x * .42}px, -5px, 0) scale(${Math.min(1.05, particle.s + .18)}) rotate(${particle.r * .35}deg)`, offset: .24 },
+          { opacity: 1, transform: `translate3d(${particle.x * .78}px, ${particle.y * .58}px, 0) scale(${particle.s}) rotate(${particle.r * .65}deg)`, offset: .68 },
+          { opacity: 0, transform: `translate3d(${particle.x}px, ${particle.y}px, 0) scale(${particle.s * .88}) rotate(${particle.r}deg)` }
+        ];
+        if (burst.animate) {
+          const animation = burst.animate(frames, {
+            duration: 960,
+            delay: particle.d,
+            easing: 'cubic-bezier(.18,.92,.22,1)',
+            fill: 'forwards'
+          });
+          animation.onfinish = () => burst.remove();
+        } else {
+          burst.classList.add('run');
+          setTimeout(() => burst.remove(), 1040 + particle.d);
+        }
+      });
+    });
+  }
+
+  function renderMessageReactions(id, msg, options = {}) {
+    messageEls(id).forEach(el => {
+      el.querySelectorAll('.vibe-message-reactions').forEach(node => node.remove());
+      const entries = reactionSummary(msg && msg.reactions);
+      el.classList.toggle('has-reactions', !!entries.length);
+      if (!entries.length) {
+        const key = reactionSeenKey(id);
+        if (key) localStorage.setItem(key, '');
+        return;
+      }
+      const meNow = user();
+      const wrap = document.createElement('div');
+      wrap.className = 'vibe-message-reactions';
+      entries.forEach(([emoji, data]) => {
+        const active = meNow && data.users.includes(meNow.id);
+        const chip = document.createElement('button');
+        chip.type = 'button';
+        chip.className = `vibe-reaction-chip ${active ? 'active' : ''}`;
+        chip.dataset.reaction = emoji;
+        chip.style.setProperty('--reaction-color', reactionColor(emoji));
+        chip.innerHTML = `<span>${esc(emoji)}</span>${data.count > 1 ? `<b>${data.count}</b>` : ''}`;
+        chip.onclick = event => {
+          event.preventDefault();
+          event.stopPropagation();
+          setReaction(emoji, id);
+        };
+        wrap.appendChild(chip);
+      });
+      el.appendChild(wrap);
+      el.classList.remove('reaction-burst');
+      requestAnimationFrame(() => {
+        wrap.classList.add('pop');
+        el.classList.add('reaction-burst');
+        if (!options.skipSeenAnimation) {
+          const unseenEmoji = newlySeenReactionEmoji(id, msg && msg.reactions);
+          if (unseenEmoji) animateReactionSet(unseenEmoji, id);
+        }
+      });
+    });
+  }
+
+  async function fetchAndRender(id) {
+    const path = chatPath();
+    if (!path || !id || typeof db === 'undefined') return;
+    try {
+      const snap = await db.ref(`${path}/${id}`).once('value');
+      if (snap.exists()) renderMessageReactions(id, snap.val() || {});
+    } catch (error) {}
+  }
+
+  async function setReaction(emoji, forcedId) {
+    const meNow = user();
+    const id = reactionTargetId(forcedId);
+    const path = chatPath();
+    emoji = String(emoji || '').trim();
+    if (!emoji || !meNow || !id || !path || typeof db === 'undefined') return;
+    const msgPath = `${path}/${id}`;
+    try {
+      const snap = await db.ref(`${msgPath}/reactions/${meNow.id}`).once('value');
+      const selected = normalizeUserReactions(snap.val());
+      const exists = selected.includes(emoji);
+      const next = exists
+        ? selected.filter(item => item !== emoji)
+        : selected.concat(emoji).slice(-3);
+      const currentMsgSnap = await db.ref(msgPath).once('value');
+      const currentMsg = currentMsgSnap.val() || {};
+      const nextReactions = { ...(currentMsg.reactions || {}) };
+      if (!next.length) delete nextReactions[meNow.id];
+      else nextReactions[meNow.id] = next;
+      renderMessageReactions(id, { ...currentMsg, reactions: nextReactions }, { skipSeenAnimation: true });
+      const seenKey = reactionSeenKey(id);
+      if (seenKey) localStorage.setItem(seenKey, reactionSignature(nextReactions));
+      if (!next.length) {
+        await db.ref(`${msgPath}/reactions/${meNow.id}`).remove();
+      } else {
+        await db.ref(`${msgPath}/reactions/${meNow.id}`).set(next);
+      }
+      const msgSnap = await db.ref(msgPath).once('value');
+      if (msgSnap.exists()) renderMessageReactions(id, msgSnap.val() || {}, { skipSeenAnimation: true });
+      if (seenKey && msgSnap.exists()) localStorage.setItem(seenKey, reactionSignature((msgSnap.val() || {}).reactions));
+      if (!exists) animateReactionSet(emoji, id, { vibrate: true });
+      const menu = $('context-menu');
+      const keepOpen = menu && menu.classList.contains('vibe-reactions-expanded');
+      if (!keepOpen) {
+        closeReactionPicker();
+        if (menu) menu.style.display = 'none';
+        const panel = document.querySelector('.vibe-reaction-panel');
+        if (panel) panel.classList.remove('visible');
+      } else {
+        setTimeout(placeReactionPanel, 30);
+      }
+    } catch (error) {
+      console.error('reaction failed', error);
+      alert('Не удалось поставить реакцию.');
+    }
+  }
+
+  function closeReactionPicker() {
+    expanded = false;
+    document.querySelectorAll('.vibe-reaction-picker').forEach(node => node.remove());
+    const row = document.querySelector('.vibe-reaction-panel .vibe-reaction-row');
+    if (row) row.classList.remove('expanded');
+    const panel = document.querySelector('.vibe-reaction-panel');
+    if (panel) {
+      panel.classList.remove('expanded');
+      panel.classList.add('compact');
+      panel.dataset.messageId = '';
+      panel.style.setProperty('--reaction-grid-height', '0px');
+      const more = panel.querySelector('.vibe-reaction-more');
+      if (more) more.textContent = '⌄';
+    }
+    const menu = $('context-menu');
+    if (menu) menu.classList.remove('vibe-reactions-expanded');
+  }
+
+  function showReactionPicker(anchor) {
+    const menu = $('context-menu');
+    const panel = document.querySelector('.vibe-reaction-panel');
+    if (!menu || !panel) return;
+    const id = selectedMsgId();
+    if (id) panel.dataset.messageId = id;
+    const grid = panel.querySelector('.vibe-reaction-grid');
+    const more = panel.querySelector('.vibe-reaction-more');
+    panel.classList.add('visible');
+    menu.style.display = 'block';
+    expanded = !panel.classList.contains('expanded');
+    if (grid) {
+      panel.style.setProperty('--reaction-grid-height', expanded ? `${grid.scrollHeight}px` : '0px');
+    }
+    if (more) more.textContent = expanded ? '⌃' : '⌄';
+    panel.classList.toggle('expanded', expanded);
+    panel.classList.toggle('compact', !expanded);
+    menu.classList.toggle('vibe-reactions-expanded', expanded);
+    const row = panel.querySelector('.vibe-reaction-row');
+    if (row) row.classList.toggle('expanded', expanded);
+    placeReactionPanel();
+    setTimeout(() => {
+      menu.style.display = 'block';
+      panel.classList.add('visible');
+      placeReactionPanel();
+    }, 0);
+    requestAnimationFrame(placeReactionPanel);
+    setTimeout(placeReactionPanel, 160);
+  }
+
+  function ensureReactionMenu(show = false) {
+    const menu = $('context-menu');
+    if (!menu) return;
+    menu.querySelectorAll('.vibe-reaction-row,.vibe-reaction-grid').forEach(node => node.remove());
+    if (document.querySelector('.vibe-reaction-panel')) {
+      const existing = document.querySelector('.vibe-reaction-panel');
+      existing.classList.add('compact');
+      existing.classList.remove('expanded');
+      existing.style.setProperty('--reaction-grid-height', '0px');
+      const more = existing.querySelector('.vibe-reaction-more');
+      if (more) more.textContent = '⌄';
+      if (show) placeReactionPanel();
+      return;
+    }
+    const panel = document.createElement('div');
+    panel.className = 'vibe-reaction-panel compact';
+    panel.style.setProperty('--reaction-grid-height', '0px');
+    const row = document.createElement('div');
+    row.className = 'vibe-reaction-row';
+    row.innerHTML = QUICK.map(emoji => `<button type="button" class="vibe-reaction-fast" data-reaction="${esc(emoji)}">${esc(emoji)}</button>`).join('') +
+      `<button type="button" class="vibe-reaction-more" title="Все реакции">⌄</button>`;
+    panel.appendChild(row);
+    const grid = document.createElement('div');
+    grid.className = 'vibe-reaction-grid';
+    grid.innerHTML = ALL.map(emoji => `<button type="button" data-reaction="${esc(emoji)}">${esc(emoji)}</button>`).join('');
+    panel.appendChild(grid);
+    document.body.appendChild(panel);
+    row.querySelectorAll('.vibe-reaction-fast').forEach(btn => {
+      btn.onclick = event => {
+        event.preventDefault();
+        event.stopPropagation();
+        setReaction(btn.dataset.reaction || btn.textContent, panel.dataset.messageId || selectedMsgId());
+      };
+    });
+    row.querySelector('.vibe-reaction-more').onclick = event => {
+      event.preventDefault();
+      event.stopPropagation();
+      showReactionPicker(row);
+    };
+    grid.querySelectorAll('button').forEach(btn => {
+      btn.onclick = event => {
+        event.preventDefault();
+        event.stopPropagation();
+        setReaction(btn.dataset.reaction || btn.textContent, panel.dataset.messageId || selectedMsgId());
+      };
+    });
+    if (show) placeReactionPanel();
+  }
+
+  function placeReactionPanel() {
+    const menu = $('context-menu');
+    const panel = document.querySelector('.vibe-reaction-panel');
+    if (!menu || !panel || menu.style.display === 'none') {
+      if (panel) panel.classList.remove('visible');
+      return;
+    }
+    panel.classList.add('visible');
+    const menuRect = menu.getBoundingClientRect();
+    const panelRect = panel.getBoundingClientRect();
+    const pad = 10;
+    const vw = window.innerWidth || document.documentElement.clientWidth;
+    const left = Math.max(pad, Math.min(menuRect.left, vw - panelRect.width - pad));
+    const top = Math.max(pad, menuRect.top - panelRect.height - 8);
+    panel.style.left = `${left}px`;
+    panel.style.top = `${top}px`;
+  }
+
+  function installStyle() {
+    if ($('codex-message-reactions-style')) return;
+    const style = document.createElement('style');
+    style.id = 'codex-message-reactions-style';
+    style.textContent = `
+      #context-menu {
+        overflow:visible !important;
+        transform-origin:top center;
+        transition:transform .22s ease, opacity .18s ease;
+      }
+      .vibe-reaction-panel {
+        position:fixed;
+        z-index:2147483400;
+        width:max-content;
+        max-width:min(350px, calc(100vw - 20px));
+        opacity:0;
+        visibility:hidden;
+        transform:translate3d(0,8px,0) scale(.98);
+        transform-origin:bottom center;
+        transition:opacity .18s ease, transform .2s cubic-bezier(.2,1,.3,1);
+        pointer-events:none;
+        will-change:transform, opacity;
+      }
+      .vibe-reaction-panel.visible {
+        opacity:1;
+        visibility:visible;
+        transform:translate3d(0,0,0) scale(1);
+        pointer-events:auto;
+      }
+      .vibe-reaction-panel .vibe-reaction-row {
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        gap:7px;
+        padding:8px;
+        margin:0;
+        max-height:54px;
+        overflow:hidden;
+        border-radius:22px;
+        background:var(--glass-heavy, rgba(255,255,255,.10));
+        border:var(--glass-border, 1px solid rgba(255,255,255,.12));
+        box-shadow:0 14px 34px rgba(0,0,0,.28), inset 0 0 0 1px rgba(255,255,255,.05);
+        opacity:1;
+        transform:translate3d(0,0,0) scale(1);
+        transition:max-height .18s ease, padding .18s ease, opacity .14s ease, transform .18s ease;
+        animation:vibeReactionBarIn .16s ease-out both;
+        will-change:transform, opacity;
+      }
+      .vibe-reaction-panel.expanded .vibe-reaction-row {
+        max-height:48px;
+        padding:6px;
+        margin-bottom:8px;
+        opacity:1;
+        justify-content:flex-end;
+        transform:translate3d(0,0,0) scale(1);
+        pointer-events:auto;
+      }
+      .vibe-reaction-panel.expanded .vibe-reaction-fast {
+        width:0;
+        opacity:0;
+        transform:scale(.4);
+        pointer-events:none;
+        margin:0;
+      }
+      .vibe-reaction-panel .vibe-reaction-fast,
+      .vibe-reaction-panel .vibe-reaction-more {
+        width:35px;
+        height:35px;
+        border:0;
+        border-radius:13px;
+        background:var(--glass, rgba(255,255,255,.08));
+        color:var(--text);
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:21px;
+        transition:transform .12s ease, background .12s ease, box-shadow .12s ease;
+        will-change:transform;
+      }
+      .vibe-reaction-panel .vibe-reaction-fast:hover,
+      .vibe-reaction-panel .vibe-reaction-more:hover {
+        transform:translate3d(0,-3px,0) scale(1.12);
+        background:var(--glass-heavy, rgba(255,255,255,.16));
+        box-shadow:0 10px 22px rgba(0,0,0,.22);
+      }
+      .vibe-reaction-panel .vibe-reaction-more {
+        font-size:22px;
+        color:var(--accent);
+        background:var(--glass, rgba(255,255,255,.08));
+      }
+      .vibe-reaction-panel.expanded .vibe-reaction-more {
+        color:var(--accent);
+        width:35px;
+        opacity:1;
+        transform:translate3d(0,0,0) scale(1);
+      }
+      .vibe-reaction-panel .vibe-reaction-grid {
+        display:grid;
+        grid-template-columns:repeat(8, 1fr);
+        gap:7px;
+        max-height:var(--reaction-grid-height, 0px);
+        overflow:auto;
+        padding:0 4px;
+        margin:0 -4px 0;
+        border-radius:22px;
+        background:var(--glass-heavy, rgba(255,255,255,.10));
+        border:var(--glass-border, 1px solid rgba(255,255,255,.12));
+        box-shadow:0 18px 48px rgba(0,0,0,.32), inset 0 0 0 1px rgba(255,255,255,.04);
+        backdrop-filter:blur(18px);
+        opacity:0;
+        transform:translate3d(0,-6px,0) scale(.99);
+        transition:max-height .28s cubic-bezier(.22,.85,.25,1), opacity .2s ease, transform .22s ease, padding .2s ease;
+        pointer-events:none;
+        will-change:transform, opacity;
+      }
+      .vibe-reaction-panel.expanded .vibe-reaction-grid {
+        opacity:1;
+        padding:12px;
+        margin:0;
+        transform:translate3d(0,0,0) scale(1);
+        pointer-events:auto;
+      }
+      .vibe-reaction-panel .vibe-reaction-grid button {
+        width:34px;
+        height:34px;
+        border:0;
+        border-radius:12px;
+        background:var(--glass, rgba(255,255,255,.08));
+        color:var(--text);
+        font-size:22px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        transition:transform .1s ease, background .1s ease;
+        will-change:transform;
+      }
+      .vibe-reaction-panel .vibe-reaction-grid button:hover {
+        transform:scale(1.14);
+        background:var(--glass-heavy, rgba(255,255,255,.16));
+      }
+      #context-menu .menu-item {
+        transition:transform .24s ease, opacity .2s ease, background .16s ease;
+      }
+      #context-menu.vibe-reactions-expanded .menu-item {
+        animation:none;
+      }
+      .msg .vibe-message-reactions {
+        position:relative;
+        left:auto;
+        bottom:auto;
+        display:flex;
+        gap:4px;
+        margin-top:6px;
+        min-height:22px;
+        z-index:2;
+        transform-origin:left center;
+        justify-content:flex-start;
+      }
+      .msg.sent .vibe-message-reactions {
+        left:auto;
+        right:auto;
+        justify-content:flex-start;
+        transform-origin:right center;
+      }
+      .msg.has-reactions { padding-bottom:10px !important; }
+      .msg.reaction-burst { transform:translateZ(0); }
+      .vibe-message-reactions.pop { animation:vibeReactionPop .34s cubic-bezier(.22,.9,.28,1) both; }
+      .vibe-reaction-chip {
+        min-width:39px;
+        height:23px;
+        padding:0 8px 1px;
+        border:1.5px solid var(--reaction-color, var(--accent));
+        border-radius:999px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        gap:3px;
+        color:#fff;
+        background:rgba(9,22,34,.88);
+        box-shadow:0 8px 18px rgba(0,0,0,.26), inset 0 0 0 1px rgba(255,255,255,.08);
+        font-size:15px;
+        line-height:1;
+        transform:translate3d(0,0,0);
+        transition:transform .14s ease, border-color .14s ease, box-shadow .14s ease;
+      }
+      .vibe-reaction-chip:hover { transform:translate3d(0,-1px,0) scale(1.04); }
+      .vibe-reaction-chip.active {
+        border-color:var(--reaction-color, var(--accent));
+        box-shadow:0 8px 18px rgba(0,0,0,.26), inset 0 0 0 1px rgba(255,255,255,.10);
+      }
+      .vibe-reaction-chip b { font-size:11px; line-height:1; }
+      .vibe-reaction-fly {
+        position:absolute;
+        left:18px;
+        bottom:16px;
+        z-index:8;
+        width:28px;
+        height:28px;
+        border-radius:999px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:24px;
+        pointer-events:none;
+        background:transparent;
+        border:0;
+        text-shadow:0 2px 8px rgba(0,0,0,.34);
+        transform-origin:center;
+        will-change:transform, opacity;
+        backface-visibility:hidden;
+        contain:layout style paint;
+        transform:translate3d(0,0,0);
+      }
+      .vibe-reaction-fly.run { animation:vibeReactionFly .86s cubic-bezier(.18,.92,.22,1) forwards; }
+      .vibe-reaction-fly.heart { font-size:23px; }
+      .vibe-reaction-fly.multi { font-size:23px; }
+      .vibe-reaction-fly.heart.run,
+      .vibe-reaction-fly.multi.run {
+        animation-duration:.96s;
+        animation-delay:var(--reaction-delay, 0ms);
+      }
+      .msg.sent .vibe-reaction-fly { left:auto; right:18px; }
+      .msg[data-reaction-anchor="chip"] .vibe-reaction-fly,
+      .msg.sent[data-reaction-anchor="chip"] .vibe-reaction-fly {
+        left:var(--reaction-fly-left, 18px);
+        top:var(--reaction-fly-top, auto);
+        right:auto;
+        bottom:auto;
+      }
+      .chat-messages { gap:18px !important; }
+      @keyframes vibeReactionBarIn { from { opacity:0; transform:translate3d(0,4px,0) scale(.99); } to { opacity:1; transform:translate3d(0,0,0) scale(1); } }
+      @keyframes vibeReactionPop {
+        0% { opacity:0; transform:translate3d(0,-3px,0) scale(.84); }
+        62% { opacity:1; transform:translate3d(0,0,0) scale(1.035); }
+        100% { opacity:1; transform:translate3d(0,0,0) scale(1); }
+      }
+      @keyframes vibeReactionFly {
+        0% { opacity:0; transform:translate3d(0,12px,0) scale(.82); }
+        24% { opacity:1; transform:translate3d(5px,-5px,0) scale(1.04); }
+        68% { opacity:1; transform:translate3d(8px,-22px,0) scale(1); }
+        100% { opacity:0; transform:translate3d(10px,-40px,0) scale(.94); }
+      }
+      @keyframes vibeActionsSlideDown { from { transform:translateY(-5px); opacity:.82; } to { transform:translateY(0); opacity:1; } }
+      @media (max-width:768px) {
+        .vibe-reaction-panel .vibe-reaction-row { gap:4px; padding:6px; }
+        .vibe-reaction-panel .vibe-reaction-fast, .vibe-reaction-panel .vibe-reaction-more { width:32px; height:32px; font-size:20px; }
+        .vibe-reaction-panel .vibe-reaction-grid { grid-template-columns:repeat(7, 1fr); }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  function installMenuPatch() {
+    if (window.__messageReactionsMenuPatched) return;
+    window.__messageReactionsMenuPatched = true;
+    const base = window.showMsgMenu;
+    window.showMsgMenu = function(...args) {
+      const result = typeof base === 'function' ? base.apply(this, args) : false;
+      ensureReactionMenu(true);
+      closeReactionPicker();
+      setTimeout(placeReactionPanel, 0);
+      return result;
+    };
+    ensureReactionMenu(false);
+    const panel = document.querySelector('.vibe-reaction-panel');
+    if (panel) panel.classList.remove('visible', 'expanded');
+  }
+
+  function installChangedWatcher() {
+    const path = chatPath();
+    if (!path || typeof db === 'undefined') return;
+    if (changedRef && changedCb) {
+      try { changedRef.off('child_changed', changedCb); } catch (error) {}
+    }
+    changedRef = db.ref(path);
+    changedCb = snap => renderMessageReactions(snap.key, snap.val() || {});
+    changedRef.on('child_changed', changedCb);
+    setTimeout(() => {
+      document.querySelectorAll('#pc-msgs .msg, #mob-msgs .msg').forEach(el => {
+        const id = (el.id || '').replace(/^pc-msgs-/, '').replace(/^mob-msgs-/, '');
+        if (id) fetchAndRender(id);
+      });
+    }, 250);
+  }
+
+  function installMessageObserver() {
+    if (window.__messageReactionsObserver) return;
+    const roots = [$('pc-msgs'), $('mob-msgs')].filter(Boolean);
+    if (!roots.length) return;
+    window.__messageReactionsObserver = new MutationObserver(records => {
+      records.forEach(record => {
+        record.addedNodes.forEach(node => {
+          if (!(node instanceof HTMLElement) || !node.classList.contains('msg')) return;
+          const id = (node.id || '').replace(/^pc-msgs-/, '').replace(/^mob-msgs-/, '');
+          if (id) setTimeout(() => fetchAndRender(id), 80);
+        });
+      });
+    });
+    roots.forEach(root => window.__messageReactionsObserver.observe(root, { childList: true }));
+  }
+
+  function installChatPatch() {
+    if (window.__messageReactionsChatPatched) return;
+    window.__messageReactionsChatPatched = true;
+    const pc = window.openPCChat;
+    const mob = window.openMobChat;
+    if (typeof pc === 'function') {
+      window.openPCChat = function(...args) {
+        const result = pc.apply(this, args);
+        setTimeout(installChangedWatcher, 350);
+        return result;
+      };
+    }
+    if (typeof mob === 'function') {
+      window.openMobChat = function(...args) {
+        const result = mob.apply(this, args);
+        setTimeout(installChangedWatcher, 350);
+        return result;
+      };
+    }
+  }
+
+  document.addEventListener('click', event => {
+    if (event.target.closest && (event.target.closest('.vibe-reaction-panel') || event.target.closest('#context-menu'))) return;
+    closeReactionPicker();
+    const panel = document.querySelector('.vibe-reaction-panel');
+    const menu = $('context-menu');
+    if (panel && (!menu || menu.style.display === 'none')) panel.classList.remove('visible');
+    setTimeout(() => {
+      const latestMenu = $('context-menu');
+      const latestPanel = document.querySelector('.vibe-reaction-panel');
+      if (latestPanel && (!latestMenu || latestMenu.style.display === 'none')) latestPanel.classList.remove('visible', 'expanded');
+    }, 0);
+  }, true);
+
+  window.addEventListener('resize', placeReactionPanel);
+  window.addEventListener('scroll', placeReactionPanel, true);
+
+  installStyle();
+  installMenuPatch();
+  installChatPatch();
+  installMessageObserver();
+  setTimeout(() => { installChangedWatcher(); installMessageObserver(); }, 900);
+})();
+</script>
 </body>
 </html>
