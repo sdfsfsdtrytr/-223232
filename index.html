@@ -3146,8 +3146,12 @@ const vibeEnhancer = (() => {
     const s = safeSettings();
     const color = s.appearance.profileColor;
     const pattern = profilePatternCss(s.appearance.patternEmoji);
+    const avatarPhoto = me.avatarPhoto || me.photoURL || me.avatarUrl || '';
+    const settingsAvatar = avatarPhoto
+      ? `<div class="settings-preview-avatar has-photo" style="background-image:url('${escapeHtml(avatarPhoto)}');background-size:cover;background-position:center;color:transparent;"></div>`
+      : `<div class="settings-preview-avatar">${me.avatar || '👤'}</div>`;
     const views = {
-      home: `<div class="settings-shell"><div class="settings-topbar"><div><div class="settings-title">Настройки</div><div class="settings-subtitle">Профиль, устройства, безопасность и оформление</div></div></div><div class="settings-grid"><div class="settings-card"><div class="settings-preview" style="background:${color};"><div class="settings-pattern" style="background-image:${pattern};"></div><div class="settings-preview-avatar">${me.avatar || '👤'}</div><div class="settings-preview-name">${me.name || 'Без имени'}${me.verified ? vBadge : ''}</div><div class="settings-preview-handle">${me.handle || '@user'}</div></div></div><div class="settings-card"><div class="settings-list">${navItem(
+      home: `<div class="settings-shell"><div class="settings-topbar"><div><div class="settings-title">Настройки</div><div class="settings-subtitle">Профиль, устройства, безопасность и оформление</div></div></div><div class="settings-grid"><div class="settings-card"><div class="settings-preview" style="background:${color};"><div class="settings-pattern" style="background-image:${pattern};"></div>${settingsAvatar}<div class="settings-preview-name">${me.name || 'Без имени'}${me.verified ? vBadge : ''}</div><div class="settings-preview-handle">${me.handle || '@user'}</div></div></div><div class="settings-card"><div class="settings-list">${navItem(
   'devices',
   '<img src="Эконки/Устройства.png" class="nav-icon">',
   'Устройства',
@@ -3170,7 +3174,7 @@ const vibeEnhancer = (() => {
 )}</div><div style="margin-top:18px;" class="settings-actions">${!me.email ? `<button class="settings-ghost" onclick="showLinkEmailModal()">Привязать почту</button>` : ''}${!me.verified ? `<button class="verify-btn" style="display:block; margin-top:0;" onclick="window.open('https://forms.yandex.ru/cloud/69c657e1493639ae65329446','_blank')">ВЕРИлиРљРђ??Я</button>` : ''}<button class="settings-ghost" style="color:#ff8a8a;" onclick="logout()">Выйти с аккаунта</button></div></div></div></div>`,
       devices: subPage('Устройства', 'Подключай новые экраны по QR и управляй активными входами', `<div class="settings-card"><div class="settings-actions"><button class="settings-save" onclick="startDeviceScanner()">Подключить устройство</button><button class="settings-ghost" onclick="openQrLogin()">Войти по QR на ПК</button></div><p class="section-note" style="margin-top:12px;">На ПК открой вход по QR-коду. На телефоне нажми «Подключить устройство», отсканируй код и подтверди вход.</p></div><div class="device-list">${renderDevices()}</div>`),
       auth: subPage('Аудификация', 'Код для входа, пароль приложения и мобильная защита', `<div class="settings-card settings-section"><div class="settings-field"><label>Код для входа</label><input id="login-code-input-setting" type="password" placeholder="${s.auth.loginCode ? 'Код уже создан' : 'Придумай код для входа'}"></div><div class="settings-actions"><button class="settings-save" onclick="saveLoginCode()">Сохранить</button>${s.auth.loginCode ? `<button class="settings-ghost" onclick="removeLoginCode()">Удалить код</button>` : ''}</div><p class="section-note">Этот код будет спрашиваться после входа по почте и после сканирования QR.</p></div><div class="settings-card settings-section"><div class="settings-field"><label>Пароль для входа в приложение</label><input id="app-lock-password" type="password" placeholder="${s.auth.appLockPassword ? 'Новый пароль или оставь как есть' : 'Пароль для открытия приложения'}"></div><div class="settings-actions"><button class="settings-save" onclick="saveAppLockPassword()">Установить</button>${s.auth.appLockPassword ? `<button class="settings-ghost" onclick="toggleAppLock(false)">Отключить</button>` : ''}${!isPC ? `<button class="settings-ghost" onclick="setupBiometric()">Лицо / отпечаток</button>` : ''}</div><p class="section-note">${!isPC ? 'На мобильном устройстве можно включить локальную разблокировку через системный биометрический датчик.' : 'Эта функция работает только на телефоне.'}</p></div>`),
-      appearance: subPage('Оформления', 'Фон профиля, фоновый эмодзи, тема и иконка приложения', `<div class="settings-card"><div class="settings-preview" style="background:${color}; min-height:260px;"><div class="settings-pattern" style="background-image:${pattern};"></div><div class="settings-preview-avatar">${me.avatar || '👤'}</div><div class="settings-preview-name" style="font-size:44px;">${me.name || 'Без имени'}${me.verified ? vBadge : ''}</div><div class="settings-preview-handle">${me.handle || '@user'}</div></div></div><div class="settings-card settings-section"><div class="settings-field"><label>Поменять цвет фона</label><div class="swatch-grid">${SWATCHS.map((item, idx) => `<button class="swatch-btn ${item === s.appearance.profileColor ? 'active' : ''}" onclick="pickProfileColor(${idx})" style="background:${item};"></button>`).join('')}</div></div><div class="settings-field"><label>Поменять эмодзи в фоне</label><div class="pattern-chip-row">${PATTERNS.map(item => `<button class="pattern-chip ${item === s.appearance.patternEmoji ? 'active' : ''}" onclick="pickPatternEmoji('${item}')">${item}</button>`).join('')}</div></div><div class="settings-field"><label>Тема</label><select id="appearance-theme-sel">${themeList.map(t => `<option value="${t}" ${t === (localStorage.getItem('theme') || 'dark') ? 'selected' : ''}>${t.toUpperCase()}</option>`).join('')}</select></div><div class="settings-field"><label>Вид иконки приложения</label><div class="icon-grid">${APP_ICONS.map((icon, idx) => `<button class="icon-card ${icon === s.appearance.appIcon ? 'active' : ''}" onclick="pickAppIcon(${idx})">${icon}</button>`).join('')}</div></div><div class="settings-actions"><button class="settings-save" onclick="saveAppearanceSettings()">Сохранить изменения</button></div></div><div class="settings-card settings-section"><div class="settings-field"><label>Изменить профиль</label><input id="profile-name-edit" value="${escapeHtml(me.name || '')}" placeholder="Имя"><button class="settings-save" onclick="saveProfileNameFromSettings()">Сохранить имя</button></div><div class="settings-field"><textarea id="profile-bio-edit" placeholder="Описание">${escapeHtml(me.bio || '')}</textarea><button class="settings-save" onclick="saveProfileBioFromSettings()">Сохранить описание</button></div></div>`),
+      appearance: subPage('Оформления', 'Фон профиля, фоновый эмодзи, тема и иконка приложения', `<div class="settings-card"><div class="settings-preview" style="background:${color}; min-height:260px;"><div class="settings-pattern" style="background-image:${pattern};"></div>${settingsAvatar}<div class="settings-preview-name" style="font-size:44px;">${me.name || 'Без имени'}${me.verified ? vBadge : ''}</div><div class="settings-preview-handle">${me.handle || '@user'}</div></div></div><div class="settings-card settings-section"><div class="settings-field"><label>Поменять цвет фона</label><div class="swatch-grid">${SWATCHS.map((item, idx) => `<button class="swatch-btn ${item === s.appearance.profileColor ? 'active' : ''}" onclick="pickProfileColor(${idx})" style="background:${item};"></button>`).join('')}</div></div><div class="settings-field"><label>Поменять эмодзи в фоне</label><div class="pattern-chip-row">${PATTERNS.map(item => `<button class="pattern-chip ${item === s.appearance.patternEmoji ? 'active' : ''}" onclick="pickPatternEmoji('${item}')">${item}</button>`).join('')}</div></div><div class="settings-field"><label>Тема</label><select id="appearance-theme-sel">${themeList.map(t => `<option value="${t}" ${t === (localStorage.getItem('theme') || 'dark') ? 'selected' : ''}>${t.toUpperCase()}</option>`).join('')}</select></div><div class="settings-field"><label>Вид иконки приложения</label><div class="icon-grid">${APP_ICONS.map((icon, idx) => `<button class="icon-card ${icon === s.appearance.appIcon ? 'active' : ''}" onclick="pickAppIcon(${idx})">${icon}</button>`).join('')}</div></div><div class="settings-actions"><button class="settings-save" onclick="saveAppearanceSettings()">Сохранить изменения</button></div></div><div class="settings-card settings-section"><div class="settings-field"><label>Изменить профиль</label><input id="profile-name-edit" value="${escapeHtml(me.name || '')}" placeholder="Имя"><button class="settings-save" onclick="saveProfileNameFromSettings()">Сохранить имя</button></div><div class="settings-field"><textarea id="profile-bio-edit" placeholder="Описание">${escapeHtml(me.bio || '')}</textarea><button class="settings-save" onclick="saveProfileBioFromSettings()">Сохранить описание</button></div></div>`),
       presence: subPage('Время захода', 'Кто видит, когда ты в сети или когда был(а) недавно', `<div class="settings-card settings-section"><div class="settings-actions"><button class="${s.privacy.lastSeenMode === 'all' ? 'settings-save' : 'settings-ghost'}" onclick="setPresenceMode('all')">Все</button><button class="${s.privacy.lastSeenMode === 'friends' ? 'settings-save' : 'settings-ghost'}" onclick="setPresenceMode('friends')">Друзья</button><button class="${s.privacy.lastSeenMode === 'nobody' ? 'settings-save' : 'settings-ghost'}" onclick="setPresenceMode('nobody')">Никто</button></div>${s.privacy.lastSeenMode === 'nobody' ? `<button class="settings-ghost" onclick="openPresenceExceptions()">Исключения</button>` : ''}</div>`),
       presenceExceptions: subPage('Исключения', 'Выбери друзей, которым можно показывать точное время захода', `<div class="settings-card"><div class="people-list">${renderPresenceFriends()}</div><div class="settings-actions" style="margin-top:16px;"><button class="settings-save" onclick="savePresenceExceptions()">Сохранить</button></div></div>`)
     };
@@ -10346,6 +10350,30 @@ window.openArchiveModal = function() {
     } catch (error) {}
   }
 
+  const queuedReactionFetches = new Set();
+  let reactionFetchTimer = null;
+  async function flushReactionFetches() {
+    const path = chatPath();
+    const ids = Array.from(queuedReactionFetches);
+    queuedReactionFetches.clear();
+    reactionFetchTimer = null;
+    if (!path || !ids.length || typeof db === 'undefined') return;
+    try {
+      const snap = await db.ref(path).limitToLast(160).once('value');
+      const values = snap.val() || {};
+      ids.forEach(id => {
+        if (values[id]) renderMessageReactions(id, values[id] || {});
+      });
+    } catch (error) {}
+  }
+
+  function queueReactionFetch(id) {
+    if (!id) return;
+    queuedReactionFetches.add(id);
+    clearTimeout(reactionFetchTimer);
+    reactionFetchTimer = setTimeout(flushReactionFetches, 120);
+  }
+
   async function setReaction(emoji, forcedId) {
     const meNow = user();
     const id = reactionTargetId(forcedId);
@@ -10788,7 +10816,7 @@ window.openArchiveModal = function() {
     setTimeout(() => {
       document.querySelectorAll('#pc-msgs .msg, #mob-msgs .msg').forEach(el => {
         const id = (el.id || '').replace(/^pc-msgs-/, '').replace(/^mob-msgs-/, '');
-        if (id) fetchAndRender(id);
+        if (id) queueReactionFetch(id);
       });
     }, 250);
   }
@@ -10802,7 +10830,7 @@ window.openArchiveModal = function() {
         record.addedNodes.forEach(node => {
           if (!(node instanceof HTMLElement) || !node.classList.contains('msg')) return;
           const id = (node.id || '').replace(/^pc-msgs-/, '').replace(/^mob-msgs-/, '');
-          if (id) setTimeout(() => fetchAndRender(id), 80);
+          if (id) queueReactionFetch(id);
         });
       });
     });
@@ -10851,6 +10879,101 @@ window.openArchiveModal = function() {
   installChatPatch();
   installMessageObserver();
   setTimeout(() => { installChangedWatcher(); installMessageObserver(); }, 900);
+})();
+</script>
+<script id="codex-settings-stability-restore-final">
+(() => {
+  const $ = id => document.getElementById(id);
+  const esc = value => String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+
+  function meNow() {
+    return (typeof me !== 'undefined' && me) ? me : window.me;
+  }
+
+  function settingsHosts() {
+    return [$('pc-settings-screen'), $('mob-settings')].filter(Boolean);
+  }
+
+  function avatarPhoto(user) {
+    return user && (user.avatarPhoto || user.photoURL || user.avatarUrl || user.photo || user.image || '');
+  }
+
+  function restoreSettingsAvatar() {
+    const user = meNow();
+    if (!user) return;
+    const photo = avatarPhoto(user);
+    document.querySelectorAll('.settings-preview-avatar').forEach(el => {
+      if (photo) {
+        el.classList.add('has-photo');
+        el.style.backgroundImage = `url('${esc(photo)}')`;
+        el.style.backgroundSize = 'cover';
+        el.style.backgroundPosition = 'center';
+        el.style.color = 'transparent';
+        el.textContent = '';
+      } else {
+        el.classList.remove('has-photo');
+        el.style.backgroundImage = '';
+        el.style.color = '';
+        if (!el.textContent.trim()) el.textContent = user.avatar || '👤';
+      }
+    });
+  }
+
+  function addSettingsEntry(host, key, title, meta, icon, action) {
+    const list = host && host.querySelector('.settings-list');
+    if (!list || list.querySelector(`[data-settings-restore="${key}"]`)) return;
+    if (String(list.textContent || '').includes(title)) return;
+    const btn = document.createElement('button');
+    btn.className = 'settings-nav-item';
+    btn.type = 'button';
+    btn.dataset.settingsRestore = key;
+    btn.onclick = action;
+    btn.innerHTML = `<span class="settings-nav-main"><span class="settings-nav-icon">${icon}</span><span><div class="settings-nav-title">${title}</div><div class="settings-nav-meta">${meta}</div></span></span><span>›</span>`;
+    list.appendChild(btn);
+  }
+
+  function restoreSettingsEntries() {
+    settingsHosts().forEach(host => {
+      addSettingsEntry(host, 'profile-edit', 'Изменение имени и описания', 'Имя профиля и описание', '<img src="Эконки/Имя и описание.png" class="nav-icon" alt="">', () => {
+        if (typeof window.openSettingsView === 'function') window.openSettingsView('profileEdit');
+      });
+      addSettingsEntry(host, 'avatar-photo', 'Фото на аватарку', 'Эмодзи, фото и выбор области', '<img src="Эконки/Фото Профеля.jpg" class="nav-icon" alt="">', () => {
+        if (typeof window.openAvatarPhotoView === 'function') window.openAvatarPhotoView();
+        else if (typeof window.openSettingsView === 'function') window.openSettingsView('appearance');
+      });
+      addSettingsEntry(host, 'main-menu', 'Главное меню', 'Папки чатов и нижняя панель', '🧭', () => {
+        if (typeof window.openSettingsView === 'function') window.openSettingsView('mainMenu');
+      });
+    });
+  }
+
+  function restoreSettings() {
+    restoreSettingsAvatar();
+    restoreSettingsEntries();
+  }
+
+  const baseRender = window.renderSettings;
+  window.renderSettings = function(...args) {
+    const result = typeof baseRender === 'function' ? baseRender.apply(this, args) : undefined;
+    setTimeout(restoreSettings, 0);
+    return result;
+  };
+
+  const baseOpen = window.openSettingsView;
+  window.openSettingsView = function(...args) {
+    const result = typeof baseOpen === 'function' ? baseOpen.apply(this, args) : undefined;
+    setTimeout(restoreSettings, 0);
+    return result;
+  };
+
+  window.addEventListener('load', () => {
+    setTimeout(restoreSettings, 500);
+    setTimeout(restoreSettings, 1600);
+  });
 })();
 </script>
 </body>
