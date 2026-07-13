@@ -11354,8 +11354,8 @@ window.openArchiveModal = function() {
       @keyframes vibeInfoOut { to{opacity:0; transform:translate3d(0,20px,0)} }
       .vibe-mobile-info-hero {
         position:relative;
-        min-height:474px;
-        padding:calc(18px + env(safe-area-inset-top,0px)) 24px 26px;
+        min-height:404px;
+        padding:calc(14px + env(safe-area-inset-top,0px)) 18px 20px;
         background:var(--info-bg);
         overflow:hidden;
       }
@@ -11385,7 +11385,7 @@ window.openArchiveModal = function() {
         align-items:center;
       }
       .vibe-info-round, .vibe-info-edit {
-        height:68px;
+        height:54px;
         border-radius:999px;
         border:1px solid rgba(255,255,255,.16);
         background:rgba(86,43,20,.32);
@@ -11395,34 +11395,37 @@ window.openArchiveModal = function() {
         box-shadow:inset 0 0 0 1px rgba(255,255,255,.07), 0 12px 28px rgba(0,0,0,.18);
       }
       .vibe-info-round {
-        width:68px;
+        width:54px;
         display:flex;
         align-items:center;
         justify-content:center;
       }
-      .vibe-info-round svg { width:36px; height:36px; }
+      .vibe-info-round svg { width:30px; height:30px; }
       .vibe-info-edit {
-        padding:0 24px;
-        font-size:30px;
+        padding:0 20px;
+        font-size:24px;
         font-weight:700;
+        opacity:.42;
+        pointer-events:none;
+        cursor:default;
       }
       .vibe-mobile-info-main {
         position:relative;
         z-index:2;
-        margin-top:10px;
+        margin-top:6px;
         display:flex;
         flex-direction:column;
         align-items:center;
         text-align:center;
       }
       .vibe-mobile-info-avatar {
-        width:128px;
-        height:128px;
+        width:104px;
+        height:104px;
         border-radius:50%;
         display:flex;
         align-items:center;
         justify-content:center;
-        font-size:58px;
+        font-size:48px;
         background:rgba(255,255,255,.18);
         border:1px solid rgba(255,255,255,.22);
         box-shadow:0 18px 38px rgba(0,0,0,.24);
@@ -11430,20 +11433,20 @@ window.openArchiveModal = function() {
         background-position:center;
       }
       .vibe-mobile-info-name {
-        margin-top:18px;
-        font-size:38px;
+        margin-top:14px;
+        font-size:32px;
         line-height:1.05;
         font-weight:800;
         letter-spacing:0;
         text-shadow:0 2px 14px rgba(0,0,0,.2);
       }
       .vibe-mobile-info-status {
-        margin-top:8px;
+        margin-top:6px;
         display:flex;
         align-items:center;
         gap:9px;
         color:rgba(255,255,255,.66);
-        font-size:23px;
+        font-size:19px;
         line-height:1.2;
       }
       .vibe-mobile-info-status .shield {
@@ -11461,25 +11464,25 @@ window.openArchiveModal = function() {
       .vibe-mobile-info-actions {
         position:relative;
         z-index:3;
-        margin-top:58px;
+        margin-top:42px;
         display:grid;
         grid-template-columns:repeat(5,1fr);
-        gap:14px;
+        gap:10px;
       }
       .vibe-info-action {
         position:relative;
-        height:92px;
+        height:76px;
         min-width:0;
         border:0;
-        border-radius:24px;
+        border-radius:21px;
         background:rgba(82,36,20,.52);
         color:#fff;
         display:flex;
         flex-direction:column;
         align-items:center;
         justify-content:center;
-        gap:8px;
-        font-size:13px;
+        gap:6px;
+        font-size:12px;
         font-weight:800;
         text-transform:lowercase;
         backdrop-filter:blur(16px);
@@ -11489,86 +11492,99 @@ window.openArchiveModal = function() {
       }
       .vibe-info-action:active { transform:scale(.96); }
       .vibe-info-action.disabled { opacity:.45; }
-      .vibe-info-action svg { width:34px; height:34px; stroke-width:2.45; }
+      .vibe-info-action svg { width:29px; height:29px; stroke-width:2.45; }
       .vibe-info-action.muted svg { stroke:#fff; }
       .vibe-info-media {
         position:relative;
         z-index:2;
-        margin:26px -24px -26px;
-        padding:10px 24px;
+        margin:20px -18px -20px;
+        padding:8px 18px;
         background:rgba(90,40,18,.34);
         display:flex;
         align-items:center;
         justify-content:center;
         gap:8px;
-        font-size:18px;
+        font-size:16px;
         font-weight:700;
         color:rgba(255,255,255,.9);
       }
       .vibe-info-body {
-        padding:24px 24px calc(34px + env(safe-area-inset-bottom,0px));
+        padding:20px 20px calc(28px + env(safe-area-inset-bottom,0px));
       }
       .vibe-info-channel-label {
         display:flex;
         justify-content:space-between;
         color:rgba(255,255,255,.56);
-        font-size:17px;
+        font-size:14px;
         text-transform:uppercase;
         letter-spacing:.02em;
-        margin:10px 26px 12px;
+        margin:8px 20px 10px;
       }
       .vibe-info-channel-card, .vibe-info-card {
-        border-radius:30px;
+        border-radius:25px;
         background:rgba(255,255,255,.10);
         overflow:hidden;
         box-shadow:inset 0 0 0 1px rgba(255,255,255,.04);
       }
       .vibe-info-channel-card {
-        min-height:96px;
+        min-height:78px;
         display:flex;
         align-items:center;
-        gap:16px;
-        padding:16px 20px;
-        margin-bottom:26px;
+        gap:14px;
+        padding:14px 18px;
+        margin-bottom:20px;
       }
       .vibe-info-mini-avatar {
-        width:66px;
-        height:66px;
+        width:54px;
+        height:54px;
         border-radius:50%;
         background:rgba(255,255,255,.18);
         display:flex;
         align-items:center;
         justify-content:center;
-        font-size:30px;
+        font-size:25px;
         flex:0 0 auto;
         background-size:cover;
         background-position:center;
       }
-      .vibe-info-channel-card b { font-size:22px; display:block; }
-      .vibe-info-channel-card span { color:rgba(255,255,255,.58); font-size:17px; }
-      .vibe-info-card { padding:0 24px; }
+      .vibe-info-channel-card b { font-size:18px; display:block; }
+      .vibe-info-channel-card span { color:rgba(255,255,255,.58); font-size:15px; }
+      .vibe-info-channel-card > div:nth-child(2) {
+        min-width:0;
+        display:flex;
+        flex-direction:column;
+        gap:3px;
+      }
+      .vibe-info-channel-card > div:nth-child(2) span {
+        display:-webkit-box;
+        -webkit-line-clamp:2;
+        -webkit-box-orient:vertical;
+        overflow:hidden;
+        line-height:1.22;
+      }
+      .vibe-info-card { padding:0 20px; }
       .vibe-info-row {
         display:grid;
         grid-template-columns:1fr auto;
-        gap:14px;
-        padding:19px 0;
+        gap:12px;
+        padding:16px 0;
         border-bottom:1px solid rgba(255,255,255,.08);
       }
       .vibe-info-row:last-child { border-bottom:0; }
       .vibe-info-row label {
         display:block;
         color:#fff;
-        font-size:18px;
+        font-size:16px;
         margin-bottom:5px;
       }
       .vibe-info-row div {
         min-width:0;
         color:rgba(255,255,255,.66);
-        font-size:24px;
+        font-size:20px;
         line-height:1.25;
         overflow-wrap:anywhere;
       }
-      .vibe-info-row svg { width:25px; height:25px; color:rgba(255,255,255,.58); align-self:center; }
+      .vibe-info-row svg { width:22px; height:22px; color:rgba(255,255,255,.58); align-self:center; }
       .vibe-popover-backdrop {
         position:fixed;
         inset:0;
@@ -11699,10 +11715,12 @@ window.openArchiveModal = function() {
       @keyframes vibeSearchIn { from{opacity:0; transform:translateY(-12px)} to{opacity:1; transform:translateY(0)} }
       @media (max-width:390px) {
         .vibe-mobile-info-actions { gap:8px; }
-        .vibe-info-action { height:82px; border-radius:20px; font-size:12px; }
-        .vibe-info-action svg { width:30px; height:30px; }
-        .vibe-mobile-info-name { font-size:34px; }
-        .vibe-mobile-info-status { font-size:20px; }
+        .vibe-info-action { height:70px; border-radius:18px; font-size:11px; }
+        .vibe-info-action svg { width:26px; height:26px; }
+        .vibe-mobile-info-hero { min-height:382px; }
+        .vibe-mobile-info-avatar { width:96px; height:96px; }
+        .vibe-mobile-info-name { font-size:29px; }
+        .vibe-mobile-info-status { font-size:18px; }
       }
     `;
     document.head.appendChild(style);
@@ -11939,7 +11957,7 @@ window.openArchiveModal = function() {
       <section class="vibe-mobile-info-hero">
         <div class="vibe-mobile-info-top">
           <button class="vibe-info-round" type="button" onclick="document.querySelector('.vibe-mobile-info') && document.querySelector('.vibe-mobile-info').classList.add('closing'); setTimeout(()=>{document.querySelectorAll('.vibe-mobile-info').forEach(e=>e.remove());document.body.classList.remove('vibe-profile-open')},230)">${icon('back')}</button>
-          <button class="vibe-info-edit disabled" type="button">Изм.</button>
+          <button class="vibe-info-edit disabled" type="button" disabled aria-disabled="true">Изм.</button>
         </div>
         <div class="vibe-mobile-info-main">
           ${avatarMarkup(peer)}
