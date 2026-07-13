@@ -11347,11 +11347,17 @@ window.openArchiveModal = function() {
         color:#fff;
         overflow-y:auto;
         overscroll-behavior:contain;
-        animation:vibeInfoIn .34s cubic-bezier(.18,.9,.22,1) both;
+        animation:vibeInfoIn .38s cubic-bezier(.18,.9,.22,1) both;
       }
-      .vibe-mobile-info.closing { animation:vibeInfoOut .22s ease both; }
-      @keyframes vibeInfoIn { from{opacity:0; transform:translate3d(0,24px,0)} to{opacity:1; transform:translate3d(0,0,0)} }
-      @keyframes vibeInfoOut { to{opacity:0; transform:translate3d(0,20px,0)} }
+      .vibe-mobile-info.closing { animation:vibeInfoOut .26s cubic-bezier(.4,0,.2,1) both; }
+      @keyframes vibeInfoIn {
+        from { opacity:.98; transform:translate3d(100%,0,0); }
+        to { opacity:1; transform:translate3d(0,0,0); }
+      }
+      @keyframes vibeInfoOut {
+        from { opacity:1; transform:translate3d(0,0,0); }
+        to { opacity:.98; transform:translate3d(100%,0,0); }
+      }
       .vibe-mobile-info-hero {
         position:relative;
         min-height:338px;
