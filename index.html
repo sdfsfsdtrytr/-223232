@@ -8467,7 +8467,8 @@ window.openArchiveModal = function() {
       const count = Object.keys(item.members || {}).length;
       return `<div class="contact-item glass" onclick="${openCall(item, desktop)}">${avatarHtml(item)}<div class="dialog-main"><b>${esc(item.name || typeLabel)}</b><br><small>${typeLabel}${count ? ` · ${count} участников` : ''}</small></div>${time}${unreadBadge}</div>`;
     }
-    return `<div class="contact-item glass" id="cnt-${esc(item.id || '')}" onclick="${openCall(item, desktop)}" oncontextmenu="showChatListMenu(event, '${esc(item.id || '')}')">${avatarHtml(item)}<div class="dialog-main"><b>${esc(item.name || 'Без имени')}</b><br><small class="${item.online ? 'st-all' : 'st-none'}">${typeof getPresenceText === 'function' ? esc(getPresenceText(item)) : (item.online ? 'онлайн' : 'не в сети')}</small></div>${time}${unreadBadge}</div>`;
+    const verified = item.verified ? (typeof badge === 'function' ? badge() : (typeof vBadge !== 'undefined' ? vBadge : '<span class="verified-badge"><svg viewBox="0 0 24 24" fill="none"><path d="M22.5 12.5C22.5 18.0228 18.0228 22.5 12.5 22.5C6.97715 22.5 2.5 18.0228 2.5 12.5C2.5 6.97715 6.97715 2.5 12.5 2.5C18.0228 2.5 22.5 6.97715 22.5 12.5Z" fill="#00A3FF"/><path d="M10.5 15.5L7.5 12.5L8.5 11.5L10.5 13.5L15.5 8.5L16.5 9.5L10.5 15.5Z" fill="white"/></svg></span>')) : '';
+    return `<div class="contact-item glass" id="cnt-${esc(item.id || '')}" onclick="${openCall(item, desktop)}" oncontextmenu="showChatListMenu(event, '${esc(item.id || '')}')">${avatarHtml(item)}<div class="dialog-main"><b>${esc(item.name || 'Без имени')}${verified}</b><br><small class="${item.online ? 'st-all' : 'st-none'}">${typeof getPresenceText === 'function' ? esc(getPresenceText(item)) : (item.online ? 'онлайн' : 'не в сети')}</small></div>${time}${unreadBadge}</div>`;
   }
 
   function folderItems(folderId) {
@@ -10087,6 +10088,7 @@ window.openArchiveModal = function() {
   let expanded = false;
   let changedRef = null;
   let changedCb = null;
+  let lastReactionTouchAt = 0;
 
   function user() {
     return (typeof me !== 'undefined' && me) ? me : window.me;
@@ -10321,11 +10323,18 @@ window.openArchiveModal = function() {
         chip.dataset.reaction = emoji;
         chip.style.setProperty('--reaction-color', reactionColor(emoji));
         chip.innerHTML = `<span>${esc(emoji)}</span>${data.count > 1 ? `<b>${data.count}</b>` : ''}`;
-        chip.onclick = event => {
+        const triggerChip = event => {
           event.preventDefault();
           event.stopPropagation();
+          if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+          const now = Date.now();
+          if (event.type === 'click' && now - lastReactionTouchAt < 450) return false;
+          if (event.type === 'touchend') lastReactionTouchAt = now;
           setReaction(emoji, id);
+          return false;
         };
+        chip.onclick = triggerChip;
+        chip.ontouchend = triggerChip;
         wrap.appendChild(chip);
       });
       el.appendChild(wrap);
@@ -10718,6 +10727,9 @@ window.openArchiveModal = function() {
         box-shadow:0 8px 18px rgba(0,0,0,.26), inset 0 0 0 1px rgba(255,255,255,.08);
         font-size:15px;
         line-height:1;
+        touch-action:manipulation;
+        -webkit-user-select:none;
+        user-select:none;
         transform:translate3d(0,0,0);
         transition:transform .14s ease, border-color .14s ease, box-shadow .14s ease;
       }
@@ -10945,15 +10957,25 @@ window.openArchiveModal = function() {
         if (typeof window.openAvatarPhotoView === 'function') window.openAvatarPhotoView();
         else if (typeof window.openSettingsView === 'function') window.openSettingsView('appearance');
       });
-      addSettingsEntry(host, 'main-menu', 'Главное меню', 'Папки чатов и нижняя панель', '🧭', () => {
-        if (typeof window.openSettingsView === 'function') window.openSettingsView('mainMenu');
+    });
+  }
+
+  function removeDuplicateMainMenuEntries() {
+    settingsHosts().forEach(host => {
+      const list = host && host.querySelector('.settings-list');
+      if (!list) return;
+      const entries = Array.from(list.querySelectorAll('.settings-nav-item')).filter(item => {
+        const title = item.querySelector('.settings-nav-title');
+        return title && title.textContent.trim() === 'Главное меню';
       });
+      entries.slice(1).forEach(item => item.remove());
     });
   }
 
   function restoreSettings() {
     restoreSettingsAvatar();
     restoreSettingsEntries();
+    removeDuplicateMainMenuEntries();
   }
 
   const baseRender = window.renderSettings;
@@ -10973,6 +10995,1003 @@ window.openArchiveModal = function() {
   window.addEventListener('load', () => {
     setTimeout(restoreSettings, 500);
     setTimeout(restoreSettings, 1600);
+  });
+})();
+</script>
+<script id="codex-mobile-tap-scroll-stability-final">
+(() => {
+  const $ = id => document.getElementById(id);
+  let suppressMessageClickUntil = 0;
+
+  function mobileChatOpen() {
+    const view = $('mob-chat-view');
+    return !!(view && (view.classList.contains('active') || view.style.display === 'flex' || document.body.classList.contains('chat-open-mobile')));
+  }
+
+  function isReactionTarget(target) {
+    return !!(target && target.closest && target.closest('.vibe-reaction-chip,.vibe-message-reactions,.vibe-reaction-panel'));
+  }
+
+  function isInteractiveTarget(target) {
+    return !!(target && target.closest && target.closest('a,button,input,textarea,select,audio,video,label'));
+  }
+
+  function messageTarget(target) {
+    if (!target || !target.closest || !mobileChatOpen()) return null;
+    if (isReactionTarget(target) || isInteractiveTarget(target)) return null;
+    return target.closest('#mob-msgs .msg');
+  }
+
+  document.addEventListener('touchend', event => {
+    if (!messageTarget(event.target)) return;
+    suppressMessageClickUntil = Date.now() + 520;
+  }, { capture: true, passive: true });
+
+  document.addEventListener('click', event => {
+    if (isReactionTarget(event.target)) return;
+    const message = messageTarget(event.target);
+    if (!message) return;
+    if (Date.now() < suppressMessageClickUntil || event.detail <= 1) {
+      event.preventDefault();
+      event.stopPropagation();
+      if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+    }
+  }, true);
+
+  document.addEventListener('contextmenu', event => {
+    const message = messageTarget(event.target);
+    if (!message) return;
+    event.preventDefault();
+    event.stopPropagation();
+    if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+  }, true);
+
+  function ensureScrollButton() {
+    let btn = $('vibe-scroll-bottom-btn');
+    if (btn) return btn;
+    const style = document.createElement('style');
+    style.id = 'codex-scroll-bottom-style-final';
+    style.textContent = `
+      #vibe-scroll-bottom-btn {
+        position:fixed;
+        right:22px;
+        bottom:92px;
+        width:44px;
+        height:44px;
+        border:0;
+        border-radius:999px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        background:var(--accent, #1597ff);
+        color:#fff;
+        font-size:25px;
+        line-height:1;
+        box-shadow:0 14px 34px rgba(0,0,0,.34), inset 0 0 0 1px rgba(255,255,255,.18);
+        z-index:2147482500;
+        opacity:0;
+        pointer-events:none;
+        transform:translate3d(0,12px,0) scale(.92);
+        transition:opacity .18s ease, transform .22s cubic-bezier(.2,.9,.22,1);
+      }
+      #vibe-scroll-bottom-btn.visible {
+        opacity:1;
+        pointer-events:auto;
+        transform:translate3d(0,0,0) scale(1);
+      }
+      #vibe-scroll-bottom-btn.mobile {
+        right:16px;
+        bottom:calc(88px + env(safe-area-inset-bottom, 0px));
+      }
+    `;
+    document.head.appendChild(style);
+    btn = document.createElement('button');
+    btn.id = 'vibe-scroll-bottom-btn';
+    btn.type = 'button';
+    btn.setAttribute('aria-label', 'Вниз');
+    btn.textContent = '⌄';
+    btn.onclick = () => {
+      const box = activeMessageBox();
+      if (!box) return;
+      box.scrollTo({ top: box.scrollHeight, behavior: 'smooth' });
+      setTimeout(updateScrollButton, 260);
+    };
+    document.body.appendChild(btn);
+    return btn;
+  }
+
+  function activeMessageBox() {
+    if (mobileChatOpen() || window.innerWidth <= 760) return $('mob-msgs');
+    return $('pc-msgs');
+  }
+
+  function chatVisible(box) {
+    if (!box) return false;
+    const rect = box.getBoundingClientRect();
+    return rect.width > 0 && rect.height > 0;
+  }
+
+  function updateScrollButton() {
+    const btn = ensureScrollButton();
+    const box = activeMessageBox();
+    const hidden = !chatVisible(box);
+    const gap = hidden ? 0 : box.scrollHeight - box.scrollTop - box.clientHeight;
+    btn.classList.toggle('mobile', box && box.id === 'mob-msgs');
+    btn.classList.toggle('visible', !hidden && gap > 180);
+  }
+
+  function bindScrollBox(id) {
+    const box = $(id);
+    if (!box || box.dataset.scrollBottomBound === '1') return;
+    box.dataset.scrollBottomBound = '1';
+    box.addEventListener('scroll', updateScrollButton, { passive: true });
+    new MutationObserver(updateScrollButton).observe(box, { childList: true, subtree: false });
+  }
+
+  function boot() {
+    ensureScrollButton();
+    bindScrollBox('pc-msgs');
+    bindScrollBox('mob-msgs');
+    updateScrollButton();
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+  window.addEventListener('load', () => setTimeout(boot, 300));
+  window.addEventListener('resize', updateScrollButton, { passive: true });
+  setInterval(updateScrollButton, 1200);
+})();
+</script>
+<style id="codex-verified-badge-shape-final">
+  .verified-badge {
+    width:14px !important;
+    height:14px !important;
+    min-width:14px !important;
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    margin-left:5px !important;
+    vertical-align:-2px !important;
+  }
+  .verified-badge svg {
+    width:14px !important;
+    height:14px !important;
+    display:block !important;
+  }
+</style>
+<script id="codex-mobile-peer-info-pro-final">
+(() => {
+  const $ = id => document.getElementById(id);
+  const esc = value => String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+  const safeUrl = value => encodeURI(String(value ?? ''));
+  const peerNow = () => (typeof activePeer !== 'undefined' ? activePeer : window.activePeer);
+  const meNow = () => (typeof me !== 'undefined' ? me : window.me);
+  const isRoomItem = item => item && (item.type === 'group' || item.type === 'channel');
+  const isMobile = () => window.innerWidth <= 768 || document.body.classList.contains('chat-open-mobile');
+  const oldShowPeerProfile = window.showPeerProfile;
+  const oldRemoveChat = window.removeChat;
+  const STORE_PREFIX = 'vibe_peer_sound_state_v2:';
+  let searchState = { query: '', index: 0, matches: [] };
+
+  function icon(name) {
+    const common = 'viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"';
+    const paths = {
+      back: '<path d="M15 18l-6-6 6-6"/>',
+      phone: '<path d="M22 16.9v2.3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.4 19.4 0 0 1-6-6A19.8 19.8 0 0 1 2.1 3.4 2 2 0 0 1 4.1 1.2h2.3a2 2 0 0 1 2 1.7l.4 2.4a2 2 0 0 1-.6 1.8L7.2 8.1a16 16 0 0 0 8.7 8.7l1.1-1.1a2 2 0 0 1 1.8-.5l2.4.5a2 2 0 0 1 1.6 1.2z"/>',
+      video: '<rect x="3" y="6" width="12" height="12" rx="3"/><path d="M15 10l5-3v10l-5-3z"/>',
+      bell: '<path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/>',
+      bellOff: '<path d="M2 2l20 20"/><path d="M8.6 4.7A6 6 0 0 1 18 8c0 2.3.3 3.9.8 5"/><path d="M6 8c0 7-3 7-3 9h14"/><path d="M10 21h4"/>',
+      search: '<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>',
+      more: '<path d="M5 12h.01M12 12h.01M19 12h.01"/>',
+      sleep: '<path d="M7 17h7l-7-10h7"/><path d="M17 8h4l-4 5h4"/>',
+      tune: '<path d="M4 7h11"/><path d="M19 7h1"/><path d="M8 17h12"/><path d="M4 17h1"/><circle cx="17" cy="7" r="2"/><circle cx="7" cy="17" r="2"/>',
+      block: '<circle cx="12" cy="12" r="9"/><path d="M5.7 5.7l12.6 12.6"/>',
+      trash: '<path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 15H6L5 6"/><path d="M10 11v6M14 11v6"/>',
+      user: '<path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="7" r="4"/>',
+      about: '<circle cx="12" cy="12" r="9"/><path d="M12 10v6M12 7h.01"/>',
+      prev: '<path d="M15 18l-6-6 6-6"/>',
+      next: '<path d="M9 18l6-6-6-6"/>',
+      close: '<path d="M6 6l12 12M18 6L6 18"/>'
+    };
+    return `<svg ${common}>${paths[name] || paths.more}</svg>`;
+  }
+
+  function peerKey(peer = peerNow()) {
+    if (!peer) return '';
+    return `${isRoomItem(peer) ? 'room' : 'user'}:${peer.id || ''}`;
+  }
+
+  function getSoundState(key = peerKey()) {
+    if (!key) return { mode: 'on' };
+    try {
+      const state = JSON.parse(localStorage.getItem(STORE_PREFIX + key) || '{"mode":"on"}');
+      if (state.mode === 'temp' && Number(state.until || 0) <= Date.now()) {
+        localStorage.removeItem(STORE_PREFIX + key);
+        return { mode: 'on' };
+      }
+      return state && state.mode ? state : { mode: 'on' };
+    } catch (error) {
+      return { mode: 'on' };
+    }
+  }
+
+  function setSoundState(state, key = peerKey()) {
+    if (!key) return;
+    if (!state || state.mode === 'on') localStorage.removeItem(STORE_PREFIX + key);
+    else localStorage.setItem(STORE_PREFIX + key, JSON.stringify({ ...state, since: state.since || Date.now() }));
+    updateSoundButtons();
+    applyMutedIncomingFilter();
+    scheduleSoundStateRefresh();
+  }
+
+  function soundLabel(state = getSoundState()) {
+    if (state.mode === 'temp') return 'без звука';
+    if (state.mode === 'off') return 'выкл.';
+    return 'звук';
+  }
+
+  function soundMuted(state = getSoundState()) {
+    return state.mode === 'off' || state.mode === 'temp';
+  }
+
+  function scheduleSoundStateRefresh() {
+    clearTimeout(window.__vibePeerSoundRefreshTimer);
+    const state = getSoundState();
+    if (state.mode === 'temp') {
+      window.__vibePeerSoundRefreshTimer = setTimeout(() => {
+        updateSoundButtons();
+        applyMutedIncomingFilter();
+      }, Math.max(800, Number(state.until || 0) - Date.now() + 200));
+    }
+  }
+
+  function applyMutedIncomingFilter() {
+    const state = getSoundState();
+    const muted = soundMuted(state);
+    ['mob-msgs', 'pc-msgs'].forEach(id => {
+      const box = $(id);
+      if (!box) return;
+      box.querySelectorAll('.msg[data-vibe-muted-hidden="1"]').forEach(msg => {
+        if (!muted) {
+          msg.style.display = '';
+          delete msg.dataset.vibeMutedHidden;
+        }
+      });
+    });
+  }
+
+  function maybeHideMutedIncoming(node) {
+    if (!node || node.nodeType !== 1 || !node.classList || !node.classList.contains('msg')) return;
+    const state = getSoundState();
+    if (!soundMuted(state)) return;
+    if (!node.classList.contains('received')) return;
+    node.dataset.vibeMutedHidden = '1';
+    node.style.display = 'none';
+  }
+
+  function installMutedIncomingObservers() {
+    ['mob-msgs', 'pc-msgs'].forEach(id => {
+      const box = $(id);
+      if (!box || box.dataset.vibeMutedObserver === '1') return;
+      box.dataset.vibeMutedObserver = '1';
+      new MutationObserver(records => {
+        records.forEach(record => record.addedNodes.forEach(maybeHideMutedIncoming));
+      }).observe(box, { childList: true });
+    });
+  }
+
+  function photoOf(user) {
+    return (user && (user.avatarPhoto || user.photoURL || user.avatarUrl || user.photo || user.image)) || '';
+  }
+
+  function appearanceOf(user) {
+    const fromSettings = (user && user.settings && user.settings.appearance) || {};
+    const direct = (user && user.appearance) || {};
+    return {
+      color: fromSettings.profileColor || direct.profileColor || user?.profileColor || '#9b642e',
+      emoji: fromSettings.patternEmoji || direct.patternEmoji || user?.patternEmoji || '☀️'
+    };
+  }
+
+  function patternOf(emoji) {
+    const encoded = encodeURIComponent(emoji || '☀️');
+    return `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='92' height='92' viewBox='0 0 92 92'%3E%3Ctext x='46' y='57' font-size='29' text-anchor='middle' fill='rgba(255,255,255,0.22)'%3E${encoded}%3C/text%3E%3C/svg%3E")`;
+  }
+
+  async function freshPeer() {
+    const peer = peerNow();
+    if (!peer) return null;
+    let result = { ...peer };
+    try {
+      if (typeof db !== 'undefined') {
+        const snap = await db.ref(`${isRoomItem(peer) ? 'rooms' : 'users'}/${peer.id}`).once('value');
+        if (snap.exists()) result = { ...result, ...(snap.val() || {}) };
+      }
+    } catch (error) {}
+    return result;
+  }
+
+  function presence(peer) {
+    if (isRoomItem(peer)) {
+      const count = Object.keys(peer.members || {}).length;
+      return peer.type === 'channel' ? `${count} подписчика` : `${count} участника`;
+    }
+    try {
+      if (typeof window.getPresenceText === 'function') return window.getPresenceText(peer);
+    } catch (error) {}
+    return peer.online ? 'в сети' : 'был(а) недавно';
+  }
+
+  function avatarMarkup(peer) {
+    const photo = photoOf(peer);
+    if (photo) return `<div class="vibe-mobile-info-avatar has-photo" style="background-image:url('${safeUrl(photo)}')"></div>`;
+    const fallback = isRoomItem(peer) ? (peer.avatar || (peer.type === 'channel' ? '📣' : '👥')) : (peer.avatar || '👤');
+    return `<div class="vibe-mobile-info-avatar">${esc(fallback)}</div>`;
+  }
+
+  function installStyle() {
+    if ($('codex-mobile-peer-info-pro-style')) return;
+    const style = document.createElement('style');
+    style.id = 'codex-mobile-peer-info-pro-style';
+    style.textContent = `
+      body.vibe-profile-open { overflow:hidden; }
+      .vibe-mobile-info {
+        position:fixed;
+        inset:0;
+        z-index:2147483300;
+        background:#000;
+        color:#fff;
+        overflow-y:auto;
+        overscroll-behavior:contain;
+        animation:vibeInfoIn .34s cubic-bezier(.18,.9,.22,1) both;
+      }
+      .vibe-mobile-info.closing { animation:vibeInfoOut .22s ease both; }
+      @keyframes vibeInfoIn { from{opacity:0; transform:translate3d(0,24px,0)} to{opacity:1; transform:translate3d(0,0,0)} }
+      @keyframes vibeInfoOut { to{opacity:0; transform:translate3d(0,20px,0)} }
+      .vibe-mobile-info-hero {
+        position:relative;
+        min-height:474px;
+        padding:calc(18px + env(safe-area-inset-top,0px)) 24px 26px;
+        background:var(--info-bg);
+        overflow:hidden;
+      }
+      .vibe-mobile-info-hero::before {
+        content:"";
+        position:absolute;
+        inset:0;
+        background-image:var(--info-pattern);
+        background-size:92px 92px;
+        background-position:center;
+        opacity:.38;
+        pointer-events:none;
+      }
+      .vibe-mobile-info-hero::after {
+        content:"";
+        position:absolute;
+        inset:auto 0 0;
+        height:170px;
+        background:linear-gradient(to bottom, transparent, rgba(0,0,0,.14));
+        pointer-events:none;
+      }
+      .vibe-mobile-info-top {
+        position:relative;
+        z-index:2;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+      }
+      .vibe-info-round, .vibe-info-edit {
+        height:68px;
+        border-radius:999px;
+        border:1px solid rgba(255,255,255,.16);
+        background:rgba(86,43,20,.32);
+        color:#fff;
+        backdrop-filter:blur(18px);
+        -webkit-backdrop-filter:blur(18px);
+        box-shadow:inset 0 0 0 1px rgba(255,255,255,.07), 0 12px 28px rgba(0,0,0,.18);
+      }
+      .vibe-info-round {
+        width:68px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+      }
+      .vibe-info-round svg { width:36px; height:36px; }
+      .vibe-info-edit {
+        padding:0 24px;
+        font-size:30px;
+        font-weight:700;
+      }
+      .vibe-mobile-info-main {
+        position:relative;
+        z-index:2;
+        margin-top:10px;
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        text-align:center;
+      }
+      .vibe-mobile-info-avatar {
+        width:128px;
+        height:128px;
+        border-radius:50%;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:58px;
+        background:rgba(255,255,255,.18);
+        border:1px solid rgba(255,255,255,.22);
+        box-shadow:0 18px 38px rgba(0,0,0,.24);
+        background-size:cover;
+        background-position:center;
+      }
+      .vibe-mobile-info-name {
+        margin-top:18px;
+        font-size:38px;
+        line-height:1.05;
+        font-weight:800;
+        letter-spacing:0;
+        text-shadow:0 2px 14px rgba(0,0,0,.2);
+      }
+      .vibe-mobile-info-status {
+        margin-top:8px;
+        display:flex;
+        align-items:center;
+        gap:9px;
+        color:rgba(255,255,255,.66);
+        font-size:23px;
+        line-height:1.2;
+      }
+      .vibe-mobile-info-status .shield {
+        width:20px;
+        height:20px;
+        border-radius:6px;
+        background:#fff;
+        color:#8b552b;
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        font-size:13px;
+        font-weight:900;
+      }
+      .vibe-mobile-info-actions {
+        position:relative;
+        z-index:3;
+        margin-top:58px;
+        display:grid;
+        grid-template-columns:repeat(5,1fr);
+        gap:14px;
+      }
+      .vibe-info-action {
+        position:relative;
+        height:92px;
+        min-width:0;
+        border:0;
+        border-radius:24px;
+        background:rgba(82,36,20,.52);
+        color:#fff;
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        justify-content:center;
+        gap:8px;
+        font-size:13px;
+        font-weight:800;
+        text-transform:lowercase;
+        backdrop-filter:blur(16px);
+        -webkit-backdrop-filter:blur(16px);
+        box-shadow:inset 0 0 0 1px rgba(255,255,255,.08), 0 12px 24px rgba(0,0,0,.16);
+        transition:transform .18s ease, background .18s ease, opacity .18s ease;
+      }
+      .vibe-info-action:active { transform:scale(.96); }
+      .vibe-info-action.disabled { opacity:.45; }
+      .vibe-info-action svg { width:34px; height:34px; stroke-width:2.45; }
+      .vibe-info-action.muted svg { stroke:#fff; }
+      .vibe-info-media {
+        position:relative;
+        z-index:2;
+        margin:26px -24px -26px;
+        padding:10px 24px;
+        background:rgba(90,40,18,.34);
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        gap:8px;
+        font-size:18px;
+        font-weight:700;
+        color:rgba(255,255,255,.9);
+      }
+      .vibe-info-body {
+        padding:24px 24px calc(34px + env(safe-area-inset-bottom,0px));
+      }
+      .vibe-info-channel-label {
+        display:flex;
+        justify-content:space-between;
+        color:rgba(255,255,255,.56);
+        font-size:17px;
+        text-transform:uppercase;
+        letter-spacing:.02em;
+        margin:10px 26px 12px;
+      }
+      .vibe-info-channel-card, .vibe-info-card {
+        border-radius:30px;
+        background:rgba(255,255,255,.10);
+        overflow:hidden;
+        box-shadow:inset 0 0 0 1px rgba(255,255,255,.04);
+      }
+      .vibe-info-channel-card {
+        min-height:96px;
+        display:flex;
+        align-items:center;
+        gap:16px;
+        padding:16px 20px;
+        margin-bottom:26px;
+      }
+      .vibe-info-mini-avatar {
+        width:66px;
+        height:66px;
+        border-radius:50%;
+        background:rgba(255,255,255,.18);
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:30px;
+        flex:0 0 auto;
+        background-size:cover;
+        background-position:center;
+      }
+      .vibe-info-channel-card b { font-size:22px; display:block; }
+      .vibe-info-channel-card span { color:rgba(255,255,255,.58); font-size:17px; }
+      .vibe-info-card { padding:0 24px; }
+      .vibe-info-row {
+        display:grid;
+        grid-template-columns:1fr auto;
+        gap:14px;
+        padding:19px 0;
+        border-bottom:1px solid rgba(255,255,255,.08);
+      }
+      .vibe-info-row:last-child { border-bottom:0; }
+      .vibe-info-row label {
+        display:block;
+        color:#fff;
+        font-size:18px;
+        margin-bottom:5px;
+      }
+      .vibe-info-row div {
+        min-width:0;
+        color:rgba(255,255,255,.66);
+        font-size:24px;
+        line-height:1.25;
+        overflow-wrap:anywhere;
+      }
+      .vibe-info-row svg { width:25px; height:25px; color:rgba(255,255,255,.58); align-self:center; }
+      .vibe-popover-backdrop {
+        position:fixed;
+        inset:0;
+        z-index:2147483400;
+        background:rgba(0,0,0,.28);
+        backdrop-filter:blur(6px);
+        -webkit-backdrop-filter:blur(6px);
+        animation:vibeFade .16s ease both;
+      }
+      .vibe-sound-popover, .vibe-more-popover, .vibe-duration-popover {
+        position:fixed;
+        left:50%;
+        top:306px;
+        transform:translateX(-50%) translateY(14px) scale(.96);
+        width:min(360px, calc(100vw - 36px));
+        z-index:2147483401;
+        border-radius:30px;
+        background:rgba(25,19,15,.76);
+        border:1px solid rgba(255,255,255,.16);
+        box-shadow:0 28px 80px rgba(0,0,0,.46), inset 0 0 0 1px rgba(255,255,255,.05);
+        backdrop-filter:blur(28px) saturate(170%);
+        -webkit-backdrop-filter:blur(28px) saturate(170%);
+        color:#fff;
+        overflow:hidden;
+        animation:vibePop .24s cubic-bezier(.18,.9,.22,1) both;
+      }
+      .vibe-popover-row {
+        min-height:78px;
+        width:100%;
+        border:0;
+        background:transparent;
+        color:#fff;
+        display:flex;
+        align-items:center;
+        gap:22px;
+        padding:0 28px;
+        font-size:26px;
+        text-align:left;
+      }
+      .vibe-popover-row + .vibe-popover-row { border-top:1px solid rgba(255,255,255,.13); }
+      .vibe-popover-row svg { width:34px; height:34px; flex:0 0 auto; }
+      .vibe-popover-row.danger { color:#ff6b63; }
+      .vibe-duration-popover { top:auto; bottom:calc(26px + env(safe-area-inset-bottom,0px)); }
+      .vibe-duration-title { padding:22px 26px 8px; font-size:20px; color:rgba(255,255,255,.62); }
+      @keyframes vibePop { to{transform:translateX(-50%) translateY(0) scale(1)} }
+      @keyframes vibeFade { from{opacity:0} to{opacity:1} }
+      .vibe-chat-search-bar {
+        position:fixed;
+        left:10px;
+        right:10px;
+        top:calc(10px + env(safe-area-inset-top,0px));
+        z-index:2147483350;
+        padding:10px;
+        border-radius:24px;
+        background:rgba(16,22,34,.86);
+        border:1px solid rgba(255,255,255,.14);
+        box-shadow:0 18px 50px rgba(0,0,0,.36);
+        backdrop-filter:blur(22px) saturate(160%);
+        -webkit-backdrop-filter:blur(22px) saturate(160%);
+        display:grid;
+        grid-template-columns:auto 1fr auto;
+        gap:8px;
+        align-items:center;
+        animation:vibeSearchIn .22s ease both;
+      }
+      .vibe-chat-search-bar button {
+        width:42px;
+        height:42px;
+        border:0;
+        border-radius:15px;
+        background:rgba(255,255,255,.10);
+        color:#fff;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+      }
+      .vibe-chat-search-bar svg { width:22px; height:22px; }
+      .vibe-chat-search-bar input {
+        height:42px;
+        min-width:0;
+        border:0;
+        border-radius:15px;
+        background:rgba(255,255,255,.10);
+        color:#fff;
+        padding:0 14px;
+        outline:none;
+        font-size:16px;
+      }
+      .vibe-search-count {
+        min-width:54px;
+        text-align:center;
+        color:rgba(255,255,255,.72);
+        font-size:13px;
+      }
+      .vibe-search-nav {
+        position:fixed;
+        left:50%;
+        bottom:calc(84px + env(safe-area-inset-bottom,0px));
+        transform:translateX(-50%);
+        z-index:2147483350;
+        display:none;
+        gap:10px;
+        padding:8px;
+        border-radius:20px;
+        background:rgba(16,22,34,.86);
+        border:1px solid rgba(255,255,255,.14);
+        backdrop-filter:blur(22px);
+        -webkit-backdrop-filter:blur(22px);
+      }
+      .vibe-search-nav.visible { display:flex; }
+      .vibe-search-nav button {
+        width:50px;
+        height:44px;
+        border:0;
+        border-radius:15px;
+        background:rgba(255,255,255,.12);
+        color:#fff;
+      }
+      .vibe-search-mark {
+        background:#ffd84a;
+        color:#111;
+        border-radius:5px;
+        padding:0 2px;
+      }
+      .vibe-search-active {
+        box-shadow:0 0 0 2px #ffd84a, 0 10px 24px rgba(0,0,0,.24) !important;
+      }
+      @keyframes vibeSearchIn { from{opacity:0; transform:translateY(-12px)} to{opacity:1; transform:translateY(0)} }
+      @media (max-width:390px) {
+        .vibe-mobile-info-actions { gap:8px; }
+        .vibe-info-action { height:82px; border-radius:20px; font-size:12px; }
+        .vibe-info-action svg { width:30px; height:30px; }
+        .vibe-mobile-info-name { font-size:34px; }
+        .vibe-mobile-info-status { font-size:20px; }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  function closeProfile() {
+    const panel = document.querySelector('.vibe-mobile-info');
+    if (!panel) return;
+    panel.classList.add('closing');
+    document.body.classList.remove('vibe-profile-open');
+    setTimeout(() => panel.remove(), 230);
+  }
+
+  function closePopovers() {
+    document.querySelectorAll('.vibe-popover-backdrop,.vibe-sound-popover,.vibe-more-popover,.vibe-duration-popover').forEach(el => el.remove());
+  }
+
+  function popoverBackdrop() {
+    closePopovers();
+    const backdrop = document.createElement('div');
+    backdrop.className = 'vibe-popover-backdrop';
+    backdrop.onclick = closePopovers;
+    document.body.appendChild(backdrop);
+    return backdrop;
+  }
+
+  function updateSoundButtons() {
+    const state = getSoundState();
+    document.querySelectorAll('[data-vibe-sound-button]').forEach(btn => {
+      btn.classList.toggle('muted', soundMuted(state));
+      const label = btn.querySelector('span');
+      const holder = btn.querySelector('.vibe-info-action-icon');
+      if (label) label.textContent = soundLabel(state);
+      if (holder) holder.innerHTML = soundMuted(state) ? icon('bellOff') : icon('bell');
+    });
+  }
+
+  window.vibeToggleSoundBack = function() {
+    if (soundMuted(getSoundState())) setSoundState({ mode: 'on' });
+    else window.vibeOpenSoundMenu();
+  };
+
+  window.vibeOpenSoundMenu = function() {
+    popoverBackdrop();
+    const pop = document.createElement('div');
+    pop.className = 'vibe-sound-popover';
+    pop.innerHTML = `
+      <button class="vibe-popover-row" onclick="vibeOpenSoundDuration()">${icon('sleep')}<span>Выключить на время...</span></button>
+      <button class="vibe-popover-row" onclick="vibeSetSoundOff()">${icon('bellOff')}<span>Выключить звук</span></button>
+      <button class="vibe-popover-row danger" onclick="vibeSetNotificationsOff()">${icon('bellOff')}<span>Выкл. уведомления</span></button>
+    `;
+    document.body.appendChild(pop);
+  };
+
+  window.vibeOpenSoundDuration = function() {
+    popoverBackdrop();
+    const pop = document.createElement('div');
+    pop.className = 'vibe-duration-popover';
+    pop.innerHTML = `
+      <div class="vibe-duration-title">Выключить звук на время</div>
+      <button class="vibe-popover-row" onclick="vibeSetSoundTemp(900000)">15 минут</button>
+      <button class="vibe-popover-row" onclick="vibeSetSoundTemp(3600000)">1 час</button>
+      <button class="vibe-popover-row" onclick="vibeSetSoundTemp(28800000)">8 часов</button>
+      <button class="vibe-popover-row" onclick="vibeSetSoundTemp(86400000)">1 день</button>
+    `;
+    document.body.appendChild(pop);
+  };
+
+  window.vibeSetSoundTemp = function(ms) {
+    setSoundState({ mode: 'temp', until: Date.now() + Number(ms || 0) });
+    closePopovers();
+  };
+
+  window.vibeSetSoundOff = function() {
+    setSoundState({ mode: 'off' });
+    closePopovers();
+  };
+
+  window.vibeSetNotificationsOff = function() {
+    setSoundState({ mode: 'off', notifications: false });
+    closePopovers();
+  };
+
+  function messageTextElement(msg) {
+    const nodes = Array.from(msg.childNodes).filter(node => {
+      if (node.nodeType === 1 && node.matches('.msg-status,.vibe-message-reactions,.reply-quote')) return false;
+      return true;
+    });
+    return nodes.find(node => node.nodeType === 1 && node.textContent && !node.querySelector('audio,video,img,a')) || null;
+  }
+
+  function clearSearchMarks() {
+    document.querySelectorAll('.vibe-search-active').forEach(el => el.classList.remove('vibe-search-active'));
+    document.querySelectorAll('[data-vibe-search-original]').forEach(el => {
+      el.innerHTML = el.dataset.vibeSearchOriginal;
+      delete el.dataset.vibeSearchOriginal;
+    });
+    searchState = { query: '', index: 0, matches: [] };
+    updateSearchUi();
+  }
+
+  function markInElement(el, query) {
+    if (!el || !query) return 0;
+    if (!el.dataset.vibeSearchOriginal) el.dataset.vibeSearchOriginal = el.innerHTML;
+    const source = el.dataset.vibeSearchOriginal;
+    const plain = el.textContent || '';
+    const lower = plain.toLowerCase();
+    const q = query.toLowerCase();
+    if (!lower.includes(q)) {
+      el.innerHTML = source;
+      return 0;
+    }
+    const escaped = esc(plain);
+    const re = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+    el.innerHTML = escaped.replace(re, match => `<mark class="vibe-search-mark">${esc(match)}</mark>`);
+    return el.querySelectorAll('.vibe-search-mark').length;
+  }
+
+  function runChatSearch(query) {
+    clearSearchMarks();
+    searchState.query = query.trim();
+    if (!searchState.query) return;
+    const box = isMobile() ? $('mob-msgs') : $('pc-msgs');
+    if (!box) return;
+    const matches = [];
+    box.querySelectorAll('.msg').forEach(msg => {
+      const el = messageTextElement(msg);
+      const count = markInElement(el, searchState.query);
+      for (let i = 0; i < count; i++) matches.push(msg);
+    });
+    searchState.matches = Array.from(new Set(matches));
+    searchState.index = 0;
+    focusSearchMatch();
+  }
+
+  function focusSearchMatch() {
+    document.querySelectorAll('.vibe-search-active').forEach(el => el.classList.remove('vibe-search-active'));
+    const match = searchState.matches[searchState.index];
+    if (match) {
+      match.classList.add('vibe-search-active');
+      match.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    updateSearchUi();
+  }
+
+  function updateSearchUi() {
+    const count = document.querySelector('.vibe-search-count');
+    const nav = document.querySelector('.vibe-search-nav');
+    if (count) count.textContent = searchState.matches.length ? `${searchState.index + 1}/${searchState.matches.length}` : '0/0';
+    if (nav) nav.classList.toggle('visible', searchState.matches.length > 1);
+  }
+
+  window.vibeSearchNext = function(dir) {
+    if (!searchState.matches.length) return;
+    searchState.index = (searchState.index + dir + searchState.matches.length) % searchState.matches.length;
+    focusSearchMatch();
+  };
+
+  window.vibeCloseChatSearch = function() {
+    document.querySelectorAll('.vibe-chat-search-bar,.vibe-search-nav').forEach(el => el.remove());
+    clearSearchMarks();
+  };
+
+  window.vibeOpenChatSearch = function() {
+    closeProfile();
+    setTimeout(() => {
+      window.vibeCloseChatSearch();
+      const bar = document.createElement('div');
+      bar.className = 'vibe-chat-search-bar';
+      bar.innerHTML = `
+        <button type="button" onclick="vibeCloseChatSearch()">${icon('close')}</button>
+        <input id="vibe-chat-search-input" placeholder="Поиск в чате" autocomplete="off">
+        <span class="vibe-search-count">0/0</span>
+      `;
+      const nav = document.createElement('div');
+      nav.className = 'vibe-search-nav';
+      nav.innerHTML = `<button type="button" onclick="vibeSearchNext(-1)">${icon('prev')}</button><button type="button" onclick="vibeSearchNext(1)">${icon('next')}</button>`;
+      document.body.appendChild(bar);
+      document.body.appendChild(nav);
+      const input = $('vibe-chat-search-input');
+      if (input) {
+        input.focus();
+        input.addEventListener('input', () => runChatSearch(input.value));
+      }
+    }, 180);
+  };
+
+  window.vibeOpenMoreMenu = function() {
+    popoverBackdrop();
+    const pop = document.createElement('div');
+    pop.className = 'vibe-more-popover';
+    pop.innerHTML = `
+      <button class="vibe-popover-row" onclick="closePopovers(); toggleBlock()">${icon('block')}<span>Заблокировать</span></button>
+      <button class="vibe-popover-row danger" onclick="vibeClearConversation()">${icon('trash')}<span>Удалить переписку</span></button>
+    `;
+    document.body.appendChild(pop);
+  };
+
+  window.closePopovers = closePopovers;
+
+  window.vibeClearConversation = async function() {
+    const peer = peerNow();
+    if (!peer || typeof db === 'undefined') return;
+    if (!confirm('Удалить всю переписку в этом чате?')) return;
+    closePopovers();
+    const path = typeof chatPathFor === 'function'
+      ? chatPathFor(peer)
+      : isRoomItem(peer)
+        ? `rooms/${peer.id}/messages`
+        : `chats/${meNow().id < peer.id ? meNow().id + '_' + peer.id : peer.id + '_' + meNow().id}`;
+    await db.ref(path).remove();
+    const box = isMobile() ? $('mob-msgs') : $('pc-msgs');
+    if (box) box.innerHTML = '';
+  };
+
+  window.removeChat = function() {
+    return window.vibeClearConversation();
+  };
+
+  function renderInfo(peer) {
+    installStyle();
+    document.querySelectorAll('.vibe-mobile-info').forEach(el => el.remove());
+    const app = appearanceOf(peer);
+    const key = peerKey(peer);
+    const state = getSoundState(key);
+    const handle = peer.handle || (isRoomItem(peer) ? (peer.type === 'channel' ? 'канал' : 'группа') : '');
+    const bio = peer.bio || peer.about || 'Нет описания';
+    const verified = peer.verified ? (typeof badge === 'function' ? badge() : (typeof vBadge !== 'undefined' ? vBadge : '')) : '';
+    const panel = document.createElement('div');
+    panel.className = 'vibe-mobile-info';
+    panel.style.setProperty('--info-bg', app.color);
+    panel.style.setProperty('--info-pattern', patternOf(app.emoji));
+    panel.innerHTML = `
+      <section class="vibe-mobile-info-hero">
+        <div class="vibe-mobile-info-top">
+          <button class="vibe-info-round" type="button" onclick="document.querySelector('.vibe-mobile-info') && document.querySelector('.vibe-mobile-info').classList.add('closing'); setTimeout(()=>{document.querySelectorAll('.vibe-mobile-info').forEach(e=>e.remove());document.body.classList.remove('vibe-profile-open')},230)">${icon('back')}</button>
+          <button class="vibe-info-edit disabled" type="button">Изм.</button>
+        </div>
+        <div class="vibe-mobile-info-main">
+          ${avatarMarkup(peer)}
+          <div class="vibe-mobile-info-name">${esc(peer.name || 'Без имени')}${verified}</div>
+          <div class="vibe-mobile-info-status"><span class="shield">1</span><span>${esc(presence(peer))}</span></div>
+        </div>
+        <div class="vibe-mobile-info-actions">
+          <button class="vibe-info-action disabled" type="button">${icon('phone')}<span>звонок</span></button>
+          <button class="vibe-info-action disabled" type="button">${icon('video')}<span>видео</span></button>
+          <button class="vibe-info-action ${soundMuted(state) ? 'muted' : ''}" type="button" data-vibe-sound-button="1" onclick="vibeToggleSoundBack()"><span class="vibe-info-action-icon">${soundMuted(state) ? icon('bellOff') : icon('bell')}</span><span>${soundLabel(state)}</span></button>
+          <button class="vibe-info-action" type="button" onclick="vibeOpenChatSearch()">${icon('search')}<span>поиск</span></button>
+          <button class="vibe-info-action" type="button" onclick="vibeOpenMoreMenu()">${icon('more')}<span>ещё</span></button>
+        </div>
+        <div class="vibe-info-media">♫ ${esc(peer.name || 'Vibe')}.mp3 <span style="opacity:.65">- Неизвестен ›</span></div>
+      </section>
+      <section class="vibe-info-body">
+        ${isRoomItem(peer) ? `<div class="vibe-info-channel-label"><span>${peer.type === 'channel' ? 'Канал' : 'Группа'}</span><span>${Object.keys(peer.members || {}).length} участника</span></div>` : ''}
+        <div class="vibe-info-channel-card">
+          ${photoOf(peer) ? `<div class="vibe-info-mini-avatar" style="background-image:url('${safeUrl(photoOf(peer))}')"></div>` : `<div class="vibe-info-mini-avatar">${esc(peer.avatar || 'V')}</div>`}
+          <div style="min-width:0;"><b>Vibe</b><span>${esc((bio || '').slice(0, 78))}${bio.length > 78 ? '...' : ''}</span></div>
+          <div style="margin-left:auto;color:rgba(255,255,255,.58)">вс</div>
+        </div>
+        <div class="vibe-info-card">
+          <div class="vibe-info-row"><div><label>${isRoomItem(peer) ? 'название' : 'имя пользователя'}</label><div>${esc(handle || '@user')}</div></div>${icon('user')}</div>
+          <div class="vibe-info-row"><div><label>о себе</label><div>${esc(bio)}</div></div>${icon('about')}</div>
+        </div>
+      </section>
+    `;
+    document.body.appendChild(panel);
+    document.body.classList.add('vibe-profile-open');
+    updateSoundButtons();
+    scheduleSoundStateRefresh();
+  }
+
+  window.showPeerProfile = async function() {
+    if (!isMobile()) {
+      return typeof oldShowPeerProfile === 'function' ? oldShowPeerProfile() : undefined;
+    }
+    const peer = await freshPeer();
+    if (!peer) return;
+    renderInfo(peer);
+  };
+
+  installMutedIncomingObservers();
+  window.addEventListener('load', () => setTimeout(installMutedIncomingObservers, 800));
+
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape') {
+      if (document.querySelector('.vibe-chat-search-bar')) window.vibeCloseChatSearch();
+      else closeProfile();
+      closePopovers();
+    }
   });
 })();
 </script>
