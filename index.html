@@ -11533,47 +11533,54 @@ window.openArchiveModal = function() {
         position:fixed;
         inset:0;
         z-index:2147483400;
-        background:rgba(0,0,0,.28);
-        backdrop-filter:blur(6px);
-        -webkit-backdrop-filter:blur(6px);
+        background:transparent;
+        backdrop-filter:none;
+        -webkit-backdrop-filter:none;
         animation:vibeFade .16s ease both;
       }
       .vibe-sound-popover, .vibe-more-popover, .vibe-duration-popover {
         position:fixed;
-        left:50%;
-        top:306px;
-        transform:translateX(-50%) translateY(14px) scale(.96);
-        width:min(360px, calc(100vw - 36px));
+        left:var(--popover-left, 50%);
+        top:var(--popover-top, 252px);
+        transform:translate3d(-50%,14px,0) scale(.96);
+        width:min(302px, calc(100vw - 44px));
         z-index:2147483401;
-        border-radius:30px;
-        background:rgba(25,19,15,.76);
-        border:1px solid rgba(255,255,255,.16);
-        box-shadow:0 28px 80px rgba(0,0,0,.46), inset 0 0 0 1px rgba(255,255,255,.05);
-        backdrop-filter:blur(28px) saturate(170%);
-        -webkit-backdrop-filter:blur(28px) saturate(170%);
+        border-radius:22px;
+        background:linear-gradient(135deg, rgba(255,255,255,.18), rgba(255,255,255,.07)), rgba(18,22,28,.28);
+        border:1px solid rgba(255,255,255,.24);
+        box-shadow:0 16px 42px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.20), inset 0 -1px 0 rgba(255,255,255,.06);
+        backdrop-filter:blur(30px) saturate(210%);
+        -webkit-backdrop-filter:blur(30px) saturate(210%);
         color:#fff;
         overflow:hidden;
         animation:vibePop .24s cubic-bezier(.18,.9,.22,1) both;
       }
+      .vibe-more-popover {
+        transform:translate3d(-100%,14px,0) scale(.96);
+      }
       .vibe-popover-row {
-        min-height:78px;
+        min-height:56px;
         width:100%;
         border:0;
-        background:transparent;
+        background:rgba(255,255,255,.045);
         color:#fff;
         display:flex;
         align-items:center;
-        gap:22px;
-        padding:0 28px;
-        font-size:26px;
+        gap:14px;
+        padding:0 18px;
+        font-size:17px;
+        font-weight:650;
         text-align:left;
       }
-      .vibe-popover-row + .vibe-popover-row { border-top:1px solid rgba(255,255,255,.13); }
-      .vibe-popover-row svg { width:34px; height:34px; flex:0 0 auto; }
+      .vibe-popover-row:active { background:rgba(255,255,255,.10); }
+      .vibe-popover-row + .vibe-popover-row { border-top:1px solid rgba(255,255,255,.10); }
+      .vibe-popover-row svg { width:24px; height:24px; flex:0 0 auto; }
       .vibe-popover-row.danger { color:#ff6b63; }
-      .vibe-duration-popover { top:auto; bottom:calc(26px + env(safe-area-inset-bottom,0px)); }
-      .vibe-duration-title { padding:22px 26px 8px; font-size:20px; color:rgba(255,255,255,.62); }
-      @keyframes vibePop { to{transform:translateX(-50%) translateY(0) scale(1)} }
+      .vibe-duration-popover { top:auto; bottom:calc(22px + env(safe-area-inset-bottom,0px)); }
+      .vibe-duration-title { padding:16px 18px 6px; font-size:14px; color:rgba(255,255,255,.62); }
+      @keyframes vibePop { to{transform:translate3d(-50%,0,0) scale(1)} }
+      .vibe-more-popover { animation:vibePopRight .24s cubic-bezier(.18,.9,.22,1) both; }
+      @keyframes vibePopRight { to{transform:translate3d(-100%,0,0) scale(1)} }
       @keyframes vibeFade { from{opacity:0} to{opacity:1} }
       .vibe-chat-search-bar {
         position:fixed;
@@ -11581,13 +11588,13 @@ window.openArchiveModal = function() {
         right:10px;
         top:calc(10px + env(safe-area-inset-top,0px));
         z-index:2147483350;
-        padding:10px;
-        border-radius:24px;
-        background:rgba(16,22,34,.86);
-        border:1px solid rgba(255,255,255,.14);
-        box-shadow:0 18px 50px rgba(0,0,0,.36);
-        backdrop-filter:blur(22px) saturate(160%);
-        -webkit-backdrop-filter:blur(22px) saturate(160%);
+        padding:8px;
+        border-radius:22px;
+        background:linear-gradient(135deg, color-mix(in srgb, var(--info-bg, var(--accent, #1597ff)) 34%, transparent), rgba(10,14,20,.34));
+        border:1px solid color-mix(in srgb, var(--info-bg, var(--accent, #1597ff)) 58%, rgba(255,255,255,.22));
+        box-shadow:0 14px 38px rgba(0,0,0,.30), inset 0 1px 0 rgba(255,255,255,.14);
+        backdrop-filter:blur(24px) saturate(190%);
+        -webkit-backdrop-filter:blur(24px) saturate(190%);
         display:grid;
         grid-template-columns:auto 1fr auto;
         gap:8px;
@@ -11595,33 +11602,35 @@ window.openArchiveModal = function() {
         animation:vibeSearchIn .22s ease both;
       }
       .vibe-chat-search-bar button {
-        width:42px;
-        height:42px;
+        width:38px;
+        height:38px;
         border:0;
-        border-radius:15px;
-        background:rgba(255,255,255,.10);
+        border-radius:14px;
+        background:rgba(255,255,255,.12);
         color:#fff;
         display:flex;
         align-items:center;
         justify-content:center;
       }
-      .vibe-chat-search-bar svg { width:22px; height:22px; }
+      .vibe-chat-search-bar svg { width:21px; height:21px; }
       .vibe-chat-search-bar input {
-        height:42px;
+        height:38px;
         min-width:0;
         border:0;
-        border-radius:15px;
-        background:rgba(255,255,255,.10);
+        border-radius:14px;
+        background:rgba(255,255,255,.12);
         color:#fff;
-        padding:0 14px;
+        padding:0 13px;
         outline:none;
-        font-size:16px;
+        font-size:15px;
       }
+      .vibe-chat-search-bar input::placeholder { color:rgba(255,255,255,.48); }
       .vibe-search-count {
-        min-width:54px;
+        min-width:46px;
         text-align:center;
-        color:rgba(255,255,255,.72);
-        font-size:13px;
+        color:rgba(255,255,255,.78);
+        font-size:12px;
+        font-weight:800;
       }
       .vibe-search-nav {
         position:fixed;
@@ -11633,10 +11642,10 @@ window.openArchiveModal = function() {
         gap:10px;
         padding:8px;
         border-radius:20px;
-        background:rgba(16,22,34,.86);
-        border:1px solid rgba(255,255,255,.14);
-        backdrop-filter:blur(22px);
-        -webkit-backdrop-filter:blur(22px);
+        background:linear-gradient(135deg, color-mix(in srgb, var(--info-bg, var(--accent, #1597ff)) 30%, transparent), rgba(10,14,20,.38));
+        border:1px solid color-mix(in srgb, var(--info-bg, var(--accent, #1597ff)) 54%, rgba(255,255,255,.18));
+        backdrop-filter:blur(24px) saturate(180%);
+        -webkit-backdrop-filter:blur(24px) saturate(180%);
       }
       .vibe-search-nav.visible { display:flex; }
       .vibe-search-nav button {
@@ -11691,6 +11700,25 @@ window.openArchiveModal = function() {
     return backdrop;
   }
 
+  function placePopover(pop, trigger, align = 'center') {
+    if (!pop) return;
+    const pad = 12;
+    const vw = window.innerWidth || document.documentElement.clientWidth || 360;
+    const vh = window.innerHeight || document.documentElement.clientHeight || 640;
+    const rect = trigger && trigger.getBoundingClientRect ? trigger.getBoundingClientRect() : null;
+    const width = Math.min(302, vw - 44);
+    let left = rect ? (align === 'right' ? rect.right : rect.left + rect.width / 2) : vw / 2;
+    let top = rect ? rect.bottom + 9 : 252;
+    if (align === 'center') {
+      left = Math.min(vw - pad - width / 2, Math.max(pad + width / 2, left));
+    } else {
+      left = Math.min(vw - pad, Math.max(pad + width, left));
+    }
+    if (top > vh - 190) top = Math.max(pad, (rect ? rect.top : vh / 2) - 9);
+    pop.style.setProperty('--popover-left', `${left}px`);
+    pop.style.setProperty('--popover-top', `${top}px`);
+  }
+
   function updateSoundButtons() {
     const state = getSoundState();
     document.querySelectorAll('[data-vibe-sound-button]').forEach(btn => {
@@ -11702,12 +11730,12 @@ window.openArchiveModal = function() {
     });
   }
 
-  window.vibeToggleSoundBack = function() {
+  window.vibeToggleSoundBack = function(trigger) {
     if (soundMuted(getSoundState())) setSoundState({ mode: 'on' });
-    else window.vibeOpenSoundMenu();
+    else window.vibeOpenSoundMenu(trigger);
   };
 
-  window.vibeOpenSoundMenu = function() {
+  window.vibeOpenSoundMenu = function(trigger) {
     popoverBackdrop();
     const pop = document.createElement('div');
     pop.className = 'vibe-sound-popover';
@@ -11717,6 +11745,7 @@ window.openArchiveModal = function() {
       <button class="vibe-popover-row danger" onclick="vibeSetNotificationsOff()">${icon('bellOff')}<span>Выкл. уведомления</span></button>
     `;
     document.body.appendChild(pop);
+    placePopover(pop, trigger, 'center');
   };
 
   window.vibeOpenSoundDuration = function() {
@@ -11834,6 +11863,8 @@ window.openArchiveModal = function() {
       window.vibeCloseChatSearch();
       const bar = document.createElement('div');
       bar.className = 'vibe-chat-search-bar';
+      const peer = peerNow();
+      if (peer) bar.style.setProperty('--info-bg', appearanceOf(peer).color);
       bar.innerHTML = `
         <button type="button" onclick="vibeCloseChatSearch()">${icon('close')}</button>
         <input id="vibe-chat-search-input" placeholder="Поиск в чате" autocomplete="off">
@@ -11841,6 +11872,7 @@ window.openArchiveModal = function() {
       `;
       const nav = document.createElement('div');
       nav.className = 'vibe-search-nav';
+      if (peer) nav.style.setProperty('--info-bg', appearanceOf(peer).color);
       nav.innerHTML = `<button type="button" onclick="vibeSearchNext(-1)">${icon('prev')}</button><button type="button" onclick="vibeSearchNext(1)">${icon('next')}</button>`;
       document.body.appendChild(bar);
       document.body.appendChild(nav);
@@ -11852,7 +11884,7 @@ window.openArchiveModal = function() {
     }, 180);
   };
 
-  window.vibeOpenMoreMenu = function() {
+  window.vibeOpenMoreMenu = function(trigger) {
     popoverBackdrop();
     const pop = document.createElement('div');
     pop.className = 'vibe-more-popover';
@@ -11861,6 +11893,7 @@ window.openArchiveModal = function() {
       <button class="vibe-popover-row danger" onclick="vibeClearConversation()">${icon('trash')}<span>Удалить переписку</span></button>
     `;
     document.body.appendChild(pop);
+    placePopover(pop, trigger, 'right');
   };
 
   window.closePopovers = closePopovers;
@@ -11911,9 +11944,9 @@ window.openArchiveModal = function() {
         <div class="vibe-mobile-info-actions">
           <button class="vibe-info-action disabled" type="button">${icon('phone')}<span>звонок</span></button>
           <button class="vibe-info-action disabled" type="button">${icon('video')}<span>видео</span></button>
-          <button class="vibe-info-action ${soundMuted(state) ? 'muted' : ''}" type="button" data-vibe-sound-button="1" onclick="vibeToggleSoundBack()"><span class="vibe-info-action-icon">${soundMuted(state) ? icon('bellOff') : icon('bell')}</span><span>${soundLabel(state)}</span></button>
+          <button class="vibe-info-action ${soundMuted(state) ? 'muted' : ''}" type="button" data-vibe-sound-button="1" onclick="vibeToggleSoundBack(this)"><span class="vibe-info-action-icon">${soundMuted(state) ? icon('bellOff') : icon('bell')}</span><span>${soundLabel(state)}</span></button>
           <button class="vibe-info-action" type="button" onclick="vibeOpenChatSearch()">${icon('search')}<span>поиск</span></button>
-          <button class="vibe-info-action" type="button" onclick="vibeOpenMoreMenu()">${icon('more')}<span>ещё</span></button>
+          <button class="vibe-info-action" type="button" onclick="vibeOpenMoreMenu(this)">${icon('more')}<span>ещё</span></button>
         </div>
       </section>
       <section class="vibe-info-body">
