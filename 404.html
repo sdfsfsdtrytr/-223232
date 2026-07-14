@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -1511,11 +1511,44 @@ function mobTab(id) {
         }
 
         function getVerifyStorage() {
-            return JSON.parse(localStorage.getItem('vibe_verify_data') || '{}');
+            let localData = null;
+            let sessionData = null;
+            try { localData = localStorage.getItem('vibe_verify_data'); } catch (e) {}
+            try { sessionData = sessionStorage.getItem('vibe_verify_data'); } catch (e) {}
+            const sources = [
+                window.__vibeVerifyData,
+                localData,
+                sessionData
+            ];
+            for (const source of sources) {
+                if (!source) continue;
+                if (typeof source === 'object') return source;
+                try {
+                    const parsed = JSON.parse(source);
+                    if (parsed && typeof parsed === 'object') return parsed;
+                } catch (e) {}
+            }
+            return {};
+        }
+
+        function setVerifyStorage(data) {
+            const safeData = {
+                email: String(data.email || '').trim().toLowerCase(),
+                code: String(data.code || '').trim(),
+                mode: data.mode,
+                timestamp: Number(data.timestamp) || Date.now()
+            };
+            window.__vibeVerifyData = safeData;
+            const raw = JSON.stringify(safeData);
+            try { localStorage.setItem('vibe_verify_data', raw); } catch (e) {}
+            try { sessionStorage.setItem('vibe_verify_data', raw); } catch (e) {}
+            return safeData;
         }
 
         function clearVerifyStorage() {
-            localStorage.removeItem('vibe_verify_data');
+            window.__vibeVerifyData = null;
+            try { localStorage.removeItem('vibe_verify_data'); } catch (e) {}
+            try { sessionStorage.removeItem('vibe_verify_data'); } catch (e) {}
         }
 
         function formatTimer(secondsLeft) {
@@ -1668,12 +1701,12 @@ function mobTab(id) {
             const data = await validateAuthFlow(mode);
             const code = generateCode();
             const now = Date.now();
-            localStorage.setItem('vibe_verify_data', JSON.stringify({
+            setVerifyStorage({
                 email: data.email,
                 code: code,
                 mode: mode,
                 timestamp: now
-            }));
+            });
 
             await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
                 to_email: data.email,
@@ -1740,7 +1773,7 @@ function mobTab(id) {
             const codeInput = document.getElementById('verify-code-input').value.trim();
             const stored = getVerifyStorage();
             const expectedEmail = document.getElementById(getAuthConfig(mode).emailId).value.trim().toLowerCase();
-            if (!stored.code || stored.mode !== mode || stored.email !== expectedEmail) {
+            if (!stored.code || stored.mode !== mode || String(stored.email || '').trim().toLowerCase() !== expectedEmail) {
                 throw new Error('Сначала запроси код заново.');
             }
             if (Date.now() - stored.timestamp > 10 * 60 * 1000) {
