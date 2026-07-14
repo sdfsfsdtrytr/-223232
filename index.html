@@ -12908,23 +12908,62 @@ window.openArchiveModal = function() {
   function showSubscribePrompt(room) {
     document.querySelectorAll('.vibe-subscribe-sheet').forEach(el => el.remove());
     const privateNeedRequest = room.type === 'channel' && !room.isPublic;
+    const loggedIn = !!meNow();
     const sheet = document.createElement('div');
     sheet.className = 'vibe-subscribe-sheet';
     sheet.innerHTML = `
-      <div class="vibe-subscribe-title">${privateNeedRequest ? 'Отправить запрос?' : 'Подписаться на канал?'}</div>
-      <div class="vibe-subscribe-text">${esc(room.name || 'Канал')} будет добавлен в ваши чаты.</div>
+      <div class="vibe-subscribe-title">${!loggedIn ? 'Войти и подписаться?' : (privateNeedRequest ? 'Отправить запрос?' : 'Подписаться на канал?')}</div>
+      <div class="vibe-subscribe-text">${esc(room.name || 'Канал')} ${!loggedIn ? 'открылся по ссылке. Войди в аккаунт, и мы сразу предложим подписаться.' : 'будет добавлен в ваши чаты.'}</div>
       <div class="vibe-subscribe-actions">
         <button style="background:rgba(255,255,255,.12)" onclick="this.closest('.vibe-subscribe-sheet').remove()">Отклонить</button>
-        <button style="background:var(--accent,#1597ff)" onclick="vibeAcceptChannelLink('${room.id}', ${privateNeedRequest ? 'true' : 'false'})">${privateNeedRequest ? 'Запрос' : 'Подписаться'}</button>
+        <button style="background:var(--accent,#1597ff)" onclick="${loggedIn ? `vibeAcceptChannelLink('${room.id}', ${privateNeedRequest ? 'true' : 'false'})` : `vibeFocusAuthFromChannel('${room.id}')`}">${loggedIn ? (privateNeedRequest ? 'Запрос' : 'Подписаться') : 'Войти'}</button>
       </div>`;
     document.body.appendChild(sheet);
     requestAnimationFrame(() => sheet.classList.add('visible'));
   }
 
+  function savePendingChannel(room, code = '') {
+    if (!room || !room.id) return;
+    const data = {
+      id: room.id,
+      code: code || room.inviteCode || room.link || '',
+      savedAt: Date.now()
+    };
+    try { localStorage.setItem('vibe_pending_channel_link', JSON.stringify(data)); } catch (e) {}
+    try { sessionStorage.setItem('vibe_pending_channel_link', JSON.stringify(data)); } catch (e) {}
+  }
+
+  function readPendingChannel() {
+    const raw = (() => {
+      try { return sessionStorage.getItem('vibe_pending_channel_link') || localStorage.getItem('vibe_pending_channel_link'); } catch (e) { return ''; }
+    })();
+    if (!raw) return null;
+    try {
+      const data = JSON.parse(raw);
+      if (!data || !data.id || Date.now() - Number(data.savedAt || 0) > 24 * 60 * 60 * 1000) return null;
+      return data;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function clearPendingChannel() {
+    try { localStorage.removeItem('vibe_pending_channel_link'); } catch (e) {}
+    try { sessionStorage.removeItem('vibe_pending_channel_link'); } catch (e) {}
+  }
+
+  window.vibeFocusAuthFromChannel = function(roomId) {
+    document.querySelectorAll('.vibe-subscribe-sheet').forEach(el => el.remove());
+    const auth = document.getElementById('auth-page');
+    if (auth) auth.style.display = 'flex';
+    showCopyToast('Войди, чтобы подписаться на канал');
+  };
+
   window.vibeAcceptChannelLink = async function(roomId, requestOnly = false) {
-    if (!meNow()) return alert('Сначала войдите в аккаунт.');
+    if (!meNow()) return window.vibeFocusAuthFromChannel(roomId);
     if (requestOnly && typeof requestJoinChannel === 'function') await requestJoinChannel(roomId);
     else if (typeof joinOrOpenRoom === 'function') await joinOrOpenRoom(roomId);
+    clearPendingChannel();
     document.querySelectorAll('.vibe-subscribe-sheet').forEach(el => el.remove());
     let room = await freshRoom(roomId);
     if (room) openLinkedRoom(room);
@@ -12987,11 +13026,12 @@ window.openArchiveModal = function() {
         updateChannelLanding({ name: 'Канал не найден', bio: 'Проверь ссылку или попроси новую.', avatar: '⚠️' }, false);
         return;
       }
+      savePendingChannel(room, code);
       updateChannelLanding(room);
       setTimeout(async () => {
         hideChannelLanding();
         if (!meNow()) {
-          showCopyToast('Войдите, чтобы подписаться');
+          showSubscribePrompt(room);
           return;
         }
         roomCache(room);
@@ -13005,11 +13045,32 @@ window.openArchiveModal = function() {
     } catch (error) {}
   }
 
+  async function continuePendingChannelLink() {
+    const pending = readPendingChannel();
+    if (!pending || !meNow()) return;
+    try {
+      const room = await freshRoom(pending.id);
+      if (!room || room.type !== 'channel') {
+        clearPendingChannel();
+        return;
+      }
+      if (room.members && room.members[meNow().id]) {
+        clearPendingChannel();
+        openLinkedRoom(room);
+        return;
+      }
+      openLinkedRoom(room);
+      setTimeout(() => showSubscribePrompt(room), 450);
+    } catch (e) {}
+  }
+
   if (!window.__vibeWebChannelLinkBoot) {
     window.__vibeWebChannelLinkBoot = true;
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', showEarlyChannelLanding);
     else showEarlyChannelLanding();
     window.addEventListener('load', () => setTimeout(openChannelFromWebLink, 700));
+    window.addEventListener('load', () => setTimeout(continuePendingChannelLink, 1700));
+    setInterval(continuePendingChannelLink, 2600);
   }
 
   function renderInfo(peer) {
