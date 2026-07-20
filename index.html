@@ -889,6 +889,7 @@ button:disabled {
         <div class="menu-item" onclick="prepareReply()"><svg viewBox="0 0 24 24"><path d="M10.9 5.6L4.5 12l6.4 6.4V14h5.1c2.1 0 3.9 1.7 3.9 3.8V20c0-3.9-2.5-7.3-6.2-8.6V8.2l-3.2-2.6z"/></svg><span>Ответить</span></div>
         <div class="menu-item" onclick="doCopy()"><svg viewBox="0 0 24 24"><path d="M16 1H6C4.9 1 4 1.9 4 3v12h2V3h10V1zm3 4H10c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h9c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H10V7h9v14z"/></svg><span>Скопировать</span></div>
         <div class="menu-item" onclick="sendToFavorites()"><svg viewBox="0 0 24 24"><path d="M12 17.3L6.2 21l1.6-6.6L2.8 10l6.8-.6L12 3l2.4 6.4 6.8.6-5 4.4L17.8 21z"/></svg><span>В избранное</span></div>
+        <div class="menu-item feature-edit-message-action" id="feature-edit-message-action" onclick="featureOpenMessageEditor()"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zm17.71-10.04a1.003 1.003 0 0 0 0-1.42l-2.5-2.5a1.003 1.003 0 0 0-1.42 0l-1.96 1.96 3.75 3.75 2.13-1.79z"/></svg><span>Редактировать</span></div>
         <div class="menu-item" style="color:#ea868f" id="btn-del-all" onclick="deleteMessage('all')"><svg viewBox="0 0 24 24"><path d="M9 3h6l1 2h5v2H3V5h5l1-2zm1 6h2v9h-2V9zm4 0h2v9h-2V9zM6 7h12l-1 13H7L6 7z"/></svg><span>Удалить у всех</span></div>
         <div class="menu-item" style="color:#ea868f" onclick="deleteMessage('me')"><svg viewBox="0 0 24 24"><path d="M9 3h6l1 2h5v2H3V5h5l1-2zm1 6h2v9h-2V9zm4 0h2v9h-2V9zM6 7h12l-1 13H7L6 7z"/></svg><span>Удалить у меня</span></div>
     </div>
@@ -13030,5 +13031,295 @@ window.openArchiveModal = function() {
   });
 })();
 </script>
+
+<script id="feature-message-edit-v1">
+(() => {
+  'use strict';
+
+  const state = {
+    id: '',
+    sender: '',
+    text: '',
+    message: null,
+    activePath: '',
+    activeRef: null,
+    changedHandler: null,
+    refreshTimer: 0
+  };
+
+  const byId = id => document.getElementById(id);
+
+  function currentUser() {
+    return (typeof me !== 'undefined' && me) ? me : null;
+  }
+
+  function isRoom(peer) {
+    return Boolean(peer && (peer.type === 'group' || peer.type === 'channel'));
+  }
+
+  function messagePath(peer) {
+    const user = currentUser();
+    if (!peer || !user) return '';
+    if (isRoom(peer)) return `rooms/${peer.id}/messages`;
+    if (peer.id === `saved_${user.id}` || peer.isSaved) return `chats/saved_${user.id}`;
+    const roomId = user.id < peer.id ? `${user.id}_${peer.id}` : `${peer.id}_${user.id}`;
+    return `chats/${roomId}`;
+  }
+
+  function activeMode() {
+    return document.body.classList.contains('chat-open-mobile') ? 'mob' : ((typeof isPC !== 'undefined' && isPC) ? 'pc' : 'mob');
+  }
+
+  function closeContextMenu() {
+    const menu = byId('context-menu');
+    if (menu) menu.style.display = 'none';
+  }
+
+  function removeEditor() {
+    document.querySelectorAll('.feature-edit-message-overlay').forEach(node => node.remove());
+  }
+
+  function showNotice(message) {
+    if (typeof showCopyToast === 'function') {
+      showCopyToast(message);
+      return;
+    }
+    alert(message);
+  }
+
+  function findMessageElement(id) {
+    return byId(`pc-msgs-${id}`) || byId(`mob-msgs-${id}`) || byId(`msg-${id}`);
+  }
+
+  function findTextNode(messageElement) {
+    if (!messageElement) return null;
+    const children = Array.from(messageElement.children);
+    return children.find(child =>
+      child.tagName === 'DIV' &&
+      !child.classList.contains('reply-quote') &&
+      !child.classList.contains('vibe-message-reactions') &&
+      !child.classList.contains('feature-message-edited-label') &&
+      !child.classList.contains('voice-message')
+    ) || null;
+  }
+
+  function applyChangedMessage(id, message) {
+    if (!message || message.type || message.system) return;
+    const element = findMessageElement(id);
+    if (!element) return;
+    const textNode = findTextNode(element);
+    if (textNode) textNode.textContent = String(message.val || '');
+
+    let label = element.querySelector('.feature-message-edited-label');
+    if (message.editedAt) {
+      if (!label) {
+        label = document.createElement('span');
+        label.className = 'feature-message-edited-label';
+        label.textContent = 'изменено';
+        const status = element.querySelector('.msg-status');
+        if (status) element.insertBefore(label, status);
+        else element.appendChild(label);
+      }
+    } else if (label) {
+      label.remove();
+    }
+  }
+
+  function syncEditAction() {
+    const button = byId('feature-edit-message-action');
+    if (!button) return;
+    const user = currentUser();
+    const selectedId = (window.vibeFix20260524 && window.vibeFix20260524.selectedMsgId) || state.id;
+    const selectedSender = (window.vibeFix20260524 && window.vibeFix20260524.selectedMsgSender) || state.sender;
+    const selectedMessage = state.message;
+    const allowed = Boolean(user && selectedId && selectedSender === user.id && !(selectedMessage && (selectedMessage.type || selectedMessage.system)));
+    button.style.display = allowed ? 'flex' : 'none';
+  }
+
+  const previousShowMsgMenu = window.showMsgMenu;
+  window.showMsgMenu = function(event, id, text, sender, message) {
+    state.id = id || '';
+    state.sender = sender || '';
+    state.text = String(text || '');
+    state.message = message || null;
+    const result = typeof previousShowMsgMenu === 'function'
+      ? previousShowMsgMenu.apply(this, arguments)
+      : false;
+    syncEditAction();
+    return result;
+  };
+
+  window.featureOpenMessageEditor = function() {
+    closeContextMenu();
+    removeEditor();
+
+    const user = currentUser();
+    const peer = (typeof activePeer !== 'undefined') ? activePeer : null;
+    const id = (window.vibeFix20260524 && window.vibeFix20260524.selectedMsgId) || state.id;
+    const sender = (window.vibeFix20260524 && window.vibeFix20260524.selectedMsgSender) || state.sender;
+    const text = (window.vibeFix20260524 && window.vibeFix20260524.selectedMsgText) || state.text;
+
+    if (!user || !peer || !id || sender !== user.id) {
+      showNotice('Можно редактировать только свои сообщения.');
+      return;
+    }
+    if (state.message && (state.message.type || state.message.system)) {
+      showNotice('Редактирование доступно только для текстовых сообщений.');
+      return;
+    }
+
+    const overlay = document.createElement('div');
+    overlay.className = 'feature-edit-message-overlay';
+
+    const dialog = document.createElement('section');
+    dialog.className = 'feature-edit-message-modal feature-glass-modal';
+    dialog.setAttribute('role', 'dialog');
+    dialog.setAttribute('aria-modal', 'true');
+    dialog.setAttribute('aria-labelledby', 'feature-edit-message-title');
+
+    const header = document.createElement('div');
+    header.className = 'feature-edit-message-header';
+
+    const title = document.createElement('h2');
+    title.id = 'feature-edit-message-title';
+    title.textContent = 'Редактировать сообщение';
+
+    const closeButton = document.createElement('button');
+    closeButton.type = 'button';
+    closeButton.className = 'feature-edit-message-close';
+    closeButton.setAttribute('aria-label', 'Закрыть');
+    closeButton.textContent = '×';
+
+    const input = document.createElement('textarea');
+    input.className = 'feature-edit-message-input';
+    input.maxLength = 4000;
+    input.rows = 5;
+    input.value = String(text || '');
+    input.setAttribute('aria-label', 'Текст сообщения');
+
+    const counter = document.createElement('div');
+    counter.className = 'feature-edit-message-counter';
+    const updateCounter = () => { counter.textContent = `${input.value.length}/4000`; };
+    updateCounter();
+    input.addEventListener('input', updateCounter);
+
+    const actions = document.createElement('div');
+    actions.className = 'feature-edit-message-actions';
+
+    const cancelButton = document.createElement('button');
+    cancelButton.type = 'button';
+    cancelButton.className = 'feature-edit-message-cancel';
+    cancelButton.textContent = 'Отмена';
+
+    const saveButton = document.createElement('button');
+    saveButton.type = 'button';
+    saveButton.className = 'feature-edit-message-save';
+    saveButton.textContent = 'Сохранить';
+
+    const close = () => removeEditor();
+    closeButton.addEventListener('click', close);
+    cancelButton.addEventListener('click', close);
+    overlay.addEventListener('click', event => { if (event.target === overlay) close(); });
+
+    const save = async () => {
+      const value = input.value.trim();
+      if (!value) {
+        showNotice('Сообщение не может быть пустым.');
+        input.focus();
+        return;
+      }
+      if (value === String(text || '').trim()) {
+        close();
+        return;
+      }
+
+      saveButton.disabled = true;
+      saveButton.textContent = 'Сохранение…';
+      try {
+        const path = messagePath(peer);
+        if (!path) throw new Error('Путь чата не найден.');
+        const ref = db.ref(`${path}/${id}`);
+        const snapshot = await ref.once('value');
+        const fresh = snapshot.val();
+        if (!fresh) throw new Error('Сообщение уже удалено.');
+        if (fresh.sender !== user.id) throw new Error('Нет права редактировать это сообщение.');
+        if (fresh.type || fresh.system) throw new Error('Можно редактировать только текст.');
+
+        await ref.update({
+          val: value,
+          editedAt: firebase.database.ServerValue.TIMESTAMP,
+          editedBy: user.id
+        });
+        applyChangedMessage(id, { ...fresh, val: value, editedAt: Date.now(), editedBy: user.id });
+        close();
+        showNotice('Сообщение изменено.');
+      } catch (error) {
+        saveButton.disabled = false;
+        saveButton.textContent = 'Сохранить';
+        showNotice(error && error.message ? error.message : 'Не удалось изменить сообщение.');
+      }
+    };
+
+    saveButton.addEventListener('click', save);
+    input.addEventListener('keydown', event => {
+      if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') save();
+      if (event.key === 'Escape') close();
+    });
+
+    header.append(title, closeButton);
+    actions.append(cancelButton, saveButton);
+    dialog.append(header, input, counter, actions);
+    overlay.appendChild(dialog);
+    document.body.appendChild(overlay);
+    requestAnimationFrame(() => input.focus());
+  };
+
+  function attachChangedListener() {
+    const peer = (typeof activePeer !== 'undefined') ? activePeer : null;
+    const path = messagePath(peer);
+    if (path === state.activePath) return;
+
+    if (state.activeRef && state.changedHandler) {
+      state.activeRef.off('child_changed', state.changedHandler);
+    }
+    state.activePath = path;
+    state.activeRef = null;
+    state.changedHandler = null;
+
+    if (!path || typeof db === 'undefined') return;
+    state.activeRef = db.ref(path);
+    state.changedHandler = snapshot => applyChangedMessage(snapshot.key, snapshot.val() || {});
+    state.activeRef.on('child_changed', state.changedHandler);
+  }
+
+  const style = document.createElement('style');
+  style.id = 'feature-message-edit-styles';
+  style.textContent = `
+    .feature-edit-message-overlay{position:fixed;inset:0;z-index:1000000000;display:flex;align-items:center;justify-content:center;padding:calc(16px + env(safe-area-inset-top)) calc(16px + env(safe-area-inset-right)) calc(16px + env(safe-area-inset-bottom)) calc(16px + env(safe-area-inset-left));background:rgba(0,0,0,.68);overflow:auto}
+    .feature-glass-modal{background:var(--glass,rgba(20,20,24,.82));border:var(--glass-border,1px solid rgba(255,255,255,.14));backdrop-filter:blur(30px) saturate(160%);-webkit-backdrop-filter:blur(30px) saturate(160%);box-shadow:0 24px 70px rgba(0,0,0,.45)}
+    .feature-edit-message-modal{width:min(520px,100%);max-height:min(720px,calc(100dvh - 32px));padding:20px;border-radius:28px;color:var(--text,#fff);overflow:auto}
+    .feature-edit-message-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+    .feature-edit-message-header h2{font-size:22px;line-height:1.2;margin:0}
+    .feature-edit-message-close{width:42px;height:42px;border-radius:14px;background:rgba(255,255,255,.09);color:var(--text,#fff);font-size:28px;font-weight:500;flex:0 0 auto}
+    .feature-edit-message-input{display:block;width:100%;min-height:130px;max-height:45dvh;resize:vertical;margin:0;padding:14px 16px;border-radius:18px;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.22);color:var(--text,#fff);font:inherit;line-height:1.45;overflow-wrap:anywhere}
+    .feature-edit-message-input:focus{border-color:var(--accent,#00f2fe);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent,#00f2fe) 22%,transparent);outline:none}
+    .feature-edit-message-counter{margin-top:8px;text-align:right;font-size:12px;opacity:.62}
+    .feature-edit-message-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:16px}
+    .feature-edit-message-cancel,.feature-edit-message-save{min-height:46px;padding:0 18px;border-radius:16px;font-size:14px;font-weight:800}
+    .feature-edit-message-cancel{background:rgba(255,255,255,.08);color:var(--text,#fff)}
+    .feature-edit-message-save{background:var(--accent,#00f2fe);color:#050505}
+    .feature-edit-message-save:disabled{opacity:.55;cursor:not-allowed}
+    .feature-message-edited-label{font-size:10px;opacity:.58;margin:6px 5px 0 2px;white-space:nowrap;vertical-align:bottom}
+    @media (max-width:520px){.feature-edit-message-overlay{align-items:flex-end;padding-left:0;padding-right:0;padding-bottom:env(safe-area-inset-bottom)}.feature-edit-message-modal{width:100%;border-radius:28px 28px 0 0;padding:18px}.feature-edit-message-input{min-height:120px;max-height:36dvh}.feature-edit-message-actions{display:grid;grid-template-columns:1fr 1fr}.feature-edit-message-cancel,.feature-edit-message-save{width:100%}}
+    @media (prefers-reduced-motion:reduce){.feature-edit-message-overlay,.feature-edit-message-modal{scroll-behavior:auto}}
+  `;
+  document.head.appendChild(style);
+
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) attachChangedListener(); });
+  state.refreshTimer = window.setInterval(attachChangedListener, 900);
+  attachChangedListener();
+})();
+</script>
+
 </body>
 </html>
