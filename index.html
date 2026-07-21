@@ -1344,7 +1344,9 @@ const EMAILJS_TEMPLATE_ID = "template_4yxrnid";
 
 // 3. ?нициализация EmailJS
 (function() {
-    emailjs.init(EMAILJS_PUBLIC_KEY);
+    if (window.emailjs && typeof window.emailjs.init === 'function') {
+        window.emailjs.init(EMAILJS_PUBLIC_KEY);
+    }
 })();
 
 // 3. Безопасный запуск уведомлений
@@ -1511,6 +1513,32 @@ function mobTab(id) {
 
         function generateCode() {
             return Math.floor(100000 + Math.random() * 900000).toString();
+        }
+
+        function ensureEmailJsReady() {
+            if (window.emailjs && typeof window.emailjs.send === 'function') {
+                if (typeof window.emailjs.init === 'function') window.emailjs.init(EMAILJS_PUBLIC_KEY);
+                return Promise.resolve(window.emailjs);
+            }
+            if (window.__vibeEmailJsLoading) return window.__vibeEmailJsLoading;
+            window.__vibeEmailJsLoading = new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js';
+                script.async = true;
+                script.onload = () => {
+                    if (!window.emailjs || typeof window.emailjs.send !== 'function') {
+                        reject(new Error('Сервис отправки кода не загрузился. Проверь интернет и перезагрузи страницу.'));
+                        return;
+                    }
+                    if (typeof window.emailjs.init === 'function') window.emailjs.init(EMAILJS_PUBLIC_KEY);
+                    resolve(window.emailjs);
+                };
+                script.onerror = () => reject(new Error('Сервис отправки кода не загрузился. Проверь интернет и перезагрузи страницу.'));
+                document.head.appendChild(script);
+            }).finally(() => {
+                window.__vibeEmailJsLoading = null;
+            });
+            return window.__vibeEmailJsLoading;
         }
 
         function getVerifyStorage() {
@@ -1711,7 +1739,9 @@ function mobTab(id) {
                 timestamp: now
             });
 
-            await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+            const emailClient = await ensureEmailJsReady();
+
+            await emailClient.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
                 to_email: data.email,
                 verification_code: code,
                 user_name: data.name || 'Пользователь'
@@ -13129,6 +13159,222 @@ window.openArchiveModal = function() {
       closePopovers();
     }
   });
+})();
+</script>
+<script id="codex-message-menu-restore-final">
+(() => {
+  if (window.__vibeMessageMenuRestoreFinal) return;
+  window.__vibeMessageMenuRestoreFinal = true;
+
+  const $ = id => document.getElementById(id);
+  const LONG_PRESS_MS = 520;
+  let holdTimer = null;
+  let holdStart = null;
+  let holdMessage = null;
+
+  function isMessage(node) {
+    return node && node.closest ? node.closest('#pc-msgs .msg, #mob-msgs .msg') : null;
+  }
+
+  function cleanMsgId(message) {
+    return String((message && (message.dataset.msgId || message.id)) || '')
+      .replace(/^pc-msgs-/, '')
+      .replace(/^mob-msgs-/, '')
+      .replace(/^msg-/, '');
+  }
+
+  function messageText(message) {
+    if (!message) return '';
+    const copy = message.cloneNode(true);
+    copy.querySelectorAll('.msg-status,.vibe-message-reactions,.reply-quote,.vibe-reaction-panel,button,svg').forEach(node => node.remove());
+    return (message.dataset.msgText || copy.textContent || '').replace(/\s+/g, ' ').trim();
+  }
+
+  function senderOf(message) {
+    if (!message) return '';
+    if (message.dataset.sender) return message.dataset.sender;
+    try {
+      if (message.classList.contains('sent') && typeof me !== 'undefined' && me) return me.id || '';
+    } catch (error) {}
+    try {
+      const fix = window.vibeFix20260524 || window.CodexVibeFix || {};
+      return fix.selectedMsgSender || window.selectedMsgSender || '';
+    } catch (error) {}
+    return '';
+  }
+
+  function pointOf(event) {
+    const src = event && event.changedTouches && event.changedTouches[0]
+      ? event.changedTouches[0]
+      : event && event.touches && event.touches[0]
+        ? event.touches[0]
+        : event || {};
+    return {
+      clientX: src.clientX || 24,
+      clientY: src.clientY || 24,
+      pageX: src.pageX || src.clientX || 24,
+      pageY: src.pageY || src.clientY || 24
+    };
+  }
+
+  function clampMenu(menu, point) {
+    if (!menu) return;
+    if (menu.parentNode !== document.body) document.body.appendChild(menu);
+    menu.classList.add('codex-mobile-context-menu', 'vibe-context-restored');
+    menu.style.display = 'block';
+    menu.style.visibility = 'hidden';
+    menu.style.position = 'fixed';
+    menu.style.left = '0px';
+    menu.style.top = '0px';
+
+    const rect = menu.getBoundingClientRect();
+    const vw = window.innerWidth || document.documentElement.clientWidth;
+    const vh = window.innerHeight || document.documentElement.clientHeight;
+    const pad = 12;
+    let left = point.clientX + 8;
+    let top = point.clientY + 8;
+    if (left + rect.width > vw - pad) left = vw - rect.width - pad;
+    if (top + rect.height > vh - pad) top = point.clientY - rect.height - 8;
+    menu.style.left = `${Math.max(pad, left)}px`;
+    menu.style.top = `${Math.max(pad, Math.min(top, vh - rect.height - pad))}px`;
+    menu.style.visibility = 'visible';
+    requestAnimationFrame(() => menu.classList.add('hold-open'));
+  }
+
+  function syncSelected(id, text, sender) {
+    window.vibeFix20260524 = window.vibeFix20260524 || {};
+    window.vibeFix20260524.selectedMsgId = id;
+    window.vibeFix20260524.selectedMsgText = text;
+    window.vibeFix20260524.selectedMsgSender = sender;
+    window.CodexVibeFix = window.vibeFix20260524;
+    window.__codexUltimateFix = window.vibeFix20260524;
+    window.selectedMsgId = id;
+    window.selectedMsgText = text;
+    window.selectedMsgSender = sender;
+    try {
+      if (typeof selectedMsgId !== 'undefined') selectedMsgId = id;
+      if (typeof selectedMsgText !== 'undefined') selectedMsgText = text;
+    } catch (error) {}
+  }
+
+  function openRestoredMenu(message, event) {
+    if (!message) return false;
+    const id = cleanMsgId(message);
+    if (!id) return false;
+    const text = messageText(message);
+    const sender = senderOf(message);
+    const point = pointOf(event);
+    syncSelected(id, text, sender);
+
+    const synthetic = {
+      clientX: point.clientX,
+      clientY: point.clientY,
+      pageX: point.pageX,
+      pageY: point.pageY,
+      preventDefault() {},
+      stopPropagation() {}
+    };
+    try {
+      if (typeof window.showMsgMenu === 'function') window.showMsgMenu(synthetic, id, text, sender);
+    } catch (error) {}
+
+    const menu = $('context-menu');
+    if (!menu) return false;
+    clampMenu(menu, point);
+    const delAll = $('btn-del-all');
+    if (delAll) {
+      let canDeleteAll = false;
+      try {
+        const userId = (typeof me !== 'undefined' && me && me.id) || (window.me && window.me.id) || '';
+        const peer = (typeof activePeer !== 'undefined' && activePeer) || window.activePeer || {};
+        canDeleteAll = sender === userId || peer.ownerId === userId || !!(peer.admins && peer.admins[userId]);
+      } catch (error) {}
+      delAll.style.display = canDeleteAll ? 'flex' : 'none';
+    }
+    const panel = document.querySelector('.vibe-reaction-panel');
+    if (panel) {
+      panel.dataset.messageId = id;
+      panel.classList.add('visible');
+    }
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+      if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+    }
+    return false;
+  }
+
+  const previousShowMsgMenu = window.showMsgMenu;
+  window.showMsgMenu = function(event, id, text, sender, msgData) {
+    let result = false;
+    if (typeof previousShowMsgMenu === 'function') {
+      result = previousShowMsgMenu.call(this, event, id, text, sender, msgData);
+    }
+    const menu = $('context-menu');
+    if (menu) {
+      const point = pointOf(event);
+      syncSelected(id, text || '', sender || '');
+      clampMenu(menu, point);
+    }
+    return result;
+  };
+
+  document.addEventListener('contextmenu', event => {
+    const message = isMessage(event.target);
+    if (!message) return;
+    openRestoredMenu(message, event);
+  }, { capture: true });
+
+  document.addEventListener('touchstart', event => {
+    const message = isMessage(event.target);
+    if (!message || (event.target.closest && event.target.closest('a,button,input,textarea,select,audio,video'))) return;
+    const touch = event.touches && event.touches[0];
+    if (!touch) return;
+    clearTimeout(holdTimer);
+    holdMessage = message;
+    holdStart = { x: touch.clientX, y: touch.clientY, event };
+    holdTimer = setTimeout(() => {
+      if (!holdMessage) return;
+      openRestoredMenu(holdMessage, holdStart.event);
+      holdMessage = null;
+    }, LONG_PRESS_MS);
+  }, { capture: true, passive: false });
+
+  document.addEventListener('touchmove', event => {
+    if (!holdStart) return;
+    const touch = event.touches && event.touches[0];
+    if (!touch) return;
+    if (Math.abs(touch.clientX - holdStart.x) > 12 || Math.abs(touch.clientY - holdStart.y) > 12) {
+      clearTimeout(holdTimer);
+      holdMessage = null;
+      holdStart = null;
+    }
+  }, { capture: true, passive: true });
+
+  ['touchend', 'touchcancel'].forEach(type => {
+    document.addEventListener(type, () => {
+      clearTimeout(holdTimer);
+      holdMessage = null;
+      holdStart = null;
+    }, { capture: true, passive: true });
+  });
+
+  const style = document.createElement('style');
+  style.id = 'codex-message-menu-restore-style';
+  style.textContent = `
+    #context-menu.vibe-context-restored {
+      opacity: 1 !important;
+      pointer-events: auto !important;
+      transform: translate3d(0,0,0) scale(1) !important;
+    }
+    #context-menu.vibe-context-restored .menu-item {
+      display: flex !important;
+    }
+    #context-menu.vibe-context-restored .vibe-reaction-row {
+      display: flex !important;
+    }
+  `;
+  document.head.appendChild(style);
 })();
 </script>
 <script id="codex-mobile-profile-tab-final">
