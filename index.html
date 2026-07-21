@@ -13759,6 +13759,73 @@ window.openArchiveModal = function() {
         @keyframes vibeSearchSheetOut {
           to { opacity:0; transform:translateY(18px) scale(.985); }
         }
+        .vibe-home-search {
+          background:transparent !important;
+          border:0 !important;
+          box-shadow:none !important;
+          border-radius:0 !important;
+          transform:translateY(-18px) scale(.985) !important;
+        }
+        .vibe-home-search.visible,
+        .vibe-home-search:focus-within {
+          max-height:72px !important;
+          margin:8px 0 10px !important;
+          padding:0 16px 8px !important;
+          transform:translateY(0) scale(1) !important;
+        }
+        .vibe-home-search-title {
+          display:none !important;
+        }
+        .vibe-home-search-box {
+          min-height:48px !important;
+          padding:0 15px !important;
+          border-radius:999px !important;
+          background:rgba(255,255,255,.115) !important;
+          border:1px solid rgba(255,255,255,.11) !important;
+          box-shadow:inset 0 1px 1px rgba(255,255,255,.14), 0 8px 26px rgba(0,0,0,.22) !important;
+        }
+        .vibe-home-search-box input {
+          height:48px !important;
+          font-size:15px !important;
+        }
+        .vibe-search-sheet {
+          background:#050505 !important;
+          animation:vibeSearchSheetInFixed .36s cubic-bezier(.18,.9,.22,1) both !important;
+        }
+        .vibe-search-sheet.closing {
+          animation:vibeSearchSheetOutFixed .24s ease both !important;
+        }
+        .vibe-search-sheet::before {
+          content:"";
+          position:fixed;
+          inset:0;
+          pointer-events:none;
+          background:linear-gradient(180deg, rgba(255,255,255,.045), transparent 155px);
+        }
+        .vibe-search-top {
+          position:sticky !important;
+          top:calc(0px + env(safe-area-inset-top,0px)) !important;
+          z-index:2 !important;
+          margin-bottom:20px !important;
+          padding-bottom:6px !important;
+        }
+        .vibe-search-input-wrap {
+          min-height:48px !important;
+          border-radius:999px !important;
+          background:rgba(255,255,255,.12) !important;
+          border:1px solid rgba(255,255,255,.12) !important;
+          box-shadow:inset 0 1px 1px rgba(255,255,255,.12), 0 10px 30px rgba(0,0,0,.28) !important;
+        }
+        .vibe-search-input-wrap input {
+          height:48px !important;
+        }
+        @keyframes vibeSearchSheetInFixed {
+          from { opacity:0; transform:translateY(-28px) scale(.982); }
+          to { opacity:1; transform:translateY(0) scale(1); }
+        }
+        @keyframes vibeSearchSheetOutFixed {
+          to { opacity:0; transform:translateY(-18px) scale(.985); }
+        }
         @keyframes vibeSearchRowIn {
           from { opacity:0; transform:translateY(8px); }
           to { opacity:1; transform:translateY(0); }
