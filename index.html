@@ -13339,7 +13339,7 @@ window.openArchiveModal = function() {
         }
         .vibe-home-search.visible,
         .vibe-home-search:focus-within {
-          max-height:118px;
+          max-height:84px;
           margin:12px 0 10px;
           padding:10px 12px;
           opacity:1;
@@ -13376,9 +13376,146 @@ window.openArchiveModal = function() {
           font-size:14px;
         }
         .vibe-home-search-box input::placeholder { color:rgba(255,255,255,.45); }
+        .vibe-home-search-box {
+          cursor:pointer;
+        }
+        .vibe-home-search-box input {
+          pointer-events:none;
+        }
         #mob-home.vibe-search-pulled #mob-contacts {
           transform:translateY(0);
           transition:transform .28s cubic-bezier(.18,.9,.22,1);
+        }
+        .vibe-search-sheet {
+          position:fixed;
+          inset:0;
+          z-index:2147483610;
+          background:#000;
+          color:#fff;
+          padding:calc(12px + env(safe-area-inset-top,0px)) 14px calc(24px + env(safe-area-inset-bottom,0px));
+          overflow-y:auto;
+          animation:vibeSearchSheetIn .34s cubic-bezier(.18,.9,.22,1) both;
+        }
+        .vibe-search-sheet.closing {
+          animation:vibeSearchSheetOut .22s ease both;
+        }
+        .vibe-search-top {
+          display:grid;
+          grid-template-columns:42px 1fr;
+          gap:10px;
+          align-items:center;
+          margin-bottom:18px;
+        }
+        .vibe-search-close {
+          width:42px;
+          height:42px;
+          border:0;
+          border-radius:999px;
+          background:rgba(255,255,255,.10);
+          color:#fff;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+        }
+        .vibe-search-close svg {
+          width:24px;
+          height:24px;
+        }
+        .vibe-search-input-wrap {
+          min-height:44px;
+          border-radius:17px;
+          background:rgba(255,255,255,.10);
+          border:1px solid rgba(255,255,255,.08);
+          display:grid;
+          grid-template-columns:auto 1fr;
+          align-items:center;
+          gap:10px;
+          padding:0 13px;
+        }
+        .vibe-search-input-wrap svg {
+          width:20px;
+          height:20px;
+          color:rgba(255,255,255,.62);
+        }
+        .vibe-search-input-wrap input {
+          min-width:0;
+          height:44px;
+          border:0;
+          outline:0;
+          background:transparent;
+          color:#fff;
+          font-size:16px;
+        }
+        .vibe-search-section-title {
+          margin:18px 4px 10px;
+          color:rgba(255,255,255,.56);
+          font-size:13px;
+          font-weight:900;
+          text-transform:uppercase;
+        }
+        .vibe-search-list {
+          display:flex;
+          flex-direction:column;
+          gap:9px;
+        }
+        .vibe-search-row {
+          min-height:58px;
+          border:0;
+          border-radius:20px;
+          background:rgba(255,255,255,.08);
+          color:#fff;
+          display:grid;
+          grid-template-columns:auto 1fr auto;
+          align-items:center;
+          gap:12px;
+          padding:9px 12px;
+          text-align:left;
+          animation:vibeSearchRowIn .24s cubic-bezier(.18,.9,.22,1) both;
+        }
+        .vibe-search-row .avatar-emoji {
+          width:42px;
+          height:42px;
+          font-size:20px;
+        }
+        .vibe-search-row b {
+          display:block;
+          font-size:15px;
+          line-height:1.15;
+        }
+        .vibe-search-row small {
+          display:block;
+          margin-top:3px;
+          color:rgba(255,255,255,.56);
+          font-size:12px;
+        }
+        .vibe-search-add {
+          min-width:38px;
+          height:34px;
+          border:0;
+          border-radius:13px;
+          background:var(--accent,#1597ff);
+          color:#000;
+          font-size:20px;
+          font-weight:900;
+        }
+        .vibe-search-empty {
+          border-radius:20px;
+          padding:18px;
+          background:rgba(255,255,255,.06);
+          color:rgba(255,255,255,.56);
+          text-align:center;
+          font-size:14px;
+        }
+        @keyframes vibeSearchSheetIn {
+          from { opacity:0; transform:translateY(24px) scale(.985); }
+          to { opacity:1; transform:translateY(0) scale(1); }
+        }
+        @keyframes vibeSearchSheetOut {
+          to { opacity:0; transform:translateY(18px) scale(.985); }
+        }
+        @keyframes vibeSearchRowIn {
+          from { opacity:0; transform:translateY(8px); }
+          to { opacity:1; transform:translateY(0); }
         }
         .vibe-profile-editor {
           position:fixed;
@@ -13686,8 +13823,7 @@ window.openArchiveModal = function() {
     block.className = 'vibe-home-search';
     block.innerHTML = `
       <div class="vibe-home-search-title">Поиск</div>
-      <div class="vibe-home-search-box">${icon('search')}<input type="text" placeholder="Введите @ник" oninput="vibeHomeSearch(this.value)"></div>
-      <div id="vibe-home-search-res" style="margin-top:14px;"></div>
+      <div class="vibe-home-search-box" onclick="vibeOpenPeopleSearch()">${icon('search')}<input type="text" placeholder="Введите @ник" readonly></div>
     `;
     if (header) header.insertAdjacentElement('afterend', block);
     else contacts.insertAdjacentElement('beforebegin', block);
@@ -13703,6 +13839,119 @@ window.openArchiveModal = function() {
     const snap = await db.ref('users/' + id).once('value');
     return snap.exists() ? { id, ...(snap.val() || {}) } : null;
   }
+
+  function searchRecentKey() {
+    const user = meNow();
+    return `vibe_recent_people_search_${user && user.id ? user.id : 'guest'}`;
+  }
+
+  function getSearchRecents() {
+    try {
+      const list = JSON.parse(localStorage.getItem(searchRecentKey()) || '[]');
+      return Array.isArray(list) ? list.filter(Boolean).slice(0, 8) : [];
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function saveSearchRecent(user) {
+    if (!user || !user.id) return;
+    const item = { id:user.id, name:user.name || 'Без имени', handle:user.handle || '', avatar:user.avatar || '👤', avatarPhoto:photoOf(user), verified:!!user.verified };
+    const list = [item].concat(getSearchRecents().filter(existing => existing.id !== item.id)).slice(0, 8);
+    localStorage.setItem(searchRecentKey(), JSON.stringify(list));
+  }
+
+  function searchAvatar(user) {
+    const photo = photoOf(user);
+    if (photo) return `<span class="avatar-emoji has-photo" style="background-image:url('${safeUrl(photo)}');background-size:cover;background-position:center;color:transparent;"></span>`;
+    return `<span class="avatar-emoji">${esc(user && (user.avatar || '👤'))}</span>`;
+  }
+
+  function searchRow(user, recent = false) {
+    return `<div class="vibe-search-row" onclick="vibeUseSearchRecent('${esc(user.id || '')}')">
+      ${searchAvatar(user)}
+      <span><b>${esc(user.name || 'Без имени')}${user.verified ? badgeHtml() : ''}</b><small>${esc(user.handle || (recent ? 'Недавний поиск' : 'Пользователь'))}</small></span>
+      <button class="vibe-search-add" onclick="event.stopPropagation();vibeAddSearchFriend('${esc(user.id || '')}')">+</button>
+    </div>`;
+  }
+
+  function renderSearchRecents() {
+    const list = $('vibe-people-search-recents');
+    if (!list) return;
+    const recents = getSearchRecents();
+    list.innerHTML = recents.length
+      ? recents.map(user => searchRow(user, true)).join('')
+      : '<div class="vibe-search-empty">Недавних поисков пока нет</div>';
+  }
+
+  window.vibeOpenPeopleSearch = function() {
+    document.querySelectorAll('.vibe-search-sheet').forEach(el => el.remove());
+    const sheet = document.createElement('div');
+    sheet.className = 'vibe-search-sheet';
+    sheet.innerHTML = `
+      <div class="vibe-search-top">
+        <button class="vibe-search-close" onclick="vibeClosePeopleSearch()">${icon('close')}</button>
+        <div class="vibe-search-input-wrap">${icon('search')}<input id="vibe-people-search-input" placeholder="Введите @ник" autocomplete="off" oninput="vibePeopleSearchInput(this.value)"></div>
+      </div>
+      <div class="vibe-search-section-title">Недавние</div>
+      <div id="vibe-people-search-recents" class="vibe-search-list"></div>
+      <div class="vibe-search-section-title" id="vibe-people-search-results-title" style="display:none;">Результаты</div>
+      <div id="vibe-people-search-results" class="vibe-search-list"></div>
+    `;
+    document.body.appendChild(sheet);
+    renderSearchRecents();
+    setTimeout(() => {
+      const input = $('vibe-people-search-input');
+      if (input) input.focus();
+    }, 120);
+  };
+
+  window.vibeClosePeopleSearch = function() {
+    const sheet = document.querySelector('.vibe-search-sheet');
+    if (!sheet) return;
+    sheet.classList.add('closing');
+    setTimeout(() => sheet.remove(), 220);
+  };
+
+  window.vibePeopleSearchInput = async function(value) {
+    const results = $('vibe-people-search-results');
+    const title = $('vibe-people-search-results-title');
+    if (!results || !title) return;
+    const query = String(value || '').trim();
+    if (query.length < 2) {
+      title.style.display = 'none';
+      results.innerHTML = '';
+      return;
+    }
+    title.style.display = '';
+    results.innerHTML = '<div class="vibe-search-empty">Ищу...</div>';
+    try {
+      const user = await searchByHandle(query);
+      if (!user) {
+        results.innerHTML = '<div class="vibe-search-empty">Ничего не найдено</div>';
+        return;
+      }
+      saveSearchRecent(user);
+      renderSearchRecents();
+      results.innerHTML = searchRow(user, false);
+    } catch (error) {
+      results.innerHTML = '<div class="vibe-search-empty">Поиск сейчас недоступен</div>';
+    }
+  };
+
+  window.vibeUseSearchRecent = function(id) {
+    const user = getSearchRecents().find(item => item.id === id);
+    const input = $('vibe-people-search-input');
+    if (input && user) {
+      input.value = user.handle || user.name || '';
+      window.vibePeopleSearchInput(input.value);
+    }
+  };
+
+  window.vibeAddSearchFriend = async function(id) {
+    if (!id) return;
+    if (typeof addFriend === 'function') await addFriend(id);
+  };
 
   function bindHomeSearchReveal() {
     const home = $('mob-home');
@@ -13742,6 +13991,13 @@ window.openArchiveModal = function() {
   }
 
   window.vibeHomeSearch = async function(value) {
+    window.vibeOpenPeopleSearch();
+    const input = $('vibe-people-search-input');
+    if (input) {
+      input.value = value || '';
+      window.vibePeopleSearchInput(input.value);
+    }
+    return;
     const target = $('vibe-home-search-res');
     if (!target) return;
     const search = $('vibe-home-search');
