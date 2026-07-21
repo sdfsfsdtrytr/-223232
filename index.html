@@ -14148,7 +14148,7 @@ window.openArchiveModal = function() {
     block.className = 'vibe-home-search';
     block.innerHTML = `
       <div class="vibe-home-search-title">Поиск</div>
-      <div class="vibe-home-search-box" onclick="vibeOpenPeopleSearch()">${icon('search')}<input type="text" placeholder="Введите @ник" readonly></div>
+      <div class="vibe-home-search-box" onclick="vibeOpenPeopleSearch()">${icon('search')}<input type="text" placeholder="Поиск" readonly></div>
     `;
     if (header) header.insertAdjacentElement('afterend', block);
     else contacts.insertAdjacentElement('beforebegin', block);
@@ -14217,7 +14217,7 @@ window.openArchiveModal = function() {
     sheet.innerHTML = `
       <div class="vibe-search-top">
         <button class="vibe-search-close" onclick="vibeClosePeopleSearch()">${icon('close')}</button>
-        <div class="vibe-search-input-wrap">${icon('search')}<input id="vibe-people-search-input" placeholder="Введите @ник" autocomplete="off" oninput="vibePeopleSearchInput(this.value)"></div>
+        <div class="vibe-search-input-wrap">${icon('search')}<input id="vibe-people-search-input" placeholder="Поиск" autocomplete="off" oninput="vibePeopleSearchInput(this.value)"></div>
       </div>
       <div class="vibe-search-section-title">Недавние</div>
       <div id="vibe-people-search-recents" class="vibe-search-list"></div>
@@ -14687,6 +14687,16 @@ window.openArchiveModal = function() {
   const localFriends = () => Object.values((window.vibeRoomState && window.vibeRoomState.friends) || {});
   const localRooms = () => Object.values((window.vibeRoomState && window.vibeRoomState.rooms) || {});
   const avatarUrl = item => item && (item.avatarPhoto || item.photoURL || item.avatarUrl || item.photo || '');
+  const normalizeLink = value => String(value || '')
+    .trim()
+    .toLowerCase()
+    .replace(/^https?:\/\//, '')
+    .replace(/^www\./, '')
+    .replace(/^vibe8\.ru\//, '')
+    .replace(/^vibe:\/\/channel\//, '')
+    .replace(/^#/, '')
+    .split(/[?#]/)[0]
+    .replace(/^\/+|\/+$/g, '');
 
   function installStyle() {
     if ($('codex-search-full-reveal-style')) return;
@@ -14701,20 +14711,20 @@ window.openArchiveModal = function() {
         max-height:0 !important;
         min-height:0 !important;
         margin:0 !important;
-        padding:0 16px !important;
+        padding:0 20px !important;
         opacity:0 !important;
         overflow:hidden !important;
-        transform:translateY(-58px) scale(.985) !important;
+        transform:translateY(-96px) scale(.985) !important;
         transition:max-height .28s cubic-bezier(.18,.9,.22,1), min-height .28s cubic-bezier(.18,.9,.22,1), opacity .18s ease, transform .28s cubic-bezier(.18,.9,.22,1), padding .28s ease, margin .28s ease !important;
         pointer-events:none !important;
       }
       #vibe-home-search.visible,
       #mob-home.vibe-search-pulled #vibe-home-search,
       #vibe-home-search.vibe-search-force-open {
-        max-height:68px !important;
-        min-height:60px !important;
-        margin:4px 0 10px !important;
-        padding:4px 16px 8px !important;
+        max-height:108px !important;
+        min-height:88px !important;
+        margin:10px 0 16px !important;
+        padding:8px 20px 12px !important;
         opacity:1 !important;
         overflow:visible !important;
         transform:translateY(0) scale(1) !important;
@@ -14725,15 +14735,37 @@ window.openArchiveModal = function() {
       }
       #vibe-home-search .vibe-home-search-box {
         width:100% !important;
-        height:48px !important;
-        min-height:48px !important;
+        height:72px !important;
+        min-height:72px !important;
         box-sizing:border-box !important;
         border-radius:999px !important;
         pointer-events:auto !important;
+        background:#050505 !important;
+        border:1px solid rgba(255,255,255,.035) !important;
+        box-shadow:0 18px 42px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.045) !important;
+        display:flex !important;
+        justify-content:center !important;
+        gap:14px !important;
       }
       #vibe-home-search .vibe-home-search-box input {
-        height:48px !important;
+        width:auto !important;
+        max-width:210px !important;
+        flex:0 1 auto !important;
+        height:72px !important;
+        color:rgba(255,255,255,.62) !important;
+        font-size:30px !important;
+        font-weight:500 !important;
+        text-align:left !important;
         pointer-events:none !important;
+      }
+      #vibe-home-search .vibe-home-search-box input::placeholder {
+        color:rgba(255,255,255,.58) !important;
+        opacity:1 !important;
+      }
+      #vibe-home-search .vibe-home-search-box svg {
+        width:34px !important;
+        height:34px !important;
+        color:rgba(255,255,255,.54) !important;
       }
       .vibe-search-type {
         min-width:78px;
@@ -14750,6 +14782,20 @@ window.openArchiveModal = function() {
       .vibe-search-row.archived {
         border-color:rgba(255,255,255,.18);
         background:rgba(255,255,255,.105);
+      }
+      .vibe-search-add-btn {
+        min-width:44px;
+        height:36px;
+        padding:0 12px;
+        border:0;
+        border-radius:14px;
+        background:var(--accent,#1597ff);
+        color:#000;
+        font-size:22px;
+        font-weight:900;
+        display:flex;
+        align-items:center;
+        justify-content:center;
       }
     `;
     document.head.appendChild(style);
@@ -14823,10 +14869,20 @@ window.openArchiveModal = function() {
       avatar:item.avatar || (item.type === 'channel' ? '📣' : item.type === 'group' ? '👥' : '👤'),
       avatarPhoto:avatarUrl(item),
       verified:!!item.verified,
-      archived:!!item.archived
+      archived:!!item.archived,
+      added:item.added !== false
     };
     const list = [recent].concat(getRecents().filter(old => !(old.id === recent.id && old.type === recent.type))).slice(0, 10);
     localStorage.setItem(searchKey(), JSON.stringify(list));
+  }
+
+  function markRecentAdded(type, id) {
+    const list = getRecents().map(item => {
+      if (item.id === id && (item.type || 'user') === (type || 'user')) return { ...item, added:true };
+      return item;
+    });
+    localStorage.setItem(searchKey(), JSON.stringify(list));
+    renderRecents();
   }
 
   function avatarHtml(item) {
@@ -14843,13 +14899,22 @@ window.openArchiveModal = function() {
     return 'Друг';
   }
 
+  function actionLabel(item) {
+    if (item.added !== false) return typeLabel(item);
+    if (item.type === 'channel' && item.isPublic === false) return 'Запрос';
+    return '+';
+  }
+
   function rowHtml(item, recent = false) {
     const type = item.type || 'user';
     const small = item.handle || item.bio || (recent ? 'Недавний поиск' : typeLabel(item));
+    const action = item.added === false
+      ? `<button class="vibe-search-add-btn" onclick="event.stopPropagation();vibeAddSearchResult('${esc(type)}','${esc(item.id || '')}')">${esc(actionLabel(item))}</button>`
+      : `<span class="vibe-search-type">${esc(typeLabel(item))}</span>`;
     return `<div class="vibe-search-row ${item.archived ? 'archived' : ''}" onclick="vibeOpenSearchResult('${esc(type)}','${esc(item.id || '')}')">
       ${avatarHtml(item)}
       <span><b>${esc(item.name || 'Без имени')}${item.verified && typeof badgeHtml === 'function' ? badgeHtml() : ''}</b><small>${esc(small)}</small></span>
-      <span class="vibe-search-type">${esc(typeLabel(item))}</span>
+      ${action}
     </div>`;
   }
 
@@ -14884,19 +14949,73 @@ window.openArchiveModal = function() {
     return null;
   }
 
+  async function findRoomByLink(query) {
+    const code = normalizeLink(query);
+    if (!code || typeof db === 'undefined') return null;
+    try {
+      const linkSnap = await db.ref(`roomLinks/${code}`).once('value');
+      const roomId = linkSnap.val();
+      if (roomId) return getRoom(roomId);
+    } catch (error) {}
+    try {
+      const roomsSnap = await db.ref('rooms').once('value');
+      const rooms = roomsSnap.val() || {};
+      const found = Object.entries(rooms).find(([, room]) => {
+        if (!room || room.type !== 'channel') return false;
+        return [room.inviteCode, room.publicLink, room.link, room.slug]
+          .map(normalizeLink)
+          .includes(code);
+      });
+      if (found) return { id: found[0], ...(found[1] || {}) };
+    } catch (error) {}
+    return null;
+  }
+
+  async function isFriend(userId) {
+    const user = meNow();
+    if (!user || !user.id || !userId) return false;
+    if ((window.vibeRoomState && window.vibeRoomState.friends && window.vibeRoomState.friends[userId]) || (user.friends && user.friends[userId])) return true;
+    try {
+      const snap = await db.ref(`users/${user.id}/friends/${userId}`).once('value');
+      return !!snap.val();
+    } catch (error) {
+      return false;
+    }
+  }
+
+  async function isRoomAdded(roomId) {
+    const user = meNow();
+    if (!user || !user.id || !roomId) return false;
+    if ((window.vibeRoomState && window.vibeRoomState.rooms && window.vibeRoomState.rooms[roomId]) || (user.archives && user.archives[roomId])) return true;
+    try {
+      const snap = await db.ref(`userRooms/${user.id}/${roomId}`).once('value');
+      return !!snap.val();
+    } catch (error) {
+      return false;
+    }
+  }
+
   async function collectSearchItems(query) {
     const user = meNow();
     if (!user || !user.id || typeof db === 'undefined') return [];
     const q = String(query || '').trim().toLowerCase();
     const clean = q.replace(/^@/, '');
+    const linkCode = normalizeLink(q);
     const seen = new Set();
     const items = [];
     const archivesSnap = await db.ref(`users/${user.id}/archives`).once('value').catch(() => null);
     const archives = (archivesSnap && archivesSnap.val()) || user.archives || {};
+    const friendsSnap = await db.ref(`users/${user.id}/friends`).once('value').catch(() => null);
+    const friendMap = (friendsSnap && friendsSnap.val()) || user.friends || {};
+    const roomIdsSnap = await db.ref(`userRooms/${user.id}`).once('value').catch(() => null);
+    const roomMap = (roomIdsSnap && roomIdsSnap.val()) || {};
 
     function add(item, type) {
       if (!item || !item.id) return;
       const normalized = { ...item, type:type || item.type || 'user', archived:!!archives[item.id] };
+      if (normalized.type === 'user') normalized.added = !!friendMap[item.id] || normalized.id === user.id || normalized.added === true;
+      else if (normalized.type === 'saved') normalized.added = true;
+      else normalized.added = !!roomMap[item.id] || !!archives[item.id] || normalized.added === true;
       const key = `${normalized.type}:${normalized.id}`;
       if (seen.has(key)) return;
       seen.add(key);
@@ -14907,12 +15026,10 @@ window.openArchiveModal = function() {
     localFriends().forEach(friend => add({ ...friend, type:'user' }, 'user'));
     localRooms().forEach(room => add(room, room.type || 'group'));
 
-    const friendsSnap = await db.ref(`users/${user.id}/friends`).once('value').catch(() => null);
-    const friendIds = Object.keys((friendsSnap && friendsSnap.val()) || user.friends || {});
+    const friendIds = Object.keys(friendMap || {});
     await Promise.all(friendIds.map(async id => add(await getUser(id), 'user')));
 
-    const roomIdsSnap = await db.ref(`userRooms/${user.id}`).once('value').catch(() => null);
-    const roomIds = Object.keys((roomIdsSnap && roomIdsSnap.val()) || {});
+    const roomIds = Object.keys(roomMap || {});
     await Promise.all(roomIds.map(async id => {
       const room = await getRoom(id);
       if (room) add(room, room.type || 'group');
@@ -14927,7 +15044,14 @@ window.openArchiveModal = function() {
 
     if (clean.length >= 2) {
       const handleId = await db.ref(`handles/${clean}`).once('value').then(s => s.val()).catch(() => null);
-      if (handleId) add(await getUser(handleId), 'user');
+      if (handleId) add({ ...(await getUser(handleId) || {}), added:!!friendMap[handleId] }, 'user');
+    }
+
+    if (linkCode.length >= 3) {
+      const linkedRoom = await findRoomByLink(linkCode);
+      if (linkedRoom && linkedRoom.type === 'channel') {
+        add({ ...linkedRoom, added:!!roomMap[linkedRoom.id] || !!archives[linkedRoom.id] }, 'channel');
+      }
     }
 
     const matches = item => {
@@ -14937,7 +15061,7 @@ window.openArchiveModal = function() {
         item.type === 'group' ? 'группа group' : '',
         item.archived ? 'архив archive' : ''
       ].join(' ').toLowerCase();
-      return hay.includes(q) || hay.includes(clean);
+      return hay.includes(q) || hay.includes(clean) || hay.includes(linkCode);
     };
 
     return items
@@ -14956,12 +15080,41 @@ window.openArchiveModal = function() {
     if (type === 'group' || type === 'channel') item = await getRoom(id);
     else item = await getUser(id);
     if (!item) return;
+    if (type === 'user' && !(await isFriend(id))) return;
+    if ((type === 'group' || type === 'channel') && !(await isRoomAdded(id))) return;
     saveRecent({ ...item, type:type || item.type });
     if (typeof window.vibeClosePeopleSearch === 'function') window.vibeClosePeopleSearch();
     setTimeout(() => {
       if ((window.innerWidth || 0) > 768 && typeof window.openPCChat === 'function') window.openPCChat(item);
       else if (typeof window.openMobChat === 'function') window.openMobChat(item);
     }, 120);
+  };
+
+  window.vibeAddSearchResult = async function(type, id) {
+    const user = meNow();
+    if (!user || !user.id || !id) return;
+    if (type === 'user') {
+      if (typeof addFriend === 'function') await addFriend(id);
+      else {
+        await db.ref(`users/${user.id}/friends/${id}`).set(true);
+        await db.ref(`users/${id}/friends/${user.id}`).set(true);
+      }
+    } else if (type === 'channel' || type === 'group') {
+      const room = await getRoom(id);
+      if (!room) return;
+      const requestOnly = room.type === 'channel' && room.isPublic === false;
+      if (typeof window.vibeAcceptPathChannel === 'function' && room.type === 'channel') {
+        await window.vibeAcceptPathChannel(id, requestOnly);
+      } else if (!requestOnly) {
+        await db.ref(`rooms/${id}/members/${user.id}`).set(true);
+        await db.ref(`userRooms/${user.id}/${id}`).set(true);
+      } else {
+        await db.ref(`rooms/${id}/joinRequests/${user.id}`).set({ userId:user.id, name:user.name || '', avatar:user.avatar || '👤', time:Date.now() });
+      }
+    }
+    markRecentAdded(type, id);
+    const input = $('vibe-people-search-input');
+    if (input && input.value.trim()) window.vibePeopleSearchInput(input.value);
   };
 
   window.vibePeopleSearchInput = async function(value) {
