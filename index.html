@@ -14711,20 +14711,20 @@ window.openArchiveModal = function() {
         max-height:0 !important;
         min-height:0 !important;
         margin:0 !important;
-        padding:0 20px !important;
+        padding:0 18px !important;
         opacity:0 !important;
         overflow:hidden !important;
-        transform:translateY(-96px) scale(.985) !important;
+        transform:translateY(-46px) scale(.985) !important;
         transition:max-height .28s cubic-bezier(.18,.9,.22,1), min-height .28s cubic-bezier(.18,.9,.22,1), opacity .18s ease, transform .28s cubic-bezier(.18,.9,.22,1), padding .28s ease, margin .28s ease !important;
         pointer-events:none !important;
       }
       #vibe-home-search.visible,
       #mob-home.vibe-search-pulled #vibe-home-search,
       #vibe-home-search.vibe-search-force-open {
-        max-height:108px !important;
-        min-height:88px !important;
-        margin:10px 0 16px !important;
-        padding:8px 20px 12px !important;
+        max-height:58px !important;
+        min-height:48px !important;
+        margin:4px 0 8px !important;
+        padding:2px 18px 6px !important;
         opacity:1 !important;
         overflow:visible !important;
         transform:translateY(0) scale(1) !important;
@@ -14735,25 +14735,25 @@ window.openArchiveModal = function() {
       }
       #vibe-home-search .vibe-home-search-box {
         width:100% !important;
-        height:72px !important;
-        min-height:72px !important;
+        height:42px !important;
+        min-height:42px !important;
         box-sizing:border-box !important;
         border-radius:999px !important;
         pointer-events:auto !important;
         background:#050505 !important;
         border:1px solid rgba(255,255,255,.035) !important;
-        box-shadow:0 18px 42px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.045) !important;
+        box-shadow:0 8px 18px rgba(0,0,0,.26), inset 0 1px 0 rgba(255,255,255,.045) !important;
         display:flex !important;
         justify-content:center !important;
-        gap:14px !important;
+        gap:8px !important;
       }
       #vibe-home-search .vibe-home-search-box input {
         width:auto !important;
-        max-width:210px !important;
+        max-width:110px !important;
         flex:0 1 auto !important;
-        height:72px !important;
+        height:42px !important;
         color:rgba(255,255,255,.62) !important;
-        font-size:30px !important;
+        font-size:18px !important;
         font-weight:500 !important;
         text-align:left !important;
         pointer-events:none !important;
@@ -14763,8 +14763,8 @@ window.openArchiveModal = function() {
         opacity:1 !important;
       }
       #vibe-home-search .vibe-home-search-box svg {
-        width:34px !important;
-        height:34px !important;
+        width:21px !important;
+        height:21px !important;
         color:rgba(255,255,255,.54) !important;
       }
       .vibe-search-type {
@@ -14853,7 +14853,9 @@ window.openArchiveModal = function() {
   function getRecents() {
     try {
       const list = JSON.parse(localStorage.getItem(searchKey()) || '[]');
-      return Array.isArray(list) ? list.filter(Boolean).slice(0, 10) : [];
+      return Array.isArray(list)
+        ? list.filter(Boolean).sort((a, b) => (b.score || 0) - (a.score || 0) || (b.openedAt || 0) - (a.openedAt || 0)).slice(0, 10)
+        : [];
     } catch (error) {
       return [];
     }
@@ -14861,18 +14863,23 @@ window.openArchiveModal = function() {
 
   function saveRecent(item) {
     if (!item || !item.id) return;
+    const type = item.type || (isRoom(item) ? item.type : 'user');
+    const previous = getRecents().find(old => old.id === item.id && (old.type || 'user') === type) || {};
+    const openedAt = Date.now();
     const recent = {
       id:item.id,
-      type:item.type || (isRoom(item) ? item.type : 'user'),
+      type,
       name:item.name || 'Без имени',
       handle:item.handle || item.inviteCode || item.publicLink || '',
       avatar:item.avatar || (item.type === 'channel' ? '📣' : item.type === 'group' ? '👥' : '👤'),
       avatarPhoto:avatarUrl(item),
       verified:!!item.verified,
       archived:!!item.archived,
-      added:item.added !== false
+      added:item.added !== false,
+      score:(previous.score || 0) + 1,
+      openedAt
     };
-    const list = [recent].concat(getRecents().filter(old => !(old.id === recent.id && old.type === recent.type))).slice(0, 10);
+    const list = [recent].concat(getRecents().filter(old => !(old.id === recent.id && (old.type || 'user') === recent.type))).slice(0, 10);
     localStorage.setItem(searchKey(), JSON.stringify(list));
   }
 
@@ -14921,7 +14928,12 @@ window.openArchiveModal = function() {
   function renderRecents() {
     const list = $('vibe-people-search-recents');
     if (!list) return;
+    const title = list.previousElementSibling && list.previousElementSibling.classList.contains('vibe-search-section-title')
+      ? list.previousElementSibling
+      : null;
     const recents = getRecents();
+    if (title) title.style.display = '';
+    list.style.display = '';
     list.innerHTML = recents.length
       ? recents.map(item => rowHtml(item, true)).join('')
       : '<div class="vibe-search-empty">Недавних поисков пока нет</div>';
@@ -15073,6 +15085,8 @@ window.openArchiveModal = function() {
   window.vibeOpenSearchResult = async function(type, id) {
     let item = null;
     if (type === 'saved') {
+      const user = meNow();
+      if (user && user.id) saveRecent({ id:`saved_${user.id}`, name:'Избранное', avatar:'⭐', type:'saved', handle:'Личное хранилище', added:true });
       if (typeof window.openFavorites === 'function') window.openFavorites();
       if (typeof window.vibeClosePeopleSearch === 'function') window.vibeClosePeopleSearch();
       return;
@@ -15120,13 +15134,24 @@ window.openArchiveModal = function() {
   window.vibePeopleSearchInput = async function(value) {
     const results = $('vibe-people-search-results');
     const title = $('vibe-people-search-results-title');
+    const recents = $('vibe-people-search-recents');
+    const recentsTitle = recents && recents.previousElementSibling && recents.previousElementSibling.classList.contains('vibe-search-section-title')
+      ? recents.previousElementSibling
+      : null;
     if (!results || !title) return;
     const query = String(value || '').trim();
     if (query.length < 2) {
       title.style.display = 'none';
       results.innerHTML = '';
+      if (recentsTitle) recentsTitle.style.display = '';
+      if (recents) {
+        recents.style.display = '';
+        renderRecents();
+      }
       return;
     }
+    if (recentsTitle) recentsTitle.style.display = 'none';
+    if (recents) recents.style.display = 'none';
     title.style.display = '';
     results.innerHTML = '<div class="vibe-search-empty">Ищу...</div>';
     try {
@@ -15135,8 +15160,6 @@ window.openArchiveModal = function() {
         results.innerHTML = '<div class="vibe-search-empty">Ничего не найдено</div>';
         return;
       }
-      found.slice(0, 3).forEach(saveRecent);
-      renderRecents();
       results.innerHTML = found.map(item => rowHtml(item, false)).join('');
     } catch (error) {
       results.innerHTML = '<div class="vibe-search-empty">Поиск сейчас недоступен</div>';
@@ -15149,8 +15172,35 @@ window.openArchiveModal = function() {
     setTimeout(renderRecents, 0);
   };
 
+  function rememberOpenedChat(item) {
+    if (!item || !item.id) return;
+    const user = meNow();
+    const type = item.isSaved || (user && item.id === `saved_${user.id}`)
+      ? 'saved'
+      : item.type || (isRoom(item) ? item.type : 'user');
+    saveRecent({ ...item, type, added:true });
+  }
+
+  function patchOpeners() {
+    if (window.__vibeRecentOpenersPatched) return;
+    if (typeof window.openPCChat !== 'function' || typeof window.openMobChat !== 'function') return;
+    window.__vibeRecentOpenersPatched = true;
+    const basePC = window.openPCChat;
+    const baseMob = window.openMobChat;
+    window.openPCChat = function(item, ...rest) {
+      rememberOpenedChat(item);
+      return basePC.call(this, item, ...rest);
+    };
+    window.openMobChat = function(item, ...rest) {
+      rememberOpenedChat(item);
+      return baseMob.call(this, item, ...rest);
+    };
+  }
+
   keepRevealBound();
   setInterval(keepRevealBound, 500);
+  patchOpeners();
+  setInterval(patchOpeners, 700);
 })();
 </script>
 <script id="codex-search-open-hard-fix">
