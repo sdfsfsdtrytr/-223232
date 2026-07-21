@@ -14672,6 +14672,334 @@ window.openArchiveModal = function() {
   window.addEventListener('resize', () => setTimeout(boot, 180));
 })();
 </script>
+<script id="codex-search-full-reveal-and-global-results">
+(() => {
+  if (window.__vibeSearchFullRevealAndResults) return;
+  window.__vibeSearchFullRevealAndResults = true;
+
+  const $ = id => document.getElementById(id);
+  const esc = value => String(value ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  const meNow = () => {
+    try { if (typeof me !== 'undefined' && me) return me; } catch (error) {}
+    try { return JSON.parse(localStorage.getItem('liquid_pro_v32') || 'null'); } catch (error) { return null; }
+  };
+  const isRoom = item => item && (item.type === 'group' || item.type === 'channel');
+  const localFriends = () => Object.values((window.vibeRoomState && window.vibeRoomState.friends) || {});
+  const localRooms = () => Object.values((window.vibeRoomState && window.vibeRoomState.rooms) || {});
+  const avatarUrl = item => item && (item.avatarPhoto || item.photoURL || item.avatarUrl || item.photo || '');
+
+  function installStyle() {
+    if ($('codex-search-full-reveal-style')) return;
+    const style = document.createElement('style');
+    style.id = 'codex-search-full-reveal-style';
+    style.textContent = `
+      #mob-home {
+        overscroll-behavior-y:contain;
+      }
+      #vibe-home-search {
+        display:block !important;
+        max-height:0 !important;
+        min-height:0 !important;
+        margin:0 !important;
+        padding:0 16px !important;
+        opacity:0 !important;
+        overflow:hidden !important;
+        transform:translateY(-58px) scale(.985) !important;
+        transition:max-height .28s cubic-bezier(.18,.9,.22,1), min-height .28s cubic-bezier(.18,.9,.22,1), opacity .18s ease, transform .28s cubic-bezier(.18,.9,.22,1), padding .28s ease, margin .28s ease !important;
+        pointer-events:none !important;
+      }
+      #vibe-home-search.visible,
+      #mob-home.vibe-search-pulled #vibe-home-search,
+      #vibe-home-search.vibe-search-force-open {
+        max-height:68px !important;
+        min-height:60px !important;
+        margin:4px 0 10px !important;
+        padding:4px 16px 8px !important;
+        opacity:1 !important;
+        overflow:visible !important;
+        transform:translateY(0) scale(1) !important;
+        pointer-events:auto !important;
+      }
+      #vibe-home-search .vibe-home-search-title {
+        display:none !important;
+      }
+      #vibe-home-search .vibe-home-search-box {
+        width:100% !important;
+        height:48px !important;
+        min-height:48px !important;
+        box-sizing:border-box !important;
+        border-radius:999px !important;
+        pointer-events:auto !important;
+      }
+      #vibe-home-search .vibe-home-search-box input {
+        height:48px !important;
+        pointer-events:none !important;
+      }
+      .vibe-search-type {
+        min-width:78px;
+        height:30px;
+        border-radius:999px;
+        display:inline-flex;
+        align-items:center;
+        justify-content:center;
+        background:rgba(255,255,255,.10);
+        color:rgba(255,255,255,.68);
+        font-size:11px;
+        font-weight:900;
+      }
+      .vibe-search-row.archived {
+        border-color:rgba(255,255,255,.18);
+        background:rgba(255,255,255,.105);
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  function setHomeSearchVisible(visible) {
+    const home = $('mob-home');
+    const search = $('vibe-home-search');
+    if (!home || !search) return;
+    search.classList.toggle('visible', !!visible);
+    search.classList.toggle('vibe-search-force-open', !!visible);
+    home.classList.toggle('vibe-search-pulled', !!visible);
+    home.dataset.vibeSearchPinned = visible ? '1' : '';
+  }
+
+  function bindFullReveal() {
+    installStyle();
+    const home = $('mob-home');
+    const search = $('vibe-home-search');
+    if (!home || !search || home.dataset.vibeFullSearchReveal === '1') return;
+    home.dataset.vibeFullSearchReveal = '1';
+    let startY = 0;
+    let startX = 0;
+    home.addEventListener('touchstart', event => {
+      const touch = event.touches && event.touches[0];
+      if (!touch) return;
+      startY = touch.clientY;
+      startX = touch.clientX;
+    }, { capture:true, passive:true });
+    home.addEventListener('touchmove', event => {
+      const touch = event.touches && event.touches[0];
+      if (!touch || !startY) return;
+      const dy = touch.clientY - startY;
+      const dx = Math.abs(touch.clientX - startX);
+      if (home.scrollTop <= 3 && dy > 18 && dx < 80) {
+        setHomeSearchVisible(true);
+      }
+    }, { capture:true, passive:true });
+    home.addEventListener('scroll', () => {
+      if (home.scrollTop > 12) setHomeSearchVisible(false);
+      else if (home.dataset.vibeSearchPinned === '1') setHomeSearchVisible(true);
+    }, { capture:true, passive:true });
+  }
+
+  function keepRevealBound() {
+    installStyle();
+    if ($('vibe-home-search')) bindFullReveal();
+  }
+
+  function searchKey() {
+    const user = meNow();
+    return `vibe_recent_people_search_${user && user.id ? user.id : 'guest'}`;
+  }
+
+  function getRecents() {
+    try {
+      const list = JSON.parse(localStorage.getItem(searchKey()) || '[]');
+      return Array.isArray(list) ? list.filter(Boolean).slice(0, 10) : [];
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function saveRecent(item) {
+    if (!item || !item.id) return;
+    const recent = {
+      id:item.id,
+      type:item.type || (isRoom(item) ? item.type : 'user'),
+      name:item.name || 'Без имени',
+      handle:item.handle || item.inviteCode || item.publicLink || '',
+      avatar:item.avatar || (item.type === 'channel' ? '📣' : item.type === 'group' ? '👥' : '👤'),
+      avatarPhoto:avatarUrl(item),
+      verified:!!item.verified,
+      archived:!!item.archived
+    };
+    const list = [recent].concat(getRecents().filter(old => !(old.id === recent.id && old.type === recent.type))).slice(0, 10);
+    localStorage.setItem(searchKey(), JSON.stringify(list));
+  }
+
+  function avatarHtml(item) {
+    const photo = avatarUrl(item);
+    if (photo) return `<span class="avatar-emoji has-photo" style="background-image:url('${esc(photo)}');background-size:cover;background-position:center;color:transparent;"></span>`;
+    return `<span class="avatar-emoji">${esc(item.avatar || (item.type === 'channel' ? '📣' : item.type === 'group' ? '👥' : '👤'))}</span>`;
+  }
+
+  function typeLabel(item) {
+    if (item.archived) return 'Архив';
+    if (item.type === 'channel') return 'Канал';
+    if (item.type === 'group') return 'Группа';
+    if (item.type === 'saved') return 'Избранное';
+    return 'Друг';
+  }
+
+  function rowHtml(item, recent = false) {
+    const type = item.type || 'user';
+    const small = item.handle || item.bio || (recent ? 'Недавний поиск' : typeLabel(item));
+    return `<div class="vibe-search-row ${item.archived ? 'archived' : ''}" onclick="vibeOpenSearchResult('${esc(type)}','${esc(item.id || '')}')">
+      ${avatarHtml(item)}
+      <span><b>${esc(item.name || 'Без имени')}${item.verified && typeof badgeHtml === 'function' ? badgeHtml() : ''}</b><small>${esc(small)}</small></span>
+      <span class="vibe-search-type">${esc(typeLabel(item))}</span>
+    </div>`;
+  }
+
+  function renderRecents() {
+    const list = $('vibe-people-search-recents');
+    if (!list) return;
+    const recents = getRecents();
+    list.innerHTML = recents.length
+      ? recents.map(item => rowHtml(item, true)).join('')
+      : '<div class="vibe-search-empty">Недавних поисков пока нет</div>';
+  }
+
+  async function getUser(id) {
+    if (!id) return null;
+    const cached = localFriends().find(item => item && item.id === id);
+    if (cached) return { ...cached, type:'user' };
+    try {
+      const snap = await db.ref(`users/${id}`).once('value');
+      if (snap.exists()) return { id, ...(snap.val() || {}), type:'user' };
+    } catch (error) {}
+    return null;
+  }
+
+  async function getRoom(id) {
+    if (!id) return null;
+    const cached = localRooms().find(item => item && item.id === id);
+    if (cached) return { ...cached };
+    try {
+      const snap = await db.ref(`rooms/${id}`).once('value');
+      if (snap.exists()) return { id, ...(snap.val() || {}) };
+    } catch (error) {}
+    return null;
+  }
+
+  async function collectSearchItems(query) {
+    const user = meNow();
+    if (!user || !user.id || typeof db === 'undefined') return [];
+    const q = String(query || '').trim().toLowerCase();
+    const clean = q.replace(/^@/, '');
+    const seen = new Set();
+    const items = [];
+    const archivesSnap = await db.ref(`users/${user.id}/archives`).once('value').catch(() => null);
+    const archives = (archivesSnap && archivesSnap.val()) || user.archives || {};
+
+    function add(item, type) {
+      if (!item || !item.id) return;
+      const normalized = { ...item, type:type || item.type || 'user', archived:!!archives[item.id] };
+      const key = `${normalized.type}:${normalized.id}`;
+      if (seen.has(key)) return;
+      seen.add(key);
+      items.push(normalized);
+    }
+
+    add({ id:`saved_${user.id}`, name:'Избранное', avatar:'⭐', type:'saved', handle:'Личное хранилище' }, 'saved');
+    localFriends().forEach(friend => add({ ...friend, type:'user' }, 'user'));
+    localRooms().forEach(room => add(room, room.type || 'group'));
+
+    const friendsSnap = await db.ref(`users/${user.id}/friends`).once('value').catch(() => null);
+    const friendIds = Object.keys((friendsSnap && friendsSnap.val()) || user.friends || {});
+    await Promise.all(friendIds.map(async id => add(await getUser(id), 'user')));
+
+    const roomIdsSnap = await db.ref(`userRooms/${user.id}`).once('value').catch(() => null);
+    const roomIds = Object.keys((roomIdsSnap && roomIdsSnap.val()) || {});
+    await Promise.all(roomIds.map(async id => {
+      const room = await getRoom(id);
+      if (room) add(room, room.type || 'group');
+    }));
+
+    await Promise.all(Object.keys(archives || {}).map(async id => {
+      const room = await getRoom(id);
+      if (room) return add({ ...room, archived:true }, room.type || 'group');
+      const archivedUser = await getUser(id);
+      if (archivedUser) add({ ...archivedUser, archived:true }, 'user');
+    }));
+
+    if (clean.length >= 2) {
+      const handleId = await db.ref(`handles/${clean}`).once('value').then(s => s.val()).catch(() => null);
+      if (handleId) add(await getUser(handleId), 'user');
+    }
+
+    const matches = item => {
+      const hay = [
+        item.name, item.handle, item.bio, item.inviteCode, item.publicLink, item.link, item.slug,
+        item.type === 'channel' ? 'канал channel' : '',
+        item.type === 'group' ? 'группа group' : '',
+        item.archived ? 'архив archive' : ''
+      ].join(' ').toLowerCase();
+      return hay.includes(q) || hay.includes(clean);
+    };
+
+    return items
+      .filter(item => q.length < 2 ? item.archived : matches(item))
+      .sort((a, b) => Number(!!b.archived) - Number(!!a.archived) || String(a.name || '').localeCompare(String(b.name || ''), 'ru'))
+      .slice(0, 30);
+  }
+
+  window.vibeOpenSearchResult = async function(type, id) {
+    let item = null;
+    if (type === 'saved') {
+      if (typeof window.openFavorites === 'function') window.openFavorites();
+      if (typeof window.vibeClosePeopleSearch === 'function') window.vibeClosePeopleSearch();
+      return;
+    }
+    if (type === 'group' || type === 'channel') item = await getRoom(id);
+    else item = await getUser(id);
+    if (!item) return;
+    saveRecent({ ...item, type:type || item.type });
+    if (typeof window.vibeClosePeopleSearch === 'function') window.vibeClosePeopleSearch();
+    setTimeout(() => {
+      if ((window.innerWidth || 0) > 768 && typeof window.openPCChat === 'function') window.openPCChat(item);
+      else if (typeof window.openMobChat === 'function') window.openMobChat(item);
+    }, 120);
+  };
+
+  window.vibePeopleSearchInput = async function(value) {
+    const results = $('vibe-people-search-results');
+    const title = $('vibe-people-search-results-title');
+    if (!results || !title) return;
+    const query = String(value || '').trim();
+    if (query.length < 2) {
+      title.style.display = 'none';
+      results.innerHTML = '';
+      return;
+    }
+    title.style.display = '';
+    results.innerHTML = '<div class="vibe-search-empty">Ищу...</div>';
+    try {
+      const found = await collectSearchItems(query);
+      if (!found.length) {
+        results.innerHTML = '<div class="vibe-search-empty">Ничего не найдено</div>';
+        return;
+      }
+      found.slice(0, 3).forEach(saveRecent);
+      renderRecents();
+      results.innerHTML = found.map(item => rowHtml(item, false)).join('');
+    } catch (error) {
+      results.innerHTML = '<div class="vibe-search-empty">Поиск сейчас недоступен</div>';
+    }
+  };
+
+  const baseOpen = window.vibeOpenPeopleSearch;
+  window.vibeOpenPeopleSearch = function() {
+    if (typeof baseOpen === 'function') baseOpen();
+    setTimeout(renderRecents, 0);
+  };
+
+  keepRevealBound();
+  setInterval(keepRevealBound, 500);
+})();
+</script>
 <script id="codex-search-open-hard-fix">
 (() => {
   if (window.__vibeSearchOpenHardFix) return;
