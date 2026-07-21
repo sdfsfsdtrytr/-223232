@@ -15272,5 +15272,150 @@ window.openArchiveModal = function() {
   setInterval(bindSearchBox, 500);
 })();
 </script>
+<script id="codex-search-thin-strip-final">
+(() => {
+  const STYLE_ID = 'codex-search-thin-strip-final-style';
+  function installThinSearchStyle() {
+    let style = document.getElementById(STYLE_ID);
+    if (!style) {
+      style = document.createElement('style');
+      style.id = STYLE_ID;
+      document.head.appendChild(style);
+    }
+    style.textContent = `
+      #vibe-home-search {
+        max-height: 0 !important;
+        min-height: 0 !important;
+        margin: 0 !important;
+        padding: 0 18px !important;
+        opacity: 0 !important;
+        overflow: hidden !important;
+        transform: translate3d(0, -38px, 0) scale(.99) !important;
+        transition: max-height .28s cubic-bezier(.2,.85,.2,1), opacity .22s ease, transform .28s cubic-bezier(.2,.85,.2,1), margin .28s ease, padding .28s ease !important;
+      }
+      #vibe-home-search.visible,
+      #mob-home.vibe-search-pulled #vibe-home-search,
+      #vibe-home-search.vibe-search-force-open {
+        max-height: 44px !important;
+        min-height: 36px !important;
+        margin: 2px 0 6px !important;
+        padding: 0 18px 4px !important;
+        opacity: 1 !important;
+        overflow: visible !important;
+        transform: translate3d(0, 0, 0) scale(1) !important;
+        pointer-events: auto !important;
+      }
+      #vibe-home-search .vibe-home-search-box {
+        width: 100% !important;
+        height: 34px !important;
+        min-height: 34px !important;
+        max-height: 34px !important;
+        padding: 0 14px !important;
+        border-radius: 999px !important;
+        background: #050505 !important;
+        border: 1px solid rgba(255,255,255,.035) !important;
+        box-shadow: 0 6px 14px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.04) !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 7px !important;
+        box-sizing: border-box !important;
+      }
+      #vibe-home-search .vibe-home-search-box svg {
+        width: 18px !important;
+        height: 18px !important;
+        min-width: 18px !important;
+        flex: 0 0 18px !important;
+        color: rgba(255,255,255,.56) !important;
+        stroke-width: 2.2 !important;
+      }
+      #vibe-home-search .vibe-home-search-box input {
+        width: auto !important;
+        max-width: 74px !important;
+        height: 34px !important;
+        min-height: 34px !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        border: 0 !important;
+        background: transparent !important;
+        color: rgba(255,255,255,.58) !important;
+        font-size: 16px !important;
+        line-height: 34px !important;
+        font-weight: 600 !important;
+        letter-spacing: 0 !important;
+        text-align: left !important;
+      }
+      #vibe-home-search .vibe-home-search-box input::placeholder {
+        color: rgba(255,255,255,.58) !important;
+        opacity: 1 !important;
+      }
+      @media (max-width: 560px) {
+        #vibe-home-search.visible,
+        #mob-home.vibe-search-pulled #vibe-home-search,
+        #vibe-home-search.vibe-search-force-open {
+          max-height: 42px !important;
+          min-height: 34px !important;
+          margin: 0 0 6px !important;
+          padding: 0 16px 4px !important;
+        }
+        #vibe-home-search .vibe-home-search-box {
+          height: 32px !important;
+          min-height: 32px !important;
+          max-height: 32px !important;
+        }
+        #vibe-home-search .vibe-home-search-box input {
+          height: 32px !important;
+          min-height: 32px !important;
+          font-size: 15px !important;
+          line-height: 32px !important;
+          max-width: 70px !important;
+        }
+        #vibe-home-search .vibe-home-search-box svg {
+          width: 17px !important;
+          height: 17px !important;
+          min-width: 17px !important;
+          flex-basis: 17px !important;
+        }
+      }
+    `;
+  }
+
+  function getSearchTitleBefore(node) {
+    const prev = node && node.previousElementSibling;
+    return prev && prev.classList && prev.classList.contains('vibe-search-section-title') ? prev : null;
+  }
+
+  function syncRecentAndResults() {
+    const input = document.getElementById('vibe-people-search-input');
+    const recents = document.getElementById('vibe-people-search-recents');
+    const results = document.getElementById('vibe-people-search-results');
+    const resultsTitle = document.getElementById('vibe-people-search-results-title');
+    if (!input || !recents) return;
+    const hasQuery = input.value.trim().length >= 2;
+    const recentsTitle = getSearchTitleBefore(recents);
+    recents.style.display = hasQuery ? 'none' : '';
+    if (recentsTitle) recentsTitle.style.display = hasQuery ? 'none' : '';
+    if (!hasQuery) {
+      if (results) results.innerHTML = '';
+      if (resultsTitle) resultsTitle.style.display = 'none';
+    }
+  }
+
+  installThinSearchStyle();
+  document.addEventListener('input', (event) => {
+    if (event.target && event.target.id === 'vibe-people-search-input') {
+      setTimeout(syncRecentAndResults, 0);
+    }
+  }, true);
+  document.addEventListener('DOMContentLoaded', () => {
+    installThinSearchStyle();
+    syncRecentAndResults();
+  });
+  setInterval(() => {
+    installThinSearchStyle();
+    syncRecentAndResults();
+  }, 900);
+})();
+</script>
 </body>
 </html>
