@@ -889,7 +889,6 @@ button:disabled {
         <div class="menu-item" onclick="prepareReply()"><svg viewBox="0 0 24 24"><path d="M10.9 5.6L4.5 12l6.4 6.4V14h5.1c2.1 0 3.9 1.7 3.9 3.8V20c0-3.9-2.5-7.3-6.2-8.6V8.2l-3.2-2.6z"/></svg><span>Ответить</span></div>
         <div class="menu-item" onclick="doCopy()"><svg viewBox="0 0 24 24"><path d="M16 1H6C4.9 1 4 1.9 4 3v12h2V3h10V1zm3 4H10c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h9c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H10V7h9v14z"/></svg><span>Скопировать</span></div>
         <div class="menu-item" onclick="sendToFavorites()"><svg viewBox="0 0 24 24"><path d="M12 17.3L6.2 21l1.6-6.6L2.8 10l6.8-.6L12 3l2.4 6.4 6.8.6-5 4.4L17.8 21z"/></svg><span>В избранное</span></div>
-        <div class="menu-item feature-edit-message-action" id="feature-edit-message-action" onclick="featureOpenMessageEditor()"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zm17.71-10.04a1.003 1.003 0 0 0 0-1.42l-2.5-2.5a1.003 1.003 0 0 0-1.42 0l-1.96 1.96 3.75 3.75 2.13-1.79z"/></svg><span>Редактировать</span></div>
         <div class="menu-item" style="color:#ea868f" id="btn-del-all" onclick="deleteMessage('all')"><svg viewBox="0 0 24 24"><path d="M9 3h6l1 2h5v2H3V5h5l1-2zm1 6h2v9h-2V9zm4 0h2v9h-2V9zM6 7h12l-1 13H7L6 7z"/></svg><span>Удалить у всех</span></div>
         <div class="menu-item" style="color:#ea868f" onclick="deleteMessage('me')"><svg viewBox="0 0 24 24"><path d="M9 3h6l1 2h5v2H3V5h5l1-2zm1 6h2v9h-2V9zm4 0h2v9h-2V9zM6 7h12l-1 13H7L6 7z"/></svg><span>Удалить у меня</span></div>
     </div>
@@ -12087,6 +12086,97 @@ window.openArchiveModal = function() {
         color:#fff;
         font-weight:850;
       }
+      .vibe-mobile-info-panel,
+      .vibe-room-editor-panel {
+        min-height:100%;
+      }
+      @media (min-width:769px) {
+        .vibe-mobile-info {
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          padding:24px;
+          background:rgba(0,0,0,.48);
+          backdrop-filter:blur(22px) saturate(150%);
+          -webkit-backdrop-filter:blur(22px) saturate(150%);
+          overflow:hidden;
+          animation:vibeDesktopOverlayIn .22s ease both;
+        }
+        .vibe-mobile-info.closing {
+          animation:vibeDesktopOverlayOut .24s ease both;
+        }
+        .vibe-mobile-info-panel {
+          width:min(438px, calc(100vw - 48px));
+          max-height:min(760px, calc(100vh - 48px));
+          min-height:0;
+          overflow-y:auto;
+          border-radius:32px;
+          background:#000;
+          box-shadow:0 28px 90px rgba(0,0,0,.56), inset 0 0 0 1px rgba(255,255,255,.10);
+          animation:vibeInfoIn .38s cubic-bezier(.18,.9,.22,1) both;
+        }
+        .vibe-mobile-info.closing .vibe-mobile-info-panel {
+          animation:vibeInfoOut .26s cubic-bezier(.4,0,.2,1) both;
+        }
+        .vibe-mobile-info-hero {
+          min-height:320px;
+          padding:18px 18px 20px;
+        }
+        .vibe-mobile-info-actions {
+          margin-top:26px;
+        }
+        .vibe-info-body {
+          padding:18px 18px 22px;
+        }
+        .vibe-info-round:hover,
+        .vibe-info-edit:hover,
+        .vibe-info-action:hover,
+        .vibe-editor-round:hover,
+        .vibe-editor-link:hover {
+          background:rgba(255,255,255,.16);
+        }
+        .vibe-room-editor {
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          padding:24px;
+          background:rgba(0,0,0,.50);
+          backdrop-filter:blur(22px) saturate(150%);
+          -webkit-backdrop-filter:blur(22px) saturate(150%);
+          overflow:hidden;
+          animation:vibeDesktopOverlayIn .22s ease both;
+        }
+        .vibe-room-editor.closing {
+          animation:vibeDesktopOverlayOut .24s ease both;
+        }
+        .vibe-room-editor-panel {
+          width:min(460px, calc(100vw - 48px));
+          max-height:min(780px, calc(100vh - 48px));
+          min-height:0;
+          overflow-y:auto;
+          padding:22px 20px 24px;
+          border-radius:32px;
+          background:#000;
+          box-shadow:0 28px 90px rgba(0,0,0,.56), inset 0 0 0 1px rgba(255,255,255,.10);
+          animation:vibeRoomEditorIn .36s cubic-bezier(.18,.9,.22,1) both;
+        }
+        .vibe-room-editor.closing .vibe-room-editor-panel {
+          animation:vibeRoomEditorOut .24s ease both;
+        }
+        .vibe-editor-section-label,
+        .vibe-editor-note {
+          margin-left:18px;
+          margin-right:18px;
+        }
+        @keyframes vibeDesktopOverlayIn {
+          from { opacity:0; }
+          to { opacity:1; }
+        }
+        @keyframes vibeDesktopOverlayOut {
+          from { opacity:1; }
+          to { opacity:0; }
+        }
+      }
       @keyframes vibeSearchIn { from{opacity:0; transform:translateY(-12px)} to{opacity:1; transform:translateY(0)} }
       @media (max-width:390px) {
         .vibe-mobile-info-actions { gap:7px; }
@@ -12456,7 +12546,7 @@ window.openArchiveModal = function() {
     document.querySelectorAll('.vibe-room-editor').forEach(el => el.remove());
     const editor = document.createElement('div');
     editor.className = 'vibe-room-editor';
-    editor.innerHTML = `${editorTop(title, done, back)}${body}`;
+    editor.innerHTML = `<div class="vibe-room-editor-panel">${editorTop(title, done, back)}${body}</div>`;
     document.body.appendChild(editor);
   }
 
@@ -12594,7 +12684,18 @@ window.openArchiveModal = function() {
     const room = await freshRoom(roomId);
     if (!canEditRoom(room)) return;
     const app = appearanceOf(room);
-    const swatches = ['#956634','#29a018','#0d8adf','#7c3aed','#c0265c','#b45309','#111827','#0f766e','#be123c','#475569'];
+    const swatches = [
+      '#956634','#29a018','#0d8adf','#7c3aed','#c0265c','#b45309','#111827','#0f766e','#be123c','#475569',
+      '#16a34a','#0891b2','#2563eb','#9333ea','#e11d48','#f97316','#84cc16','#14b8a6','#64748b','#020617',
+      'linear-gradient(135deg, #67cdf0, #4e83d4)',
+      'linear-gradient(135deg, #b7dc5b, #3f9c48)',
+      'linear-gradient(135deg, #f6b43f, #da6b42)',
+      'linear-gradient(135deg, #ff9b69, #d54b67)',
+      'linear-gradient(135deg, #d87cff, #6d57d5)',
+      'linear-gradient(135deg, #70e0c4, #3b9cd7)',
+      'linear-gradient(135deg, #f693ae, #cb4c95)',
+      'linear-gradient(135deg, #c7d0d8, #9cabb8)'
+    ];
     const photo = photoOf(room);
     const avatar = photo
       ? `<div class="vibe-editor-avatar" style="position:relative;background-image:url('${safeUrl(photo)}');width:88px;height:88px;"></div>`
@@ -12789,27 +12890,29 @@ window.openArchiveModal = function() {
     panel.style.setProperty('--info-bg', app.color);
     panel.style.setProperty('--info-pattern', patternOf(app.emoji));
     panel.innerHTML = `
-      <section class="vibe-mobile-info-hero">
-        <div class="vibe-mobile-info-top">
-          <button class="vibe-info-round" type="button" onclick="document.querySelector('.vibe-mobile-info') && document.querySelector('.vibe-mobile-info').classList.add('closing'); setTimeout(()=>{document.querySelectorAll('.vibe-mobile-info').forEach(e=>e.remove());document.body.classList.remove('vibe-profile-open')},230)">${icon('back')}</button>
-          ${editButton}
-        </div>
-        <div class="vibe-mobile-info-main">
-          ${avatarMarkup(peer)}
-          <div class="vibe-mobile-info-name">${esc(peer.name || 'Без имени')}${verified}</div>
-          <div class="vibe-mobile-info-status"><span>${esc(presence(peer))}</span></div>
-        </div>
-        <div class="vibe-mobile-info-actions ${isChannel ? 'channel-actions' : ''}">
-          ${actionButtons}
-        </div>
-      </section>
-      <section class="vibe-info-body">
-        ${isRoomItem(peer) ? `<div class="vibe-info-channel-label"><span>${peer.type === 'channel' ? 'Канал' : 'Группа'}</span><span>${Object.keys(peer.members || {}).length} участника</span></div>` : ''}
-        <div class="vibe-info-card">
-          <div class="vibe-info-row"${firstInfoAction}><div><label>${firstInfoLabel}</label><div>${esc(firstInfoValue)}</div></div>${icon(isChannel ? 'link' : 'user')}</div>
-          <div class="vibe-info-row"><div><label>о себе</label><div>${esc(bio)}</div></div>${icon('about')}</div>
-        </div>
-      </section>
+      <div class="vibe-mobile-info-panel">
+        <section class="vibe-mobile-info-hero">
+          <div class="vibe-mobile-info-top">
+            <button class="vibe-info-round" type="button" onclick="document.querySelector('.vibe-mobile-info') && document.querySelector('.vibe-mobile-info').classList.add('closing'); setTimeout(()=>{document.querySelectorAll('.vibe-mobile-info').forEach(e=>e.remove());document.body.classList.remove('vibe-profile-open')},230)">${icon('back')}</button>
+            ${editButton}
+          </div>
+          <div class="vibe-mobile-info-main">
+            ${avatarMarkup(peer)}
+            <div class="vibe-mobile-info-name">${esc(peer.name || 'Без имени')}${verified}</div>
+            <div class="vibe-mobile-info-status"><span>${esc(presence(peer))}</span></div>
+          </div>
+          <div class="vibe-mobile-info-actions ${isChannel ? 'channel-actions' : ''}">
+            ${actionButtons}
+          </div>
+        </section>
+        <section class="vibe-info-body">
+          ${isRoomItem(peer) ? `<div class="vibe-info-channel-label"><span>${peer.type === 'channel' ? 'Канал' : 'Группа'}</span><span>${Object.keys(peer.members || {}).length} участника</span></div>` : ''}
+          <div class="vibe-info-card">
+            <div class="vibe-info-row"${firstInfoAction}><div><label>${firstInfoLabel}</label><div>${esc(firstInfoValue)}</div></div>${icon(isChannel ? 'link' : 'user')}</div>
+            <div class="vibe-info-row"><div><label>о себе</label><div>${esc(bio)}</div></div>${icon('about')}</div>
+          </div>
+        </section>
+      </div>
     `;
     document.body.appendChild(panel);
     document.body.classList.add('vibe-profile-open');
@@ -13011,9 +13114,6 @@ window.openArchiveModal = function() {
   }
 
   window.showPeerProfile = async function() {
-    if (!isMobile()) {
-      return typeof oldShowPeerProfile === 'function' ? oldShowPeerProfile() : undefined;
-    }
     const peer = await freshPeer();
     if (!peer) return;
     renderInfo(peer);
@@ -13031,295 +13131,934 @@ window.openArchiveModal = function() {
   });
 })();
 </script>
-
-<script id="feature-message-edit-v1">
+<script id="codex-mobile-profile-tab-final">
 (() => {
-  'use strict';
-
-  const state = {
-    id: '',
-    sender: '',
-    text: '',
-    message: null,
-    activePath: '',
-    activeRef: null,
-    changedHandler: null,
-    refreshTimer: 0
-  };
-
-  const byId = id => document.getElementById(id);
-
-  function currentUser() {
-    return (typeof me !== 'undefined' && me) ? me : null;
-  }
-
-  function isRoom(peer) {
-    return Boolean(peer && (peer.type === 'group' || peer.type === 'channel'));
-  }
-
-  function messagePath(peer) {
-    const user = currentUser();
-    if (!peer || !user) return '';
-    if (isRoom(peer)) return `rooms/${peer.id}/messages`;
-    if (peer.id === `saved_${user.id}` || peer.isSaved) return `chats/saved_${user.id}`;
-    const roomId = user.id < peer.id ? `${user.id}_${peer.id}` : `${peer.id}_${user.id}`;
-    return `chats/${roomId}`;
-  }
-
-  function activeMode() {
-    return document.body.classList.contains('chat-open-mobile') ? 'mob' : ((typeof isPC !== 'undefined' && isPC) ? 'pc' : 'mob');
-  }
-
-  function closeContextMenu() {
-    const menu = byId('context-menu');
-    if (menu) menu.style.display = 'none';
-  }
-
-  function removeEditor() {
-    document.querySelectorAll('.feature-edit-message-overlay').forEach(node => node.remove());
-  }
-
-  function showNotice(message) {
-    if (typeof showCopyToast === 'function') {
-      showCopyToast(message);
-      return;
-    }
-    alert(message);
-  }
-
-  function findMessageElement(id) {
-    return byId(`pc-msgs-${id}`) || byId(`mob-msgs-${id}`) || byId(`msg-${id}`);
-  }
-
-  function findTextNode(messageElement) {
-    if (!messageElement) return null;
-    const children = Array.from(messageElement.children);
-    return children.find(child =>
-      child.tagName === 'DIV' &&
-      !child.classList.contains('reply-quote') &&
-      !child.classList.contains('vibe-message-reactions') &&
-      !child.classList.contains('feature-message-edited-label') &&
-      !child.classList.contains('voice-message')
-    ) || null;
-  }
-
-  function applyChangedMessage(id, message) {
-    if (!message || message.type || message.system) return;
-    const element = findMessageElement(id);
-    if (!element) return;
-    const textNode = findTextNode(element);
-    if (textNode) textNode.textContent = String(message.val || '');
-
-    let label = element.querySelector('.feature-message-edited-label');
-    if (message.editedAt) {
-      if (!label) {
-        label = document.createElement('span');
-        label.className = 'feature-message-edited-label';
-        label.textContent = 'изменено';
-        const status = element.querySelector('.msg-status');
-        if (status) element.insertBefore(label, status);
-        else element.appendChild(label);
-      }
-    } else if (label) {
-      label.remove();
-    }
-  }
-
-  function syncEditAction() {
-    const button = byId('feature-edit-message-action');
-    if (!button) return;
-    const user = currentUser();
-    const selectedId = (window.vibeFix20260524 && window.vibeFix20260524.selectedMsgId) || state.id;
-    const selectedSender = (window.vibeFix20260524 && window.vibeFix20260524.selectedMsgSender) || state.sender;
-    const selectedMessage = state.message;
-    const allowed = Boolean(user && selectedId && selectedSender === user.id && !(selectedMessage && (selectedMessage.type || selectedMessage.system)));
-    button.style.display = allowed ? 'flex' : 'none';
-  }
-
-  const previousShowMsgMenu = window.showMsgMenu;
-  window.showMsgMenu = function(event, id, text, sender, message) {
-    state.id = id || '';
-    state.sender = sender || '';
-    state.text = String(text || '');
-    state.message = message || null;
-    const result = typeof previousShowMsgMenu === 'function'
-      ? previousShowMsgMenu.apply(this, arguments)
-      : false;
-    syncEditAction();
-    return result;
-  };
-
-  window.featureOpenMessageEditor = function() {
-    closeContextMenu();
-    removeEditor();
-
-    const user = currentUser();
-    const peer = (typeof activePeer !== 'undefined') ? activePeer : null;
-    const id = (window.vibeFix20260524 && window.vibeFix20260524.selectedMsgId) || state.id;
-    const sender = (window.vibeFix20260524 && window.vibeFix20260524.selectedMsgSender) || state.sender;
-    const text = (window.vibeFix20260524 && window.vibeFix20260524.selectedMsgText) || state.text;
-
-    if (!user || !peer || !id || sender !== user.id) {
-      showNotice('Можно редактировать только свои сообщения.');
-      return;
-    }
-    if (state.message && (state.message.type || state.message.system)) {
-      showNotice('Редактирование доступно только для текстовых сообщений.');
-      return;
-    }
-
-    const overlay = document.createElement('div');
-    overlay.className = 'feature-edit-message-overlay';
-
-    const dialog = document.createElement('section');
-    dialog.className = 'feature-edit-message-modal feature-glass-modal';
-    dialog.setAttribute('role', 'dialog');
-    dialog.setAttribute('aria-modal', 'true');
-    dialog.setAttribute('aria-labelledby', 'feature-edit-message-title');
-
-    const header = document.createElement('div');
-    header.className = 'feature-edit-message-header';
-
-    const title = document.createElement('h2');
-    title.id = 'feature-edit-message-title';
-    title.textContent = 'Редактировать сообщение';
-
-    const closeButton = document.createElement('button');
-    closeButton.type = 'button';
-    closeButton.className = 'feature-edit-message-close';
-    closeButton.setAttribute('aria-label', 'Закрыть');
-    closeButton.textContent = '×';
-
-    const input = document.createElement('textarea');
-    input.className = 'feature-edit-message-input';
-    input.maxLength = 4000;
-    input.rows = 5;
-    input.value = String(text || '');
-    input.setAttribute('aria-label', 'Текст сообщения');
-
-    const counter = document.createElement('div');
-    counter.className = 'feature-edit-message-counter';
-    const updateCounter = () => { counter.textContent = `${input.value.length}/4000`; };
-    updateCounter();
-    input.addEventListener('input', updateCounter);
-
-    const actions = document.createElement('div');
-    actions.className = 'feature-edit-message-actions';
-
-    const cancelButton = document.createElement('button');
-    cancelButton.type = 'button';
-    cancelButton.className = 'feature-edit-message-cancel';
-    cancelButton.textContent = 'Отмена';
-
-    const saveButton = document.createElement('button');
-    saveButton.type = 'button';
-    saveButton.className = 'feature-edit-message-save';
-    saveButton.textContent = 'Сохранить';
-
-    const close = () => removeEditor();
-    closeButton.addEventListener('click', close);
-    cancelButton.addEventListener('click', close);
-    overlay.addEventListener('click', event => { if (event.target === overlay) close(); });
-
-    const save = async () => {
-      const value = input.value.trim();
-      if (!value) {
-        showNotice('Сообщение не может быть пустым.');
-        input.focus();
-        return;
-      }
-      if (value === String(text || '').trim()) {
-        close();
-        return;
-      }
-
-      saveButton.disabled = true;
-      saveButton.textContent = 'Сохранение…';
-      try {
-        const path = messagePath(peer);
-        if (!path) throw new Error('Путь чата не найден.');
-        const ref = db.ref(`${path}/${id}`);
-        const snapshot = await ref.once('value');
-        const fresh = snapshot.val();
-        if (!fresh) throw new Error('Сообщение уже удалено.');
-        if (fresh.sender !== user.id) throw new Error('Нет права редактировать это сообщение.');
-        if (fresh.type || fresh.system) throw new Error('Можно редактировать только текст.');
-
-        await ref.update({
-          val: value,
-          editedAt: firebase.database.ServerValue.TIMESTAMP,
-          editedBy: user.id
-        });
-        applyChangedMessage(id, { ...fresh, val: value, editedAt: Date.now(), editedBy: user.id });
-        close();
-        showNotice('Сообщение изменено.');
-      } catch (error) {
-        saveButton.disabled = false;
-        saveButton.textContent = 'Сохранить';
-        showNotice(error && error.message ? error.message : 'Не удалось изменить сообщение.');
-      }
+  const $ = id => document.getElementById(id);
+  const esc = value => String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+  const safeUrl = value => encodeURI(String(value ?? ''));
+  const isMobileWidth = () => window.innerWidth <= 768;
+  const meNow = () => (typeof me !== 'undefined' && me) ? me : window.me;
+  const badgeHtml = () => (typeof vBadge !== 'undefined' ? vBadge : '');
+  const defaultAvatar = user => user && (user.avatar || '👤');
+  const photoOf = user => (user && (user.avatarPhoto || user.photoURL || user.avatarUrl || user.photo || user.image)) || '';
+  const appearanceOf = user => {
+    const settings = (user && user.settings && user.settings.appearance) || {};
+    const direct = (user && user.appearance) || {};
+    return {
+      color: settings.profileColor || direct.profileColor || user?.profileColor || '#9b642e',
+      emoji: settings.patternEmoji || direct.patternEmoji || user?.patternEmoji || '☀️'
     };
-
-    saveButton.addEventListener('click', save);
-    input.addEventListener('keydown', event => {
-      if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') save();
-      if (event.key === 'Escape') close();
-    });
-
-    header.append(title, closeButton);
-    actions.append(cancelButton, saveButton);
-    dialog.append(header, input, counter, actions);
-    overlay.appendChild(dialog);
-    document.body.appendChild(overlay);
-    requestAnimationFrame(() => input.focus());
+  };
+  const patternOf = emoji => {
+    const encoded = encodeURIComponent(emoji || '☀️');
+    return `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='92' height='92' viewBox='0 0 92 92'%3E%3Ctext x='46' y='57' font-size='30' text-anchor='middle'%3E${encoded}%3C/text%3E%3C/svg%3E")`;
+  };
+  const icon = name => {
+    const common = 'viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.35" stroke-linecap="round" stroke-linejoin="round"';
+    const paths = {
+      edit: '<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/>',
+      user: '<path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="7" r="4"/>',
+      info: '<circle cx="12" cy="12" r="9"/><path d="M12 10v6M12 7h.01"/>',
+      check: '<path d="M20 6L9 17l-5-5"/>',
+      close: '<path d="M6 6l12 12M18 6L6 18"/>',
+      tune: '<path d="M4 7h11"/><path d="M19 7h1"/><path d="M8 17h12"/><path d="M4 17h1"/><circle cx="17" cy="7" r="2"/><circle cx="7" cy="17" r="2"/>',
+      back: '<path d="M15 18l-6-6 6-6"/>',
+      search: '<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>',
+      chat: '<path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.8 8.8 0 0 1-4-.9L3 20l1.2-4.2a8.2 8.2 0 1 1 16.8-4.3z"/>',
+      settings: '<path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/><path d="M19.4 15a1.8 1.8 0 0 0 .4 2l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.8 1.8 0 0 0-2-.4 1.8 1.8 0 0 0-1 1.6V21a2 2 0 1 1-4 0v-.1a1.8 1.8 0 0 0-1-1.6 1.8 1.8 0 0 0-2 .4l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.8 1.8 0 0 0 .4-2 1.8 1.8 0 0 0-1.6-1H3a2 2 0 1 1 0-4h.1a1.8 1.8 0 0 0 1.6-1 1.8 1.8 0 0 0-.4-2l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.8 1.8 0 0 0 2 .4 1.8 1.8 0 0 0 1-1.6V3a2 2 0 1 1 4 0v.1a1.8 1.8 0 0 0 1 1.6 1.8 1.8 0 0 0 2-.4l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.8 1.8 0 0 0-.4 2 1.8 1.8 0 0 0 1.6 1h.1a2 2 0 1 1 0 4h-.1a1.8 1.8 0 0 0-1.6 1z"/>'
+    };
+    return `<svg ${common}>${paths[name] || paths.user}</svg>`;
   };
 
-  function attachChangedListener() {
-    const peer = (typeof activePeer !== 'undefined') ? activePeer : null;
-    const path = messagePath(peer);
-    if (path === state.activePath) return;
-
-    if (state.activeRef && state.changedHandler) {
-      state.activeRef.off('child_changed', state.changedHandler);
-    }
-    state.activePath = path;
-    state.activeRef = null;
-    state.changedHandler = null;
-
-    if (!path || typeof db === 'undefined') return;
-    state.activeRef = db.ref(path);
-    state.changedHandler = snapshot => applyChangedMessage(snapshot.key, snapshot.val() || {});
-    state.activeRef.on('child_changed', state.changedHandler);
+  function installStyle() {
+    if ($('codex-mobile-profile-tab-style')) return;
+    const style = document.createElement('style');
+    style.id = 'codex-mobile-profile-tab-style';
+    style.textContent = `
+      @media (max-width:768px) {
+        #mob-search { display:none !important; }
+        #mob-profile.mob-screen {
+          background:#000 !important;
+          color:#fff;
+          padding:0;
+          overflow-y:auto;
+          padding-bottom:112px;
+          border:0 !important;
+          backdrop-filter:none !important;
+          -webkit-backdrop-filter:none !important;
+        }
+        .vibe-self-profile-panel {
+          min-height:100%;
+          background:#000 !important;
+          animation:vibeProfileTabIn .28s cubic-bezier(.18,.9,.22,1) both;
+        }
+        .vibe-self-profile-hero {
+          position:relative;
+          min-height:222px;
+          padding:calc(8px + env(safe-area-inset-top,0px)) 12px 14px;
+          background:var(--info-bg);
+          overflow:hidden;
+        }
+        .vibe-self-profile-hero::before {
+          display:none;
+        }
+        .vibe-self-profile-hero::after {
+          content:"";
+          position:absolute;
+          inset:auto 0 0;
+          height:96px;
+          background:linear-gradient(to bottom, transparent, rgba(0,0,0,.16));
+        }
+        .vibe-self-profile-top {
+          position:relative;
+          z-index:3;
+          display:flex;
+          justify-content:flex-end;
+        }
+        .vibe-self-profile-pattern {
+          position:absolute;
+          inset:-8px 0 0;
+          z-index:1;
+          display:grid;
+          grid-template-columns:repeat(6, 1fr);
+          grid-auto-rows:86px;
+          align-items:center;
+          justify-items:center;
+          pointer-events:none;
+          overflow:hidden;
+        }
+        .vibe-self-profile-pattern span {
+          font-size:26px;
+          line-height:1;
+          opacity:.28;
+          filter:saturate(1.15);
+        }
+        .vibe-profile-edit-round {
+          width:48px;
+          height:48px;
+          border-radius:999px;
+          border:1px solid rgba(255,255,255,.12);
+          background:rgba(24,22,27,.78);
+          color:#fff;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          box-shadow:0 16px 40px rgba(0,0,0,.35), inset 0 0 0 1px rgba(255,255,255,.06);
+          backdrop-filter:blur(18px) saturate(170%);
+          -webkit-backdrop-filter:blur(18px) saturate(170%);
+        }
+        .vibe-profile-edit-round svg { width:23px; height:23px; }
+        .vibe-self-profile-main {
+          position:relative;
+          z-index:3;
+          margin-top:-2px;
+          display:flex;
+          flex-direction:column;
+          align-items:center;
+          text-align:center;
+        }
+        .vibe-self-profile-avatar {
+          width:64px;
+          height:64px;
+          border-radius:50%;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          font-size:29px;
+          background:rgba(255,255,255,.18);
+          border:1px solid rgba(255,255,255,.22);
+          box-shadow:0 18px 38px rgba(0,0,0,.24);
+          background-size:cover;
+          background-position:center;
+        }
+        .vibe-self-profile-name {
+          margin-top:8px;
+          font-size:21px;
+          line-height:1.05;
+          font-weight:900;
+          letter-spacing:0;
+          text-shadow:0 2px 14px rgba(0,0,0,.2);
+        }
+        .vibe-self-profile-handle {
+          margin-top:4px;
+          color:rgba(255,255,255,.66);
+          font-size:13px;
+        }
+        .vibe-self-profile-body {
+          padding:10px;
+        }
+        #mob-profile .vibe-info-card {
+          border-radius:18px;
+          background:#1b1b1d;
+          padding:0 14px;
+          box-shadow:none;
+          border:1px solid rgba(255,255,255,.05);
+        }
+        #mob-profile .vibe-info-row {
+          min-height:54px;
+          padding:9px 0;
+          gap:12px;
+          align-items:center;
+          border-bottom:1px solid rgba(255,255,255,.075);
+        }
+        #mob-profile .vibe-info-row label {
+          color:#f5f5f7;
+          font-size:12px;
+          line-height:1.15;
+          font-weight:850;
+          margin-bottom:4px;
+        }
+        #mob-profile .vibe-info-row div {
+          color:#a9a9ae;
+          font-size:14px;
+          line-height:1.25;
+        }
+        #mob-profile .vibe-info-row svg {
+          width:19px;
+          height:19px;
+          color:#aaaab0;
+          stroke-width:2.2;
+        }
+        .vibe-home-search {
+          margin:0;
+          max-height:0;
+          padding:0 12px;
+          border-radius:19px;
+          background:rgba(255,255,255,.08);
+          border:1px solid rgba(255,255,255,.09);
+          box-shadow:inset 0 0 0 1px rgba(255,255,255,.03);
+          opacity:0;
+          overflow:hidden;
+          transform:translateY(-10px) scale(.985);
+          pointer-events:none;
+          transition:max-height .34s cubic-bezier(.18,.9,.22,1), opacity .22s ease, transform .28s cubic-bezier(.18,.9,.22,1), padding .28s ease, margin .28s ease;
+        }
+        .vibe-home-search.visible,
+        .vibe-home-search:focus-within {
+          max-height:118px;
+          margin:12px 0 10px;
+          padding:10px 12px;
+          opacity:1;
+          transform:translateY(0) scale(1);
+          pointer-events:auto;
+        }
+        .vibe-home-search-title {
+          font-size:13px;
+          font-weight:900;
+          margin-bottom:8px;
+        }
+        .vibe-home-search-box {
+          display:grid;
+          grid-template-columns:auto 1fr;
+          align-items:center;
+          gap:10px;
+          min-height:40px;
+          padding:0 12px;
+          border-radius:14px;
+          background:rgba(255,255,255,.10);
+        }
+        .vibe-home-search-box svg {
+          width:19px;
+          height:19px;
+          color:rgba(255,255,255,.62);
+        }
+        .vibe-home-search-box input {
+          min-width:0;
+          height:40px;
+          border:0;
+          outline:0;
+          background:transparent;
+          color:#fff;
+          font-size:14px;
+        }
+        .vibe-home-search-box input::placeholder { color:rgba(255,255,255,.45); }
+        #mob-home.vibe-search-pulled #mob-contacts {
+          transform:translateY(0);
+          transition:transform .28s cubic-bezier(.18,.9,.22,1);
+        }
+        .vibe-profile-editor {
+          position:fixed;
+          inset:0;
+          z-index:2147483605;
+          background:#000;
+          color:#fff;
+          overflow-y:auto;
+          padding:calc(12px + env(safe-area-inset-top,0px)) 14px calc(24px + env(safe-area-inset-bottom,0px));
+          animation:vibeRoomEditorIn .36s cubic-bezier(.18,.9,.22,1) both;
+        }
+        .vibe-profile-editor.closing { animation:vibeRoomEditorOut .24s ease both; }
+        .vibe-profile-editor-top {
+          display:grid;
+          grid-template-columns:46px 1fr 46px;
+          align-items:center;
+          gap:10px;
+          margin-bottom:18px;
+        }
+        .vibe-profile-editor-title {
+          text-align:center;
+          font-size:21px;
+          font-weight:900;
+          letter-spacing:0;
+        }
+        .vibe-profile-editor-round {
+          width:46px;
+          height:46px;
+          border:0;
+          border-radius:999px;
+          background:rgba(255,255,255,.10);
+          color:#fff;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          backdrop-filter:blur(18px);
+          -webkit-backdrop-filter:blur(18px);
+          box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);
+        }
+        .vibe-profile-editor-round.confirm { background:rgba(255,255,255,.55); }
+        .vibe-profile-editor-round svg { width:26px; height:26px; }
+        .vibe-profile-editor-card {
+          border-radius:28px;
+          background:rgba(255,255,255,.10);
+          border:1px solid rgba(255,255,255,.06);
+          overflow:hidden;
+          box-shadow:inset 0 0 0 1px rgba(255,255,255,.03);
+        }
+        .vibe-profile-editor-photo {
+          display:flex;
+          flex-direction:column;
+          align-items:center;
+          gap:10px;
+          margin:4px 0 16px;
+        }
+        .vibe-profile-editor-avatar {
+          width:88px;
+          height:88px;
+          border-radius:50%;
+          background:rgba(255,255,255,.12);
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          font-size:38px;
+          background-size:cover;
+          background-position:center;
+          box-shadow:0 16px 34px rgba(0,0,0,.26), inset 0 0 0 1px rgba(255,255,255,.12);
+        }
+        .vibe-profile-editor-field {
+          width:100%;
+          min-height:52px;
+          border:0;
+          border-bottom:1px solid rgba(255,255,255,.08);
+          background:transparent;
+          color:#fff;
+          padding:0 16px;
+          font-size:16px;
+          outline:none;
+        }
+        textarea.vibe-profile-editor-field {
+          min-height:78px;
+          padding-top:14px;
+          resize:none;
+          font-family:inherit;
+        }
+        .vibe-profile-editor-field:last-child { border-bottom:0; }
+        .vibe-profile-section-label {
+          margin:18px 14px 10px;
+          color:rgba(255,255,255,.54);
+          font-size:13px;
+          text-transform:uppercase;
+          letter-spacing:.02em;
+        }
+        .vibe-profile-photo-btn {
+          min-height:40px;
+          border:0;
+          border-radius:15px;
+          background:rgba(255,255,255,.12);
+          color:#fff;
+          padding:0 17px;
+          font-size:14px;
+          font-weight:850;
+        }
+        .vibe-profile-swatches {
+          display:grid;
+          grid-template-columns:repeat(5,1fr);
+          gap:8px;
+          padding:14px;
+        }
+        .vibe-profile-swatch {
+          aspect-ratio:1;
+          border:2px solid rgba(255,255,255,.18);
+          border-radius:14px;
+        }
+        .vibe-profile-swatch.active {
+          border-color:#fff;
+          box-shadow:0 0 0 3px rgba(255,255,255,.14);
+        }
+        .vibe-profile-handle-wrap {
+          display:grid;
+          grid-template-columns:auto 1fr;
+          align-items:center;
+          padding-left:20px;
+        }
+        .vibe-profile-at {
+          color:rgba(255,255,255,.58);
+          font-size:18px;
+          font-weight:900;
+        }
+        .vibe-profile-editor-view {
+          animation:vibeProfileTabIn .24s cubic-bezier(.18,.9,.22,1) both;
+        }
+        .vibe-profile-editor-view[hidden] {
+          display:none !important;
+        }
+        .vibe-profile-editor-link {
+          min-height:54px;
+          width:100%;
+          border:0;
+          background:transparent;
+          color:#fff;
+          display:grid;
+          grid-template-columns:auto 1fr auto;
+          align-items:center;
+          gap:13px;
+          padding:0 16px;
+          font-size:16px;
+          text-align:left;
+        }
+        .vibe-profile-editor-link svg {
+          width:22px;
+          height:22px;
+          color:rgba(255,255,255,.66);
+        }
+        .vibe-profile-editor-link small {
+          display:block;
+          margin-top:3px;
+          color:rgba(255,255,255,.52);
+          font-size:12px;
+          line-height:1.2;
+        }
+        .vibe-own-style-preview {
+          min-height:210px;
+          position:relative;
+          display:flex;
+          flex-direction:column;
+          align-items:center;
+          justify-content:center;
+          gap:10px;
+          overflow:hidden;
+          background:var(--own-style-bg);
+        }
+        .vibe-own-style-preview::before {
+          content:"";
+          position:absolute;
+          inset:0;
+          background-image:var(--own-style-pattern);
+          background-size:92px 92px;
+          background-position:center;
+          opacity:.36;
+        }
+        .vibe-own-style-preview .vibe-profile-editor-avatar,
+        .vibe-own-style-preview-name {
+          position:relative;
+          z-index:1;
+        }
+        .vibe-own-style-preview .vibe-profile-editor-avatar {
+          width:82px;
+          height:82px;
+          font-size:34px;
+        }
+        .vibe-own-style-preview-name {
+          max-width:88%;
+          font-size:23px;
+          line-height:1.08;
+          font-weight:900;
+          text-align:center;
+          overflow-wrap:anywhere;
+        }
+        .vibe-own-style-preview-handle {
+          position:relative;
+          z-index:1;
+          max-width:88%;
+          color:rgba(255,255,255,.72);
+          font-size:14px;
+          font-weight:800;
+          text-align:center;
+          overflow-wrap:anywhere;
+        }
+      }
+      @media (min-width:769px) {
+        .vibe-profile-editor {
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          padding:24px;
+          background:rgba(0,0,0,.50);
+          backdrop-filter:blur(22px) saturate(150%);
+          -webkit-backdrop-filter:blur(22px) saturate(150%);
+          overflow:hidden;
+        }
+        .vibe-profile-editor-panel {
+          width:min(460px, calc(100vw - 48px));
+          max-height:min(780px, calc(100vh - 48px));
+          overflow-y:auto;
+          padding:22px 20px 24px;
+          border-radius:32px;
+          background:#000;
+          box-shadow:0 28px 90px rgba(0,0,0,.56), inset 0 0 0 1px rgba(255,255,255,.10);
+          animation:vibeRoomEditorIn .36s cubic-bezier(.18,.9,.22,1) both;
+        }
+      }
+      @keyframes vibeProfileTabIn {
+        from { opacity:0; transform:translateY(10px); }
+        to { opacity:1; transform:translateY(0); }
+      }
+    `;
+    document.head.appendChild(style);
   }
 
-  const style = document.createElement('style');
-  style.id = 'feature-message-edit-styles';
-  style.textContent = `
-    .feature-edit-message-overlay{position:fixed;inset:0;z-index:1000000000;display:flex;align-items:center;justify-content:center;padding:calc(16px + env(safe-area-inset-top)) calc(16px + env(safe-area-inset-right)) calc(16px + env(safe-area-inset-bottom)) calc(16px + env(safe-area-inset-left));background:rgba(0,0,0,.68);overflow:auto}
-    .feature-glass-modal{background:var(--glass,rgba(20,20,24,.82));border:var(--glass-border,1px solid rgba(255,255,255,.14));backdrop-filter:blur(30px) saturate(160%);-webkit-backdrop-filter:blur(30px) saturate(160%);box-shadow:0 24px 70px rgba(0,0,0,.45)}
-    .feature-edit-message-modal{width:min(520px,100%);max-height:min(720px,calc(100dvh - 32px));padding:20px;border-radius:28px;color:var(--text,#fff);overflow:auto}
-    .feature-edit-message-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
-    .feature-edit-message-header h2{font-size:22px;line-height:1.2;margin:0}
-    .feature-edit-message-close{width:42px;height:42px;border-radius:14px;background:rgba(255,255,255,.09);color:var(--text,#fff);font-size:28px;font-weight:500;flex:0 0 auto}
-    .feature-edit-message-input{display:block;width:100%;min-height:130px;max-height:45dvh;resize:vertical;margin:0;padding:14px 16px;border-radius:18px;border:1px solid rgba(255,255,255,.12);background:rgba(0,0,0,.22);color:var(--text,#fff);font:inherit;line-height:1.45;overflow-wrap:anywhere}
-    .feature-edit-message-input:focus{border-color:var(--accent,#00f2fe);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent,#00f2fe) 22%,transparent);outline:none}
-    .feature-edit-message-counter{margin-top:8px;text-align:right;font-size:12px;opacity:.62}
-    .feature-edit-message-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:16px}
-    .feature-edit-message-cancel,.feature-edit-message-save{min-height:46px;padding:0 18px;border-radius:16px;font-size:14px;font-weight:800}
-    .feature-edit-message-cancel{background:rgba(255,255,255,.08);color:var(--text,#fff)}
-    .feature-edit-message-save{background:var(--accent,#00f2fe);color:#050505}
-    .feature-edit-message-save:disabled{opacity:.55;cursor:not-allowed}
-    .feature-message-edited-label{font-size:10px;opacity:.58;margin:6px 5px 0 2px;white-space:nowrap;vertical-align:bottom}
-    @media (max-width:520px){.feature-edit-message-overlay{align-items:flex-end;padding-left:0;padding-right:0;padding-bottom:env(safe-area-inset-bottom)}.feature-edit-message-modal{width:100%;border-radius:28px 28px 0 0;padding:18px}.feature-edit-message-input{min-height:120px;max-height:36dvh}.feature-edit-message-actions{display:grid;grid-template-columns:1fr 1fr}.feature-edit-message-cancel,.feature-edit-message-save{width:100%}}
-    @media (prefers-reduced-motion:reduce){.feature-edit-message-overlay,.feature-edit-message-modal{scroll-behavior:auto}}
-  `;
-  document.head.appendChild(style);
+  function avatarHtml(user, cls) {
+    const photo = photoOf(user);
+    if (photo) return `<div class="${cls}" style="background-image:url('${safeUrl(photo)}');color:transparent;"></div>`;
+    return `<div class="${cls}">${esc(defaultAvatar(user))}</div>`;
+  }
 
-  document.addEventListener('visibilitychange', () => { if (!document.hidden) attachChangedListener(); });
-  state.refreshTimer = window.setInterval(attachChangedListener, 900);
-  attachChangedListener();
+  function emojiPatternLayer(emoji) {
+    const item = esc(emoji || '☀️');
+    return `<div class="vibe-self-profile-pattern">${Array.from({ length: 18 }, () => `<span>${item}</span>`).join('')}</div>`;
+  }
+
+  function ensureProfileScreen() {
+    const layout = $('mobile-layout');
+    if (!layout) return null;
+    let screen = $('mob-profile');
+    if (!screen) {
+      screen = document.createElement('div');
+      screen.id = 'mob-profile';
+      screen.className = 'mob-screen';
+      const settings = $('mob-settings');
+      if (settings) layout.insertBefore(screen, settings);
+      else layout.appendChild(screen);
+    }
+    return screen;
+  }
+
+  function renderOwnProfile() {
+    installStyle();
+    const user = meNow();
+    const screen = ensureProfileScreen();
+    if (!screen || !user) return;
+    const app = appearanceOf(user);
+    const bio = user.bio || user.about || 'Нет описания';
+    screen.innerHTML = `
+      <div class="vibe-self-profile-panel" style="--info-bg:${esc(app.color)};--info-pattern:${patternOf(app.emoji)};">
+        <section class="vibe-self-profile-hero">
+          ${emojiPatternLayer(app.emoji)}
+          <div class="vibe-self-profile-top">
+            <button class="vibe-profile-edit-round" type="button" onclick="vibeOpenOwnProfileEditor()" aria-label="Редактировать профиль">${icon('edit')}</button>
+          </div>
+          <div class="vibe-self-profile-main">
+            ${avatarHtml(user, 'vibe-self-profile-avatar')}
+            <div class="vibe-self-profile-name">${esc(user.name || 'Без имени')}${user.verified ? badgeHtml() : ''}</div>
+            <div class="vibe-self-profile-handle">${esc(user.handle || '@user')}</div>
+          </div>
+        </section>
+        <section class="vibe-self-profile-body">
+          <div class="vibe-info-card">
+            <div class="vibe-info-row"><div><label>имя пользователя</label><div>${esc(user.handle || '@user')}</div></div>${icon('user')}</div>
+            <div class="vibe-info-row"><div><label>о себе</label><div>${esc(bio)}</div></div>${icon('info')}</div>
+          </div>
+        </section>
+      </div>
+    `;
+  }
+
+  function ensureHomeSearch() {
+    installStyle();
+    const home = $('mob-home');
+    const contacts = $('mob-contacts');
+    if (!home || !contacts || $('vibe-home-search')) return;
+    const header = home.querySelector('header');
+    const block = document.createElement('div');
+    block.id = 'vibe-home-search';
+    block.className = 'vibe-home-search';
+    block.innerHTML = `
+      <div class="vibe-home-search-title">Поиск</div>
+      <div class="vibe-home-search-box">${icon('search')}<input type="text" placeholder="Введите @ник" oninput="vibeHomeSearch(this.value)"></div>
+      <div id="vibe-home-search-res" style="margin-top:14px;"></div>
+    `;
+    if (header) header.insertAdjacentElement('afterend', block);
+    else contacts.insertAdjacentElement('beforebegin', block);
+    bindHomeSearchReveal();
+  }
+
+  async function searchByHandle(query) {
+    const clean = String(query || '').trim().toLowerCase();
+    if (clean.length < 2 || typeof db === 'undefined') return null;
+    const key = clean.replace(/^@/, '');
+    const id = (await db.ref('handles/' + key).once('value')).val();
+    if (!id) return null;
+    const snap = await db.ref('users/' + id).once('value');
+    return snap.exists() ? { id, ...(snap.val() || {}) } : null;
+  }
+
+  function bindHomeSearchReveal() {
+    const home = $('mob-home');
+    const search = $('vibe-home-search');
+    if (!home || !search || home.dataset.vibeSearchReveal === '1') return;
+    home.dataset.vibeSearchReveal = '1';
+    let touchStartY = 0;
+    let lastRevealAt = 0;
+    const update = force => {
+      const input = search.querySelector('input');
+      const hasText = !!(input && input.value.trim());
+      const focused = document.activeElement === input;
+      const visible = !!force || hasText || focused;
+      search.classList.toggle('visible', visible);
+      home.classList.toggle('vibe-search-pulled', visible);
+    };
+    home.addEventListener('touchstart', event => {
+      touchStartY = event.touches && event.touches[0] ? event.touches[0].clientY : 0;
+    }, { passive:true });
+    home.addEventListener('touchmove', event => {
+      const y = event.touches && event.touches[0] ? event.touches[0].clientY : touchStartY;
+      if (home.scrollTop <= 2 && touchStartY && y > touchStartY + 14) {
+        lastRevealAt = Date.now();
+        update(true);
+      }
+    }, { passive:true });
+    home.addEventListener('scroll', () => {
+      if (Date.now() - lastRevealAt < 500) {
+        home.scrollTop = 0;
+        return;
+      }
+      update(false);
+    }, { passive:true });
+    search.addEventListener('focusin', () => update(true));
+    search.addEventListener('focusout', () => setTimeout(() => update(false), 120));
+    update(false);
+  }
+
+  window.vibeHomeSearch = async function(value) {
+    const target = $('vibe-home-search-res');
+    if (!target) return;
+    const search = $('vibe-home-search');
+    if (search) search.classList.add('visible');
+    const query = String(value || '').trim();
+    if (query.length < 2) {
+      target.innerHTML = '';
+      return;
+    }
+    try {
+      const user = await searchByHandle(query);
+      if (!user) {
+        target.innerHTML = '<div class="settings-nav-meta">Ничего не найдено</div>';
+        return;
+      }
+      target.innerHTML = `<div class="contact-item glass">${esc(user.avatar || '👤')} <b>${esc(user.name || '')}${user.verified ? badgeHtml() : ''}</b><button onclick="addFriend('${user.id}')" style="margin-left:auto;background:var(--accent);color:#000;padding:5px 12px;border-radius:10px;">+</button></div>`;
+    } catch (error) {
+      target.innerHTML = '<div class="settings-nav-meta">Поиск сейчас недоступен</div>';
+    }
+  };
+
+  function setActiveMobileScreen(id, index) {
+    const items = document.querySelectorAll('.bottom-nav .nav-item');
+    const indicator = $('mob-nav-indicator');
+    if (indicator && items.length) {
+      const step = 100 / items.length;
+      indicator.style.left = `calc(${step * index}% + (${step}% / 2) - 25px)`;
+    }
+    items.forEach(item => item.classList.remove('active'));
+    if (items[index]) items[index].classList.add('active');
+    document.querySelectorAll('.mob-screen').forEach(screen => screen.classList.remove('active'));
+    const target = $('mob-' + id);
+    if (target) target.classList.add('active');
+    if (id === 'profile') renderOwnProfile();
+    if (id === 'home') ensureHomeSearch();
+    if (typeof closeMobChat === 'function') closeMobChat();
+  }
+
+  function applyProfileNav() {
+    installStyle();
+    ensureProfileScreen();
+    ensureHomeSearch();
+    const nav = document.querySelector('.bottom-nav');
+    if (!nav) return;
+    const items = [
+      ['home', 'Эконки/Чаты.jpg', 'Чаты'],
+      ['profile', 'Эконки/Профель.png', 'Профиль'],
+      ['settings', 'Эконки/Настройки.png', 'Настройки']
+    ];
+    const activeId = document.querySelector('.mob-screen.active')?.id?.replace('mob-', '') || 'home';
+    nav.innerHTML = `<div class="nav-indicator" id="mob-nav-indicator"></div>` + items.map(([id, svg], index) => (
+      `<div class="nav-item ${id === activeId ? 'active' : ''}" data-nav-id="${id}" onclick="mobNavControl('${id}', ${index})"><img class="nav-icon" src="${svg}" alt="${items[index][2]}"></div>`
+    )).join('');
+    const index = Math.max(0, items.findIndex(([id]) => id === activeId));
+    const indicator = $('mob-nav-indicator');
+    if (indicator) {
+      const step = 100 / items.length;
+      indicator.style.left = `calc(${step * index}% + (${step}% / 2) - 25px)`;
+    }
+  }
+
+  function observeProfileNav() {
+    const nav = document.querySelector('.bottom-nav');
+    if (!nav || nav.dataset.vibeProfileNavObserver === '1') return;
+    nav.dataset.vibeProfileNavObserver = '1';
+    let scheduled = false;
+    new MutationObserver(() => {
+      if (scheduled || !isMobileWidth()) return;
+      if (nav.querySelector('[data-nav-id="profile"]') && !nav.querySelector('[data-nav-id="search"]')) return;
+      scheduled = true;
+      setTimeout(() => {
+        scheduled = false;
+        applyProfileNav();
+      }, 80);
+    }).observe(nav, { childList: true, subtree: true });
+  }
+
+  const baseMobNavControl = window.mobNavControl;
+  window.mobNavControl = function(id, index) {
+    if (id === 'search') id = 'profile';
+    const order = ['home', 'profile', 'settings'];
+    const realIndex = Math.max(0, order.indexOf(id));
+    if (order.includes(id)) return setActiveMobileScreen(id, realIndex);
+    if (typeof baseMobNavControl === 'function') return baseMobNavControl(id, index);
+  };
+
+  window.mobTab = function(id) {
+    if (id === 'search') id = 'profile';
+    const order = ['home', 'profile', 'settings'];
+    window.mobNavControl(id, Math.max(0, order.indexOf(id)));
+  };
+
+  window.vibeOpenOwnProfileEditor = function() {
+    installStyle();
+    const user = meNow();
+    if (!user) return;
+    const app = appearanceOf(user);
+    window.__vibeOwnProfileDraft = {
+      avatarPhoto: photoOf(user),
+      color: app.color,
+      emoji: app.emoji
+    };
+    document.querySelectorAll('.vibe-profile-editor').forEach(el => el.remove());
+    const editor = document.createElement('div');
+    editor.className = 'vibe-profile-editor';
+    const handle = String(user.handle || '').replace(/^@/, '');
+    const swatches = [
+      '#956634','#29a018','#0d8adf','#7c3aed','#c0265c','#b45309','#111827','#0f766e','#be123c','#475569',
+      '#16a34a','#0891b2','#2563eb','#9333ea','#e11d48','#f97316','#84cc16','#14b8a6','#64748b','#020617',
+      'linear-gradient(135deg, #67cdf0, #4e83d4)',
+      'linear-gradient(135deg, #b7dc5b, #3f9c48)',
+      'linear-gradient(135deg, #f6b43f, #da6b42)',
+      'linear-gradient(135deg, #ff9b69, #d54b67)',
+      'linear-gradient(135deg, #d87cff, #6d57d5)',
+      'linear-gradient(135deg, #70e0c4, #3b9cd7)',
+      'linear-gradient(135deg, #f693ae, #cb4c95)',
+      'linear-gradient(135deg, #c7d0d8, #9cabb8)'
+    ];
+    editor.innerHTML = `
+      <div class="vibe-profile-editor-panel">
+        <div id="vibe-own-profile-view" class="vibe-profile-editor-view">
+          <div class="vibe-profile-editor-top">
+            <button class="vibe-profile-editor-round" type="button" onclick="vibeCloseOwnProfileEditor()">${icon('close')}</button>
+            <div class="vibe-profile-editor-title">Профиль</div>
+            <button class="vibe-profile-editor-round confirm" type="button" onclick="vibeSaveOwnProfileEditor()">${icon('check')}</button>
+          </div>
+          <div class="vibe-profile-editor-photo">
+            <div id="vibe-own-avatar-preview">${avatarHtml(user, 'vibe-profile-editor-avatar')}</div>
+            <button class="vibe-profile-photo-btn" type="button" onclick="vibePickOwnProfilePhoto()">Выбрать фото</button>
+          </div>
+          <div class="vibe-profile-editor-card">
+            <input id="vibe-own-name-edit" class="vibe-profile-editor-field" value="${esc(user.name || '')}" placeholder="Имя" oninput="vibeOwnProfileAppearanceChanged()">
+            <textarea id="vibe-own-bio-edit" class="vibe-profile-editor-field" placeholder="Описание">${esc(user.bio || '')}</textarea>
+          </div>
+          <div class="vibe-profile-section-label">Оформление</div>
+          <div class="vibe-profile-editor-card">
+            <button class="vibe-profile-editor-link" type="button" onclick="vibeOpenOwnAppearanceEditor()">
+              ${icon('tune')}
+              <span><b>Оформление</b><small>Фото, имя, цвет и эмодзи в фоне</small></span>
+              <span>›</span>
+            </button>
+          </div>
+          <div class="vibe-profile-section-label">Юзер</div>
+          <div class="vibe-profile-editor-card">
+            <div class="vibe-profile-handle-wrap"><span class="vibe-profile-at">@</span><input id="vibe-own-handle-edit" class="vibe-profile-editor-field" value="${esc(handle)}" placeholder="username" oninput="vibeOwnProfileAppearanceChanged()"></div>
+          </div>
+        </div>
+        <div id="vibe-own-appearance-view" class="vibe-profile-editor-view" hidden>
+          <div class="vibe-profile-editor-top">
+            <button class="vibe-profile-editor-round" type="button" onclick="vibeBackOwnProfileEditor()">${icon('back')}</button>
+            <div class="vibe-profile-editor-title">Оформление</div>
+            <button class="vibe-profile-editor-round confirm" type="button" onclick="vibeSaveOwnProfileEditor()">${icon('check')}</button>
+          </div>
+          <div id="vibe-own-appearance-preview" class="vibe-profile-editor-card vibe-own-style-preview" style="--own-style-bg:${esc(app.color)};--own-style-pattern:${patternOf(app.emoji)};">
+            <div id="vibe-own-style-avatar">${avatarHtml(user, 'vibe-profile-editor-avatar')}</div>
+            <div id="vibe-own-style-name" class="vibe-own-style-preview-name">${esc(user.name || 'Vibe')}</div>
+            <div id="vibe-own-style-handle" class="vibe-own-style-preview-handle">${esc(user.handle || '@user')}</div>
+          </div>
+          <div class="vibe-profile-section-label">Цвет фона</div>
+          <div class="vibe-profile-editor-card">
+            <div class="vibe-profile-swatches">${swatches.map(color => `<button class="vibe-profile-swatch ${color === app.color ? 'active' : ''}" type="button" style="background:${color}" onclick="vibePickOwnProfileColor('${color}')"></button>`).join('')}</div>
+          </div>
+          <div class="vibe-profile-section-label">Эмодзи в фоне</div>
+          <div class="vibe-profile-editor-card">
+            <input id="vibe-own-pattern-edit" class="vibe-profile-editor-field" maxlength="8" value="${esc(app.emoji)}" placeholder="Эмодзи фона" oninput="vibeOwnProfileAppearanceChanged()">
+          </div>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(editor);
+  };
+
+  window.vibeCloseOwnProfileEditor = function() {
+    const editor = document.querySelector('.vibe-profile-editor');
+    if (!editor) return;
+    editor.classList.add('closing');
+    setTimeout(() => {
+      editor.remove();
+      renderOwnProfile();
+    }, 240);
+  };
+
+  window.vibeOpenOwnAppearanceEditor = function() {
+    const profile = $('vibe-own-profile-view');
+    const appearance = $('vibe-own-appearance-view');
+    if (!profile || !appearance) return;
+    profile.hidden = true;
+    appearance.hidden = false;
+    window.vibeOwnProfileAppearanceChanged();
+  };
+
+  window.vibeBackOwnProfileEditor = function() {
+    const profile = $('vibe-own-profile-view');
+    const appearance = $('vibe-own-appearance-view');
+    if (!profile || !appearance) return;
+    appearance.hidden = true;
+    profile.hidden = false;
+  };
+
+  window.vibePickOwnProfilePhoto = function() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = async () => {
+      const file = input.files && input.files[0];
+      if (!file) return;
+      let url = '';
+      try {
+        if (typeof uploadToCloudinary === 'function') {
+          const uploaded = await uploadToCloudinary(file);
+          url = uploaded.secure_url || '';
+        }
+      } catch (error) {}
+      if (!url) {
+        url = await new Promise(resolve => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.readAsDataURL(file);
+        });
+      }
+      window.__vibeOwnProfileDraft = window.__vibeOwnProfileDraft || {};
+      window.__vibeOwnProfileDraft.avatarPhoto = url;
+      const preview = $('vibe-own-avatar-preview');
+      if (preview) preview.innerHTML = `<div class="vibe-profile-editor-avatar" style="background-image:url('${safeUrl(url)}');color:transparent;"></div>`;
+      const styleAvatar = $('vibe-own-style-avatar');
+      if (styleAvatar) styleAvatar.innerHTML = `<div class="vibe-profile-editor-avatar" style="background-image:url('${safeUrl(url)}');color:transparent;"></div>`;
+    };
+    input.click();
+  };
+
+  window.vibePickOwnProfileColor = function(color) {
+    window.__vibeOwnProfileDraft = window.__vibeOwnProfileDraft || {};
+    window.__vibeOwnProfileDraft.color = color;
+    document.querySelectorAll('.vibe-profile-swatch').forEach(btn => btn.classList.toggle('active', (btn.getAttribute('style') || '').includes(color)));
+    window.vibeOwnProfileAppearanceChanged();
+  };
+
+  window.vibeOwnProfileAppearanceChanged = function() {
+    const draft = window.__vibeOwnProfileDraft || {};
+    const color = draft.color || appearanceOf(meNow()).color;
+    const emoji = ($('vibe-own-pattern-edit') && $('vibe-own-pattern-edit').value.trim()) || draft.emoji || '☀️';
+    const name = (($('vibe-own-name-edit') && $('vibe-own-name-edit').value.trim()) || (meNow() && meNow().name) || 'Vibe');
+    const handle = '@' + ((($('vibe-own-handle-edit') && $('vibe-own-handle-edit').value.trim()) || String((meNow() && meNow().handle) || '').replace(/^@/, '') || 'user').replace(/^@/, ''));
+    draft.emoji = emoji;
+    window.__vibeOwnProfileDraft = draft;
+    const preview = $('vibe-own-appearance-preview');
+    const namePreview = $('vibe-own-style-name');
+    const handlePreview = $('vibe-own-style-handle');
+    if (preview) {
+      preview.style.setProperty('--own-style-bg', color);
+      preview.style.setProperty('--own-style-pattern', patternOf(emoji));
+    }
+    if (namePreview) namePreview.textContent = name;
+    if (handlePreview) handlePreview.textContent = handle;
+  };
+
+  window.vibeSaveOwnProfileEditor = async function() {
+    const user = meNow();
+    if (!user || !user.id || typeof db === 'undefined') return;
+    const name = (($('vibe-own-name-edit') && $('vibe-own-name-edit').value.trim()) || user.name || '').slice(0, 48);
+    const bio = (($('vibe-own-bio-edit') && $('vibe-own-bio-edit').value.trim()) || '').slice(0, 180);
+    const handleRaw = (($('vibe-own-handle-edit') && $('vibe-own-handle-edit').value.trim()) || '').toLowerCase().replace(/^@/, '');
+    if (!/^[a-z0-9_]{3,24}$/.test(handleRaw)) return alert('Юзер должен быть 3-24 символа: латиница, цифры или подчёркивание.');
+    const nextHandle = '@' + handleRaw;
+    const oldHandle = String(user.handle || '').toLowerCase().replace(/^@/, '');
+    if (handleRaw !== oldHandle) {
+      const taken = await db.ref('handles/' + handleRaw).once('value');
+      if (taken.exists() && taken.val() !== user.id) return alert('Этот юзер уже занят.');
+    }
+    const draft = window.__vibeOwnProfileDraft || {};
+    const settings = { ...(user.settings || {}) };
+    settings.appearance = {
+      ...(settings.appearance || {}),
+      profileColor: draft.color || appearanceOf(user).color,
+      patternEmoji: draft.emoji || (($('vibe-own-pattern-edit') && $('vibe-own-pattern-edit').value.trim()) || appearanceOf(user).emoji)
+    };
+    const payload = {
+      name,
+      bio,
+      handle: nextHandle,
+      settings,
+      updatedAt: Date.now()
+    };
+    if (draft.avatarPhoto) payload.avatarPhoto = draft.avatarPhoto;
+    await db.ref('users/' + user.id).update(payload);
+    if (handleRaw !== oldHandle) {
+      await db.ref('handles/' + handleRaw).set(user.id);
+      if (oldHandle) {
+        const oldSnap = await db.ref('handles/' + oldHandle).once('value');
+        if (oldSnap.val() === user.id) await db.ref('handles/' + oldHandle).remove();
+      }
+    }
+    Object.assign(user, payload);
+    if (typeof window.renderSettings === 'function') window.renderSettings();
+    renderOwnProfile();
+    window.vibeCloseOwnProfileEditor();
+  };
+
+  function boot() {
+    if (!isMobileWidth()) return;
+    applyProfileNav();
+    observeProfileNav();
+    renderOwnProfile();
+    ensureHomeSearch();
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(boot, 300);
+    setTimeout(boot, 1200);
+    setTimeout(boot, 2600);
+  });
+  window.addEventListener('load', () => {
+    setTimeout(boot, 500);
+    setTimeout(boot, 1800);
+  });
+  window.addEventListener('resize', () => setTimeout(boot, 180));
 })();
 </script>
-
 </body>
 </html>
