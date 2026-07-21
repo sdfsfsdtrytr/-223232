@@ -14135,7 +14135,13 @@ window.openArchiveModal = function() {
     installStyle();
     const home = $('mob-home');
     const contacts = $('mob-contacts');
-    if (!home || !contacts || $('vibe-home-search')) return;
+    const existing = $('vibe-home-search');
+    if (!home || !contacts) return;
+    if (existing) {
+      bindHomeSearchOpen(existing);
+      bindHomeSearchReveal();
+      return;
+    }
     const header = home.querySelector('header');
     const block = document.createElement('div');
     block.id = 'vibe-home-search';
@@ -14664,6 +14670,75 @@ window.openArchiveModal = function() {
     setTimeout(boot, 1800);
   });
   window.addEventListener('resize', () => setTimeout(boot, 180));
+})();
+</script>
+<script id="codex-search-open-hard-fix">
+(() => {
+  if (window.__vibeSearchOpenHardFix) return;
+  window.__vibeSearchOpenHardFix = true;
+
+  function openSearchNow(event) {
+    const target = event && event.target && event.target.closest
+      ? event.target.closest('.vibe-home-search-box,#vibe-home-search,.vibe-home-search-tap')
+      : null;
+    if (!target) return;
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+      if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+    }
+    if (typeof window.vibeOpenPeopleSearch === 'function') {
+      window.vibeOpenPeopleSearch();
+    }
+  }
+
+  function bindSearchBox() {
+    document.querySelectorAll('#vibe-home-search, .vibe-home-search-box').forEach(node => {
+      if (node.dataset.vibeHardSearchBound === '1') return;
+      node.dataset.vibeHardSearchBound = '1';
+      node.style.pointerEvents = 'auto';
+      node.style.touchAction = 'manipulation';
+      node.addEventListener('touchstart', openSearchNow, { capture:true, passive:false });
+      node.addEventListener('pointerdown', openSearchNow, { capture:true, passive:false });
+      node.addEventListener('mousedown', openSearchNow, { capture:true, passive:false });
+      node.addEventListener('click', openSearchNow, { capture:true, passive:false });
+    });
+  }
+
+  document.addEventListener('touchstart', openSearchNow, { capture:true, passive:false });
+  document.addEventListener('pointerdown', openSearchNow, { capture:true, passive:false });
+  document.addEventListener('mousedown', openSearchNow, { capture:true, passive:false });
+  document.addEventListener('click', openSearchNow, { capture:true, passive:false });
+
+  const style = document.createElement('style');
+  style.id = 'codex-search-open-hard-style';
+  style.textContent = `
+    #vibe-home-search,
+    #vibe-home-search *,
+    .vibe-home-search-box,
+    .vibe-home-search-box * {
+      pointer-events:auto !important;
+    }
+    #vibe-home-search {
+      position:relative !important;
+      z-index:2147480500 !important;
+    }
+    .vibe-home-search-box {
+      position:relative !important;
+      z-index:2147480501 !important;
+      cursor:pointer !important;
+      -webkit-user-select:none !important;
+      user-select:none !important;
+      touch-action:manipulation !important;
+    }
+    .vibe-home-search-box input {
+      pointer-events:none !important;
+    }
+  `;
+  document.head.appendChild(style);
+
+  bindSearchBox();
+  setInterval(bindSearchBox, 500);
 })();
 </script>
 </body>
