@@ -13765,6 +13765,8 @@ window.openArchiveModal = function() {
           box-shadow:none !important;
           border-radius:0 !important;
           transform:translateY(-18px) scale(.985) !important;
+          position:relative !important;
+          z-index:20 !important;
         }
         .vibe-home-search.visible,
         .vibe-home-search:focus-within {
@@ -13783,6 +13785,10 @@ window.openArchiveModal = function() {
           background:rgba(255,255,255,.115) !important;
           border:1px solid rgba(255,255,255,.11) !important;
           box-shadow:inset 0 1px 1px rgba(255,255,255,.14), 0 8px 26px rgba(0,0,0,.22) !important;
+          pointer-events:auto !important;
+          touch-action:manipulation !important;
+          position:relative !important;
+          z-index:21 !important;
         }
         .vibe-home-search-box input {
           height:48px !important;
@@ -14140,6 +14146,7 @@ window.openArchiveModal = function() {
     `;
     if (header) header.insertAdjacentElement('afterend', block);
     else contacts.insertAdjacentElement('beforebegin', block);
+    bindHomeSearchOpen(block);
     bindHomeSearchReveal();
   }
 
@@ -14265,6 +14272,36 @@ window.openArchiveModal = function() {
     if (!id) return;
     if (typeof addFriend === 'function') await addFriend(id);
   };
+
+  function openPeopleSearchFromEvent(event) {
+    const target = event && event.target && event.target.closest ? event.target.closest('.vibe-home-search-box') : null;
+    if (!target) return;
+    if (document.querySelector('.vibe-search-sheet')) return;
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+      if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+    }
+    window.vibeOpenPeopleSearch();
+  }
+
+  function bindHomeSearchOpen(root) {
+    const box = root && root.querySelector ? root.querySelector('.vibe-home-search-box') : null;
+    if (!box || box.dataset.vibeSearchOpenBound === '1') return;
+    box.dataset.vibeSearchOpenBound = '1';
+    box.setAttribute('role', 'button');
+    box.setAttribute('tabindex', '0');
+    box.addEventListener('click', openPeopleSearchFromEvent, { passive:false });
+    box.addEventListener('touchend', openPeopleSearchFromEvent, { passive:false });
+    box.addEventListener('pointerup', openPeopleSearchFromEvent, { passive:false });
+    box.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') openPeopleSearchFromEvent(event);
+    });
+  }
+
+  document.addEventListener('click', openPeopleSearchFromEvent, true);
+  document.addEventListener('touchend', openPeopleSearchFromEvent, { capture:true, passive:false });
+  document.addEventListener('pointerup', openPeopleSearchFromEvent, { capture:true, passive:false });
 
   function bindHomeSearchReveal() {
     const home = $('mob-home');
