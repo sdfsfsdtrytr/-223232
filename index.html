@@ -3310,6 +3310,9 @@ const vibeEnhancer = (() => {
     s.auth = s.auth || {};
     s.privacy = s.privacy || {};
     s.devices = s.devices || {};
+    s.mainMenu = s.mainMenu || {};
+    s.mainMenu.folders = Array.isArray(s.mainMenu.folders) ? s.mainMenu.folders : [];
+    s.mainMenu.navOrder = Array.isArray(s.mainMenu.navOrder) && s.mainMenu.navOrder.length ? s.mainMenu.navOrder : ['home', 'search', 'settings'];
     if (!s.appearance.profileColor) s.appearance.profileColor = SWATCHS[2];
     if (!s.appearance.patternEmoji) s.appearance.patternEmoji = 'вј';
     if (!s.appearance.appIcon) s.appearance.appIcon = APP_ICONS[0];
@@ -4454,6 +4457,9 @@ document.addEventListener('DOMContentLoaded', () => {
     me.settings.appearance = me.settings.appearance || {};
     me.settings.privacy = me.settings.privacy || {};
     me.settings.mutes = me.settings.mutes || {};
+    me.settings.mainMenu = me.settings.mainMenu || {};
+    me.settings.mainMenu.folders = Array.isArray(me.settings.mainMenu.folders) ? me.settings.mainMenu.folders : [];
+    me.settings.mainMenu.navOrder = Array.isArray(me.settings.mainMenu.navOrder) && me.settings.mainMenu.navOrder.length ? me.settings.mainMenu.navOrder : ['home', 'search', 'settings'];
     me.settings.appearance.profileColor = me.settings.appearance.profileColor || '#956634';
     me.settings.appearance.patternEmoji = me.settings.appearance.patternEmoji || '?';
     me.settings.privacy.lastSeenMode = me.settings.privacy.lastSeenMode || 'all';
@@ -9045,6 +9051,7 @@ window.openArchiveModal = function() {
       if (!screen || !document.body.classList.contains('chat-open-mobile')) window.mobNavControl(cfg.navOrder[activeIndex] || 'home', activeIndex);
     }
   }
+  window.applyBottomNav = applyBottomNav;
 
   function setupDragEditor() {
     const editor = $('main-nav-editor');
@@ -11386,21 +11393,294 @@ window.openArchiveModal = function() {
   setInterval(updateScrollButton, 1200);
 })();
 </script>
+<style id="codex-mobile-chat-header-uncrop-style">
+@media (max-width: 768px) {
+  #mob-chat-view {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    border-radius: 0 !important;
+    background:
+      radial-gradient(circle at 100% 0%, rgba(0,242,254,.30), transparent 25%),
+      radial-gradient(circle at 15% 78%, rgba(170,190,210,.15), transparent 32%),
+      linear-gradient(180deg, rgba(70,70,70,.96), rgba(48,48,48,.98) 50%, rgba(28,28,28,1)) !important;
+    backdrop-filter: blur(18px) saturate(145%) !important;
+    -webkit-backdrop-filter: blur(18px) saturate(145%) !important;
+    overflow: hidden !important;
+    isolation: isolate !important;
+  }
+  #mob-chat-view.active {
+    display: flex !important;
+    transform: translateX(0) !important;
+  }
+  #mob-chat-header-ui {
+    flex: 0 0 auto !important;
+    min-height: calc(78px + env(safe-area-inset-top, 0px)) !important;
+    padding: calc(12px + env(safe-area-inset-top, 0px)) 14px 13px !important;
+    border-radius: 0 0 26px 26px !important;
+    background:
+      radial-gradient(circle at 100% 0%, rgba(0,242,254,.22), transparent 34%),
+      rgba(72,72,72,.72) !important;
+    backdrop-filter: blur(34px) saturate(185%) !important;
+    -webkit-backdrop-filter: blur(34px) saturate(185%) !important;
+    border: 1px solid rgba(255,255,255,.12) !important;
+    border-top: 0 !important;
+    overflow: visible !important;
+    z-index: 4 !important;
+  }
+  #mob-chat-header-ui > div {
+    width: 100% !important;
+    min-width: 0 !important;
+    overflow: visible !important;
+  }
+  #mob-chat-header-ui .avatar-emoji {
+    width: 42px !important;
+    height: 42px !important;
+    flex: 0 0 42px !important;
+  }
+  #mob-chat-header-ui b {
+    display: block !important;
+    max-width: calc(100vw - 130px) !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    line-height: 1.18 !important;
+  }
+  #mob-chat-header-ui .activity-line,
+  #mob-chat-header-ui div[style*="font-size:12px"] {
+    max-width: calc(100vw - 130px) !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+  #mob-msgs {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    padding: 18px 34px 22px !important;
+    overflow-y: auto !important;
+    background: transparent !important;
+  }
+  #mob-chat-view .chat-input-bar {
+    margin: 0 !important;
+    padding: 22px 18px calc(18px + env(safe-area-inset-bottom, 0px)) !important;
+    border-radius: 24px 24px 0 0 !important;
+    background: rgba(86,86,86,.58) !important;
+    border: 1px solid rgba(255,255,255,.14) !important;
+    border-bottom: 0 !important;
+    backdrop-filter: blur(36px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(36px) saturate(180%) !important;
+    box-shadow: 0 -22px 48px rgba(0,0,0,.30), inset 0 1px 0 rgba(255,255,255,.14) !important;
+  }
+  #mob-chat-view #mob-input {
+    min-height: 46px !important;
+    border-radius: 12px !important;
+    background: rgba(20,20,20,.38) !important;
+    border: 1px solid rgba(255,255,255,.10) !important;
+  }
+  body.chat-open-mobile #mob-chat-view::before {
+    content:"" !important;
+    position:absolute !important;
+    inset:0 !important;
+    pointer-events:none !important;
+    background: rgba(0,0,0,.06) !important;
+    z-index:0 !important;
+  }
+  body.chat-open-mobile #mob-chat-header-ui,
+  body.chat-open-mobile #mob-msgs,
+  body.chat-open-mobile #mob-chat-view .chat-input-bar {
+    position:relative !important;
+    z-index:1 !important;
+  }
+}
+</style>
+<style id="codex-people-search-no-overlap-final">
+  .vibe-search-sheet {
+    padding-top: calc(18px + env(safe-area-inset-top, 0px)) !important;
+    overflow-y: auto !important;
+  }
+  .vibe-search-sheet .vibe-search-top {
+    position: relative !important;
+    top: auto !important;
+    z-index: 5 !important;
+    display: grid !important;
+    grid-template-columns: 54px minmax(0, 1fr) !important;
+    align-items: center !important;
+    gap: 12px !important;
+    margin: 0 0 22px !important;
+    padding: 0 !important;
+    min-height: 58px !important;
+  }
+  .vibe-search-sheet .vibe-search-close {
+    width: 52px !important;
+    height: 52px !important;
+    border-radius: 50% !important;
+    flex: 0 0 52px !important;
+  }
+  .vibe-search-sheet .vibe-search-input-wrap {
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 58px !important;
+    min-height: 58px !important;
+    border-radius: 999px !important;
+    padding: 0 18px !important;
+  }
+  .vibe-search-sheet .vibe-search-input-wrap input {
+    height: 58px !important;
+    font-size: 22px !important;
+  }
+  .vibe-search-sheet .vibe-search-section-title {
+    position: relative !important;
+    z-index: 1 !important;
+    display: block !important;
+    clear: both !important;
+    margin: 0 12px 12px !important;
+    padding-top: 0 !important;
+    line-height: 1.15 !important;
+  }
+  .vibe-search-sheet .vibe-search-list {
+    position: relative !important;
+    z-index: 1 !important;
+  }
+</style>
+<script id="codex-main-menu-cloud-sync-final">
+(() => {
+  const DEFAULT_NAV = ['home', 'search', 'settings'];
+  const localKey = id => `vibe_main_menu_config_${id}`;
+  let boundUserId = '';
+  let syncing = false;
+
+  function userNow() {
+    return (typeof me !== 'undefined' && me) ? me : window.me;
+  }
+
+  function normalize(value) {
+    const cfg = value && typeof value === 'object' ? { ...value } : {};
+    cfg.folders = Array.isArray(cfg.folders) ? cfg.folders.filter(Boolean) : [];
+    cfg.navOrder = Array.isArray(cfg.navOrder) && cfg.navOrder.length ? cfg.navOrder.filter(Boolean) : DEFAULT_NAV.slice();
+    if (Array.isArray(cfg.mobileNavOrder)) cfg.mobileNavOrder = cfg.mobileNavOrder.filter(Boolean);
+    return cfg;
+  }
+
+  function richer(a, b) {
+    const left = normalize(a);
+    const right = normalize(b);
+    const leftScore = left.folders.length * 10 + (left.mobileNavOrder ? left.mobileNavOrder.length : 0) + left.navOrder.length;
+    const rightScore = right.folders.length * 10 + (right.mobileNavOrder ? right.mobileNavOrder.length : 0) + right.navOrder.length;
+    return leftScore >= rightScore ? left : right;
+  }
+
+  function readLocal(id) {
+    try { return JSON.parse(localStorage.getItem(localKey(id)) || 'null'); }
+    catch (error) { return null; }
+  }
+
+  function applyConfig(cfg) {
+    const user = userNow();
+    if (!user || !user.id) return;
+    const next = normalize(cfg);
+    user.settings = user.settings || {};
+    user.settings.mainMenu = next;
+    window.me = user;
+    try {
+      localStorage.setItem(localKey(user.id), JSON.stringify(next));
+      localStorage.setItem('liquid_pro_v32', JSON.stringify(user));
+    } catch (error) {}
+    if (typeof window.renderFolderedDialogs === 'function') window.renderFolderedDialogs(true);
+    if (typeof window.applyBottomNav === 'function') window.applyBottomNav();
+  }
+
+  async function boot() {
+    const user = userNow();
+    if (!user || !user.id || typeof db === 'undefined') {
+      setTimeout(boot, 500);
+      return;
+    }
+    if (boundUserId === user.id || syncing) return;
+    boundUserId = user.id;
+    syncing = true;
+    const ref = db.ref(`users/${user.id}/settings/mainMenu`);
+    const local = readLocal(user.id);
+    const current = user.settings && user.settings.mainMenu;
+    try {
+      const snap = await ref.once('value');
+      const remote = snap.val();
+      const chosen = richer(remote || current, local || current);
+      applyConfig(chosen);
+      if (!remote || normalize(local).folders.length > normalize(remote).folders.length) {
+        await ref.set(chosen);
+      }
+      ref.on('value', nextSnap => {
+        const remoteNext = nextSnap.val();
+        if (remoteNext) applyConfig(remoteNext);
+      });
+    } catch (error) {
+      if (local || current) applyConfig(richer(local, current));
+    } finally {
+      syncing = false;
+    }
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+  window.addEventListener('load', () => setTimeout(boot, 300));
+  setInterval(boot, 2500);
+})();
+</script>
 <style id="codex-verified-badge-shape-final">
   .verified-badge {
-    width:14px !important;
-    height:14px !important;
-    min-width:14px !important;
-    display:inline-flex !important;
-    align-items:center !important;
-    justify-content:center !important;
+    width:16px !important;
+    height:16px !important;
+    min-width:16px !important;
+    display:inline-block !important;
+    margin-left:3px !important;
+    vertical-align:-2px !important;
+    position:relative !important;
+    line-height:0 !important;
+  }
+  .verified-badge svg {
+    display:none !important;
+  }
+  .verified-badge::before {
+    content:"" !important;
+    width:16px !important;
+    height:16px !important;
+    display:inline-block !important;
+    background-repeat:no-repeat !important;
+    background-size:contain !important;
+    background-position:center !important;
+    background-image:url("Эконки/Галочка.png") !important;
+  }
+  #mob-chat-header-ui .verified-badge,
+  .contact-item .verified-badge,
+  .dialog-main .verified-badge {
+    width:15px !important;
+    height:15px !important;
+    min-width:15px !important;
+    margin-left:3px !important;
+    vertical-align:-1px !important;
+  }
+  #mob-chat-header-ui .verified-badge::before,
+  .contact-item .verified-badge::before,
+  .dialog-main .verified-badge::before {
+    width:15px !important;
+    height:15px !important;
+  }
+  .settings-preview-name .verified-badge,
+  .vibe-self-profile-name .verified-badge,
+  #pop-name .verified-badge {
+    width:18px !important;
+    height:18px !important;
+    min-width:18px !important;
     margin-left:5px !important;
     vertical-align:-2px !important;
   }
-  .verified-badge svg {
-    width:14px !important;
-    height:14px !important;
-    display:block !important;
+  .settings-preview-name .verified-badge::before,
+  .vibe-self-profile-name .verified-badge::before,
+  #pop-name .verified-badge::before {
+    width:18px !important;
+    height:18px !important;
   }
 </style>
 <script id="codex-mobile-peer-info-pro-final">
