@@ -10,8 +10,9 @@
     <title>Vibe</title>
     <link rel="shortcut icon" href="Vibe.png" type="image/x-icon">
 
-<link rel="manifest" href="manifest.json">    
+<link rel="manifest" href='data:application/manifest+json,%7B%22name%22%3A%22Vibe%22%2C%22short_name%22%3A%22Vibe%22%2C%22start_url%22%3A%22.%2Findex.html%22%2C%22scope%22%3A%22.%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23050505%22%2C%22theme_color%22%3A%22%23050505%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg%2520xmlns%253D%2527http%253A%2F%2Fwww.w3.org%2F2000%2Fsvg%2527%2520viewBox%253D%25270%25200%2520128%2520128%2527%253E%253Crect%2520width%253D%2527128%2527%2520height%253D%2527128%2527%2520rx%253D%252730%2527%2520fill%253D%2527%2523050505%2527%2F%253E%253Cpath%2520d%253D%2527M34%252040h60v36c0%252011-9%252020-20%252020H54c-11%25200-20-9-20-20V40Z%2527%2520fill%253D%2527%252300f2fe%2527%2F%253E%253Cpath%2520d%253D%2527M48%252054h32M48%252068h22%2527%2520stroke%253D%2527%2523050505%2527%2520stroke-width%253D%252710%2527%2520stroke-linecap%253D%2527round%2527%2F%253E%253C%2Fsvg%253E%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%7D%5D%7D'>    
 <link rel="icon" href="images/icon-512.png">
+<link rel="apple-touch-icon" href="images/icon-512.png">
 <!-- Системные скрипты -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
@@ -115,6 +116,56 @@ body {
     display: flex; align-items: center; justify-content: center;
 }
 .fav-svg-icon { width: 22px; height: 22px; fill: var(--accent); }
+
+.vibe-alert-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 999999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+    background: rgba(0,0,0,.26);
+    animation: vibeAlertFade .18s ease both;
+}
+.vibe-alert-card {
+    width: min(78vw, 360px);
+    padding: 22px 20px 18px;
+    border-radius: 26px;
+    background: linear-gradient(155deg, rgba(48,49,52,.78), rgba(26,27,31,.86));
+    border: 1px solid rgba(255,255,255,.16);
+    box-shadow: 0 24px 70px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.12);
+    backdrop-filter: blur(34px) saturate(170%);
+    -webkit-backdrop-filter: blur(34px) saturate(170%);
+    color: #fff;
+    transform: translateY(8px) scale(.96);
+    animation: vibeAlertPop .22s cubic-bezier(.2,.9,.2,1) both;
+}
+.vibe-alert-text {
+    font-size: clamp(17px, 4vw, 23px);
+    line-height: 1.28;
+    font-weight: 650;
+    letter-spacing: 0;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+.vibe-alert-ok {
+    width: 100%;
+    height: 50px;
+    margin-top: 20px;
+    border-radius: 999px;
+    background: rgba(235,235,235,.72);
+    color: #fff;
+    font-size: 18px;
+    font-weight: 900;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.28);
+}
+.vibe-alert-backdrop.closing { animation: vibeAlertFadeOut .16s ease both; }
+.vibe-alert-backdrop.closing .vibe-alert-card { animation: vibeAlertOut .16s ease both; }
+@keyframes vibeAlertFade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes vibeAlertFadeOut { from { opacity: 1; } to { opacity: 0; } }
+@keyframes vibeAlertPop { to { transform: translateY(0) scale(1); } }
+@keyframes vibeAlertOut { to { transform: translateY(8px) scale(.97); opacity: 0; } }
 
 :root {
     --accent: #00f2fe;
@@ -876,6 +927,90 @@ button:disabled {
 </style>
 </head>
 <body class="theme-dark">
+<script id="vibe-alert-and-icon-fallbacks">
+(() => {
+  const nativeAlert = window.alert ? window.alert.bind(window) : null;
+  const esc = value => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+
+  window.alert = function(message) {
+    try {
+      const old = document.querySelector('.vibe-alert-backdrop');
+      if (old) old.remove();
+      const backdrop = document.createElement('div');
+      backdrop.className = 'vibe-alert-backdrop';
+      backdrop.innerHTML = `<div class="vibe-alert-card" role="alertdialog" aria-modal="true">
+        <div class="vibe-alert-text">${esc(message)}</div>
+        <button class="vibe-alert-ok" type="button">OK</button>
+      </div>`;
+      const close = () => {
+        backdrop.classList.add('closing');
+        setTimeout(() => backdrop.remove(), 170);
+      };
+      backdrop.querySelector('.vibe-alert-ok').onclick = close;
+      backdrop.addEventListener('click', event => { if (event.target === backdrop) close(); });
+      document.body.appendChild(backdrop);
+      setTimeout(() => {
+        const btn = backdrop.querySelector('.vibe-alert-ok');
+        if (btn) btn.focus({ preventScroll:true });
+      }, 40);
+    } catch (error) {
+      if (nativeAlert) nativeAlert(message);
+    }
+  };
+
+  function svgData(name) {
+    const paths = {
+      chats: '<path d="M24 31c0-8 7-14 15-14h50c8 0 15 6 15 14v27c0 8-7 14-15 14H56L36 88V72c-7-1-12-7-12-14V31Z" fill="%23fff"/><path d="M45 39h38M45 52h28" stroke="%23050505" stroke-width="8" stroke-linecap="round"/>',
+      profile: '<circle cx="64" cy="45" r="22" fill="%23fff"/><path d="M28 104c5-21 20-32 36-32s31 11 36 32" fill="none" stroke="%23fff" stroke-width="13" stroke-linecap="round"/>',
+      settings: '<path d="M64 22l8 13 15-3 6 13-11 10 3 15-13 6-10-11-15 3-6-13 11-10-3-15 15-8Z" fill="none" stroke="%23fff" stroke-width="10" stroke-linejoin="round"/><circle cx="64" cy="52" r="13" fill="%23fff"/>',
+      plus: '<path d="M64 28v72M28 64h72" stroke="%2300f2fe" stroke-width="16" stroke-linecap="round"/>',
+      search: '<circle cx="56" cy="56" r="25" fill="none" stroke="%23fff" stroke-width="10"/><path d="M76 76l26 26" stroke="%23fff" stroke-width="10" stroke-linecap="round"/>',
+      star: '<path d="M64 18l13 30 33 3-25 22 8 32-29-17-29 17 8-32-25-22 33-3 13-30Z" fill="%2300f2fe"/>',
+      send: '<path d="M18 66l90-42-23 84-18-34-34-8Z" fill="%2300f2fe"/><path d="M67 74l41-50" stroke="%23050505" stroke-width="8" stroke-linecap="round"/>',
+      mic: '<rect x="48" y="18" width="32" height="58" rx="16" fill="%23fff"/><path d="M32 58c0 18 14 32 32 32s32-14 32-32M64 90v20M48 110h32" stroke="%23fff" stroke-width="9" stroke-linecap="round"/>',
+      emoji: '<circle cx="64" cy="64" r="44" fill="%23fff"/><circle cx="49" cy="54" r="6" fill="%23050505"/><circle cx="79" cy="54" r="6" fill="%23050505"/><path d="M45 74c8 12 30 12 38 0" fill="none" stroke="%23050505" stroke-width="7" stroke-linecap="round"/>',
+      generic: '<rect x="20" y="20" width="88" height="88" rx="24" fill="%2300f2fe"/><path d="M42 47h44M42 64h44M42 81h28" stroke="%23050505" stroke-width="8" stroke-linecap="round"/>'
+    };
+    const body = paths[name] || paths.generic;
+    return `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'%3E${body}%3C/svg%3E`;
+  }
+
+  function iconName(src) {
+    const s = String(src || '').toLowerCase();
+    if (s.includes('чат')) return 'chats';
+    if (s.includes('проф')) return 'profile';
+    if (s.includes('настрой')) return 'settings';
+    if (s.includes('плюс')) return 'plus';
+    if (s.includes('луп')) return 'search';
+    if (s.includes('самол')) return 'send';
+    if (s.includes('мик')) return 'mic';
+    if (s.includes('эмод')) return 'emoji';
+    if (s.includes('избран')) return 'star';
+    return 'generic';
+  }
+
+  function repairFavoriteIcons(root = document) {
+    root.querySelectorAll('.fav-icon-box').forEach(box => {
+      if (box.dataset.vibeFavFixed === '1') return;
+      if (box.textContent.trim() === '?' || !box.innerHTML.trim()) {
+        box.innerHTML = '<svg class="fav-svg-icon" viewBox="0 0 24 24"><path d="M12 2L9.5 9H2L8 13.5L5.5 21L12 16.5L18.5 21L16 13.5L22 9H14.5L12 2Z"/></svg>';
+        box.dataset.vibeFavFixed = '1';
+      }
+    });
+  }
+
+  document.addEventListener('error', event => {
+    const img = event.target;
+    if (!img || img.tagName !== 'IMG' || img.dataset.vibeFallback === '1') return;
+    img.dataset.vibeFallback = '1';
+    img.src = svgData(iconName(img.getAttribute('src') || img.alt));
+  }, true);
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => repairFavoriteIcons());
+  else repairFavoriteIcons();
+  new MutationObserver(mutations => mutations.forEach(mutation => repairFavoriteIcons(mutation.target))).observe(document.documentElement, { childList:true, subtree:true });
+})();
+</script>
 <div id="intro-screen">
     <video autoplay muted playsinline onended="this.parentElement.remove()">
         <source src="intro.mp4" type="video/mp4">
@@ -2286,7 +2421,7 @@ async function doLinkEmail() {
         header.innerHTML = `
             <div style="display:flex; align-items:center; gap:10px;">
                 <button onclick="event.stopPropagation();closeMobChat()" style="font-size:24px;"><</button>
-                <div class="fav-icon-box" style="width:35px; height:35px; margin-right:10px;">?</div>
+                <div class="fav-icon-box" style="width:35px; height:35px; margin-right:10px;"><svg class="fav-svg-icon" viewBox="0 0 24 24"><path d="M12 2L9.5 9H2L8 13.5L5.5 21L12 16.5L18.5 21L16 13.5L22 9H14.5L12 2Z"/></svg></div>
                 <b>Избранное</b>
             </div>`;
         inputBar.style.display = 'flex'; // Поле ввода должно работать
@@ -8570,7 +8705,7 @@ window.openArchiveModal = function() {
     const time = meta.lastTime ? `<span class="dialog-time">${new Date(meta.lastTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>` : '';
     const unreadBadge = unread ? `<span class="unread-badge">${unread}</span>` : '';
     if (item.isSaved) {
-      return `<div class="contact-item glass" onclick="openFavorites()"><div class="fav-icon-box">?</div><div class="dialog-main"><b>Избранное</b><br><small style="opacity:.66">Личное хранилище</small></div></div>`;
+      return `<div class="contact-item glass" onclick="openFavorites()"><div class="fav-icon-box"><svg class="fav-svg-icon" viewBox="0 0 24 24"><path d="M12 2L9.5 9H2L8 13.5L5.5 21L12 16.5L18.5 21L16 13.5L22 9H14.5L12 2Z"/></svg></div><div class="dialog-main"><b>Избранное</b><br><small style="opacity:.66">Личное хранилище</small></div></div>`;
     }
     if (isRoom(item)) {
       const typeLabel = item.type === 'channel' ? 'Канал' : 'Группа';
@@ -10552,7 +10687,7 @@ window.openArchiveModal = function() {
       panel.dataset.messageId = '';
       panel.style.setProperty('--reaction-grid-height', '0px');
       const more = panel.querySelector('.vibe-reaction-more');
-      if (more) more.textContent = '?';
+      if (more) more.textContent = '⌄';
     }
     const menu = $('context-menu');
     if (menu) menu.classList.remove('vibe-reactions-expanded');
@@ -10598,7 +10733,7 @@ window.openArchiveModal = function() {
       existing.classList.remove('expanded');
       existing.style.setProperty('--reaction-grid-height', '0px');
       const more = existing.querySelector('.vibe-reaction-more');
-      if (more) more.textContent = '?';
+      if (more) more.textContent = '⌄';
       if (show) placeReactionPanel();
       return;
     }
@@ -11199,7 +11334,7 @@ window.openArchiveModal = function() {
     btn.id = 'vibe-scroll-bottom-btn';
     btn.type = 'button';
     btn.setAttribute('aria-label', 'Вниз');
-    btn.textContent = '?';
+    btn.textContent = '↓';
     btn.onclick = () => {
       const box = activeMessageBox();
       if (!box) return;
@@ -15078,7 +15213,7 @@ window.openArchiveModal = function() {
       items.push(normalized);
     }
 
-    add({ id:`saved_${user.id}`, name:'Избранное', avatar:'?', type:'saved', handle:'Личное хранилище' }, 'saved');
+    add({ id:`saved_${user.id}`, name:'Избранное', avatar:'★', type:'saved', handle:'Личное хранилище' }, 'saved');
     localFriends().forEach(friend => add({ ...friend, type:'user' }, 'user'));
     localRooms().forEach(room => add(room, room.type || 'group'));
 
@@ -15130,7 +15265,7 @@ window.openArchiveModal = function() {
     let item = null;
     if (type === 'saved') {
       const user = meNow();
-      if (user && user.id) saveRecent({ id:`saved_${user.id}`, name:'Избранное', avatar:'?', type:'saved', handle:'Личное хранилище', added:true });
+      if (user && user.id) saveRecent({ id:`saved_${user.id}`, name:'Избранное', avatar:'★', type:'saved', handle:'Личное хранилище', added:true });
       if (typeof window.openFavorites === 'function') window.openFavorites();
       if (typeof window.vibeClosePeopleSearch === 'function') window.vibeClosePeopleSearch();
       return;
@@ -15509,7 +15644,7 @@ window.openArchiveModal = function() {
       panel.style.pointerEvents = '';
       panel.dataset.messageId = '';
       const more = panel.querySelector('.vibe-reaction-more');
-      if (more) more.textContent = '?';
+      if (more) more.textContent = '⌄';
     }
   }
 
