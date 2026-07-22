@@ -15390,6 +15390,20 @@ window.openArchiveModal = function() {
         color: rgba(255,255,255,.58) !important;
         opacity: 1 !important;
       }
+      #mob-home.vibe-search-pulled #mob-contacts,
+      #mob-home #mob-contacts.vibe-search-near-list {
+        margin-top: 0 !important;
+      }
+      #mob-home.vibe-search-pulled #mob-contacts .vibe-folder-tabs-shell,
+      #mob-home #mob-contacts.vibe-search-near-list .vibe-folder-tabs-shell {
+        margin-top: -4px !important;
+      }
+      #mob-home.vibe-search-pulled #mob-contacts .vibe-folder-tabs,
+      #mob-home #mob-contacts.vibe-search-near-list .vibe-folder-tabs {
+        padding-top: 0 !important;
+        padding-bottom: 8px !important;
+        margin-bottom: 0 !important;
+      }
       @media (max-width: 560px) {
         #vibe-home-search.visible,
         #mob-home.vibe-search-pulled #vibe-home-search,
@@ -15417,6 +15431,11 @@ window.openArchiveModal = function() {
           min-width: 21px !important;
           flex-basis: 21px !important;
         }
+        #mob-home.vibe-search-pulled #mob-contacts,
+        #mob-home #mob-contacts.vibe-search-near-list {
+          margin-top: 0 !important;
+          transform: translate3d(0, -5px, 0) !important;
+        }
       }
     `;
   }
@@ -15442,6 +15461,11 @@ window.openArchiveModal = function() {
     }
   }
 
+  function keepChatsNearSearch() {
+    const contacts = document.getElementById('mob-contacts');
+    if (contacts) contacts.classList.add('vibe-search-near-list');
+  }
+
   installThinSearchStyle();
   document.addEventListener('input', (event) => {
     if (event.target && event.target.id === 'vibe-people-search-input') {
@@ -15451,11 +15475,69 @@ window.openArchiveModal = function() {
   document.addEventListener('DOMContentLoaded', () => {
     installThinSearchStyle();
     syncRecentAndResults();
+    keepChatsNearSearch();
   });
   setInterval(() => {
     installThinSearchStyle();
     syncRecentAndResults();
+    keepChatsNearSearch();
   }, 900);
+})();
+</script>
+<script id="codex-reaction-orphan-guard">
+(() => {
+  function menuIsVisible(menu) {
+    if (!menu) return false;
+    const style = window.getComputedStyle ? getComputedStyle(menu) : menu.style;
+    const rect = menu.getBoundingClientRect ? menu.getBoundingClientRect() : { width: 0, height: 0 };
+    return style.display !== 'none' && style.visibility !== 'hidden' && rect.width > 0 && rect.height > 0;
+  }
+
+  function closeOrphanReactionPanel() {
+    const menu = document.getElementById('context-menu');
+    const panel = document.querySelector('.vibe-reaction-panel');
+    if (!panel) return;
+    if (!menuIsVisible(menu)) {
+      panel.classList.remove('visible', 'expanded');
+      panel.classList.add('compact');
+      panel.style.setProperty('--reaction-grid-height', '0px');
+      panel.style.opacity = '';
+      panel.style.visibility = '';
+      panel.style.pointerEvents = '';
+      panel.dataset.messageId = '';
+      const more = panel.querySelector('.vibe-reaction-more');
+      if (more) more.textContent = '⌄';
+    }
+  }
+
+  function installReactionGuardStyle() {
+    if (document.getElementById('codex-reaction-orphan-guard-style')) return;
+    const style = document.createElement('style');
+    style.id = 'codex-reaction-orphan-guard-style';
+    style.textContent = `
+      .vibe-reaction-panel:not(.visible) {
+        opacity: 0 !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  installReactionGuardStyle();
+  document.addEventListener('DOMContentLoaded', () => {
+    installReactionGuardStyle();
+    const menu = document.getElementById('context-menu');
+    if (menu) menu.style.display = 'none';
+    closeOrphanReactionPanel();
+    setTimeout(closeOrphanReactionPanel, 250);
+    setTimeout(closeOrphanReactionPanel, 900);
+  });
+  document.addEventListener('click', (event) => {
+    if (event.target && event.target.closest && event.target.closest('.vibe-reaction-panel,#context-menu,.msg')) return;
+    setTimeout(closeOrphanReactionPanel, 0);
+  }, true);
+  setInterval(closeOrphanReactionPanel, 1200);
 })();
 </script>
 </body>
