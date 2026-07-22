@@ -15847,7 +15847,7 @@ window.openArchiveModal = function() {
             inset 0 1px 0 rgba(255,255,255,.36),
             inset 0 -14px 24px rgba(0,0,0,.16),
             0 10px 28px rgba(0,0,0,.22) !important;
-          transform: translate3d(var(--nav-x, 7px), 0, 0) !important;
+          transform: translate3d(var(--nav-x, 7px), 0, 0) scale(1.075) !important;
           transition: transform .58s cubic-bezier(.16,1,.2,1), width .28s ease, border-radius .36s cubic-bezier(.16,1,.2,1) !important;
           z-index: 0 !important;
         }
@@ -15857,16 +15857,14 @@ window.openArchiveModal = function() {
         }
         .bottom-nav.vibe-liquid-copy-nav.vibe-nav-editing .nav-indicator {
           border-radius: 999px !important;
-          transform: translate3d(var(--nav-x, var(--drag-x, 7px)), 0, 0) scale(1.03) !important;
+          transform: translate3d(var(--nav-x, var(--drag-x, 7px)), 0, 0) scale(1.09) !important;
           transition: transform .12s ease-out, border-radius .28s ease !important;
         }
         .bottom-nav.vibe-liquid-copy-nav.vibe-nav-scrubbing .nav-indicator {
-          transform: translate3d(var(--nav-x, var(--drag-x, 7px)), 0, 0) scale(1.04) !important;
+          transform: translate3d(var(--nav-x, var(--drag-x, 7px)), 0, 0) scale(1.09) !important;
           transition: transform .055s linear, border-radius .18s ease !important;
         }
-        .bottom-nav.vibe-liquid-copy-nav.vibe-nav-scrubbing,
-        .bottom-nav.vibe-liquid-copy-nav.vibe-nav-traveling,
-        body.vibe-nav-is-traveling .bottom-nav.vibe-liquid-copy-nav {
+        .bottom-nav.vibe-liquid-copy-nav.vibe-nav-scrubbing {
           background: rgba(255,255,255,.018) !important;
           border-color: rgba(255,255,255,.10) !important;
           box-shadow:
@@ -15875,9 +15873,7 @@ window.openArchiveModal = function() {
           backdrop-filter: blur(28px) saturate(220%) contrast(1.04) !important;
           -webkit-backdrop-filter: blur(28px) saturate(220%) contrast(1.04) !important;
         }
-        .bottom-nav.vibe-liquid-copy-nav.vibe-nav-scrubbing::before,
-        .bottom-nav.vibe-liquid-copy-nav.vibe-nav-traveling::before,
-        body.vibe-nav-is-traveling .bottom-nav.vibe-liquid-copy-nav::before {
+        .bottom-nav.vibe-liquid-copy-nav.vibe-nav-scrubbing::before {
           opacity: 0 !important;
         }
         .bottom-nav.vibe-liquid-copy-nav.vibe-nav-scrubbing .nav-indicator,
@@ -15907,6 +15903,8 @@ window.openArchiveModal = function() {
           display: flex !important;
           align-items: center !important;
           justify-content: center !important;
+          flex-direction: column !important;
+          gap: 3px !important;
           opacity: .58 !important;
           transform: none !important;
           transition: opacity .22s ease, transform .24s cubic-bezier(.2,.9,.2,1), filter .22s ease !important;
@@ -15931,14 +15929,28 @@ window.openArchiveModal = function() {
           transform: scale(.97) !important;
         }
         .bottom-nav.vibe-liquid-copy-nav .nav-icon {
-          width: 29px !important;
-          height: 29px !important;
+          width: 28px !important;
+          height: 28px !important;
           border-radius: 9px !important;
           object-fit: contain !important;
           filter: grayscale(.12) brightness(1.04) drop-shadow(0 2px 7px rgba(0,0,0,.28)) !important;
         }
+        .bottom-nav.vibe-liquid-copy-nav .nav-label {
+          max-width: 100% !important;
+          color: rgba(255,255,255,.78) !important;
+          font-size: 11px !important;
+          line-height: 1 !important;
+          font-weight: 850 !important;
+          white-space: nowrap !important;
+          overflow: hidden !important;
+          text-overflow: ellipsis !important;
+          text-shadow: 0 1px 5px rgba(0,0,0,.38) !important;
+        }
         .bottom-nav.vibe-liquid-copy-nav .nav-item.active .nav-icon {
           filter: brightness(1.18) drop-shadow(0 4px 12px rgba(0,0,0,.30)) !important;
+        }
+        .bottom-nav.vibe-liquid-copy-nav .nav-item.active .nav-label {
+          color: rgba(255,255,255,.96) !important;
         }
         body.chat-open-mobile .bottom-nav.vibe-liquid-copy-nav {
           display: none !important;
@@ -16005,7 +16017,13 @@ window.openArchiveModal = function() {
           font-size: 13px !important;
           font-weight: 850 !important;
         }
-        .vibe-liquid-reorder-done {
+        .vibe-liquid-reorder-actions {
+          display: flex !important;
+          align-items: center !important;
+          gap: 7px !important;
+        }
+        .vibe-liquid-reorder-done,
+        .vibe-liquid-reorder-reset {
           border: 1px solid rgba(255,255,255,.18) !important;
           border-radius: 999px !important;
           padding: 7px 13px !important;
@@ -16015,6 +16033,10 @@ window.openArchiveModal = function() {
           background: linear-gradient(145deg, rgba(255,255,255,.17), rgba(255,255,255,.055)), rgba(255,255,255,.05) !important;
           backdrop-filter: blur(22px) saturate(210%) !important;
           -webkit-backdrop-filter: blur(22px) saturate(210%) !important;
+        }
+        .vibe-liquid-reorder-reset {
+          color: rgba(255,255,255,.78) !important;
+          background: linear-gradient(145deg, rgba(255,255,255,.11), rgba(255,255,255,.035)), rgba(255,255,255,.025) !important;
         }
         .vibe-liquid-reorder-item {
           flex: 1 1 0 !important;
@@ -16068,6 +16090,7 @@ window.openArchiveModal = function() {
           backdrop-filter: blur(26px) saturate(220%) !important;
           -webkit-backdrop-filter: blur(26px) saturate(220%) !important;
           will-change: transform !important;
+          transition: none !important;
         }
         .vibe-liquid-reorder-ghost img {
           width: 23px !important;
@@ -16132,6 +16155,17 @@ window.openArchiveModal = function() {
     if (!sheet || sheet.dataset.bound === '1') return;
     sheet.dataset.bound = '1';
     sheet.addEventListener('click', event => {
+      const reset = event.target.closest && event.target.closest('.vibe-liquid-reorder-reset');
+      if (reset) {
+        event.preventDefault();
+        event.stopPropagation();
+        saveOrder(DEFAULT_ORDER).then(() => {
+          renderReorderSheet(true);
+          renderNav();
+          setEditing(true);
+        });
+        return;
+      }
       const done = event.target.closest && event.target.closest('.vibe-liquid-reorder-done');
       if (!done) return;
       event.preventDefault();
@@ -16215,7 +16249,7 @@ window.openArchiveModal = function() {
     bindReorderSheet(sheet);
     const order = getOrder();
     sheet.style.setProperty('--nav-count', String(order.length));
-    sheet.innerHTML = `<div class="vibe-liquid-reorder-title"><span>Изменить порядок</span><button class="vibe-liquid-reorder-done" type="button">Готово</button></div>` + order.map(id => {
+    sheet.innerHTML = `<div class="vibe-liquid-reorder-title"><span>Изменить порядок</span><span class="vibe-liquid-reorder-actions"><button class="vibe-liquid-reorder-reset" type="button">Сбросить</button><button class="vibe-liquid-reorder-done" type="button">Готово</button></span></div>` + order.map(id => {
       const item = ITEMS[id];
       return `<button class="vibe-liquid-reorder-item" type="button" data-nav-id="${esc(id)}"><img src="${esc(item.icon)}" alt="${esc(item.label)}"><span>${esc(item.label)}</span></button>`;
     }).join('');
@@ -16332,7 +16366,7 @@ window.openArchiveModal = function() {
     nav.style.setProperty('--nav-index', String(index < 0 ? 0 : index));
     nav.innerHTML = `<div class="nav-indicator" id="mob-nav-indicator"></div>` + order.map((id, itemIndex) => {
       const item = ITEMS[id];
-      return `<button class="nav-item ${id === active ? 'active' : ''}" type="button" data-nav-id="${id}" aria-label="${esc(item.label)}"><img class="nav-icon" src="${esc(item.icon)}" alt="${esc(item.label)}"></button>`;
+      return `<button class="nav-item ${id === active ? 'active' : ''}" type="button" data-nav-id="${id}" aria-label="${esc(item.label)}"><img class="nav-icon" src="${esc(item.icon)}" alt="${esc(item.label)}"><span class="nav-label">${esc(item.label)}</span></button>`;
     }).join('');
     requestAnimationFrame(() => setDropIndex(index < 0 ? 0 : index));
     bindNavGestures(nav);
