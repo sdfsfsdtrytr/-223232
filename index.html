@@ -915,7 +915,7 @@ button:disabled {
     <!-- Celebration -->
     <div id="celebration-overlay">
         <div class="glass" style="padding:40px; border-radius:30px; width:340px; text-align:center;">
-            <div style="font-size:60px;">🎉</div>
+            <div style="font-size:60px;">??</div>
             <h2 style="color:#00A3FF; margin:15px 0;">ПОЗДРАВЛЯЕМ!</h2>
             <p>Ваш аккаунт официально верифицирован!</p>
             <button onclick="closeCelebration()" style="background:#00A3FF; padding:12px 30px; border-radius:12px; margin-top:20px;">УРА!</button>
@@ -959,13 +959,13 @@ button:disabled {
 
             <div class="auth-step" data-reg-step="2">
                 <h3>Выбери аватарку</h3>
-                <div class="auth-avatar-preview" id="reg-avatar-preview">😎</div>
+                <div class="auth-avatar-preview" id="reg-avatar-preview">??</div>
                 <div class="auth-avatar-tabs">
                     <button id="reg-avatar-emoji-tab" class="active" type="button" onclick="setRegAvatarMode('emoji')">Эмодзи</button>
                     <button id="reg-avatar-photo-tab" type="button" onclick="setRegAvatarMode('photo')">Фото</button>
                 </div>
                 <div id="reg-avatar-emoji-panel">
-                    <input type="text" id="r-e-input" class="login-input" placeholder="Аватарка, например 😎" maxlength="4" oninput="updateRegAvatarPreview()">
+                    <input type="text" id="r-e-input" class="login-input" placeholder="Аватарка, например ??" maxlength="4" oninput="updateRegAvatarPreview()">
                 </div>
                 <div id="reg-avatar-photo-panel" style="display:none;">
                     <input type="file" id="r-photo-input" accept="image/*" style="display:none;" onchange="handleRegAvatarPhoto(this)">
@@ -1046,7 +1046,7 @@ button:disabled {
     <div id="pc-layout">
         <div class="sidebar">
             <div class="glass" style="padding:20px; display:flex; align-items:center; gap:12px;">
-                <div class="avatar-emoji" id="pc-my-ava">👤</div>
+                <div class="avatar-emoji" id="pc-my-ava">??</div>
                 <div><b id="pc-my-name">...</b><span style="display:block; font-size:10px; color:var(--accent)" id="pc-my-handle">@...</span></div>
             </div>
             <div class="pc-nav-tabs">
@@ -1065,11 +1065,11 @@ button:disabled {
         </div>
         <div class="main-area glass">
             <div id="pc-chat-screen" class="active" style="height:100%; display:flex; flex-direction:column;">
-                <div id="pc-no-chat" style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; opacity:0.2;"><h1>💬</h1><p>Выберите чат для общения</p></div>
+                <div id="pc-no-chat" style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; opacity:0.2;"><h1>??</h1><p>Выберите чат для общения</p></div>
                 <div id="pc-active-chat" style="display:none; flex:1; flex-direction:column; height:100%;">
                     <div class="glass" id="pc-chat-header-ui" style="padding:15px 25px; border-radius:20px 20px 0 0; cursor:pointer;" onclick="showPeerProfile()"></div>
                     <div id="pc-msgs" class="chat-messages" oncontextmenu="return false;"></div>
-                    <div id="pc-reply-ui" class="reply-bar-ui glass"><span id="pc-reply-text" style="font-size:12px; opacity:0.7;"></span><button onclick="cancelReply()" style="float:right; color:red;">✕</button></div>
+                    <div id="pc-reply-ui" class="reply-bar-ui glass"><span id="pc-reply-text" style="font-size:12px; opacity:0.7;"></span><button onclick="cancelReply()" style="float:right; color:red;">?</button></div>
                     <div id="pc-emoji-picker" class="emoji-picker"></div>
                     <div class="chat-input-bar glass" style="border-radius:0 0 20px 20px;">
                         <button class="attach-plus" id="pc-attach-btn" type="button" onclick="event.preventDefault(); event.stopPropagation(); showAttachSheet('pc'); return false;">
@@ -1108,7 +1108,7 @@ onkeydown="if(event.key==='Enter') sendText('pc')">
                     <label>Имя пользователя:</label><div style="display:flex;"><input type="text" id="set-name-pc"><button onclick="saveName('pc')" class="save-btn">Сохранить</button></div>
                     <label>Bio (Описание):</label><div style="display:flex;"><textarea id="set-bio-pc"></textarea><button onclick="saveBio('pc')" class="save-btn">Сохранить</button></div>
                     <label>Тема:</label><select id="pc-theme-sel" onchange="changeTheme(this.value)"></select>
-                    <button onclick="showLinkEmailModal()" class="save-btn" id="pc-link-email-btn" style="width:100%; background:#8b5cf6; margin-top:10px;">📧 Привязать почту</button>
+                    <button onclick="showLinkEmailModal()" class="save-btn" id="pc-link-email-btn" style="width:100%; background:#8b5cf6; margin-top:10px;">?? Привязать почту</button>
                     <button onclick="window.open('https://forms.yandex.ru/cloud/69c657e1493639ae65329446','_blank')" class="verify-btn" id="pc-v-btn-real">ВЕРИФИКАЦИЯ</button>
                     <button onclick="logout()" style="color:red; margin-top:40px; width:100%;">ВЫЙТИ</button>
                 </div>
@@ -1118,7 +1118,7 @@ onkeydown="if(event.key==='Enter') sendText('pc')">
 
     <!-- ТЕЛЕФОН -->
     <div id="mobile-layout">
-        <div id="mob-home" class="mob-screen active"><header style="display:flex; justify-content:space-between; align-items:center;"><h1>Чаты</h1><div style="display:flex; align-items:center; gap:10px;"><button class="chat-plus-btn">+</button><div class="avatar-emoji" id="mob-my-ava" onclick="mobTab('settings')">👤</div></div></header><div id="mob-contacts" style="margin-top:20px;"></div></div>
+        <div id="mob-home" class="mob-screen active"><header style="display:flex; justify-content:space-between; align-items:center;"><h1>Чаты</h1><div style="display:flex; align-items:center; gap:10px;"><button class="chat-plus-btn">+</button><div class="avatar-emoji" id="mob-my-ava" onclick="mobTab('settings')">??</div></div></header><div id="mob-contacts" style="margin-top:20px;"></div></div>
         <div id="mob-search" class="mob-screen"><h1>Поиск</h1><input type="text" placeholder="Введите @ник" oninput="searchUsers(this.value, 'mob')"><div id="mob-search-res" style="margin-top:20px;"></div></div>
         <div id="mob-settings" class="mob-screen">
             <h1>Настройки</h1>
@@ -1126,14 +1126,14 @@ onkeydown="if(event.key==='Enter') sendText('pc')">
             <label>Имя:</label><div style="display:flex;"><input type="text" id="mob-set-name-in"><button onclick="saveName('mob')" class="save-btn">Сохранить</button></div>
             <label>Bio:</label><div style="display:flex;"><textarea id="mob-set-bio-in"></textarea><button onclick="saveBio('mob')" class="save-btn">Сохранить</button></div>
             <label>Тема:</label><select id="mob-theme-sel" onchange="changeTheme(this.value)"></select>
-            <button onclick="showLinkEmailModal()" class="save-btn" id="mob-link-email-btn" style="width:100%; background:#8b5cf6; margin-top:10px;">📧 Привязать почту</button>
+            <button onclick="showLinkEmailModal()" class="save-btn" id="mob-link-email-btn" style="width:100%; background:#8b5cf6; margin-top:10px;">?? Привязать почту</button>
             <button onclick="window.open('https://forms.yandex.ru/cloud/69c657e1493639ae65329446','_blank')" class="verify-btn" id="mob-v-btn-real">ВЕРИФИКАЦИЯ</button>
             <button onclick="logout()" style="color:red; margin-top:30px; width:100%;">ВЫЙТИ</button>
         </div>
         <div id="mob-chat-view" class="glass">
             <header class="glass" id="mob-chat-header-ui" style="border-radius:0; padding:15px 10px; display:flex; align-items:center; justify-content:space-between;"></header>
             <div id="mob-msgs" class="chat-messages" oncontextmenu="return false;"></div>
-            <div id="mob-reply-ui" class="reply-bar-ui glass"><span id="mob-reply-text"></span><button onclick="cancelReply()">✕</button></div>
+            <div id="mob-reply-ui" class="reply-bar-ui glass"><span id="mob-reply-text"></span><button onclick="cancelReply()">?</button></div>
             <div id="mob-emoji-picker" class="emoji-picker"></div>
             <div class="chat-input-bar glass" style="border-radius:0; padding-bottom:calc(15px + env(safe-area-inset-bottom));"><button class="attach-plus"
         id="mob-attach-btn"
@@ -1167,7 +1167,7 @@ z-index:999;
     <div id="mob-voice-lock" style="
     font-size:28px;
     margin-bottom:10px;">
-        🔒
+        ??
     </div>
 
     <div id="mob-voice-timer" style="
@@ -1214,11 +1214,11 @@ z-index:999;
 <!-- PROFILE POPUP -->
     <div id="profile-popup" onclick="this.style.display='none'">
         <div class="glass" style="width:320px; padding:30px; text-align:center;" onclick="event.stopPropagation()">
-            <div class="avatar-emoji" id="pop-ava" style="width:100px; height:100px; font-size:50px; margin:0 auto 15px;">👤</div>
+            <div class="avatar-emoji" id="pop-ava" style="width:100px; height:100px; font-size:50px; margin:0 auto 15px;">??</div>
             <h2 id="pop-name">Имя</h2><p id="pop-handle" style="color:var(--accent); font-size:14px;"></p><p id="pop-bio" style="margin-top:15px; font-size:13px; opacity:0.8;"></p>
             <div style="margin-top:20px; display:flex; flex-direction:column; gap:10px;">
-                <button id="pop-block-btn" class="save-btn" style="width:100%;" onclick="toggleBlock()">🚫 Заблокировать</button>
-                <button class="save-btn" style="width:100%; background:#ea868f;" onclick="removeChat()">🗑️ Удалить друга</button>
+                <button id="pop-block-btn" class="save-btn" style="width:100%;" onclick="toggleBlock()">?? Заблокировать</button>
+                <button class="save-btn" style="width:100%; background:#ea868f;" onclick="removeChat()">??? Удалить друга</button>
             </div>
         </div>
     </div>
@@ -1226,10 +1226,10 @@ z-index:999;
     <!-- Модальное окно привязки почты -->
     <div id="link-email-modal" style="display:none; position:fixed; inset:0; z-index:20000; background:rgba(0,0,0,0.8); backdrop-filter:blur(10px); justify-content:center; align-items:center;">
         <div class="glass" style="width:340px; padding:30px; border-radius:20px; text-align:center;" onclick="event.stopPropagation()">
-            <h2 style="color:var(--accent); margin-bottom:15px;">📧 Привязать почту</h2>
+            <h2 style="color:var(--accent); margin-bottom:15px;">?? Привязать почту</h2>
             <p style="font-size:13px; opacity:0.7; margin-bottom:20px;">Привяжи почту чтобы входить в аккаунт без @ника</p>
-            <input type="email" id="modal-link-email" placeholder="📧 Email" style="text-align:center;">
-            <input type="password" id="modal-link-pass" placeholder="🔑 Пароль (мин. 6 символов)" style="text-align:center;">
+            <input type="email" id="modal-link-email" placeholder="?? Email" style="text-align:center;">
+            <input type="password" id="modal-link-pass" placeholder="?? Пароль (мин. 6 символов)" style="text-align:center;">
             <button onclick="doLinkEmail()" class="save-btn" style="width:100%; background:var(--accent); color:#000; margin-top:10px;">ПР?ВЯЗАТЬ</button>
             <button onclick="closeLinkEmailModal()" style="margin-top:15px; opacity:0.6; font-size:13px;">Отмена</button>
         </div>
@@ -1333,15 +1333,13 @@ const firebaseConfig = {
 };
 
 // 2. ?нициализация (создаем ту самую db, которую он не видит)
-var db = window.db || null;
-var storage = window.storage || null;
-try {
-    if (window.firebase && !firebase.apps.length) firebase.initializeApp(firebaseConfig);
-    if (window.firebase && typeof firebase.database === 'function') db = window.db = firebase.database();
-    if (window.firebase && typeof firebase.storage === 'function') storage = window.storage = firebase.storage();
-} catch (error) {
-    console.warn('Firebase init delayed:', error);
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
 }
+var db = firebase.database();
+var storage = firebase.storage();
+window.db = db;
+window.storage = storage;
 const EMAILJS_PUBLIC_KEY = "Nx7G0SMyg2yP2bvBW";
 const EMAILJS_SERVICE_ID = "default_service";
 const EMAILJS_TEMPLATE_ID = "template_4yxrnid";
@@ -1453,7 +1451,7 @@ function mobTab(id) {
                 preview.style.backgroundImage = `url("${regAvatarPhotoData}")`;
             } else {
                 preview.style.backgroundImage = '';
-                preview.textContent = (input && input.value.trim()) || '😎';
+                preview.textContent = (input && input.value.trim()) || '??';
             }
         }
 
@@ -1665,46 +1663,6 @@ function mobTab(id) {
             return map[mode];
         }
 
-        function loadScriptOnce(src) {
-            window.__vibeLoadedScripts = window.__vibeLoadedScripts || {};
-            if (window.__vibeLoadedScripts[src]) return window.__vibeLoadedScripts[src];
-            window.__vibeLoadedScripts[src] = new Promise((resolve, reject) => {
-                const existing = Array.from(document.scripts).find(script => script.src === src);
-                if (existing && existing.dataset.loaded === '1') return resolve();
-                const script = existing || document.createElement('script');
-                script.src = src;
-                script.async = false;
-                script.onload = () => {
-                    script.dataset.loaded = '1';
-                    resolve();
-                };
-                script.onerror = () => reject(new Error('Не удалось загрузить ' + src));
-                if (!existing) document.head.appendChild(script);
-            });
-            return window.__vibeLoadedScripts[src];
-        }
-
-        async function getDatabaseSafe() {
-            const appSrc = 'https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js';
-            const dbSrc = 'https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js';
-            for (let attempt = 0; attempt < 8; attempt++) {
-                if (!window.firebase) {
-                    try { await loadScriptOnce(appSrc); } catch (error) {}
-                }
-                if (window.firebase && typeof window.firebase.database !== 'function') {
-                    try { await loadScriptOnce(dbSrc); } catch (error) {}
-                }
-                if (window.firebase && typeof window.firebase.database === 'function') {
-                    if (!window.firebase.apps.length) window.firebase.initializeApp(firebaseConfig);
-                    window.db = window.firebase.database();
-                    db = window.db;
-                    return window.db;
-                }
-                await new Promise(resolve => setTimeout(resolve, 450));
-            }
-            throw new Error('Firebase Database не загрузился. Проверь интернет и перезагрузи страницу.');
-        }
-
         function startResendCountdown(startTime) {
             const timerEl = document.getElementById('verify-timer');
             const resendBtn = document.getElementById('verify-resend-btn');
@@ -1766,12 +1724,11 @@ function mobTab(id) {
         }
 
         async function validateAuthFlow(mode) {
-            const authDb = await getDatabaseSafe();
             if (mode === 'login') {
                 const email = document.getElementById('l-email-input').value.trim().toLowerCase();
                 const password = document.getElementById('l-pass-input').value;
                 if (!email || !password) throw new Error('Введи email и пароль!');
-                const emailSnap = await authDb.ref('emails/' + email.replace(/\./g, '_')).once('value');
+                const emailSnap = await db.ref('emails/' + email.replace(/\./g, '_')).once('value');
                 if (!emailSnap.exists()) throw new Error('Пользователь с такой почтой не найден!');
                 return { email, name: 'Пользователь' };
             }
@@ -1788,8 +1745,8 @@ function mobTab(id) {
                 if (!handle.startsWith('@')) handle = '@' + handle;
                 const hKey = handle.replace('@', '');
                 const [handleSnap, emailSnap] = await Promise.all([
-                    authDb.ref('handles/' + hKey).once('value'),
-                    authDb.ref('emails/' + email.replace(/\./g, '_')).once('value')
+                    db.ref('handles/' + hKey).once('value'),
+                    db.ref('emails/' + email.replace(/\./g, '_')).once('value')
                 ]);
                 if (handleSnap.exists()) throw new Error('Этот ник уже занят!');
                 if (emailSnap.exists()) throw new Error('Эта почта уже используется!');
@@ -1799,7 +1756,7 @@ function mobTab(id) {
             if (mode === 'reset') {
                 const email = document.getElementById('reset-email').value.trim().toLowerCase();
                 if (!email) throw new Error('Введи email!');
-                const emailSnap = await authDb.ref('emails/' + email.replace(/\./g, '_')).once('value');
+                const emailSnap = await db.ref('emails/' + email.replace(/\./g, '_')).once('value');
                 if (!emailSnap.exists()) throw new Error('Пользователь с такой почтой не найден!');
                 return { email, name: 'Пользователь' };
             }
@@ -1810,9 +1767,9 @@ function mobTab(id) {
             if (!rawHandle || !email || !password) throw new Error('Заполни все поля!');
             if (password.length < 6) throw new Error('Пароль должен быть минимум 6 символов!');
             const hKey = rawHandle.replace('@', '');
-            const userRef = await authDb.ref('handles/' + hKey).once('value');
+            const userRef = await db.ref('handles/' + hKey).once('value');
             if (!userRef.exists()) throw new Error('Пользователь с таким ником не найден!');
-            const emailSnap = await authDb.ref('emails/' + email.replace(/\./g, '_')).once('value');
+            const emailSnap = await db.ref('emails/' + email.replace(/\./g, '_')).once('value');
             if (emailSnap.exists()) throw new Error('Эта почта уже используется!');
             return { email, name: rawHandle };
         }
@@ -1863,15 +1820,7 @@ function mobTab(id) {
     try {
         await sendVerificationCode(mode);
     } catch (e) {
-        if (String(e && e.message || '').includes("Cannot access 'db'") || String(e && e.message || '').includes('Database не загрузился')) {
-            try {
-                await getDatabaseSafe();
-                await sendVerificationCode(mode);
-                return;
-            } catch (retryError) {
-                e = retryError;
-            }
-        }
+
         console.error('Email flow error:', e);
         alert(e.message || 'Не удалось отправить код. Проверь данные и попробуй ещё раз.');
         
@@ -1960,7 +1909,6 @@ function mobTab(id) {
         }
 
         async function finishResetPassword() {
-            const authDb = await getDatabaseSafe();
             const email = document.getElementById('reset-email').value.trim().toLowerCase();
             const newPassword = document.getElementById('reset-new-pass').value;
             const confirmPassword = document.getElementById('reset-new-pass-confirm').value;
@@ -1977,11 +1925,11 @@ function mobTab(id) {
                 if (newPassword.length < 6) throw new Error('Пароль должен быть минимум 6 символов!');
                 if (newPassword !== confirmPassword) throw new Error('Пароли не совпадают!');
 
-                const emailSnap = await authDb.ref('emails/' + email.replace(/\./g, '_')).once('value');
+                const emailSnap = await db.ref('emails/' + email.replace(/\./g, '_')).once('value');
                 if (!emailSnap.exists()) throw new Error('Пользователь с такой почтой не найден!');
 
                 const uid = emailSnap.val();
-                await authDb.ref('users/' + uid + '/passwordHash').set(btoa(newPassword));
+                await db.ref('users/' + uid + '/passwordHash').set(btoa(newPassword));
 
                 clearVerifyStorage();
                 document.getElementById('reset-new-pass').value = '';
@@ -1999,11 +1947,10 @@ function mobTab(id) {
         }
 
         async function registerWithEmail() {
-            const authDb = await getDatabaseSafe();
             const email = document.getElementById('r-email-input').value.trim().toLowerCase();
             const password = document.getElementById('r-pass-input').value;
             const name = document.getElementById('r-n-input').value.trim();
-            const emoji = (document.getElementById('r-e-input')?.value || '😎').trim() || '😎';
+            const emoji = (document.getElementById('r-e-input')?.value || '??').trim() || '??';
             const avatarPhoto = regAvatarMode === 'photo' ? regAvatarPhotoData : '';
             let handle = document.getElementById('r-h-input').value.toLowerCase().trim();
 
@@ -2012,8 +1959,8 @@ function mobTab(id) {
 
             const hKey = handle.replace('@', '');
             const [handleSnap, emailSnap] = await Promise.all([
-                authDb.ref('handles/' + hKey).once('value'),
-                authDb.ref('emails/' + email.replace(/\./g, '_')).once('value')
+                db.ref('handles/' + hKey).once('value'),
+                db.ref('emails/' + email.replace(/\./g, '_')).once('value')
             ]);
             if (handleSnap.exists()) throw new Error('Этот ник уже занят!');
             if (emailSnap.exists()) throw new Error('Эта почта уже используется!');
@@ -2033,9 +1980,9 @@ function mobTab(id) {
                 createdAt: Date.now()
             };
 
-            await authDb.ref('users/' + id).set(newUser);
-            await authDb.ref('handles/' + hKey).set(id);
-            await authDb.ref('emails/' + email.replace(/\./g, '_')).set(id);
+            await db.ref('users/' + id).set(newUser);
+            await db.ref('handles/' + hKey).set(id);
+            await db.ref('emails/' + email.replace(/\./g, '_')).set(id);
 
             clearVerifyStorage();
             localStorage.setItem('liquid_pro_v32', JSON.stringify(newUser));
@@ -2043,16 +1990,15 @@ function mobTab(id) {
         }
 
         async function loginWithEmail() {
-            const authDb = await getDatabaseSafe();
             const email = document.getElementById('l-email-input').value.trim().toLowerCase();
             const password = document.getElementById('l-pass-input').value;
             assertVerification('login');
 
-            const snap = await authDb.ref('emails/' + email.replace(/\./g, '_')).once('value');
+            const snap = await db.ref('emails/' + email.replace(/\./g, '_')).once('value');
             if (!snap.exists()) throw new Error('Пользователь с такой почтой не найден!');
 
             const uid = snap.val();
-            const uSnap = await authDb.ref('users/' + uid).once('value');
+            const uSnap = await db.ref('users/' + uid).once('value');
             if (!uSnap.exists()) throw new Error('Данные пользователя не найдены в базе.');
 
             const user = uSnap.val();
@@ -2065,28 +2011,27 @@ function mobTab(id) {
         }
 
         async function linkEmailToAccount() {
-            const authDb = await getDatabaseSafe();
             const handle = document.getElementById('link-h-input').value.toLowerCase().trim();
             const email = document.getElementById('link-email-input').value.trim().toLowerCase();
             const password = document.getElementById('link-pass-input').value;
             assertVerification('link');
 
             const hKey = handle.replace('@', '');
-            const snap = await authDb.ref('handles/' + hKey).once('value');
+            const snap = await db.ref('handles/' + hKey).once('value');
             if (!snap.exists()) throw new Error('Пользователь с таким ником не найден!');
 
             const uid = snap.val();
-            const uSnap = await authDb.ref('users/' + uid).once('value');
+            const uSnap = await db.ref('users/' + uid).once('value');
             const user = uSnap.val();
             if (!user) throw new Error('Аккаунт не найден.');
             if (user.email) throw new Error('К этому аккаунту уже привязана почта!');
 
-            const emailSnap = await authDb.ref('emails/' + email.replace(/\./g, '_')).once('value');
+            const emailSnap = await db.ref('emails/' + email.replace(/\./g, '_')).once('value');
             if (emailSnap.exists()) throw new Error('Эта почта уже используется!');
 
-            await authDb.ref('users/' + uid + '/email').set(email);
-            await authDb.ref('users/' + uid + '/passwordHash').set(btoa(password));
-            await authDb.ref('emails/' + email.replace(/\./g, '_')).set(uid);
+            await db.ref('users/' + uid + '/email').set(email);
+            await db.ref('users/' + uid + '/passwordHash').set(btoa(password));
+            await db.ref('emails/' + email.replace(/\./g, '_')).set(uid);
 
             clearVerifyStorage();
             if (me && me.id === uid) {
@@ -2128,7 +2073,7 @@ function mobTab(id) {
         const bBtn = document.getElementById('pop-block-btn');
         if(bBtn && typeof contextPeerId !== 'undefined' && contextPeerId) {
             const isBlocked = me.blocks && me.blocks[contextPeerId] === true;
-            bBtn.innerText = isBlocked ? '🔓 Разблокировать' : '🚫 Заблокировать';
+            bBtn.innerText = isBlocked ? '?? Разблокировать' : '?? Заблокировать';
         }
     });
 
@@ -2221,7 +2166,7 @@ addFavoritesToContacts();
         if (!document.getElementById('admin-btn-global')) {
             const adminBtn = document.createElement('button');
             adminBtn.id = 'admin-btn-global';
-            adminBtn.textContent = "👑 Админ-панель";
+            adminBtn.textContent = "?? Админ-панель";
             adminBtn.className = "verify-btn"; // ?спользуем твой стиль
             adminBtn.style.display = "block";
             adminBtn.style.background = "#ff00ff"; // Розовый цвет для отличия
@@ -2305,7 +2250,7 @@ async function doLinkEmail() {
                 const u = uSnap.val(); if(!u) return;
                 const isDel = (u.isDeleted === true);
                 const html = isDel ? 
-                    `<div class="avatar-emoji" style="opacity:0.3;">🚫</div><div style="margin-left:10px;opacity:0.5;"><b style="text-decoration:line-through;">Аккаунт удалён</b><br><small>Недоступен</small></div>` :
+                    `<div class="avatar-emoji" style="opacity:0.3;">??</div><div style="margin-left:10px;opacity:0.5;"><b style="text-decoration:line-through;">Аккаунт удалён</b><br><small>Недоступен</small></div>` :
                     `<div class="avatar-emoji">${u.avatar}</div><div style="margin-left:10px"><b>${u.name}${u.verified?vBadge:''}</b><br><small class="online-status ${u.online?'st-all':'st-none'}">${u.online?'В сети':'Не в сети'}</small></div>`;
                 
                 const existing = document.getElementById('cnt-'+fId);
@@ -2340,8 +2285,8 @@ async function doLinkEmail() {
     if (user.id === 'saved_' + me.id) {
         header.innerHTML = `
             <div style="display:flex; align-items:center; gap:10px;">
-                <button onclick="event.stopPropagation();closeMobChat()" style="font-size:24px;">←</button>
-                <div class="fav-icon-box" style="width:35px; height:35px; margin-right:10px;">⭐</div>
+                <button onclick="event.stopPropagation();closeMobChat()" style="font-size:24px;"><</button>
+                <div class="fav-icon-box" style="width:35px; height:35px; margin-right:10px;">?</div>
                 <b>Избранное</b>
             </div>`;
         inputBar.style.display = 'flex'; // Поле ввода должно работать
@@ -2353,7 +2298,7 @@ async function doLinkEmail() {
     const badge = user.verified ? vBadge : '';
     header.innerHTML = `
         <div style="display:flex;align-items:center;gap:10px;" onclick="showPeerProfile()">
-            <button onclick="event.stopPropagation();closeMobChat()" style="font-size:24px;">←</button>
+            <button onclick="event.stopPropagation();closeMobChat()" style="font-size:24px;"><</button>
             <div class="avatar-emoji" style="width:35px;height:35px;font-size:18px;">${user.avatar}</div>
             <b>${user.name}${badge}</b>
         </div>`;
@@ -2444,7 +2389,7 @@ if (m.reply) {
 
 // Добавляем основной текст сообщения
 if (m.type === 'voice') {
-    messageHTML += `🎤 <audio controls src="${m.val}"></audio>`;
+    messageHTML += `?? <audio controls src="${m.val}"></audio>`;
 } else {
     messageHTML += `<div>${m.val}</div>`;
 }
@@ -2521,14 +2466,14 @@ function showPeerProfile() {
     const isBlocked = me.blocks && me.blocks[contextPeerId] === true;
     
     const popAva = document.getElementById('pop-ava');
-    popAva.innerText = activePeer.isDeleted ? '🚫' : activePeer.avatar;
+    popAva.innerText = activePeer.isDeleted ? '??' : activePeer.avatar;
     
     document.getElementById('pop-name').innerHTML = activePeer.isDeleted ? 'Аккаунт удалён' : (activePeer.name + (activePeer.verified ? vBadge : ''));
     document.getElementById('pop-handle').innerText = activePeer.handle;
     document.getElementById('pop-bio').innerText = activePeer.isDeleted ? 'Этот аккаунт заблокирован.' : (activePeer.bio || 'Нет описания');
     
     const blockBtn = document.getElementById('pop-block-btn');
-    if(blockBtn) blockBtn.innerText = isBlocked ? '🔓 Разблокировать' : '🚫 Заблокировать';
+    if(blockBtn) blockBtn.innerText = isBlocked ? '?? Разблокировать' : '?? Заблокировать';
     
     document.getElementById('profile-popup').style.display = 'flex';
 }
@@ -2543,7 +2488,7 @@ async function toggleBlock() {
     document.getElementById('chat-list-menu').style.display='none';
     // На всякий случай меняем текст кнопки вручную для мгновенности
     const blockBtn = document.getElementById('pop-block-btn');
-    if(blockBtn) blockBtn.innerText = isNowBlocked ? '🔓 Разблокировать' : '🚫 Заблокировать';
+    if(blockBtn) blockBtn.innerText = isNowBlocked ? '?? Разблокировать' : '?? Заблокировать';
 }
 
 
@@ -2636,7 +2581,7 @@ async function saveBio(m) {
         function loadEmojis() {
             ['pc','mob'].forEach(m => {
                 const p = document.getElementById(m==='pc'?'pc-emoji-picker':'mob-emoji-picker'); if(!p) return; p.innerHTML = "";
-                const ems = ["рџЂ","рџ‚","🥰","рџЋ","🤔","??","🔥","👍","❤️","✨","👋","🚀","💀","👀","🎉","🤡","вЃпёЏ","💤","⬜️","🧸","🎀","🎁","🐾"];
+                const ems = ["рџЂ","рџ‚","??","рџЋ","??","??","??","??","??","?","??","??","??","??","??","??","вЃпёЏ","??","??","??","??","??","??"];
                 ems.forEach(e => { const s = document.createElement('span'); s.className="emoji"; s.innerText = e; s.onclick = () => document.getElementById(m==='pc'?'pc-input':'mob-input').value += e; p.appendChild(s); });
             });
         }
@@ -2704,8 +2649,8 @@ function showNotification(title, body, options = {}) {
         // На мобильном показываем стандартное уведомление
         const notif = new Notification(title, {
             body: body,
-            icon: '👥',
-            badge: '🔔',
+            icon: '??',
+            badge: '??',
             tag: `msg_${peerId}`,
             requireInteraction: false
         });
@@ -2735,15 +2680,15 @@ function showAdminPanel() {
         <div style="background:#111827;width:95%;max-width:900px;height:90vh;border-radius:20px;overflow:hidden;display:flex;flex-direction:column;">
             <div style="padding:15px 20px;background:#1e2937;display:flex;justify-content:space-between;align-items:center;">
                 <h2 style="margin:0;color:#00f2fe;">Админ-панель</h2>
-                <button onclick="document.getElementById('admin-modal').remove()" style="background:none;border:none;color:#ff5555;font-size:24px;cursor:pointer;">✕</button>
+                <button onclick="document.getElementById('admin-modal').remove()" style="background:none;border:none;color:#ff5555;font-size:24px;cursor:pointer;">?</button>
             </div>
             <div style="display:flex;height:calc(100% - 60px);">
                 <div style="width:220px;background:#1e2937;padding:20px 10px; overflow-y:auto;">
                     <div onclick="showAdminSection(1)" class="admin-tab">Галочки</div>
                     <div onclick="showAdminSection(2)" class="admin-tab">Админы</div>
                     <div onclick="showAdminSection(3)" class="admin-tab">Техперерыв</div>
-                    <div onclick="showAdminSection(5)" class="admin-tab" style="color:#00f2fe">📢 Объявление</div>
-                    <div onclick="showAdminSection(6)" class="admin-tab" style="color:#00f2fe">✉️ Рассылка</div>
+                    <div onclick="showAdminSection(5)" class="admin-tab" style="color:#00f2fe">?? Объявление</div>
+                    <div onclick="showAdminSection(6)" class="admin-tab" style="color:#00f2fe">?? Рассылка</div>
                     <div onclick="showAdminSection(4)" class="admin-tab">Удаление</div>
                 </div>
                 <div id="admin-content" style="flex:1;padding:25px;overflow-y:auto;"></div>
@@ -2817,7 +2762,7 @@ async function loadAllUsers(section) {
                 else if (section === 4) { // РАЗДЕЛ: УДАЛЕН?Е
                     action = u.isDeleted 
                         ? `<button onclick="restoreAccount('${uid}')" style="background:lime; color:black; width:35px; height:35px; border-radius:50%; border:none; font-size:20px; font-weight:bold;">+</button>` 
-                        : `<button onclick="deleteAccount('${uid}')" style="background:rgba(255,0,0,0.2); color:#ff4444; padding:5px 10px; border-radius:8px; border:none;">🗑 Удалить</button>`;
+                        : `<button onclick="deleteAccount('${uid}')" style="background:rgba(255,0,0,0.2); color:#ff4444; padding:5px 10px; border-radius:8px; border:none;">?? Удалить</button>`;
                 }
 
                 html += `
@@ -2873,7 +2818,7 @@ async function giveVerify(id) {
 function showPeerProfile() {
     if(!activePeer) return;
     contextPeerId = activePeer.id; 
-    document.getElementById('pop-ava').innerText = activePeer.isDeleted ? '🚫' : activePeer.avatar;
+    document.getElementById('pop-ava').innerText = activePeer.isDeleted ? '??' : activePeer.avatar;
     document.getElementById('pop-name').innerHTML = activePeer.isDeleted ? 'Аккаунт удалён' : (activePeer.name + (activePeer.verified ? vBadge : ''));
     document.getElementById('pop-handle').innerText = activePeer.handle;
     document.getElementById('pop-bio').innerText = activePeer.isDeleted ? 'Этот аккаунт заблокирован.' : (activePeer.bio || 'Нет описания');
@@ -3120,7 +3065,7 @@ window.openFavorites = function() {
     const favUser = { 
         id: 'saved_' + me.id, 
         name: 'Избранное', 
-        avatar: '⭐', 
+        avatar: '?', 
         isSaved: true 
     }; 
     
@@ -3147,7 +3092,7 @@ window.openFavorites = function() {
           if (typeof window.showCreateMenu === 'function') return window.showCreateMenu();
           if (typeof showCreateMenu === 'function') return showCreateMenu();
           // fallback: открыть модал напрямую
-          if (typeof openModal === 'function') return openModal('', `<div class="modal-head"><div class="modal-title">Создать</div><button class="modal-close" onclick="closeOverlay()">✕</button></div><div class="choice-stack"><button class="choice-card" onclick="openCreateGroup()">Создать группу<br><span class="settings-nav-meta">Общий чат для друзей</span></button><button class="choice-card" onclick="openCreateChannel()">Создать канал<br><span class="settings-nav-meta">Публикации и подписчики</span></button></div>`);
+          if (typeof openModal === 'function') return openModal('', `<div class="modal-head"><div class="modal-title">Создать</div><button class="modal-close" onclick="closeOverlay()">?</button></div><div class="choice-stack"><button class="choice-card" onclick="openCreateGroup()">Создать группу<br><span class="settings-nav-meta">Общий чат для друзей</span></button><button class="choice-card" onclick="openCreateChannel()">Создать канал<br><span class="settings-nav-meta">Публикации и подписчики</span></button></div>`);
         }, { passive: false });
       }
 
@@ -3160,7 +3105,7 @@ window.openFavorites = function() {
         qrBtn.addEventListener('click', function(e){
           e.preventDefault(); e.stopPropagation();
           if (typeof window.openQrLogin === 'function') return window.openQrLogin();
-          if (typeof openModal === 'function') return openModal('', `<div class="modal-head"><div class="modal-title">Войти по QR-коду</div><button class="modal-close" onclick="closeOverlay()">✕</button></div><div class="qr-box">QR</div>`);
+          if (typeof openModal === 'function') return openModal('', `<div class="modal-head"><div class="modal-title">Войти по QR-коду</div><button class="modal-close" onclick="closeOverlay()">?</button></div><div class="qr-box">QR</div>`);
         }, { passive: false });
       }
     } catch (e) { console.warn('pcBind error', e); }
@@ -3176,7 +3121,7 @@ window.openFavorites = function() {
 
 <!-- 1. Плашка Удаления -->
 <div id="screen-deleted" style="display:none; position:fixed; inset:0; background:#000; z-index:1000000; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:20px;">
-    <div style="font-size:60px;">🚫</div>
+    <div style="font-size:60px;">??</div>
     <h2 style="color:white; margin-top:20px;">Ваш аккаунт удалён</h2>
     <p style="color:#888; margin:15px 0;">Вы больше не можете пользоваться мессенджером.</p>
     <a href="https://t.me/Vibe2289" target="_blank" style="background:#00f2fe; color:#000; padding:14px 30px; border-radius:15px; text-decoration:none; font-weight:bold; font-size:18px;">Поддержка</a>
@@ -3184,7 +3129,7 @@ window.openFavorites = function() {
 
 <!-- 2. Плашка Технического перерыва -->
 <div id="screen-tech" style="display:none; position:fixed; inset:0; background:rgba(11, 17, 29, 0.98); backdrop-filter:blur(20px); z-index:999999; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:20px;">
-    <div style="font-size:60px;">⚙️</div>
+    <div style="font-size:60px;">??</div>
     <h2 style="color:white; margin-top:20px;">Технический перерыв</h2>
     <p style="color:#888; margin:15px 0;">Извините за неудобства, мы скоро вернемся!</p>
     <a href="https://t.me/Vibe2289" target="_blank" style="background:#00f2fe; color:#000; padding:14px 30px; border-radius:15px; text-decoration:none; font-weight:bold; font-size:18px;">Поддержка</a>
@@ -3192,7 +3137,7 @@ window.openFavorites = function() {
 
 <!-- 3. Плашка Объявления (Глобальная блокировка) -->
 <div id="screen-announcement" style="display:none; position:fixed; inset:0; background:rgba(11, 17, 29, 0.98); backdrop-filter:blur(25px); z-index:999998; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:30px;">
-    <div style="font-size:60px; margin-bottom:20px;">📢</div>
+    <div style="font-size:60px; margin-bottom:20px;">??</div>
     <h2 style="color:white; margin-bottom:15px;">ВАЖНОЕ ОБЪЯВЛЕН?Е</h2>
     <p id="announcement-display-text" style="color:#fff; font-size:18px; line-height:1.5; margin-bottom:30px; max-width:400px;"></p>
     <a href="https://t.me/Vibe2289" target="_blank" style="background:var(--accent); color:#000; padding:14px 40px; border-radius:15px; text-decoration:none; font-weight:bold; font-size:16px;">ПОДДЕРЖКА</a>
@@ -3201,7 +3146,7 @@ window.openFavorites = function() {
 <!-- 4. Плашка Рассылки (Модальное окно) -->
 <div id="screen-broadcast" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); backdrop-filter:blur(10px); z-index:999997; align-items:center; justify-content:center; padding:20px;">
     <div class="glass" style="max-width:350px; width:100%; padding:30px; text-align:center; border: 1px solid var(--accent); background: #0b111d;">
-        <div style="font-size:40px; margin-bottom:15px;">✉️</div>
+        <div style="font-size:40px; margin-bottom:15px;">??</div>
         <p id="broadcast-display-text" style="color:white; font-size:16px; margin-bottom:25px; white-space: pre-wrap;"></p>
         <button onclick="closeBroadcast()" style="background:var(--accent); color:#000; width:100%; padding:12px; border-radius:12px; font-weight:bold; cursor:pointer;">Понятно</button>
     </div>
@@ -3212,8 +3157,8 @@ window.openFavorites = function() {
 <script>
 const vibeEnhancer = (() => {
   const SWATCHS = ['#3a83c5','#3aa41e','#cf7a20','#bd4d46','#8659c9','#44a3b6','#b44f89','#8797aa','linear-gradient(135deg, #67cdf0, #4e83d4)','linear-gradient(135deg, #b7dc5b, #3f9c48)','linear-gradient(135deg, #f6b43f, #da6b42)','linear-gradient(135deg, #ff9b69, #d54b67)','linear-gradient(135deg, #d87cff, #6d57d5)','linear-gradient(135deg, #70e0c4, #3b9cd7)','linear-gradient(135deg, #f693ae, #cb4c95)','linear-gradient(135deg, #c7d0d8, #9cabb8)'];
-  const PATTERNS = ['✦','вј','✿','в™«','вЃ','✈','❤','⚡'];
-  const APP_ICONS = ['💬','в–¶','✨','🎵'];
+  const PATTERNS = ['?','вј','?','в™«','вЃ','?','?','?'];
+  const APP_ICONS = ['??','в–¶','?','??'];
   const state = { settingsView: 'home', friends: {}, rooms: {}, scanStream: null, currentQrSession: null };
   let channelMode = 'private';
 
@@ -3291,7 +3236,7 @@ const vibeEnhancer = (() => {
     return `<button class="settings-nav-item" onclick="openSettingsView('${view}')"><span class="settings-nav-main"><span class="settings-nav-icon">${icon}</span><span><div class="settings-nav-title">${title}</div><div class="settings-nav-meta">${meta}</div></span></span><span>›</span></button>`;
   }
   function subPage(title, subtitle, body) {
-    return `<div class="settings-shell"><div class="settings-topbar"><button class="settings-back" onclick="backSettingsView()">←</button><div><div class="settings-title">${title}</div><div class="settings-subtitle">${subtitle}</div></div></div>${body}</div>`;
+    return `<div class="settings-shell"><div class="settings-topbar"><button class="settings-back" onclick="backSettingsView()"><</button><div><div class="settings-title">${title}</div><div class="settings-subtitle">${subtitle}</div></div></div>${body}</div>`;
   }
   function presenceLabel(mode) {
     return mode === 'all' ? 'Видят все' : mode === 'friends' ? 'Видят друзья' : 'Скрыт с исключениями';
@@ -3299,13 +3244,13 @@ const vibeEnhancer = (() => {
   function renderDevices() {
     const devices = Object.values(safeSettings().devices || {}).sort((a, b) => (b.lastSeenAt || 0) - (a.lastSeenAt || 0));
     if (!devices.length) return `<div class="settings-card">Устройств пока нет</div>`;
-    return devices.map(device => `<div class="device-row"><div class="device-main"><div class="device-icon-box">🖥</div><div><div>${device.name || 'Устройство'}${device.id === getDeviceId() ? ' В· это устройство' : ''}</div><div class="settings-nav-meta">${device.lastSeenAt ? new Date(device.lastSeenAt).toLocaleString() : 'Сейчас активно'}</div></div></div><button class="three-dot" onclick="showDeviceMenu('${device.id}')">⋯</button></div>`).join('');
+    return devices.map(device => `<div class="device-row"><div class="device-main"><div class="device-icon-box">??</div><div><div>${device.name || 'Устройство'}${device.id === getDeviceId() ? ' В· это устройство' : ''}</div><div class="settings-nav-meta">${device.lastSeenAt ? new Date(device.lastSeenAt).toLocaleString() : 'Сейчас активно'}</div></div></div><button class="three-dot" onclick="showDeviceMenu('${device.id}')">?</button></div>`).join('');
   }
   function renderPresenceFriends() {
     const selected = safeSettings().privacy.lastSeenExceptions || {};
     const entries = Object.values(state.friends);
     if (!entries.length) return `<div class="settings-card">Сначала добавь друзей</div>`;
-    return entries.map(user => `<label class="person-row"><span class="person-main"><span class="avatar-emoji">${user.avatar || '👤'}</span><span><div>${user.name}</div><div class="settings-nav-meta">${user.handle}</div></span></span><input type="checkbox" data-presence-id="${user.id}" ${selected[user.id] ? 'checked' : ''}></label>`).join('');
+    return entries.map(user => `<label class="person-row"><span class="person-main"><span class="avatar-emoji">${user.avatar || '??'}</span><span><div>${user.name}</div><div class="settings-nav-meta">${user.handle}</div></span></span><input type="checkbox" data-presence-id="${user.id}" ${selected[user.id] ? 'checked' : ''}></label>`).join('');
   }
   function buildSettingsView() {
     const s = safeSettings();
@@ -3314,7 +3259,7 @@ const vibeEnhancer = (() => {
     const avatarPhoto = me.avatarPhoto || me.photoURL || me.avatarUrl || '';
     const settingsAvatar = avatarPhoto
       ? `<div class="settings-preview-avatar has-photo" style="background-image:url('${escapeHtml(avatarPhoto)}');background-size:cover;background-position:center;color:transparent;"></div>`
-      : `<div class="settings-preview-avatar">${me.avatar || '👤'}</div>`;
+      : `<div class="settings-preview-avatar">${me.avatar || '??'}</div>`;
     const views = {
       home: `<div class="settings-shell"><div class="settings-topbar"><div><div class="settings-title">Настройки</div><div class="settings-subtitle">Профиль, устройства, безопасность и оформление</div></div></div><div class="settings-grid"><div class="settings-card"><div class="settings-preview" style="background:${color};"><div class="settings-pattern" style="background-image:${pattern};"></div>${settingsAvatar}<div class="settings-preview-name">${me.name || 'Без имени'}${me.verified ? vBadge : ''}</div><div class="settings-preview-handle">${me.handle || '@user'}</div></div></div><div class="settings-card"><div class="settings-list">${navItem(
   'devices',
@@ -3440,7 +3385,7 @@ const vibeEnhancer = (() => {
     if (!auth.appLockEnabled || (!auth.appLockPassword && !auth.biometricEnabled)) return;
     const lockHost = document.getElementById('app-lock-screen');
     lockHost.style.display = 'flex';
-    lockHost.innerHTML = `<div class="lock-card"><div style="font-size:54px;">🔒</div><h2 style="margin:14px 0;">Защита Vibe</h2><p class="section-note">Разблокируй приложение, чтобы продолжить.</p><div class="settings-actions" style="justify-content:center; margin-top:16px;"><button class="settings-save" onclick="unlockWithPassword()">Ввести пароль</button>${auth.biometricEnabled ? `<button class="settings-ghost" onclick="unlockWithBiometric()">Face ID / отпечаток</button>` : ''}</div></div>`;
+    lockHost.innerHTML = `<div class="lock-card"><div style="font-size:54px;">??</div><h2 style="margin:14px 0;">Защита Vibe</h2><p class="section-note">Разблокируй приложение, чтобы продолжить.</p><div class="settings-actions" style="justify-content:center; margin-top:16px;"><button class="settings-save" onclick="unlockWithPassword()">Ввести пароль</button>${auth.biometricEnabled ? `<button class="settings-ghost" onclick="unlockWithBiometric()">Face ID / отпечаток</button>` : ''}</div></div>`;
     if (auth.biometricEnabled) {
       try { await unlockWithBiometric(); } catch (e) {}
     }
@@ -3530,8 +3475,8 @@ const vibeEnhancer = (() => {
     const host = document.getElementById(hostId);
     if (!host) return;
     const header = desktop ? `<div class="chat-topbar"><h3>Чаты</h3><button class="chat-plus-btn" onclick="showCreateMenu()">+</button></div>` : '';
-    const users = Object.values(state.friends).map(user => `<div class="contact-item glass" onclick="${desktop ? `openPCChat(vibeRoomState.friends['${user.id}'])` : `openMobChat(vibeRoomState.friends['${user.id}'])`}" oncontextmenu="showChatListMenu(event, '${user.id}')"><div class="avatar-emoji">${user.avatar || '👤'}</div><div style="min-width:0;"><b>${user.name}${user.verified ? vBadge : ''}</b><br><small class="${user.online ? 'st-all' : 'st-none'}">${getPresenceText(user)}</small></div></div>`).join('');
-    const rooms = Object.values(state.rooms).map(room => `<div class="contact-item glass" onclick="${desktop ? `openPCChat(vibeRoomState.rooms['${room.id}'])` : `openMobChat(vibeRoomState.rooms['${room.id}'])`}"><div class="avatar-emoji room-avatar">${room.avatar || (room.type === 'channel' ? '📣' : '👥')}</div><div style="min-width:0; flex:1;"><b>${room.name}</b><br><small>${room.type === 'channel' ? 'Канал' : 'Группа'} В· ${Object.keys(room.members || {}).length} участников</small></div><span class="meta-pill">${room.type === 'channel' ? 'Канал' : 'Группа'}</span></div>`).join('');
+    const users = Object.values(state.friends).map(user => `<div class="contact-item glass" onclick="${desktop ? `openPCChat(vibeRoomState.friends['${user.id}'])` : `openMobChat(vibeRoomState.friends['${user.id}'])`}" oncontextmenu="showChatListMenu(event, '${user.id}')"><div class="avatar-emoji">${user.avatar || '??'}</div><div style="min-width:0;"><b>${user.name}${user.verified ? vBadge : ''}</b><br><small class="${user.online ? 'st-all' : 'st-none'}">${getPresenceText(user)}</small></div></div>`).join('');
+    const rooms = Object.values(state.rooms).map(room => `<div class="contact-item glass" onclick="${desktop ? `openPCChat(vibeRoomState.rooms['${room.id}'])` : `openMobChat(vibeRoomState.rooms['${room.id}'])`}"><div class="avatar-emoji room-avatar">${room.avatar || (room.type === 'channel' ? '??' : '??')}</div><div style="min-width:0; flex:1;"><b>${room.name}</b><br><small>${room.type === 'channel' ? 'Канал' : 'Группа'} В· ${Object.keys(room.members || {}).length} участников</small></div><span class="meta-pill">${room.type === 'channel' ? 'Канал' : 'Группа'}</span></div>`).join('');
     host.innerHTML = header + users + rooms;
   }
   function renderDialogs() { renderDialogList('pc-contacts-list', true); renderDialogList('mob-contacts', false); }
@@ -3557,10 +3502,10 @@ const vibeEnhancer = (() => {
     root.innerHTML = `<div class="app-modal-backdrop" onclick="closeOverlay()"><div class="app-modal ${width || ''}" onclick="event.stopPropagation()">${html}</div></div>`;
   }
   function showCreateMenu() {
-    openModal('', `<div class="modal-head"><div class="modal-title">Создать</div><button class="modal-close" onclick="closeOverlay()">✕</button></div><div class="choice-stack"><button class="choice-card" onclick="openCreateGroup()">Создать группу<br><span class="settings-nav-meta">Общий чат для друзей</span></button><button class="choice-card" onclick="openCreateChannel()">Создать канал<br><span class="settings-nav-meta">Публикации и подписчики</span></button></div>`);
+    openModal('', `<div class="modal-head"><div class="modal-title">Создать</div><button class="modal-close" onclick="closeOverlay()">?</button></div><div class="choice-stack"><button class="choice-card" onclick="openCreateGroup()">Создать группу<br><span class="settings-nav-meta">Общий чат для друзей</span></button><button class="choice-card" onclick="openCreateChannel()">Создать канал<br><span class="settings-nav-meta">Публикации и подписчики</span></button></div>`);
   }
   function selectableFriendsHtml(filterFn) {
-    return Object.values(state.friends).filter(filterFn || (() => true)).map(user => `<label class="person-row"><span class="person-main"><span class="avatar-emoji">${user.avatar || '👤'}</span><span><div>${user.name}</div><div class="settings-nav-meta">${user.handle}</div></span></span><input type="checkbox" data-group-member="${user.id}"></label>`).join('');
+    return Object.values(state.friends).filter(filterFn || (() => true)).map(user => `<label class="person-row"><span class="person-main"><span class="avatar-emoji">${user.avatar || '??'}</span><span><div>${user.name}</div><div class="settings-nav-meta">${user.handle}</div></span></span><input type="checkbox" data-group-member="${user.id}"></label>`).join('');
   }
   function filterSelectableFriends(value, hostId) {
     const host = document.getElementById(hostId);
@@ -3571,16 +3516,16 @@ const vibeEnhancer = (() => {
     });
   }
   function openCreateGroup() {
-    openModal('wide', `<div class="modal-head"><div><div class="modal-title">Создать группу</div><div class="settings-subtitle">Имя обязательно</div></div><button class="modal-close" onclick="closeOverlay()">✕</button></div><div class="settings-section"><input id="grp-name" placeholder="Имя группы"><input id="grp-emoji" placeholder="Эмодзи аватар" maxlength="2"><textarea id="grp-bio" placeholder="Описание"></textarea><div class="settings-nav-title">Выбери участников</div><input id="grp-search" placeholder="Поиск по друзьям" oninput="filterSelectableFriends(this.value, 'grp-friends')"><div id="grp-friends" class="people-list">${selectableFriendsHtml()}</div><div class="settings-actions"><button class="settings-save" onclick="createGroup()">Создать</button></div></div>`);
+    openModal('wide', `<div class="modal-head"><div><div class="modal-title">Создать группу</div><div class="settings-subtitle">Имя обязательно</div></div><button class="modal-close" onclick="closeOverlay()">?</button></div><div class="settings-section"><input id="grp-name" placeholder="Имя группы"><input id="grp-emoji" placeholder="Эмодзи аватар" maxlength="2"><textarea id="grp-bio" placeholder="Описание"></textarea><div class="settings-nav-title">Выбери участников</div><input id="grp-search" placeholder="Поиск по друзьям" oninput="filterSelectableFriends(this.value, 'grp-friends')"><div id="grp-friends" class="people-list">${selectableFriendsHtml()}</div><div class="settings-actions"><button class="settings-save" onclick="createGroup()">Создать</button></div></div>`);
   }
   function openCreateChannel() {
    console.log('openCreateChannel'); 
-    openModal('wide', `<div class="modal-head"><div><div class="modal-title">Создать канал</div><div class="settings-subtitle">Имя, описание, эмодзи и тип ссылки</div></div><button class="modal-close" onclick="closeOverlay()">✕</button></div><div class="settings-section"><input id="chn-name" placeholder="Имя канала"><input id="chn-emoji" placeholder="Эмодзи аватар" maxlength="2"><textarea id="chn-bio" placeholder="Описание"></textarea><div class="settings-actions"><button class="settings-save" onclick="setChannelMode('private')">Частный</button><button class="settings-ghost" onclick="setChannelMode('public')">Публичный</button></div><input id="chn-link" placeholder="Ссылка канала"><div class="section-note">Для частного канала ссылка создаётся сама, для публичного ты придумываешь её сам.</div><div class="settings-actions"><button class="settings-save" onclick="createChannel()">Создать</button></div></div>`);
+    openModal('wide', `<div class="modal-head"><div><div class="modal-title">Создать канал</div><div class="settings-subtitle">Имя, описание, эмодзи и тип ссылки</div></div><button class="modal-close" onclick="closeOverlay()">?</button></div><div class="settings-section"><input id="chn-name" placeholder="Имя канала"><input id="chn-emoji" placeholder="Эмодзи аватар" maxlength="2"><textarea id="chn-bio" placeholder="Описание"></textarea><div class="settings-actions"><button class="settings-save" onclick="setChannelMode('private')">Частный</button><button class="settings-ghost" onclick="setChannelMode('public')">Публичный</button></div><input id="chn-link" placeholder="Ссылка канала"><div class="section-note">Для частного канала ссылка создаётся сама, для публичного ты придумываешь её сам.</div><div class="settings-actions"><button class="settings-save" onclick="createChannel()">Создать</button></div></div>`);
   }
   function randomInviteCode(prefix) { return `${prefix}_${Math.random().toString(36).slice(2, 9)}`; }
   async function createGroup() {
     const name = document.getElementById('grp-name').value.trim();
-    const avatar = document.getElementById('grp-emoji').value.trim() || '👥';
+    const avatar = document.getElementById('grp-emoji').value.trim() || '??';
     const bio = document.getElementById('grp-bio').value.trim();
     if (!name) return alert('Введи имя группы.');
     const members = { [me.id]: true };
@@ -3602,7 +3547,7 @@ const vibeEnhancer = (() => {
   }
   async function createChannel() {
     const name = document.getElementById('chn-name').value.trim();
-    const avatar = document.getElementById('chn-emoji').value.trim() || '📣';
+    const avatar = document.getElementById('chn-emoji').value.trim() || '??';
     const bio = document.getElementById('chn-bio').value.trim();
     const link = (document.getElementById('chn-link').value.trim() || randomInviteCode('join')).toLowerCase();
     if (!name) return alert('Введи имя канала.');
@@ -3643,14 +3588,14 @@ const vibeEnhancer = (() => {
     const room = state.rooms[roomId];
     if (!room) return;
     const addable = Object.values(state.friends).filter(user => !(room.members && room.members[user.id]));
-    openModal('wide', `<div class="modal-head"><div><div class="modal-title">Настройки ${room.type === 'group' ? 'группы' : 'канала'}</div><div class="settings-subtitle">${room.name}</div></div><button class="modal-close" onclick="closeOverlay()">✕</button></div><div class="settings-section"><input id="room-name-edit" value="${escapeHtml(room.name || '')}" placeholder="Имя"><textarea id="room-bio-edit" placeholder="Описание">${escapeHtml(room.bio || '')}</textarea><input id="room-avatar-edit" value="${escapeHtml(room.avatar || '')}" maxlength="2" placeholder="Эмодзи"><div class="settings-actions"><button class="settings-save" onclick="saveRoomBasics('${roomId}')">Сохранить</button></div>${room.type === 'group' ? `<div class="settings-card"><div class="settings-nav-title">Добавить участника</div><div class="people-list">${addable.map(user => `<div class="person-row"><span class="person-main"><span class="avatar-emoji">${user.avatar}</span><span><div>${user.name}</div><div class="settings-nav-meta">${user.handle}</div></span></span><button class="settings-save" onclick="addRoomMember('${roomId}','${user.id}')">Добавить</button></div>`).join('') || 'Все друзья уже в группе'}</div></div>` : ''}</div>`);
+    openModal('wide', `<div class="modal-head"><div><div class="modal-title">Настройки ${room.type === 'group' ? 'группы' : 'канала'}</div><div class="settings-subtitle">${room.name}</div></div><button class="modal-close" onclick="closeOverlay()">?</button></div><div class="settings-section"><input id="room-name-edit" value="${escapeHtml(room.name || '')}" placeholder="Имя"><textarea id="room-bio-edit" placeholder="Описание">${escapeHtml(room.bio || '')}</textarea><input id="room-avatar-edit" value="${escapeHtml(room.avatar || '')}" maxlength="2" placeholder="Эмодзи"><div class="settings-actions"><button class="settings-save" onclick="saveRoomBasics('${roomId}')">Сохранить</button></div>${room.type === 'group' ? `<div class="settings-card"><div class="settings-nav-title">Добавить участника</div><div class="people-list">${addable.map(user => `<div class="person-row"><span class="person-main"><span class="avatar-emoji">${user.avatar}</span><span><div>${user.name}</div><div class="settings-nav-meta">${user.handle}</div></span></span><button class="settings-save" onclick="addRoomMember('${roomId}','${user.id}')">Добавить</button></div>`).join('') || 'Все друзья уже в группе'}</div></div>` : ''}</div>`);
   }
   async function saveRoomBasics(roomId) {
     const room = state.rooms[roomId];
     await db.ref(`rooms/${roomId}`).update({
       name: document.getElementById('room-name-edit').value.trim(),
       bio: document.getElementById('room-bio-edit').value.trim(),
-      avatar: document.getElementById('room-avatar-edit').value.trim() || (room.type === 'channel' ? '📣' : '👥')
+      avatar: document.getElementById('room-avatar-edit').value.trim() || (room.type === 'channel' ? '??' : '??')
     });
     closeOverlay();
   }
@@ -3677,7 +3622,7 @@ const vibeEnhancer = (() => {
         if ((room.type === 'channel' && room.isPublic && room.name.toLowerCase().includes(query)) || (room.inviteCode && room.inviteCode.toLowerCase() === query)) {
           const action = room.type === 'channel' && !room.isPublic && !(room.members && room.members[me.id]) ? 'Отправить запрос' : 'Открыть';
           const fn = room.type === 'channel' && !room.isPublic && !(room.members && room.members[me.id]) ? `requestJoinChannel('${room.id}')` : `joinOrOpenRoom('${room.id}')`;
-          html += `<div class="contact-item glass"><div class="avatar-emoji room-avatar">${room.avatar || '📣'}</div><div><b>${room.name}</b><br><small>${room.bio || ''}</small></div><button onclick="${fn}" style="margin-left:auto;background:var(--accent);color:#000;padding:5px 12px;border-radius:10px;">${action}</button></div>`;
+          html += `<div class="contact-item glass"><div class="avatar-emoji room-avatar">${room.avatar || '??'}</div><div><b>${room.name}</b><br><small>${room.bio || ''}</small></div><button onclick="${fn}" style="margin-left:auto;background:var(--accent);color:#000;padding:5px 12px;border-radius:10px;">${action}</button></div>`;
         }
       });
     }
@@ -3711,11 +3656,11 @@ const vibeEnhancer = (() => {
       location.reload();
     });
     const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=320x320&data=${encodeURIComponent(token)}`;
-    openModal('', `<div class="modal-head"><div><div class="modal-title">Войти по QR-коду</div><div class="settings-subtitle">Открой Vibe на телефоне, раздел «Устройства», и отсканируй код.</div></div><button class="modal-close" onclick="closeOverlay()">✕</button></div><div class="qr-box"><img src="${qrUrl}" alt="QR"></div><div class="settings-card" style="text-align:center;">Код: <b>${token}</b></div>`);
+    openModal('', `<div class="modal-head"><div><div class="modal-title">Войти по QR-коду</div><div class="settings-subtitle">Открой Vibe на телефоне, раздел «Устройства», и отсканируй код.</div></div><button class="modal-close" onclick="closeOverlay()">?</button></div><div class="qr-box"><img src="${qrUrl}" alt="QR"></div><div class="settings-card" style="text-align:center;">Код: <b>${token}</b></div>`);
   }
   async function startDeviceScanner() {
     if (!me || !me.id) return alert('Сначала войди в аккаунт на телефоне.');
-    openModal('', `<div class="modal-head"><div><div class="modal-title">Сканер QR</div><div class="settings-subtitle">Наведись камерой на код с ПК или введи код вручную.</div></div><button class="modal-close" onclick="closeOverlay()">✕</button></div><video id="scan-video" class="scan-video" autoplay muted playsinline></video><input id="manual-qr-code" placeholder="Или введи код вручную" style="margin-top:14px;"><div class="settings-actions" style="margin-top:12px;"><button class="settings-save" onclick="submitManualQrCode()">Подтвердить код</button></div>`);
+    openModal('', `<div class="modal-head"><div><div class="modal-title">Сканер QR</div><div class="settings-subtitle">Наведись камерой на код с ПК или введи код вручную.</div></div><button class="modal-close" onclick="closeOverlay()">?</button></div><video id="scan-video" class="scan-video" autoplay muted playsinline></video><input id="manual-qr-code" placeholder="Или введи код вручную" style="margin-top:14px;"><div class="settings-actions" style="margin-top:12px;"><button class="settings-save" onclick="submitManualQrCode()">Подтвердить код</button></div>`);
     try {
       state.scanStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
       const video = document.getElementById('scan-video');
@@ -3799,7 +3744,7 @@ const vibeEnhancer = (() => {
     alert('Устройство подключено.');
   }
   function showDeviceMenu(deviceId) {
-    openModal('', `<div class="modal-head"><div class="modal-title">Устройство</div><button class="modal-close" onclick="closeOverlay()">✕</button></div><div class="choice-stack"><button class="choice-card" onclick="confirmDeleteDevice('${deviceId}')">Удалить устройство</button></div>`);
+    openModal('', `<div class="modal-head"><div class="modal-title">Устройство</div><button class="modal-close" onclick="closeOverlay()">?</button></div><div class="choice-stack"><button class="choice-card" onclick="confirmDeleteDevice('${deviceId}')">Удалить устройство</button></div>`);
   }
   async function confirmDeleteDevice(deviceId) {
     await db.ref(`users/${me.id}/settings/devices/${deviceId}`).remove();
@@ -3818,8 +3763,8 @@ const vibeEnhancer = (() => {
     const host = document.getElementById(mode === 'pc' ? 'pc-chat-header-ui' : 'mob-chat-header-ui');
     if (!host) return;
     const subtitle = item.type === 'channel' ? (adminsRoom(item) ? 'Можно публиковать' : 'Только чтение') : `${Object.keys(item.members || {}).length} участников`;
-    if (mode === 'pc') host.innerHTML = `<div class="avatar-emoji room-avatar" style="width:40px;height:40px;font-size:20px;">${item.avatar || (item.type === 'channel' ? '📣' : '👥')}</div><div style="margin-left:10px;"><b>${item.name}</b><div style="font-size:12px; opacity:0.66;">${subtitle}</div></div>`;
-    else host.innerHTML = `<div style="display:flex; align-items:center; gap:10px;" onclick="showPeerProfile()"><button onclick="event.stopPropagation();closeMobChat()" style="font-size:24px;">←</button><div class="avatar-emoji room-avatar" style="width:35px;height:35px;font-size:18px;">${item.avatar || (item.type === 'channel' ? '📣' : '👥')}</div><div><b>${item.name}</b><div style="font-size:12px; opacity:0.66;">${subtitle}</div></div></div>`;
+    if (mode === 'pc') host.innerHTML = `<div class="avatar-emoji room-avatar" style="width:40px;height:40px;font-size:20px;">${item.avatar || (item.type === 'channel' ? '??' : '??')}</div><div style="margin-left:10px;"><b>${item.name}</b><div style="font-size:12px; opacity:0.66;">${subtitle}</div></div>`;
+    else host.innerHTML = `<div style="display:flex; align-items:center; gap:10px;" onclick="showPeerProfile()"><button onclick="event.stopPropagation();closeMobChat()" style="font-size:24px;"><</button><div class="avatar-emoji room-avatar" style="width:35px;height:35px;font-size:18px;">${item.avatar || (item.type === 'channel' ? '??' : '??')}</div><div><b>${item.name}</b><div style="font-size:12px; opacity:0.66;">${subtitle}</div></div></div>`;
   }
   function openMobChat(item) {
     activePeer = item;
@@ -3881,10 +3826,10 @@ const vibeEnhancer = (() => {
     const list = members.map(id => {
       const user = state.friends[id] || (id === me.id ? me : null);
       const badge = activePeer.ownerId === id ? 'в… владелец' : activePeer.admins && activePeer.admins[id] ? 'в† админ' : '';
-      return `<div class="person-row"><span class="person-main"><span class="avatar-emoji">${(user && user.avatar) || '👤'}</span><span><div>${(user && user.name) || id}</div><div class="settings-nav-meta">${(user && user.handle) || ''} ${badge}</div></span></span>${ownsRoom(activePeer) && id !== me.id && activePeer.type === 'group' ? `<button class="settings-ghost" onclick="removeGroupMember('${activePeer.id}','${id}')">Удалить</button>` : ''}</div>`;
+      return `<div class="person-row"><span class="person-main"><span class="avatar-emoji">${(user && user.avatar) || '??'}</span><span><div>${(user && user.name) || id}</div><div class="settings-nav-meta">${(user && user.handle) || ''} ${badge}</div></span></span>${ownsRoom(activePeer) && id !== me.id && activePeer.type === 'group' ? `<button class="settings-ghost" onclick="removeGroupMember('${activePeer.id}','${id}')">Удалить</button>` : ''}</div>`;
     }).join('');
     const actions = ownsRoom(activePeer) ? `<div class="settings-actions"><button class="settings-save" onclick="openRoomSettings('${activePeer.id}')">Настройки</button><button class="settings-ghost" style="color:#ff8a8a;" onclick="deleteRoom('${activePeer.id}')">${activePeer.type === 'group' ? 'Удалить группу' : 'Удалить канал'}</button></div>` : `<div class="settings-actions"><button class="settings-ghost" style="color:#ff8a8a;" onclick="leaveRoom('${activePeer.id}')">${activePeer.type === 'group' ? 'Выйти из группы' : 'Покинуть канал'}</button></div>`;
-    openModal('wide', `<div class="modal-head"><div><div class="modal-title">${activePeer.name}</div><div class="settings-subtitle">${activePeer.bio || 'Без описания'}</div></div><button class="modal-close" onclick="closeOverlay()">✕</button></div>${actions}<div class="settings-card" style="margin-top:16px;"><div class="settings-nav-title" style="margin-bottom:12px;">Участники</div><div class="people-list">${list || 'Пока никого'}</div></div>`);
+    openModal('wide', `<div class="modal-head"><div><div class="modal-title">${activePeer.name}</div><div class="settings-subtitle">${activePeer.bio || 'Без описания'}</div></div><button class="modal-close" onclick="closeOverlay()">?</button></div>${actions}<div class="settings-card" style="margin-top:16px;"><div class="settings-nav-title" style="margin-bottom:12px;">Участники</div><div class="people-list">${list || 'Пока никого'}</div></div>`);
   }
   function removeChat() { if (!activePeer || !isRoom(activePeer)) return oldRemoveChat(); leaveRoom(activePeer.id); }
   function showChatListMenu(e, id) { if (state.rooms[id]) return; return oldShowChatListMenu(e, id); }
@@ -4018,7 +3963,7 @@ window.addEventListener('load', () => setTimeout(() => vibeEnhancer.init(), 250)
     closeOverlay();
     const root = document.getElementById('app-overlay-root');
     root.className = 'overlay-root active';
-    root.innerHTML = `<div class="app-modal-backdrop" onclick="closeOverlay()"><div class="app-modal" onclick="event.stopPropagation()"><div class="modal-head"><div><div class="modal-title">Войти по QR-коду</div><div class="settings-subtitle">Открой Vibe на телефоне и отсканируй код.</div></div><button class="modal-close" onclick="closeOverlay()">✕</button></div><div class="qr-box"><img src="${qrUrl}" alt="QR" onerror="this.outerHTML='<div style=&quot;color:#000; text-align:center; font-weight:700;&quot;>QR не загрузился<br><br>${token}</div>'"></div><div class="settings-card" style="text-align:center;">Код: <b>${token}</b></div></div></div>`;
+    root.innerHTML = `<div class="app-modal-backdrop" onclick="closeOverlay()"><div class="app-modal" onclick="event.stopPropagation()"><div class="modal-head"><div><div class="modal-title">Войти по QR-коду</div><div class="settings-subtitle">Открой Vibe на телефоне и отсканируй код.</div></div><button class="modal-close" onclick="closeOverlay()">?</button></div><div class="qr-box"><img src="${qrUrl}" alt="QR" onerror="this.outerHTML='<div style=&quot;color:#000; text-align:center; font-weight:700;&quot;>QR не загрузился<br><br>${token}</div>'"></div><div class="settings-card" style="text-align:center;">Код: <b>${token}</b></div></div></div>`;
   };
 
   window.showPeerProfile = function() {
@@ -4032,7 +3977,7 @@ window.addEventListener('load', () => setTimeout(() => vibeEnhancer.init(), 250)
     closeOverlay();
     const root = document.getElementById('app-overlay-root');
     root.className = 'overlay-root active';
-    root.innerHTML = `<div class="app-modal-backdrop" onclick="closeOverlay()"><div class="app-modal wide" onclick="event.stopPropagation()"><div class="settings-preview " style="background:${bg}; min-height:260px;"><div class="settings-pattern" style="background-image:${pattern};"></div><div class="settings-preview-avatar">${user.avatar || '👤'}</div><div class="settings-preview-name" style="font-size:42px;">${user.name}${user.verified ? vBadge : ''}</div><div class="settings-preview-handle">${user.handle || ''}</div></div><div class="settings-card" style="margin-top:16px;"><div class="settings-nav-title">Описание</div><div class="section-note" style="margin-top:10px; font-size:14px; opacity:0.86;">${safeText(user.bio || 'Нет описания')}</div><div class="settings-actions" style="margin-top:18px;"><button class="settings-save" onclick="toggleBlock()">Заблокировать</button><button class="settings-ghost" style="color:#ff8a8a;" onclick="removeChat()">Удалить чат</button></div></div></div></div>`;
+    root.innerHTML = `<div class="app-modal-backdrop" onclick="closeOverlay()"><div class="app-modal wide" onclick="event.stopPropagation()"><div class="settings-preview " style="background:${bg}; min-height:260px;"><div class="settings-pattern" style="background-image:${pattern};"></div><div class="settings-preview-avatar">${user.avatar || '??'}</div><div class="settings-preview-name" style="font-size:42px;">${user.name}${user.verified ? vBadge : ''}</div><div class="settings-preview-handle">${user.handle || ''}</div></div><div class="settings-card" style="margin-top:16px;"><div class="settings-nav-title">Описание</div><div class="section-note" style="margin-top:10px; font-size:14px; opacity:0.86;">${safeText(user.bio || 'Нет описания')}</div><div class="settings-actions" style="margin-top:18px;"><button class="settings-save" onclick="toggleBlock()">Заблокировать</button><button class="settings-ghost" style="color:#ff8a8a;" onclick="removeChat()">Удалить чат</button></div></div></div></div>`;
   };
 
   const notifySeen = {};
@@ -4111,7 +4056,7 @@ window.addEventListener('load', () => setTimeout(() => vibeEnhancer.init(), 250)
   }
 
   function emojiPattern(emoji) {
-    const value = encodeURIComponent((emoji || '✨').trim() || '✨');
+    const value = encodeURIComponent((emoji || '?').trim() || '?');
     return `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='130' viewBox='0 0 180 130'%3E%3Cg font-size='24' text-anchor='middle' fill='rgba(0,0,0,0.24)'%3E%3Ctext x='22' y='30'%3E${value}%3C/text%3E%3Ctext x='91' y='24'%3E${value}%3C/text%3E%3Ctext x='154' y='46'%3E${value}%3C/text%3E%3Ctext x='45' y='96'%3E${value}%3C/text%3E%3Ctext x='128' y='108'%3E${value}%3C/text%3E%3C/g%3E%3C/svg%3E")`;
   }
 
@@ -4176,7 +4121,7 @@ window.addEventListener('load', () => setTimeout(() => vibeEnhancer.init(), 250)
     document.querySelectorAll('.pattern-chip-row').forEach(row => {
       if (row.dataset.customEmojiReady === '1') return;
       row.dataset.customEmojiReady = '1';
-      const current = (((window.me || {}).settings || {}).appearance || {}).patternEmoji || '✨';
+      const current = (((window.me || {}).settings || {}).appearance || {}).patternEmoji || '?';
       const wrap = document.createElement('div');
       wrap.className = 'settings-field';
       wrap.innerHTML = `
@@ -4189,7 +4134,7 @@ window.addEventListener('load', () => setTimeout(() => vibeEnhancer.init(), 250)
 
   function syncPatternPreview() {
     const input = Array.from(document.querySelectorAll('#pattern-emoji-input')).find(el => el.offsetParent !== null) || document.getElementById('pattern-emoji-input');
-    const emoji = (input && input.value.trim()) || ((((window.me || {}).settings || {}).appearance || {}).patternEmoji) || '✨';
+    const emoji = (input && input.value.trim()) || ((((window.me || {}).settings || {}).appearance || {}).patternEmoji) || '?';
     document.querySelectorAll('.settings-preview .settings-pattern').forEach(layer => {
       layer.style.backgroundImage = emojiPattern(emoji);
       layer.style.backgroundSize = '96px 96px';
@@ -4219,7 +4164,7 @@ window.addEventListener('load', () => setTimeout(() => vibeEnhancer.init(), 250)
   window.saveAppearanceSettings = async function() {
     const input = Array.from(document.querySelectorAll('#pattern-emoji-input')).find(el => el.offsetParent !== null) || document.getElementById('pattern-emoji-input');
     if (window.me && window.me.settings && window.me.settings.appearance) {
-      window.me.settings.appearance.patternEmoji = (input && input.value.trim()) || window.me.settings.appearance.patternEmoji || '✨';
+      window.me.settings.appearance.patternEmoji = (input && input.value.trim()) || window.me.settings.appearance.patternEmoji || '?';
     }
     if (typeof originalSaveAppearanceSettings === 'function') {
       await originalSaveAppearanceSettings();
@@ -4288,9 +4233,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const url = avatarUrl(item);
     if (url) return '';
     if (isRoom(item)) {
-      return esc(item.avatar || (item.type === 'channel' ? '📣' : '👥'));
+      return esc(item.avatar || (item.type === 'channel' ? '??' : '??'));
     }
-    return esc((item && item.avatar) || '👤');
+    return esc((item && item.avatar) || '??');
   }
  function avatarStyle(user, extra = '') {
     const url = avatarUrl(user);
@@ -4310,7 +4255,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const url = avatarUrl(user);
     el.classList.toggle('has-photo', !!url);
     el.style.backgroundImage = url ? `url('${url}')` : '';
-    el.textContent = url ? '' : ((user && user.avatar) || '👤');
+    el.textContent = url ? '' : ((user && user.avatar) || '??');
   }
   function syncAvatarSurfaces() {
     if (!hasMe()) return;
@@ -4376,7 +4321,7 @@ document.addEventListener('DOMContentLoaded', () => {
     me.settings.privacy = me.settings.privacy || {};
     me.settings.mutes = me.settings.mutes || {};
     me.settings.appearance.profileColor = me.settings.appearance.profileColor || '#956634';
-    me.settings.appearance.patternEmoji = me.settings.appearance.patternEmoji || '✨';
+    me.settings.appearance.patternEmoji = me.settings.appearance.patternEmoji || '?';
     me.settings.privacy.lastSeenMode = me.settings.privacy.lastSeenMode || 'all';
     me.settings.privacy.lastSeenExceptions = me.settings.privacy.lastSeenExceptions || {};
     return me.settings;
@@ -4386,7 +4331,7 @@ document.addEventListener('DOMContentLoaded', () => {
     await db.ref(`users/${me.id}/settings`).set(me.settings || {});
   }
   function emojiPattern(emoji) {
-    const value = encodeURIComponent((emoji || '✨').trim() || '✨');
+    const value = encodeURIComponent((emoji || '?').trim() || '?');
     return `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='130' viewBox='0 0 180 130'%3E%3Cg font-size='23' text-anchor='middle' fill='rgba(255,255,255,0.22)'%3E%3Ctext x='24' y='32'%3E${value}%3C/text%3E%3Ctext x='94' y='24'%3E${value}%3C/text%3E%3Ctext x='154' y='42'%3E${value}%3C/text%3E%3Ctext x='54' y='88'%3E${value}%3C/text%3E%3Ctext x='126' y='106'%3E${value}%3C/text%3E%3C/g%3E%3C/svg%3E")`;
   }
   function emojiOnly(value) {
@@ -4458,7 +4403,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const sync = () => {
         const filtered = emojiOnly(input.value);
         if (input.value !== filtered) input.value = filtered;
-        settings().appearance.patternEmoji = input.value.trim() || '✨';
+        settings().appearance.patternEmoji = input.value.trim() || '?';
         applyAppearancePreview();
         clearTimeout(timer);
         timer = setTimeout(() => saveSettingsOnly().catch(console.error), 250);
@@ -4542,7 +4487,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
   window.openProfileEditView = function() {
-    const html = `<div class="settings-shell"><div class="settings-topbar"><button class="settings-back" onclick="renderSettings()">←</button><div><div class="settings-title">Изменение имени и описания</div><div class="settings-subtitle">Отдельная вкладка профиля</div></div></div><div class="settings-card settings-section"><div class="settings-field"><label>Имя</label><input id="profile-name-edit-fixed" value="${esc(me.name || '')}" placeholder="Имя"></div><button class="settings-save" onclick="saveProfileNameFixed()">Сохранить имя</button><div class="settings-field"><label>Описание</label><textarea id="profile-bio-edit-fixed" placeholder="Описание">${esc(me.bio || '')}</textarea></div><button class="settings-save" onclick="saveProfileBioFixed()">Сохранить описание</button></div></div>`;
+    const html = `<div class="settings-shell"><div class="settings-topbar"><button class="settings-back" onclick="renderSettings()"><</button><div><div class="settings-title">Изменение имени и описания</div><div class="settings-subtitle">Отдельная вкладка профиля</div></div></div><div class="settings-card settings-section"><div class="settings-field"><label>Имя</label><input id="profile-name-edit-fixed" value="${esc(me.name || '')}" placeholder="Имя"></div><button class="settings-save" onclick="saveProfileNameFixed()">Сохранить имя</button><div class="settings-field"><label>Описание</label><textarea id="profile-bio-edit-fixed" placeholder="Описание">${esc(me.bio || '')}</textarea></div><button class="settings-save" onclick="saveProfileBioFixed()">Сохранить описание</button></div></div>`;
     settingsHosts().forEach(host => { host.innerHTML = html; });
   };
   window.saveProfileNameFixed = async function() {
@@ -4564,7 +4509,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   function avatarPhotoViewHtml() {
     const url = avatarUrl(me);
-    return `<div class="settings-shell"><div class="settings-topbar"><button class="settings-back" onclick="renderSettings()">←</button><div><div class="settings-title">Фото на аватарку</div><div class="settings-subtitle">Поставь эмодзи или свое фото профиля</div></div></div><div class="settings-card"><div class="settings-preview" style="background:${settings().appearance.profileColor || '#956634'};min-height:240px;"><div class="settings-pattern" style="background-image:${emojiPattern(settings().appearance.patternEmoji || '✨')}"></div><div class="${avatarClass(me, 'settings-preview-avatar')}" style="${avatarStyle(me)}">${avatarContent(me)}</div><div class="settings-preview-name" style="font-size:38px;">${esc(me.name || 'Без имени')}${me.verified ? badge() : ''}</div><div class="settings-preview-handle">${esc(me.handle || '@user')}</div></div></div><div class="settings-card settings-section"><div class="settings-field"><label>Эмодзи на аватарку</label><div style="display:flex;gap:10px;"><input id="avatar-emoji-fixed" maxlength="8" value="${esc(me.avatar || '👤')}" placeholder="👤"><button class="settings-save" onclick="saveAvatarEmojiFixed()">Сохранить</button></div></div><div class="avatar-tools"><button class="avatar-tool" onclick="takeAvatarPhoto()">Сделать</button><button class="avatar-tool" onclick="pickAvatarPhoto()">Поменять</button><button class="avatar-tool" onclick="openAvatarCropView()">Выбрать область</button></div>${url ? `<button class="settings-ghost" onclick="removeAvatarPhoto()">Убрать фото</button>` : ''}<p class="section-note">Можно оставить эмодзи или поставить свое фото на аватарку.</p></div></div>`;
+    return `<div class="settings-shell"><div class="settings-topbar"><button class="settings-back" onclick="renderSettings()"><</button><div><div class="settings-title">Фото на аватарку</div><div class="settings-subtitle">Поставь эмодзи или свое фото профиля</div></div></div><div class="settings-card"><div class="settings-preview" style="background:${settings().appearance.profileColor || '#956634'};min-height:240px;"><div class="settings-pattern" style="background-image:${emojiPattern(settings().appearance.patternEmoji || '?')}"></div><div class="${avatarClass(me, 'settings-preview-avatar')}" style="${avatarStyle(me)}">${avatarContent(me)}</div><div class="settings-preview-name" style="font-size:38px;">${esc(me.name || 'Без имени')}${me.verified ? badge() : ''}</div><div class="settings-preview-handle">${esc(me.handle || '@user')}</div></div></div><div class="settings-card settings-section"><div class="settings-field"><label>Эмодзи на аватарку</label><div style="display:flex;gap:10px;"><input id="avatar-emoji-fixed" maxlength="8" value="${esc(me.avatar || '??')}" placeholder="??"><button class="settings-save" onclick="saveAvatarEmojiFixed()">Сохранить</button></div></div><div class="avatar-tools"><button class="avatar-tool" onclick="takeAvatarPhoto()">Сделать</button><button class="avatar-tool" onclick="pickAvatarPhoto()">Поменять</button><button class="avatar-tool" onclick="openAvatarCropView()">Выбрать область</button></div>${url ? `<button class="settings-ghost" onclick="removeAvatarPhoto()">Убрать фото</button>` : ''}<p class="section-note">Можно оставить эмодзи или поставить свое фото на аватарку.</p></div></div>`;
   }
 
 // Выбор фото при создании группы/канала с сохранением уже написанных данных
@@ -4876,7 +4821,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.renderSettings();
   };
   window.pickPatternEmoji = async function(value) {
-    settings().appearance.patternEmoji = value || '✨';
+    settings().appearance.patternEmoji = value || '?';
     applyAppearancePreview();
     await saveSettingsOnly();
     window.renderSettings();
@@ -4887,7 +4832,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (sel) { changeTheme(sel.value); settings().appearance.themeName = sel.value; localStorage.setItem('theme', sel.value); }
     if (input) {
       input.value = emojiOnly(input.value);
-      settings().appearance.patternEmoji = input.value.trim() || '✨';
+      settings().appearance.patternEmoji = input.value.trim() || '?';
     }
     applyAppearancePreview();
     await saveSettingsOnly();
@@ -4910,21 +4855,21 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderAppearanceFixed() {
     const s = settings();
     const color = s.appearance.profileColor || '#956634';
-    const emoji = s.appearance.patternEmoji || '✨';
+    const emoji = s.appearance.patternEmoji || '?';
     const swatches = ['#3a83c5','#3aa41e','#cf7a20','#bd4d46','#8659c9','#44a3b6','#b44f89','#8797aa','linear-gradient(135deg, #67cdf0, #4e83d4)','linear-gradient(135deg, #b7dc5b, #3f9c48)','linear-gradient(135deg, #f6b43f, #da6b42)','linear-gradient(135deg, #ff9b69, #d54b67)','linear-gradient(135deg, #d87cff, #6d57d5)','linear-gradient(135deg, #70e0c4, #3b9cd7)','linear-gradient(135deg, #f693ae, #cb4c95)','linear-gradient(135deg, #c7d0d8, #9cabb8)'];
-    return `<div class="settings-shell"><div class="settings-topbar"><button class="settings-back" onclick="openSettingsView('home')">←</button><div><div class="settings-title">Оформление</div><div class="settings-subtitle">Тема, фон профиля и эмодзи в фоне</div></div></div><div class="settings-card"><div class="settings-preview" style="background:${color};min-height:260px;"><div class="settings-pattern" style="background-image:${emojiPattern(emoji)}"></div><div class="${avatarClass(me, 'settings-preview-avatar')}" style="${avatarStyle(me)}">${avatarContent(me)}</div><div class="settings-preview-name" style="font-size:44px;">${esc(me.name || 'Без имени')}${me.verified ? (badge()) : ''}</div><div class="settings-preview-handle">${esc(me.handle || '@user')}</div></div></div><div class="settings-card settings-section"><div class="settings-field"><label>10 тем</label><select id="appearance-theme-sel">${THEMES.map(([id,name]) => `<option value="${id}" ${id === (s.appearance.themeName || localStorage.getItem('theme') || 'dark') ? 'selected' : ''}>${name}</option>`).join('')}</select></div><div class="settings-field"><label>Цвет фона профиля</label><div class="swatch-grid">${swatches.map((item, idx) => `<button class="swatch-btn" onclick="pickProfileColor(${idx})" style="background:${item};"></button>`).join('')}</div></div><div class="settings-field"><label>Эмодзи в фоне</label><input id="pattern-emoji-input" maxlength="8" value="${esc(emoji)}" placeholder="✨"></div></div></div>`;
+    return `<div class="settings-shell"><div class="settings-topbar"><button class="settings-back" onclick="openSettingsView('home')"><</button><div><div class="settings-title">Оформление</div><div class="settings-subtitle">Тема, фон профиля и эмодзи в фоне</div></div></div><div class="settings-card"><div class="settings-preview" style="background:${color};min-height:260px;"><div class="settings-pattern" style="background-image:${emojiPattern(emoji)}"></div><div class="${avatarClass(me, 'settings-preview-avatar')}" style="${avatarStyle(me)}">${avatarContent(me)}</div><div class="settings-preview-name" style="font-size:44px;">${esc(me.name || 'Без имени')}${me.verified ? (badge()) : ''}</div><div class="settings-preview-handle">${esc(me.handle || '@user')}</div></div></div><div class="settings-card settings-section"><div class="settings-field"><label>10 тем</label><select id="appearance-theme-sel">${THEMES.map(([id,name]) => `<option value="${id}" ${id === (s.appearance.themeName || localStorage.getItem('theme') || 'dark') ? 'selected' : ''}>${name}</option>`).join('')}</select></div><div class="settings-field"><label>Цвет фона профиля</label><div class="swatch-grid">${swatches.map((item, idx) => `<button class="swatch-btn" onclick="pickProfileColor(${idx})" style="background:${item};"></button>`).join('')}</div></div><div class="settings-field"><label>Эмодзи в фоне</label><input id="pattern-emoji-input" maxlength="8" value="${esc(emoji)}" placeholder="?"></div></div></div>`;
   }
   function renderPresenceFixed() {
     const s = settings();
-    return `<div class="settings-shell"><div class="settings-topbar"><button class="settings-back" onclick="openSettingsView('home')">←</button><div><div class="settings-title">Время захода</div><div class="settings-subtitle">Кто видит статус онлайн</div></div></div><div class="settings-card settings-section"><div class="settings-actions"><button class="${s.privacy.lastSeenMode === 'all' ? 'settings-save' : 'settings-ghost'}" onclick="setPresenceMode('all')">Все</button><button class="${s.privacy.lastSeenMode === 'friends' ? 'settings-save' : 'settings-ghost'}" onclick="setPresenceMode('friends')">Друзья</button><button class="${s.privacy.lastSeenMode === 'nobody' ? 'settings-save' : 'settings-ghost'}" onclick="setPresenceMode('nobody')">Никто</button></div>${s.privacy.lastSeenMode === 'nobody' ? `<button class="settings-ghost" onclick="openPresenceExceptions()">Исключения</button>` : ''}</div></div>`;
+    return `<div class="settings-shell"><div class="settings-topbar"><button class="settings-back" onclick="openSettingsView('home')"><</button><div><div class="settings-title">Время захода</div><div class="settings-subtitle">Кто видит статус онлайн</div></div></div><div class="settings-card settings-section"><div class="settings-actions"><button class="${s.privacy.lastSeenMode === 'all' ? 'settings-save' : 'settings-ghost'}" onclick="setPresenceMode('all')">Все</button><button class="${s.privacy.lastSeenMode === 'friends' ? 'settings-save' : 'settings-ghost'}" onclick="setPresenceMode('friends')">Друзья</button><button class="${s.privacy.lastSeenMode === 'nobody' ? 'settings-save' : 'settings-ghost'}" onclick="setPresenceMode('nobody')">Никто</button></div>${s.privacy.lastSeenMode === 'nobody' ? `<button class="settings-ghost" onclick="openPresenceExceptions()">Исключения</button>` : ''}</div></div>`;
   }
   function renderPresenceExceptionsFixed() {
     const selected = settings().privacy.lastSeenExceptions || {};
     const rows = friends().map(user => {
       const checked = !!selected[user.id];
-      return `<div class="person-row"><label class="person-main" style="flex:1;"><span class="avatar-emoji">${user.avatar || '👤'}</span><span><div>${esc(user.name)}</div><div class="settings-nav-meta">${esc(user.handle || '')}</div></span></label><input type="checkbox" data-presence-id="${user.id}" ${checked ? 'checked' : ''}>${checked ? `<button class="settings-ghost" onclick="removePresenceException('${user.id}')">Удалить</button>` : ''}</div>`;
+      return `<div class="person-row"><label class="person-main" style="flex:1;"><span class="avatar-emoji">${user.avatar || '??'}</span><span><div>${esc(user.name)}</div><div class="settings-nav-meta">${esc(user.handle || '')}</div></span></label><input type="checkbox" data-presence-id="${user.id}" ${checked ? 'checked' : ''}>${checked ? `<button class="settings-ghost" onclick="removePresenceException('${user.id}')">Удалить</button>` : ''}</div>`;
     }).join('') || '<div class="settings-card">Сначала добавь друзей</div>';
-    return `<div class="settings-shell"><div class="settings-topbar"><button class="settings-back" onclick="openSettingsView('presence')">←</button><div><div class="settings-title">Исключения</div><div class="settings-subtitle">Эти друзья видят твой точный статус даже при режиме «Никто»</div></div></div><div class="settings-card"><div class="people-list">${rows}</div><div class="settings-actions" style="margin-top:16px;"><button class="settings-save" onclick="savePresenceExceptions()">Сохранить</button></div></div></div>`;
+    return `<div class="settings-shell"><div class="settings-topbar"><button class="settings-back" onclick="openSettingsView('presence')"><</button><div><div class="settings-title">Исключения</div><div class="settings-subtitle">Эти друзья видят твой точный статус даже при режиме «Никто»</div></div></div><div class="settings-card"><div class="people-list">${rows}</div><div class="settings-actions" style="margin-top:16px;"><button class="settings-save" onclick="savePresenceExceptions()">Сохранить</button></div></div></div>`;
   }
   const baseOpenSettingsView = window.openSettingsView;
   window.openSettingsView = function(view) {
@@ -5029,7 +4974,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   FIX.getItem = key => {
     if (key && key.startsWith('user:saved_')) {
-      return { id: key.slice(5), name: 'Избранное', avatar: '⭐', isSaved: true };
+      return { id: key.slice(5), name: 'Избранное', avatar: '?', isSaved: true };
     }
     return key.startsWith('room:') ? (((window.vibeRoomState || {}).rooms || {})[key.slice(5)]) : (((window.vibeRoomState || {}).friends || {})[key.slice(5)]);
   };
@@ -5053,7 +4998,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
   if (isRoom(item)) return `<div class="contact-item glass" onclick="${open}">${avatarHtml(item, 'room-avatar')}<div class="dialog-main"><b>${esc(item.name)}</b><br><small>${item.type === 'channel' ? 'Канал' : 'Группа'} В· ${Object.keys(item.members || {}).length} участников</small></div>${meta.lastTime ? `<span class="dialog-time">${timeLabel(meta.lastTime)}</span>` : ''}${unread ? `<span class="unread-badge">${unread}</span>` : ''}</div>`;
   
-  if (item.isDeleted) return `<div class="contact-item glass" onclick="alert('Этот аккаунт удалён.')" oncontextmenu="return false"><div class="avatar-emoji">🚫</div><div class="dialog-main"><b>Удалённый аккаунт</b><br><small class="st-none">Чат недоступен</small></div></div>`;
+  if (item.isDeleted) return `<div class="contact-item glass" onclick="alert('Этот аккаунт удалён.')" oncontextmenu="return false"><div class="avatar-emoji">??</div><div class="dialog-main"><b>Удалённый аккаунт</b><br><small class="st-none">Чат недоступен</small></div></div>`;
   const pinMarkup = (me.pins && me.pins[item.id]) ? `<span class="pin-indicator"><svg viewBox="0 0 24 24"><path d="M16 12V4H17V2H7V4H8V12L6 14V16H11.2V22H12.8V16H18V14L16 12Z"/></svg></span>` : '';
   return `<div class="contact-item glass" id="cnt-${item.id}" onclick="${open}" oncontextmenu="showChatListMenu(event, '${item.id}')">${avatarHtml(item)}<div class="dialog-main"><b>${esc(item.name)}${item.verified ? (badge()) : ''}</b><br><small class="${exactPresenceAllowed(item) && item.online ? 'st-all' : 'st-none'}">${window.getPresenceText(item)}</small></div>${pinMarkup}${meta.lastTime ? `<span class="dialog-time">${timeLabel(meta.lastTime)}</span>` : ''}${unread ? `<span class="unread-badge">${unread}</span>` : ''}</div>`;
 }
@@ -5081,11 +5026,11 @@ document.addEventListener('DOMContentLoaded', () => {
     <img src="Эконки/Плюс.png" class="chat-plus-icon">
 </button></div>` : '';
       
-      const favItem = { id: 'saved_' + me.id, name: 'Избранное', avatar: '⭐', isSaved: true };
+      const favItem = { id: 'saved_' + me.id, name: 'Избранное', avatar: '?', isSaved: true };
       
       const requests = rooms().filter(r => r.ownerId === me.id && r.joinRequests).flatMap(r => Object.keys(r.joinRequests || {}).map(uid => {
-        const u = (((window.vibeRoomState || {}).friends || {})[uid]) || { id: uid, name: uid, avatar: '👤' };
-        return `<div class="contact-item glass">${avatarHtml(u)}<div class="dialog-main"><b>${esc(u.name)}</b><br><small>Хочет зайти в В«${esc(r.name)}В»</small></div><button class="settings-save" onclick="approveJoinRequest('${r.id}','${uid}')">+</button><button class="settings-ghost" onclick="denyJoinRequest('${r.id}','${uid}')">✕</button></div>`;
+        const u = (((window.vibeRoomState || {}).friends || {})[uid]) || { id: uid, name: uid, avatar: '??' };
+        return `<div class="contact-item glass">${avatarHtml(u)}<div class="dialog-main"><b>${esc(u.name)}</b><br><small>Хочет зайти в В«${esc(r.name)}В»</small></div><button class="settings-save" onclick="approveJoinRequest('${r.id}','${uid}')">+</button><button class="settings-ghost" onclick="denyJoinRequest('${r.id}','${uid}')">?</button></div>`;
       })).join('');
 
       // Отрисовываем папку Архив только если в ней есть скрытые чаты
@@ -5228,7 +5173,7 @@ document.addEventListener('DOMContentLoaded', () => {
     FIX.peerRead[key] = readAt || 0;
     document.querySelectorAll(`#pc-msgs .msg.sent [data-msg-status="1"], #mob-msgs .msg.sent [data-msg-status="1"]`).forEach(el => {
       const isRead = Number(el.dataset.msgTime || 0) <= (readAt || 0);
-      el.textContent = isRead ? '✓✓' : '✓';
+      el.textContent = isRead ? '??' : '?';
       el.classList.toggle('read', isRead);
     });
   }
@@ -5257,14 +5202,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!host) return;
     if (isRoom(item)) {
       const subtitle = item.type === 'channel' ? (canManage(item) ? 'Можно публиковать' : 'Только чтение') : `${Object.keys(item.members || {}).length} участников`;
-      const html = `<div style="display:flex;align-items:center;gap:10px;" onclick="showPeerProfile()">${mode === 'mob' ? '<button onclick="event.stopPropagation();closeMobChat()" style="font-size:24px;">←</button>' : ''}${avatarHtml(item, 'room-avatar', 'width:40px;height:40px;font-size:20px;')}<div><b>${esc(item.name)}</b><div style="font-size:12px;opacity:.66;">${subtitle}</div><div id="${mode}-activity-line" class="activity-line"></div></div></div>`;
+      const html = `<div style="display:flex;align-items:center;gap:10px;" onclick="showPeerProfile()">${mode === 'mob' ? '<button onclick="event.stopPropagation();closeMobChat()" style="font-size:24px;"><</button>' : ''}${avatarHtml(item, 'room-avatar', 'width:40px;height:40px;font-size:20px;')}<div><b>${esc(item.name)}</b><div style="font-size:12px;opacity:.66;">${subtitle}</div><div id="${mode}-activity-line" class="activity-line"></div></div></div>`;
       host.innerHTML = html;
       host.style.pointerEvents = 'auto';
       host.style.cursor = 'pointer';
       host.onclick = () => window.showPeerProfile();
       return;
     }
-    const html = `<div style="display:flex;align-items:center;gap:10px;" onclick="showPeerProfile()">${mode === 'mob' ? '<button onclick="event.stopPropagation();closeMobChat()" style="font-size:24px;">←</button>' : ''}${avatarHtml(item, '', 'width:40px;height:40px;font-size:20px;')}<div><b>${esc(item.name)}${item.verified ? (badge()) : ''}</b><div style="font-size:12px;opacity:.66;">${window.getPresenceText(item)}</div><div id="${mode}-activity-line" class="activity-line"></div></div></div>`;
+    const html = `<div style="display:flex;align-items:center;gap:10px;" onclick="showPeerProfile()">${mode === 'mob' ? '<button onclick="event.stopPropagation();closeMobChat()" style="font-size:24px;"><</button>' : ''}${avatarHtml(item, '', 'width:40px;height:40px;font-size:20px;')}<div><b>${esc(item.name)}${item.verified ? (badge()) : ''}</b><div style="font-size:12px;opacity:.66;">${window.getPresenceText(item)}</div><div id="${mode}-activity-line" class="activity-line"></div></div></div>`;
     host.innerHTML = html;
     host.style.pointerEvents = 'auto';
     host.style.cursor = 'pointer';
@@ -5290,10 +5235,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const url = esc(media.url || msg.val || '');
     const name = esc(media.name || 'Файл');
     const size = bytesLabel(media.size);
-    if (msg.type === 'voice') return `<div class="voice-message"><span>🎤</span><audio controls src="${url}"></audio></div>`;
+    if (msg.type === 'voice') return `<div class="voice-message"><span>??</span><audio controls src="${url}"></audio></div>`;
     if (msg.type === 'image') return `<img class="msg-media" src="${url}" alt="${name}" loading="lazy">`;
     if (msg.type === 'video') return `<video class="msg-media" src="${url}" controls playsinline></video>`;
-    if (msg.type === 'file') return `<a class="msg-file" href="${url}" target="_blank" download="${name}"><span class="msg-file-icon">📎</span><span><span class="msg-file-name">${name}</span><span class="msg-file-meta">${size}</span></span></a>`;
+    if (msg.type === 'file') return `<a class="msg-file" href="${url}" target="_blank" download="${name}"><span class="msg-file-icon">??</span><span><span class="msg-file-name">${name}</span><span class="msg-file-meta">${size}</span></span></a>`;
     return `<div>${esc(msg.val || '')}</div>`;
   }
   async function appendMessage(win, id, msg, item) {
@@ -5317,7 +5262,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (msg.sender === me.id && !msg.system) {
       const readAt = (FIX.peerRead && FIX.peerRead[chatKey(item)]) || 0;
       const isRead = (msg.time || 0) <= readAt;
-      html += `<span class="msg-status ${isRead ? 'read' : ''}" data-msg-status="1" data-msg-time="${Number(msg.time || 0)}">${isRead ? '✓✓' : '✓'}</span>`;
+      html += `<span class="msg-status ${isRead ? 'read' : ''}" data-msg-status="1" data-msg-time="${Number(msg.time || 0)}">${isRead ? '??' : '?'}</span>`;
     }
     d.innerHTML = html;
     d.oncontextmenu = e => showMsgMenu(e, id, messagePlainText(msg), msg.sender, msg);
@@ -5474,7 +5419,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const modal = document.createElement('div');
     modal.className = 'app-modal';
     modal.style.cssText = 'width:min(520px,100%);padding:24px;border-radius:28px;background:#111827;border:1px solid rgba(255,255,255,.12);';
-    modal.innerHTML = `<div class="modal-head"><div class="modal-title">Прикрепить</div><button class="modal-close" type="button">✕</button></div><div class="choice-stack"><button class="choice-card" type="button" data-attach-action="media"><b>Фото/видео</b><br><span class="settings-nav-meta">Загрузить изображение или ролик</span></button><button class="choice-card" type="button" data-attach-action="file"><b>Файлы</b><br><span class="settings-nav-meta">Документы, архивы и другие файлы</span></button></div>`;
+    modal.innerHTML = `<div class="modal-head"><div class="modal-title">Прикрепить</div><button class="modal-close" type="button">?</button></div><div class="choice-stack"><button class="choice-card" type="button" data-attach-action="media"><b>Фото/видео</b><br><span class="settings-nav-meta">Загрузить изображение или ролик</span></button><button class="choice-card" type="button" data-attach-action="file"><b>Файлы</b><br><span class="settings-nav-meta">Документы, архивы и другие файлы</span></button></div>`;
     overlay.appendChild(modal);
     document.body.appendChild(overlay);
     overlay.addEventListener('click', event => { if (event.target === overlay) overlay.remove(); });
@@ -5556,8 +5501,8 @@ document.addEventListener('DOMContentLoaded', () => {
       ? `<img class="attachment-draft-preview" src="${esc(media.url)}" alt="">`
       : payload.type === 'video'
         ? `<video class="attachment-draft-preview" src="${esc(media.url)}" muted playsinline></video>`
-        : `<div class="attachment-draft-preview">📎</div>`;
-    draft.innerHTML = `${preview}<div class="attachment-draft-main"><div class="attachment-draft-name">${esc(media.name || 'Вложение')}</div><div class="attachment-draft-meta">${payload.type === 'image' ? 'Фото' : payload.type === 'video' ? 'Видео' : 'Файл'} ${bytesLabel(media.size)}</div></div><button class="attachment-cancel" onclick="cancelAttachmentDraft()">✕</button><button class="attachment-send" onclick="sendAttachmentDraft('${mode}')">Отправить</button>`;
+        : `<div class="attachment-draft-preview">??</div>`;
+    draft.innerHTML = `${preview}<div class="attachment-draft-main"><div class="attachment-draft-name">${esc(media.name || 'Вложение')}</div><div class="attachment-draft-meta">${payload.type === 'image' ? 'Фото' : payload.type === 'video' ? 'Видео' : 'Файл'} ${bytesLabel(media.size)}</div></div><button class="attachment-cancel" onclick="cancelAttachmentDraft()">?</button><button class="attachment-send" onclick="sendAttachmentDraft('${mode}')">Отправить</button>`;
     bar.parentNode.insertBefore(draft, bar);
   }
   async function pickAttachment(mode, accept) {
@@ -5578,7 +5523,7 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const loading = document.createElement('div');
       loading.className = 'attachment-draft';
-      loading.innerHTML = '<div class="attachment-draft-preview">⏳</div><div class="attachment-draft-main"><div class="attachment-draft-name">Загрузка...</div><div class="attachment-draft-meta">Подождите пару секунд</div></div>';
+      loading.innerHTML = '<div class="attachment-draft-preview">?</div><div class="attachment-draft-main"><div class="attachment-draft-name">Загрузка...</div><div class="attachment-draft-meta">Подождите пару секунд</div></div>';
       const bar = chatBar(mode);
       document.querySelectorAll('.attachment-draft').forEach(el => el.remove());
       if (bar) bar.parentNode.insertBefore(loading, bar);
@@ -5669,7 +5614,7 @@ if (ui) {
         if (!voiceChunks.length) return;
         const loading = document.createElement('div');
         loading.className = 'attachment-draft';
-        loading.innerHTML = '<div class="attachment-draft-preview">🎤</div><div class="attachment-draft-main"><div class="attachment-draft-name">Загрузка...</div><div class="attachment-draft-meta">Голосовое сообщение</div></div>';
+        loading.innerHTML = '<div class="attachment-draft-preview">??</div><div class="attachment-draft-main"><div class="attachment-draft-name">Загрузка...</div><div class="attachment-draft-meta">Голосовое сообщение</div></div>';
         const bar = chatBar(voiceMode);
         if (bar) bar.parentNode.insertBefore(loading, bar);
         try {
@@ -5774,7 +5719,7 @@ if (ui) {
     const modal = document.createElement('div');
     modal.className = 'app-modal';
     modal.style.cssText = 'width:min(520px,100%);padding:24px;border-radius:28px;background:#111827;border:1px solid rgba(255,255,255,.12);';
-    modal.innerHTML = `<div class="modal-head"><div class="modal-title">Создать</div><button class="modal-close" type="button">✕</button></div><div class="choice-stack"><button class="choice-card" type="button" data-create-action="group"><b>Создать группу</b><br><span class="settings-nav-meta">Общий чат для друзей</span></button><button class="choice-card" type="button" data-create-action="channel"><b>Создать канал</b><br><span class="settings-nav-meta">Публикации и подписчики</span></button></div>`;
+    modal.innerHTML = `<div class="modal-head"><div class="modal-title">Создать</div><button class="modal-close" type="button">?</button></div><div class="choice-stack"><button class="choice-card" type="button" data-create-action="group"><b>Создать группу</b><br><span class="settings-nav-meta">Общий чат для друзей</span></button><button class="choice-card" type="button" data-create-action="channel"><b>Создать канал</b><br><span class="settings-nav-meta">Публикации и подписчики</span></button></div>`;
     overlay.appendChild(modal);
     document.body.appendChild(overlay);
     overlay.addEventListener('click', event => { if (event.target === overlay) overlay.remove(); });
@@ -5784,7 +5729,7 @@ if (ui) {
   };
   function selectableUsers(exclude, attr) {
     const skip = exclude || {};
-    return friends().filter(u => !skip[u.id]).map(u => `<label class="person-row"><span class="person-main"><span class="avatar-emoji">${u.avatar || '👤'}</span><span><div>${esc(u.name)}</div><div class="settings-nav-meta">${esc(u.handle || '')}</div></span></span><input type="checkbox" ${attr}="${u.id}"></label>`).join('') || '<div class="settings-card">Нет доступных друзей</div>';
+    return friends().filter(u => !skip[u.id]).map(u => `<label class="person-row"><span class="person-main"><span class="avatar-emoji">${u.avatar || '??'}</span><span><div>${esc(u.name)}</div><div class="settings-nav-meta">${esc(u.handle || '')}</div></span></span><input type="checkbox" ${attr}="${u.id}"></label>`).join('') || '<div class="settings-card">Нет доступных друзей</div>';
   }
   window.filterSelectableFriends = function(value, hostId) {
     const q = String(value || '').toLowerCase();
@@ -5795,13 +5740,13 @@ if (ui) {
   window.openCreateChannel = function() {
     FIX.channelDraft = null;
     FIX.chnDraftPhoto = null;
-    showModal('wide', `<div class="wizard-top"><button class="wizard-x" onclick="closeOverlay()">✕</button><div class="modal-title">Создать канал</div><button class="wizard-next" onclick="openCreateChannelLink()">Далее</button></div><div class="settings-section"><input id="chn-name" placeholder="Имя канала"><div style="display:flex;gap:10px;align-items:center;"><input id="chn-emoji" maxlength="8" placeholder="Эмодзи аватар" oninput="updateCreateAvatarPreview('chn-emoji','chn-emoji-preview')"><div id="chn-emoji-preview" class="avatar-emoji" style="width:48px;height:48px;font-size:22px;">📣</div><button class="settings-ghost" type="button" onclick="uploadDraftPhoto('channel')">Выбрать фото</button></div><textarea id="chn-bio" placeholder="Описание"></textarea></div>`);
+    showModal('wide', `<div class="wizard-top"><button class="wizard-x" onclick="closeOverlay()">?</button><div class="modal-title">Создать канал</div><button class="wizard-next" onclick="openCreateChannelLink()">Далее</button></div><div class="settings-section"><input id="chn-name" placeholder="Имя канала"><div style="display:flex;gap:10px;align-items:center;"><input id="chn-emoji" maxlength="8" placeholder="Эмодзи аватар" oninput="updateCreateAvatarPreview('chn-emoji','chn-emoji-preview')"><div id="chn-emoji-preview" class="avatar-emoji" style="width:48px;height:48px;font-size:22px;">??</div><button class="settings-ghost" type="button" onclick="uploadDraftPhoto('channel')">Выбрать фото</button></div><textarea id="chn-bio" placeholder="Описание"></textarea></div>`);
   };
   window.openCreateChannelLink = function() {
     const name = $('chn-name').value.trim();
     if (!name) return alert('Имя канала обязательно.');
-    FIX.channelDraft = { name, bio: $('chn-bio').value.trim(), avatar: $('chn-emoji').value.trim() || '📣', avatarPhoto: FIX.chnDraftPhoto || null, mode: 'private', link: 'join_' + Math.random().toString(36).slice(2, 9) };
-    showModal('wide', `<div class="wizard-top"><button class="wizard-x" onclick="closeOverlay()">✕</button><div class="modal-title">Ссылка канала</div><button class="wizard-next" onclick="createChannel()">Создать</button></div><div class="settings-actions"><button id="mode-private" class="settings-save" onclick="setChannelMode('private')">Частный</button><button id="mode-public" class="settings-ghost" onclick="setChannelMode('public')">Публичный</button></div><input id="chn-link" value="${FIX.channelDraft.link}" readonly placeholder="Ссылка"><div class="section-note" style="margin-top:10px;">Частный канал открывается только по ссылке. Публичный можно найти поиском по имени или ссылке.</div>`);
+    FIX.channelDraft = { name, bio: $('chn-bio').value.trim(), avatar: $('chn-emoji').value.trim() || '??', avatarPhoto: FIX.chnDraftPhoto || null, mode: 'private', link: 'join_' + Math.random().toString(36).slice(2, 9) };
+    showModal('wide', `<div class="wizard-top"><button class="wizard-x" onclick="closeOverlay()">?</button><div class="modal-title">Ссылка канала</div><button class="wizard-next" onclick="createChannel()">Создать</button></div><div class="settings-actions"><button id="mode-private" class="settings-save" onclick="setChannelMode('private')">Частный</button><button id="mode-public" class="settings-ghost" onclick="setChannelMode('public')">Публичный</button></div><input id="chn-link" value="${FIX.channelDraft.link}" readonly placeholder="Ссылка"><div class="section-note" style="margin-top:10px;">Частный канал открывается только по ссылке. Публичный можно найти поиском по имени или ссылке.</div>`);
   };
   window.createChannel = async function() {
     const d = FIX.channelDraft;
@@ -5822,13 +5767,13 @@ if (ui) {
   };
   window.openCreateChannel = function() {
     FIX.channelDraft = null;
-    showModal('wide', `<div class="wizard-top"><button class="wizard-x" onclick="closeOverlay()">✕</button><div class="modal-title">Создать канал</div><button class="wizard-next" onclick="openCreateChannelLink()">Далее</button></div><div class="settings-section"><input id="chn-name" placeholder="Имя канала"><div style="display:flex;gap:10px;align-items:center;"><input id="chn-emoji" maxlength="8" placeholder="Эмодзи аватар" oninput="updateCreateAvatarPreview('chn-emoji','chn-emoji-preview')"><div id="chn-emoji-preview" class="avatar-emoji" style="width:48px;height:48px;font-size:22px;">📣</div></div><textarea id="chn-bio" placeholder="Описание"></textarea></div>`);
+    showModal('wide', `<div class="wizard-top"><button class="wizard-x" onclick="closeOverlay()">?</button><div class="modal-title">Создать канал</div><button class="wizard-next" onclick="openCreateChannelLink()">Далее</button></div><div class="settings-section"><input id="chn-name" placeholder="Имя канала"><div style="display:flex;gap:10px;align-items:center;"><input id="chn-emoji" maxlength="8" placeholder="Эмодзи аватар" oninput="updateCreateAvatarPreview('chn-emoji','chn-emoji-preview')"><div id="chn-emoji-preview" class="avatar-emoji" style="width:48px;height:48px;font-size:22px;">??</div></div><textarea id="chn-bio" placeholder="Описание"></textarea></div>`);
   };
   window.openCreateChannelLink = function() {
     const name = $('chn-name').value.trim();
     if (!name) return alert('Имя канала обязательно.');
-    FIX.channelDraft = { name, bio: $('chn-bio').value.trim(), avatar: $('chn-emoji').value.trim() || '📣', mode: 'private', link: 'join_' + Math.random().toString(36).slice(2, 9) };
-    showModal('wide', `<div class="wizard-top"><button class="wizard-x" onclick="closeOverlay()">✕</button><div class="modal-title">Ссылка канала</div><button class="wizard-next" onclick="createChannel()">Создать</button></div><div class="settings-actions"><button id="mode-private" class="settings-save" onclick="setChannelMode('private')">Частный</button><button id="mode-public" class="settings-ghost" onclick="setChannelMode('public')">Публичный</button></div><input id="chn-link" value="${FIX.channelDraft.link}" readonly placeholder="Ссылка"><div class="section-note" style="margin-top:10px;">Частный канал открывается только по ссылке. Публичный можно найти поиском по имени или ссылке.</div>`);
+    FIX.channelDraft = { name, bio: $('chn-bio').value.trim(), avatar: $('chn-emoji').value.trim() || '??', mode: 'private', link: 'join_' + Math.random().toString(36).slice(2, 9) };
+    showModal('wide', `<div class="wizard-top"><button class="wizard-x" onclick="closeOverlay()">?</button><div class="modal-title">Ссылка канала</div><button class="wizard-next" onclick="createChannel()">Создать</button></div><div class="settings-actions"><button id="mode-private" class="settings-save" onclick="setChannelMode('private')">Частный</button><button id="mode-public" class="settings-ghost" onclick="setChannelMode('public')">Публичный</button></div><input id="chn-link" value="${FIX.channelDraft.link}" readonly placeholder="Ссылка"><div class="section-note" style="margin-top:10px;">Частный канал открывается только по ссылке. Публичный можно найти поиском по имени или ссылке.</div>`);
   };
   window.setChannelMode = function(mode) {
     FIX.channelDraft = FIX.channelDraft || {};
@@ -5865,7 +5810,7 @@ if (ui) {
     const preview = document.getElementById(previewId);
     if (!preview) return;
     const val = (inp && inp.value.trim()) || preview.innerText || '';
-    preview.innerText = val || '👤';
+    preview.innerText = val || '??';
   }
   
   window.searchUsers = async function(v, m) {
@@ -5878,7 +5823,7 @@ if (ui) {
       const id = (await db.ref('handles/' + query.replace('@','')).once('value')).val();
       if (id) {
         const user = (await db.ref('users/' + id).once('value')).val();
-        if (user) html += `<div class="contact-item glass"><div class="avatar-emoji">${user.avatar || '👤'}</div><b>${esc(user.name)}</b><button onclick="addFriend('${user.id}')" style="margin-left:auto;background:var(--accent);color:#000;padding:5px 12px;border-radius:10px;">Добавить</button></div>`;
+        if (user) html += `<div class="contact-item glass"><div class="avatar-emoji">${user.avatar || '??'}</div><b>${esc(user.name)}</b><button onclick="addFriend('${user.id}')" style="margin-left:auto;background:var(--accent);color:#000;padding:5px 12px;border-radius:10px;">Добавить</button></div>`;
       }
     }
     const roomsSnap = await db.ref('rooms').once('value');
@@ -5887,7 +5832,7 @@ if (ui) {
       const byLink = room.inviteCode && String(room.inviteCode).toLowerCase() === query;
       if (byPublicName || byLink) {
         const privateNeedRequest = room.type === 'channel' && !room.isPublic && !(room.members && room.members[me.id]);
-        html += `<div class="contact-item glass"><div class="avatar-emoji room-avatar">${room.avatar || '📣'}</div><div class="dialog-main"><b>${esc(room.name)}</b><br><small>${esc(room.bio || room.inviteCode || '')}</small></div><button onclick="${privateNeedRequest ? `requestJoinChannel('${room.id}')` : `joinOrOpenRoom('${room.id}')`}" style="margin-left:auto;background:var(--accent);color:#000;padding:5px 12px;border-radius:10px;">${privateNeedRequest ? 'Запрос' : 'Добавить'}</button></div>`;
+        html += `<div class="contact-item glass"><div class="avatar-emoji room-avatar">${room.avatar || '??'}</div><div class="dialog-main"><b>${esc(room.name)}</b><br><small>${esc(room.bio || room.inviteCode || '')}</small></div><button onclick="${privateNeedRequest ? `requestJoinChannel('${room.id}')` : `joinOrOpenRoom('${room.id}')`}" style="margin-left:auto;background:var(--accent);color:#000;padding:5px 12px;border-radius:10px;">${privateNeedRequest ? 'Запрос' : 'Добавить'}</button></div>`;
       }
     });
     target.innerHTML = html || '<div class="settings-card">Ничего не найдено</div>';
@@ -5898,7 +5843,7 @@ if (ui) {
     alert('Добавлено.');
   };
   window.requestJoinChannel = async function(roomId) {
-    await db.ref(`rooms/${roomId}/joinRequests/${me.id}`).set({ userId: me.id, name: me.name || '', avatar: me.avatar || '👤', time: now() });
+    await db.ref(`rooms/${roomId}/joinRequests/${me.id}`).set({ userId: me.id, name: me.name || '', avatar: me.avatar || '??', time: now() });
     alert('Запрос отправлен владельцу канала.');
   };
   window.leaveRoom = async function(roomId) {
@@ -5937,12 +5882,12 @@ if (ui) {
       const u = friends().find(x => x.id === id) || (id === me.id ? me : { id, name: id });
       const owner = id === room.ownerId;
       const badge = owner ? '<span class="star-owner">в… владелец</span>' : (room.admins && room.admins[id] ? '<span class="star-admin">в… админ</span>' : '');
-      return `<div class="person-row"><span class="person-main"><span class="avatar-emoji">${u.avatar || '👤'}</span><span><div>${esc(u.name)}</div><div class="settings-nav-meta">${badge}</div></span></span>${!owner ? `<button class="settings-ghost" onclick="removeGroupMember('${roomId}','${id}')">Удалить участника</button>` : ''}</div>`;
+      return `<div class="person-row"><span class="person-main"><span class="avatar-emoji">${u.avatar || '??'}</span><span><div>${esc(u.name)}</div><div class="settings-nav-meta">${badge}</div></span></span>${!owner ? `<button class="settings-ghost" onclick="removeGroupMember('${roomId}','${id}')">Удалить участника</button>` : ''}</div>`;
     }).join('');
     const adminRows = memberIds.filter(id => id !== room.ownerId).map(id => {
       const u = friends().find(x => x.id === id) || { id, name: id };
       const isAdmin = room.admins && room.admins[id];
-      return `<div class="person-row"><span class="person-main"><span class="avatar-emoji">${u.avatar || '👤'}</span><span>${esc(u.name)}</span></span><button class="settings-save" onclick="${isAdmin ? `removeRoomAdmin('${roomId}','${id}')` : `addRoomAdmin('${roomId}','${id}')`}">${isAdmin ? 'Убрать админа' : 'Добавить админа'}</button></div>`;
+      return `<div class="person-row"><span class="person-main"><span class="avatar-emoji">${u.avatar || '??'}</span><span>${esc(u.name)}</span></span><button class="settings-save" onclick="${isAdmin ? `removeRoomAdmin('${roomId}','${id}')` : `addRoomAdmin('${roomId}','${id}')`}">${isAdmin ? 'Убрать админа' : 'Добавить админа'}</button></div>`;
     }).join('') || '<div class="settings-card">Нет участников для назначения</div>';
     const hasPhoto = avatarUrl(room);
     const edit = `<div class="settings-section">
@@ -5972,11 +5917,11 @@ if (ui) {
     </div>`;
     const add = `<input placeholder="Поиск" oninput="filterSelectableFriends(this.value,'add-members-list')"><div id="add-members-list" class="people-list" style="margin-top:12px;">${selectableUsers(room.members || {}, 'data-add-member')}</div><button class="settings-save" style="margin-top:12px;" onclick="document.querySelectorAll('[data-add-member]:checked').forEach(i=>addRoomMember('${roomId}',i.getAttribute('data-add-member')))">Добавить</button>`;
     const body = tab === 'add' ? add : tab === 'admins' ? `<div class="settings-card"><div class="settings-nav-title">Админы</div><div class="people-list">${adminRows}</div></div>` : tab === 'edit' ? edit : `<div class="settings-card"><div class="settings-nav-title">Участники</div><div class="people-list">${memberRows}</div><button class="settings-save" style="margin-top:12px;" onclick="openRoomSettings('${roomId}','add')">Добавить участника</button></div>`;
-    showModal('wide', `<div class="modal-head"><div><div class="modal-title">Настройки группы</div><div class="settings-subtitle">${esc(room.name)}</div></div><button class="modal-close" onclick="closeOverlay()">✕</button></div><div class="room-tabs"><button class="room-tab ${tab === 'members' || tab === 'add' ? 'active' : ''}" onclick="openRoomSettings('${roomId}','members')">Участники</button><button class="room-tab ${tab === 'admins' ? 'active' : ''}" onclick="openRoomSettings('${roomId}','admins')">Админы</button><button class="room-tab ${tab === 'edit' ? 'active' : ''}" onclick="openRoomSettings('${roomId}','edit')">?зменить группу</button></div>${body}`);
+    showModal('wide', `<div class="modal-head"><div><div class="modal-title">Настройки группы</div><div class="settings-subtitle">${esc(room.name)}</div></div><button class="modal-close" onclick="closeOverlay()">?</button></div><div class="room-tabs"><button class="room-tab ${tab === 'members' || tab === 'add' ? 'active' : ''}" onclick="openRoomSettings('${roomId}','members')">Участники</button><button class="room-tab ${tab === 'admins' ? 'active' : ''}" onclick="openRoomSettings('${roomId}','admins')">Админы</button><button class="room-tab ${tab === 'edit' ? 'active' : ''}" onclick="openRoomSettings('${roomId}','edit')">?зменить группу</button></div>${body}`);
   };
   window.saveRoomName = async roomId => { await db.ref(`rooms/${roomId}/name`).set($('room-name-edit').value.trim()); closeOverlay(); };
   window.saveRoomBio = async roomId => { await db.ref(`rooms/${roomId}/bio`).set($('room-bio-edit').value.trim()); closeOverlay(); };
-  window.saveRoomAvatar = async roomId => { await db.ref(`rooms/${roomId}/avatar`).set($('room-avatar-edit').value.trim() || '👥'); closeOverlay(); };
+  window.saveRoomAvatar = async roomId => { await db.ref(`rooms/${roomId}/avatar`).set($('room-avatar-edit').value.trim() || '??'); closeOverlay(); };
 
   const baseShowPeerProfile = window.showPeerProfile;
   window.showPeerProfile = async function() {
@@ -5993,19 +5938,19 @@ if (ui) {
       } catch (e) {}
       const appearance = (user.settings && user.settings.appearance) || {};
       const bg = appearance.profileColor || '#956634';
-      const pattern = emojiPattern(appearance.patternEmoji || '✨');
+      const pattern = emojiPattern(appearance.patternEmoji || '?');
       return showModal('wide', `<div class="settings-preview" style="background:${bg}; min-height:260px;"><div class="settings-pattern" style="background-image:${pattern};"></div><div class="${avatarClass(user, 'settings-preview-avatar')}" style="${avatarStyle(user)}">${avatarContent(user)}</div><div class="settings-preview-name" style="font-size:42px;">${esc(user.name || 'Без имени')}${user.verified ? (badge()) : ''}</div><div class="settings-preview-handle">${esc(user.handle || '')}</div></div><div class="settings-card" style="margin-top:16px;"><div class="settings-nav-title">Описание</div><div class="section-note" style="margin-top:10px; font-size:14px; opacity:0.86;">${esc(user.bio || 'Нет описания')}</div><div class="settings-actions" style="margin-top:18px;"><button class="settings-save" onclick="toggleBlock()">Заблокировать</button><button class="settings-ghost" style="color:#ff8a8a;" onclick="removeChat()">Удалить чат</button></div></div>`);
     }
     const room = activePeer;
     const list = Object.keys(room.members || {}).map(id => {
       const u = friends().find(x => x.id === id) || (id === me.id ? me : { id, name: id });
       const badge = id === room.ownerId ? '<span class="star-owner">в… владелец</span>' : (room.admins && room.admins[id] ? '<span class="star-admin">в… админ</span>' : '');
-      return `<div class="person-row"><span class="person-main"><span class="avatar-emoji">${u.avatar || '👤'}</span><span><div>${esc(u.name)}</div><div class="settings-nav-meta">${badge}</div></span></span></div>`;
+      return `<div class="person-row"><span class="person-main"><span class="avatar-emoji">${u.avatar || '??'}</span><span><div>${esc(u.name)}</div><div class="settings-nav-meta">${badge}</div></span></span></div>`;
     }).join('');
     const owner = room.ownerId === me.id;
     const admin = canManage(room);
     const actions = owner ? `<button class="settings-save" onclick="openRoomSettings('${room.id}')">Настройки</button><button class="settings-ghost" style="color:#ff8a8a;" onclick="deleteRoom('${room.id}')">${room.type === 'group' ? 'Удалить группу' : 'Удалить канал'}</button>` : admin ? `<button class="settings-save" onclick="openRoomSettings('${room.id}')">Настройки</button><button class="settings-ghost" style="color:#ff8a8a;" onclick="leaveRoom('${room.id}')">Выйти из группы</button>` : `<button class="settings-ghost" style="color:#ff8a8a;" onclick="leaveRoom('${room.id}')">Выйти из группы</button>`;
-    showModal('wide', `<div class="modal-head"><div><div class="modal-title">${esc(room.name)}</div><div class="settings-subtitle">${esc(room.bio || 'Без описания')}</div></div><button class="modal-close" onclick="closeOverlay()">✕</button></div><div class="settings-actions">${actions}</div><div class="settings-card" style="margin-top:16px;"><div class="settings-nav-title" style="margin-bottom:12px;">Участники</div><div class="people-list">${list}</div></div>`);
+    showModal('wide', `<div class="modal-head"><div><div class="modal-title">${esc(room.name)}</div><div class="settings-subtitle">${esc(room.bio || 'Без описания')}</div></div><button class="modal-close" onclick="closeOverlay()">?</button></div><div class="settings-actions">${actions}</div><div class="settings-card" style="margin-top:16px;"><div class="settings-nav-title" style="margin-bottom:12px;">Участники</div><div class="people-list">${list}</div></div>`);
   };
   window.openQrLogin = async function() {
     if (!isPC && hasMe()) return startDeviceScanner();
@@ -6026,7 +5971,7 @@ if (ui) {
       location.reload();
     });
     const qrUrl = `https://quickchart.io/qr?text=${encodeURIComponent(token)}&size=320`;
-    showModal('', `<div class="modal-head"><div><div class="modal-title">Войти по QR-коду</div><div class="settings-subtitle">На телефоне: Настройки в†’ Устройства в†’ Подключить устройство, затем наведи камеру на этот код.</div></div><button class="modal-close" onclick="closeOverlay()">✕</button></div><div class="qr-box"><img src="${qrUrl}" alt="QR" onerror="this.outerHTML='<div style=&quot;color:#000;text-align:center;font-weight:800;padding:30px;&quot;>QR не загрузился<br><br>${token}</div>'"></div><div class="settings-card" style="text-align:center;">Код: <b>${token}</b></div>`);
+    showModal('', `<div class="modal-head"><div><div class="modal-title">Войти по QR-коду</div><div class="settings-subtitle">На телефоне: Настройки в†’ Устройства в†’ Подключить устройство, затем наведи камеру на этот код.</div></div><button class="modal-close" onclick="closeOverlay()">?</button></div><div class="qr-box"><img src="${qrUrl}" alt="QR" onerror="this.outerHTML='<div style=&quot;color:#000;text-align:center;font-weight:800;padding:30px;&quot;>QR не загрузился<br><br>${token}</div>'"></div><div class="settings-card" style="text-align:center;">Код: <b>${token}</b></div>`);
   };
   const baseStartDeviceScanner = window.startDeviceScanner;
   window.startDeviceScanner = async function() {
@@ -6110,7 +6055,7 @@ if (ui) {
     const host = $('app-lock-screen');
     if (!host) return;
     host.style.display = 'flex';
-    host.innerHTML = `<div class="lock-card"><div style="font-size:54px;">🔒</div><h2 style="margin:14px 0;">Защита Vibe</h2><p class="section-note">Разблокируй приложение, чтобы продолжить.</p><div class="settings-actions" style="justify-content:center;margin-top:16px;"><button class="settings-save" onclick="unlockWithPassword()">Ввести пароль</button></div></div>`;
+    host.innerHTML = `<div class="lock-card"><div style="font-size:54px;">??</div><h2 style="margin:14px 0;">Защита Vibe</h2><p class="section-note">Разблокируй приложение, чтобы продолжить.</p><div class="settings-actions" style="justify-content:center;margin-top:16px;"><button class="settings-save" onclick="unlockWithPassword()">Ввести пароль</button></div></div>`;
   }
   function boot() {
     if (!hasMe()) return;
@@ -6210,7 +6155,7 @@ window.showCreateMenu = function() {
     const html = `
         <div class="modal-head">
             <div class="modal-title">Создать</div>
-            <button class="modal-close" onclick="closeOverlay()">✕</button>
+            <button class="modal-close" onclick="closeOverlay()">?</button>
         </div>
         <div class="choice-stack">
             <button class="choice-card" onclick="openCreateGroup()">
@@ -6283,7 +6228,7 @@ window.openArchiveModal = function() {
     const selectActive = FIX.archiveSelectMode;
     
     const listHTML = archivedIds.map(id => {
-      const item = friends().concat(rooms()).find(x => x.id === id) || { id, name: 'Чат ' + id, avatar: '👤' };
+      const item = friends().concat(rooms()).find(x => x.id === id) || { id, name: 'Чат ' + id, avatar: '??' };
       const checked = FIX.selectedArchiveIds[id] ? 'checked' : '';
       
       const clickAction = selectActive 
@@ -6316,7 +6261,7 @@ window.openArchiveModal = function() {
               <button class="settings-ghost" style="border-radius:14px;" onclick="toggleArchiveSelectMode()">
                   ${selectActive ? 'Отмена' : 'Выбрать'}
               </button>
-              <button class="modal-close" onclick="closeOverlay()">✕</button>
+              <button class="modal-close" onclick="closeOverlay()">?</button>
           </div>
       </div>
       <div class="people-list ${selectActive ? 'archive-select-mode' : ''}" style="max-height: 60vh; overflow-y: auto; padding-bottom: 80px;">
@@ -6533,9 +6478,9 @@ window.openArchiveModal = function() {
       return `<div class="avatar-emoji has-photo" style="background-image:url('${esc(photo)}');background-size:cover;background-position:center;color:transparent;"></div>`;
     }
     if (isRoom(user)) {
-      return `<div class="avatar-emoji room-avatar" style="width:48px;height:48px;font-size:22px;">${esc(user.avatar || (user.type === 'channel' ? '📣' : '👥'))}</div>`;
+      return `<div class="avatar-emoji room-avatar" style="width:48px;height:48px;font-size:22px;">${esc(user.avatar || (user.type === 'channel' ? '??' : '??'))}</div>`;
     }
-    return `<div class="avatar-emoji">${esc((user && user.avatar) || '👤')}</div>`;
+    return `<div class="avatar-emoji">${esc((user && user.avatar) || '??')}</div>`;
   }
 
   function closeAttachSheets() {
@@ -6713,7 +6658,7 @@ window.openArchiveModal = function() {
     const listHTML = archivedIds.map(id => {
       const item = (window.vibeRoomState && window.vibeRoomState.friends && window.vibeRoomState.friends[id]) ||
         (window.vibeRoomState && window.vibeRoomState.rooms && window.vibeRoomState.rooms[id]) ||
-        { id, name: 'Чат ' + id, avatar: '👤' };
+        { id, name: 'Чат ' + id, avatar: '??' };
       const checked = FIX.selectedArchiveIds && FIX.selectedArchiveIds[id] ? 'checked' : '';
       return `
         <div class="contact-item glass" onclick="${selectActive ? `toggleArchiveSelection('${id}')` : `openArchivedChat('${id}')`}">
@@ -6733,7 +6678,7 @@ window.openArchiveModal = function() {
         </div>
         <div style="display:flex; gap:10px; align-items:center;">
           <button class="settings-ghost" style="border-radius:14px;" onclick="toggleArchiveSelectMode()">${selectActive ? 'Отмена' : 'Выбрать'}</button>
-          <button class="modal-close" onclick="closeOverlay()">✕</button>
+          <button class="modal-close" onclick="closeOverlay()">?</button>
         </div>
       </div>
       <div class="people-list ${selectActive ? 'archive-select-mode' : ''}" style="max-height:60vh; overflow-y:auto; padding-bottom:100px;">
@@ -6772,14 +6717,14 @@ window.openArchiveModal = function() {
 
     const appearance = (user.settings && user.settings.appearance) || {};
     const bg = appearance.profileColor || '#956634';
-    const emoji = appearance.patternEmoji || '✨';
+    const emoji = appearance.patternEmoji || '?';
     const encodedEmoji = encodeURIComponent(emoji);
     const pattern = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='88' height='88' viewBox='0 0 88 88'%3E%3Ctext x='44' y='52' font-size='24' text-anchor='middle' fill='rgba(255,255,255,0.22)'%3E${encodedEmoji}%3C/text%3E%3C/svg%3E")`;
     const photo = avatarUrl(user);
     const verBadge = typeof badge === 'function' ? badge() : (typeof vBadge !== 'undefined' ? vBadge : '');
     const avatar = photo
       ? `<div class="peer-preview-avatar has-photo" style="background-image:url('${esc(photo)}');background-size:cover;background-position:center;color:transparent;"></div>`
-      : `<div class="peer-preview-avatar">${esc(user.avatar || '👤')}</div>`;
+      : `<div class="peer-preview-avatar">${esc(user.avatar || '??')}</div>`;
 
     showModal('wide', `
       <div class="peer-profile-panel">
@@ -6861,11 +6806,11 @@ window.openArchiveModal = function() {
     const directAppearance = (user && user.appearance) || {};
     return {
       profileColor: settingsAppearance.profileColor || directAppearance.profileColor || (user && user.profileColor) || '#956634',
-      patternEmoji: settingsAppearance.patternEmoji || directAppearance.patternEmoji || (user && user.patternEmoji) || '✨',
+      patternEmoji: settingsAppearance.patternEmoji || directAppearance.patternEmoji || (user && user.patternEmoji) || '?',
     };
   };
   const makePattern = emoji => {
-    const encoded = encodeURIComponent(emoji || '✨');
+    const encoded = encodeURIComponent(emoji || '?');
     return `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='88' height='88' viewBox='0 0 88 88'%3E%3Ctext x='44' y='52' font-size='24' text-anchor='middle' fill='rgba(255,255,255,0.22)'%3E${encoded}%3C/text%3E%3C/svg%3E")`;
   };
   const avatarMarkup = (user, extraClass = 'avatar-emoji', extraStyle = '') => {
@@ -6874,8 +6819,8 @@ window.openArchiveModal = function() {
       return `<div class="${extraClass} has-photo" style="background-image:url('${safeUrl(photo)}');background-size:cover;background-position:center;color:transparent;${extraStyle}"></div>`;
     }
     const fallback = isRoomItem(user)
-      ? (user.avatar || (user.type === 'channel' ? '📣' : '👥'))
-      : ((user && user.avatar) || '👤');
+      ? (user.avatar || (user.type === 'channel' ? '??' : '??'))
+      : ((user && user.avatar) || '??');
     return `<div class="${extraClass}" style="${extraStyle}">${esc(fallback)}</div>`;
   };
   const getChatPath = item => {
@@ -6920,7 +6865,7 @@ window.openArchiveModal = function() {
   const getRoomMembersHtml = room => {
     const state = getState();
     return Object.keys(room.members || {}).map(id => {
-      const user = state.friends[id] || (id === ((currentMe() && currentMe().id) || '') ? currentMe() : null) || { id, name: id, avatar: '👤' };
+      const user = state.friends[id] || (id === ((currentMe() && currentMe().id) || '') ? currentMe() : null) || { id, name: id, avatar: '??' };
       const badge = id === room.ownerId
         ? '<span class="star-owner">в… владелец</span>'
         : room.admins && room.admins[id]
@@ -6952,7 +6897,7 @@ window.openArchiveModal = function() {
         if (roomSnap.exists()) return { id, ...(roomSnap.val() || {}) };
       } catch (error) {}
     }
-    return { id, name: id, avatar: '👤' };
+    return { id, name: id, avatar: '??' };
   }
   async function renderArchiveModalContent() {
     const user = currentMe();
@@ -6983,7 +6928,7 @@ window.openArchiveModal = function() {
         </div>
         <div style="display:flex; gap:10px; align-items:center;">
           <button class="settings-ghost" style="border-radius:14px;" onclick="toggleArchiveSelectMode()">${selectActive ? 'Отмена' : 'Выбрать'}</button>
-          <button class="modal-close" onclick="closeOverlay()">✕</button>
+          <button class="modal-close" onclick="closeOverlay()">?</button>
         </div>
       </div>
       <div class="people-list ${selectActive ? 'archive-select-mode' : ''}" style="max-height:60vh; overflow-y:auto; padding-bottom:100px;">
@@ -7201,7 +7146,7 @@ window.openArchiveModal = function() {
             <div class="modal-title">${roomName}</div>
             <div class="settings-subtitle">${roomBio}</div>
           </div>
-          <button class="modal-close" onclick="closeOverlay()">✕</button>
+          <button class="modal-close" onclick="closeOverlay()">?</button>
         </div>
         <div class="settings-card" style="margin-top:16px;">
           <div class="settings-nav-title" style="margin-bottom:12px;">Участники</div>
@@ -7240,7 +7185,7 @@ window.openArchiveModal = function() {
           <div class="peer-profile-pattern" style="background-image:${makePattern(appearance.patternEmoji)};"></div>
           ${photo
             ? `<div class="peer-preview-avatar has-photo" style="background-image:url('${safeUrl(photo)}');background-size:cover;background-position:center;color:transparent;"></div>`
-            : `<div class="peer-preview-avatar">${esc(peer.avatar || '👤')}</div>`}
+            : `<div class="peer-preview-avatar">${esc(peer.avatar || '??')}</div>`}
           <div class="peer-preview-name">${esc(peer.name || 'Без имени')}${peer.verified ? verBadge : ''}</div>
           <div class="peer-preview-handle">${esc(peer.handle || '')}</div>
         </div>
@@ -7364,7 +7309,7 @@ window.openArchiveModal = function() {
       <div class="codex-ui-sheet">
         <div class="modal-head" style="margin-bottom:12px;">
           <div class="modal-title">Прикрепить</div>
-          <button class="modal-close" type="button">✕</button>
+          <button class="modal-close" type="button">?</button>
         </div>
         <div class="choice-stack">
           <button class="choice-card" type="button" data-attach-action="media"><b>Фото/видео</b><br><span class="settings-nav-meta">Загрузить изображение или ролик</span></button>
@@ -7386,25 +7331,25 @@ window.openArchiveModal = function() {
   };
 
   const EMOJI_PACK = [
-    'рџЂ','рџѓ','рџ„','рџЃ','рџ†','рџ…','рџ‚','🤣','??','рџ‡','🙂','🙃','рџ‰','рџЌ','🥰','рџ','рџ—','рџ™','рџљ','рџ‹',
-    'рџњ','рџќ','🤪','🤨','🧐','🤓','рџЋ','🥳','рџ¤','рџЎ','🤯','рџ±','🥺','рџў','рџ­','рџ®','рџЇ','рџІ','🤠','рџґ',
-    '👋','👍','👎','👏','🙏','💪','🫶','💖','рџ’','💝','💗','💓','💞','💕','💥','🔥','✨','🌟','⚡','🌈',
-    '🍓','🍒','🍉','🍍','🍋','🍕','🍔','🍟','🌭','🍩','🍪','🍫','в•','🍿','🎧','🎮','🎲','🏆','⚽','🏀',
-    '🚗','✈️','🚀','🛸','📸','🎬','🎵','🎤','📱','💻','📌','📎','🧸','🎁','🎉','🎈','🌸','🌺','🌊','в›„'
+    'рџЂ','рџѓ','рџ„','рџЃ','рџ†','рџ…','рџ‚','??','??','рџ‡','??','??','рџ‰','рџЌ','??','рџ','рџ—','рџ™','рџљ','рџ‹',
+    'рџњ','рџќ','??','??','??','??','рџЋ','??','рџ¤','рџЎ','??','рџ±','??','рџў','рџ­','рџ®','рџЇ','рџІ','??','рџґ',
+    '??','??','??','??','??','??','??','??','рџ’','??','??','??','??','??','??','??','?','??','?','??',
+    '??','??','??','??','??','??','??','??','??','??','??','??','в•','??','??','??','??','??','?','??',
+    '??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','??','в›„'
   ];
   const BUILTIN_STICKERS = [
-    ['spark', '#0ea5e9', '✨'],
-    ['heart', '#ef4444', '💖'],
+    ['spark', '#0ea5e9', '?'],
+    ['heart', '#ef4444', '??'],
     ['smile', '#22c55e', 'рџ„'],
     ['cool', '#111827', 'рџЋ'],
-    ['cat', '#f59e0b', '🐱'],
-    ['dog', '#8b5cf6', '🐶'],
-    ['fire', '#f97316', '🔥'],
-    ['star', '#eab308', '⭐'],
-    ['ok', '#14b8a6', '👌'],
-    ['wow', '#f43f5e', '🤯'],
+    ['cat', '#f59e0b', '??'],
+    ['dog', '#8b5cf6', '??'],
+    ['fire', '#f97316', '??'],
+    ['star', '#eab308', '?'],
+    ['ok', '#14b8a6', '??'],
+    ['wow', '#f43f5e', '??'],
     ['love', '#ec4899', 'рџ’'],
-    ['party', '#06b6d4', '🥳']
+    ['party', '#06b6d4', '??']
   ].map(([name, color, label]) => {
     const svg = `
       <svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
@@ -7570,7 +7515,7 @@ window.openArchiveModal = function() {
       <div class="codex-ui-sheet">
         <div class="modal-head" style="margin-bottom:12px;">
           <div class="modal-title">Новый стикер</div>
-          <button class="modal-close" type="button">✕</button>
+          <button class="modal-close" type="button">?</button>
         </div>
         <div class="settings-card" style="display:grid;gap:12px;">
           <input type="file" accept="image/*" data-sticker-file>
@@ -7662,7 +7607,7 @@ window.openArchiveModal = function() {
   window.openFavorites = function() {
     const user = currentMe();
     if (!user || !user.id) return alert('Подожди загрузки данных...');
-    const favUser = { id: `saved_${user.id}`, name: 'Избранное', avatar: '⭐', isSaved: true };
+    const favUser = { id: `saved_${user.id}`, name: 'Избранное', avatar: '?', isSaved: true };
     if (window.isPC) window.openPCChat(favUser);
     else window.openMobChat(favUser);
   };
@@ -7790,11 +7735,11 @@ window.openArchiveModal = function() {
     const direct = (user && user.appearance) || {};
     return {
       profileColor: fromSettings.profileColor || direct.profileColor || user?.profileColor || '#956634',
-      patternEmoji: fromSettings.patternEmoji || direct.patternEmoji || user?.patternEmoji || '✨'
+      patternEmoji: fromSettings.patternEmoji || direct.patternEmoji || user?.patternEmoji || '?'
     };
   };
   const makePattern = emoji => {
-    const encoded = encodeURIComponent(emoji || '✨');
+    const encoded = encodeURIComponent(emoji || '?');
     return `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' viewBox='0 0 96 96'%3E%3Ctext x='48' y='58' font-size='28' text-anchor='middle' fill='rgba(255,255,255,0.26)'%3E${encoded}%3C/text%3E%3C/svg%3E")`;
   };
 
@@ -7907,21 +7852,21 @@ window.openArchiveModal = function() {
     card.innerHTML = `
       <div class="codex-peer-cover" style="background:${appearance.profileColor};">
         <div class="codex-peer-pattern" style="background-image:${makePattern(appearance.patternEmoji)};"></div>
-        <div class="avatar-emoji${photo ? ' has-photo' : ''}" id="pop-ava" style="${photo ? `background-image:url('${safeUrl(photo)}');` : ''}">${photo ? '' : esc(user.avatar || '👤')}</div>
+        <div class="avatar-emoji${photo ? ' has-photo' : ''}" id="pop-ava" style="${photo ? `background-image:url('${safeUrl(photo)}');` : ''}">${photo ? '' : esc(user.avatar || '??')}</div>
         <h2 id="pop-name">${esc(user.name || 'Без имени')}${user.verified ? verBadge : ''}</h2>
         <p id="pop-handle" style="color:rgba(255,255,255,.86); font-size:14px;">${esc(user.handle || '')}</p>
       </div>
       <div class="codex-peer-body">
         <p id="pop-bio" style="font-size:13px; opacity:0.82;">${esc(user.isDeleted ? 'Этот аккаунт заблокирован.' : (user.bio || 'Нет описания'))}</p>
         <div style="display:flex; flex-direction:column; gap:10px;">
-          <button id="pop-block-btn" class="save-btn" style="width:100%;" onclick="toggleBlock()">🚫 Заблокировать</button>
-          <button class="save-btn" style="width:100%; background:#ea868f;" onclick="removeChat()">🗑️ Удалить чат</button>
+          <button id="pop-block-btn" class="save-btn" style="width:100%;" onclick="toggleBlock()">?? Заблокировать</button>
+          <button class="save-btn" style="width:100%; background:#ea868f;" onclick="removeChat()">??? Удалить чат</button>
         </div>
       </div>`;
     const my = getMe();
     const blockBtn = $('pop-block-btn');
     if (blockBtn && my && my.blocks) {
-      blockBtn.textContent = my.blocks[user.id] ? '🔓 Разблокировать' : '🚫 Заблокировать';
+      blockBtn.textContent = my.blocks[user.id] ? '?? Разблокировать' : '?? Заблокировать';
     }
     if (typeof contextPeerId !== 'undefined') contextPeerId = user.id;
     window.contextPeerId = user.id;
@@ -7962,11 +7907,11 @@ window.openArchiveModal = function() {
     const directAppearance = (user && user.appearance) || {};
     return {
       color: settingsAppearance.profileColor || directAppearance.profileColor || (user && user.profileColor) || '#956634',
-      emoji: settingsAppearance.patternEmoji || directAppearance.patternEmoji || (user && user.patternEmoji) || '✨'
+      emoji: settingsAppearance.patternEmoji || directAppearance.patternEmoji || (user && user.patternEmoji) || '?'
     };
   };
   const patternOf = emoji => {
-    const encoded = encodeURIComponent(emoji || '✨');
+    const encoded = encodeURIComponent(emoji || '?');
     return `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='130' viewBox='0 0 180 130'%3E%3Cg font-size='24' text-anchor='middle' fill='rgba(255,255,255,0.22)'%3E%3Ctext x='24' y='32'%3E${encoded}%3C/text%3E%3Ctext x='94' y='24'%3E${encoded}%3C/text%3E%3Ctext x='154' y='44'%3E${encoded}%3C/text%3E%3Ctext x='50' y='96'%3E${encoded}%3C/text%3E%3Ctext x='126' y='108'%3E${encoded}%3C/text%3E%3C/g%3E%3C/svg%3E")`;
   };
 
@@ -8141,7 +8086,7 @@ window.openArchiveModal = function() {
     card.style.setProperty('--peer-pattern', patternOf(appearance.emoji));
     card.innerHTML = `
       <div class="codex-peer-profile-cover" style="background:${appearance.color};">
-        <div class="avatar-emoji${photo ? ' has-photo' : ''}" id="pop-ava" style="${photo ? `background-image:url('${safeUrl(photo)}');` : ''}">${photo ? '' : esc(user.avatar || '👤')}</div>
+        <div class="avatar-emoji${photo ? ' has-photo' : ''}" id="pop-ava" style="${photo ? `background-image:url('${safeUrl(photo)}');` : ''}">${photo ? '' : esc(user.avatar || '??')}</div>
         <h2 id="pop-name">${esc(user.name || 'Без имени')}${user.verified ? verify : ''}</h2>
         <p id="pop-handle">${esc(user.handle || '')}</p>
       </div>
@@ -8210,7 +8155,7 @@ window.openArchiveModal = function() {
       alert('Подожди загрузки данных...');
       return;
     }
-    const favUser = { id: `saved_${user.id}`, name: 'Избранное', avatar: '⭐', isSaved: true };
+    const favUser = { id: `saved_${user.id}`, name: 'Избранное', avatar: '?', isSaved: true };
     if (activeMode() === 'mob') {
       if (typeof window.openMobChat === 'function') window.openMobChat(favUser);
     } else if (typeof window.openPCChat === 'function') {
@@ -8342,7 +8287,7 @@ window.openArchiveModal = function() {
       touchStartPoint = { x: touch.clientX, y: touch.clientY };
       const msgId = message.dataset.msgId || message.id.replace(/^mob-msgs-/, '').replace(/^pc-msgs-/, '').replace(/^msg-/, '');
       const sender = message.dataset.sender || (message.classList.contains('sent') && getMe() ? getMe().id : '');
-      const text = message.dataset.msgText || message.innerText.replace(/[✓\s]+$/g, '').trim();
+      const text = message.dataset.msgText || message.innerText.replace(/[?\s]+$/g, '').trim();
       const holdEvent = {
         clientX: touch.clientX,
         clientY: touch.clientY,
@@ -8519,10 +8464,10 @@ window.openArchiveModal = function() {
     if (typeof window.vibeFix20260524.getItem !== 'function') {
       window.vibeFix20260524.getItem = key => {
         const user = currentMe();
-        if (key && key.startsWith('user:saved_')) return { id: key.slice(5), name: 'Избранное', avatar: '⭐', isSaved: true };
+        if (key && key.startsWith('user:saved_')) return { id: key.slice(5), name: 'Избранное', avatar: '?', isSaved: true };
         if (key && key.startsWith('room:')) return (((window.vibeRoomState || {}).rooms || {})[key.slice(5)]);
         if (key && key.startsWith('user:')) return (((window.vibeRoomState || {}).friends || {})[key.slice(5)]);
-        if (key === `saved_${user && user.id}`) return { id: key, name: 'Избранное', avatar: '⭐', isSaved: true };
+        if (key === `saved_${user && user.id}`) return { id: key, name: 'Избранное', avatar: '?', isSaved: true };
         return null;
       };
     }
@@ -8566,7 +8511,7 @@ window.openArchiveModal = function() {
     const fromState = Object.values(((window.vibeRoomState || {}).friends) || {});
     if (fromState.length) return fromState.filter(Boolean);
     const user = currentMe();
-    return Object.keys((user && user.friends) || {}).map(id => ({ id, name: id, avatar: '👤' }));
+    return Object.keys((user && user.friends) || {}).map(id => ({ id, name: id, avatar: '??' }));
   }
 
   function roomsList() {
@@ -8577,7 +8522,7 @@ window.openArchiveModal = function() {
     const user = currentMe();
     if (!key) return null;
     if (key.startsWith('user:saved_') || key === `saved_${user && user.id}`) {
-      return { id: `saved_${user && user.id}`, name: 'Избранное', avatar: '⭐', isSaved: true };
+      return { id: `saved_${user && user.id}`, name: 'Избранное', avatar: '?', isSaved: true };
     }
     if (key.startsWith('room:')) {
       const id = key.slice(5);
@@ -8609,7 +8554,7 @@ window.openArchiveModal = function() {
   function avatarHtml(item) {
     const photo = item && (item.avatarPhoto || item.photoURL || item.avatarUrl || item.photo || item.image);
     if (photo) return `<div class="avatar-emoji has-photo" style="background-image:url('${esc(photo)}');background-size:cover;background-position:center;color:transparent;"></div>`;
-    const icon = isRoom(item) ? (item.avatar || (item.type === 'channel' ? '📣' : '👥')) : ((item && item.avatar) || '👤');
+    const icon = isRoom(item) ? (item.avatar || (item.type === 'channel' ? '??' : '??')) : ((item && item.avatar) || '??');
     return `<div class="avatar-emoji">${esc(icon)}</div>`;
   }
 
@@ -8625,7 +8570,7 @@ window.openArchiveModal = function() {
     const time = meta.lastTime ? `<span class="dialog-time">${new Date(meta.lastTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>` : '';
     const unreadBadge = unread ? `<span class="unread-badge">${unread}</span>` : '';
     if (item.isSaved) {
-      return `<div class="contact-item glass" onclick="openFavorites()"><div class="fav-icon-box">⭐</div><div class="dialog-main"><b>Избранное</b><br><small style="opacity:.66">Личное хранилище</small></div></div>`;
+      return `<div class="contact-item glass" onclick="openFavorites()"><div class="fav-icon-box">?</div><div class="dialog-main"><b>Избранное</b><br><small style="opacity:.66">Личное хранилище</small></div></div>`;
     }
     if (isRoom(item)) {
       const typeLabel = item.type === 'channel' ? 'Канал' : 'Группа';
@@ -8640,7 +8585,7 @@ window.openArchiveModal = function() {
     const user = currentMe();
     const folders = mainMenuSettings().folders;
     if (folderId === 'all') {
-      return [{ id: `saved_${user && user.id}`, name: 'Избранное', avatar: '⭐', isSaved: true }]
+      return [{ id: `saved_${user && user.id}`, name: 'Избранное', avatar: '?', isSaved: true }]
         .concat(friendsList(), roomsList());
     }
     const folder = folders.find(item => item.id === folderId);
@@ -8904,7 +8849,7 @@ window.openArchiveModal = function() {
       const item = NAV_ITEMS[id];
       return `<div class="vibe-nav-row" draggable="true" data-nav-id="${id}">
         <span class="person-main"><span class="settings-nav-icon"><img src="${item.icon}" style="width:24px;height:24px;border-radius:7px;object-fit:cover;"></span><span><div class="settings-nav-title">${item.label}</div><div class="settings-nav-meta">Позиция ${index + 1}</div></span></span>
-        <span class="vibe-mini-actions"><button onclick="moveMainNavItem('${id}', -1)">↑</button><button onclick="moveMainNavItem('${id}', 1)">↓</button></span>
+        <span class="vibe-mini-actions"><button onclick="moveMainNavItem('${id}', -1)">^</button><button onclick="moveMainNavItem('${id}', 1)">v</button></span>
       </div>`;
     }).join('');
     const navPanel = isMobileHost ? `<div class="settings-card settings-section vibe-mobile-only-settings">
@@ -8913,7 +8858,7 @@ window.openArchiveModal = function() {
         <div class="settings-actions"><button class="settings-save" onclick="saveMainNavOrder()">Сохранить</button><button class="settings-ghost" onclick="resetMainNavOrder()">Сброс панельки</button></div>
       </div>` : '';
     return `<div class="settings-shell">
-      <div class="settings-topbar"><button class="settings-back" onclick="openSettingsView('home')">←</button><div><div class="settings-title">Главное меню</div><div class="settings-subtitle">${isMobileHost ? 'Папки над чатами и порядок нижней панели' : 'Папки над списком чатов'}</div></div></div>
+      <div class="settings-topbar"><button class="settings-back" onclick="openSettingsView('home')"><</button><div><div class="settings-title">Главное меню</div><div class="settings-subtitle">${isMobileHost ? 'Папки над чатами и порядок нижней панели' : 'Папки над списком чатов'}</div></div></div>
       <div class="settings-card vibe-main-hero">
         <div class="vibe-main-avatar" aria-hidden="true">
           <svg viewBox="0 0 96 96" fill="none"><rect x="18" y="18" width="60" height="60" rx="22" fill="rgba(255,255,255,.18)"/><path d="M30 38h36M30 50h25M30 62h30" stroke="white" stroke-width="7" stroke-linecap="round"/><circle cx="68" cy="30" r="10" fill="#fff"/><path d="M65 30l2 2 5-6" stroke="#1e90ff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -8946,7 +8891,7 @@ window.openArchiveModal = function() {
       btn.dataset.mainMenuSettingsEntry = '1';
       btn.type = 'button';
       btn.onclick = () => window.openSettingsView('mainMenu');
-      btn.innerHTML = `<span class="settings-nav-main"><span class="settings-nav-icon">🧭</span><span><div class="settings-nav-title">Главное меню</div><div class="settings-nav-meta">Папки чатов и нижняя панель</div></span></span><span>›</span>`;
+      btn.innerHTML = `<span class="settings-nav-main"><span class="settings-nav-icon">??</span><span><div class="settings-nav-title">Главное меню</div><div class="settings-nav-meta">Папки чатов и нижняя панель</div></span></span><span>›</span>`;
       list.appendChild(btn);
     });
   }
@@ -9082,7 +9027,7 @@ window.openArchiveModal = function() {
         <div class="codex-ui-sheet">
           <div class="modal-head" style="margin-bottom:12px;">
             <div class="modal-title">Создать</div>
-            <button class="modal-close" type="button" onclick="this.closest('.codex-create-overlay').remove()">✕</button>
+            <button class="modal-close" type="button" onclick="this.closest('.codex-create-overlay').remove()">?</button>
           </div>
           <div class="choice-stack">
             <button class="choice-card" type="button" onclick="this.closest('.codex-create-overlay').remove(); openCreateGroup();"><b>Создать группу</b><br><span class="settings-nav-meta">Общий чат для друзей</span></button>
@@ -9203,7 +9148,7 @@ window.openArchiveModal = function() {
 
   function msgText(message) {
     return (message.dataset.msgText || message.innerText || '')
-      .replace(/[✓\s]+$/g, '')
+      .replace(/[?\s]+$/g, '')
       .trim();
   }
 
@@ -9433,7 +9378,7 @@ window.openArchiveModal = function() {
     sheet(`
       <div class="modal-head" style="margin-bottom:12px;">
         <div class="modal-title">Создать</div>
-        <button class="modal-close" type="button" data-close-create>✕</button>
+        <button class="modal-close" type="button" data-close-create>?</button>
       </div>
       <div class="choice-stack">
         <button class="choice-card" type="button" data-create-group><b>Создать группу</b><br><span class="settings-nav-meta">Общий чат для друзей</span></button>
@@ -9507,7 +9452,7 @@ window.openArchiveModal = function() {
     }
   }, 1600));
 
-  const EMOJIS = '😀 😃 😄 😁 😆 😅 😂 🤣 😊 😇 🙂 🙃 😉 😌 😍 🥰 😘 😗 😙 😚 😋 😛 😝 😜 🤪 🤨 🧐 🤓 😎 🥳 😏 😒 😞 😔 😟 😕 🙁 ☹️ 😣 😖 😫 😩 🥺 😢 😭 😤 😠 😡 🤯 😳 🥵 🥶 😱 😨 😰 😥 😓 🤗 🤔 🤭 🤫 🤥 😶 😐 😑 😬 🙄 😯 😦 😧 😮 😲 🥱 😴 🤤 😪 😵 🤐 🥴 🤢 🤮 🤧 😷 🤒 🤕 🤑 🤠 😈 👿 👻 💀 ☠️ 🤖 🎉 ❤️ 🧡 💛 💚 💙 💜 🖤 🤍 👍 👎 👏 🙌 💪 🔥 ⭐'.split(' ');
+  const EMOJIS = '?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?'.split(' ');
 
   function customStickers() {
     try {
@@ -9665,7 +9610,7 @@ window.openArchiveModal = function() {
       <div class="codex-ui-sheet">
         <div class="modal-head" style="margin-bottom:12px;">
           <div class="modal-title">Создать</div>
-          <button class="modal-close" type="button" data-close>✕</button>
+          <button class="modal-close" type="button" data-close>?</button>
         </div>
         <div class="choice-stack">
           <button class="choice-card" type="button" data-group><b>Создать группу</b><br><span class="settings-nav-meta">Общий чат для друзей</span></button>
@@ -9736,8 +9681,8 @@ window.openArchiveModal = function() {
 <script id="codex-emoji-sticker-grid-final">
 (() => {
   const $ = id => document.getElementById(id);
-  const EMOJIS = '😀 😃 😄 😁 😆 😅 😂 🤣 😊 😇 🙂 🙃 😉 😌 😍 🥰 😘 😋 😛 😜 🤪 🤨 🧐 🤓 😎 🥳 😏 😒 😞 😔 😟 😕 🙁 😣 😖 😫 😩 🥺 😢 😭 😤 😠 😡 🤯 😳 🥵 🥶 😱 😨 😰 😥 😓 🤗 🤔 🤭 🤫 😶 😐 😑 🙄 😯 😲 🥱 😴 🤤 🥴 😷 🤒 🤑 🤠 😈 👻 💀 🤖 🎉 ✨ ❤️ 🧡 💛 💚 💙 💜 🖤 🤍 👍 👎 👏 🙌 💪 🔥 ⭐ 🚀'.split(' ');
-  const STICKER_EMOJIS = ['😂','😍','🥳','😎','😭','😡','🤯','🥺','🔥','❤️','👍','👏','🚀','⭐','💎','🎉','🤖','👻','💀','😈','🤩','😴','🙌','💪'];
+  const EMOJIS = '?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ? ??'.split(' ');
+  const STICKER_EMOJIS = ['??','??','??','??','??','??','??','??','??','??','??','??','??','?','??','??','??','??','??','??','??','??','??','??'];
 
   function esc(value) {
     return String(value ?? '')
@@ -10248,8 +10193,8 @@ window.openArchiveModal = function() {
 <script id="codex-message-reactions-final">
 (() => {
   const $ = id => document.getElementById(id);
-  const QUICK = ['⭐', '❤️', '👏', '👍', '🔥', '🥰', '😁', '🤔', '🤯'];
-  const ALL = '⭐ ❤️ 👏 👍 🔥 🥰 😁 🤔 🤯 😱 😢 🎉 🤩 🙏 👌 🕊️ 🤡 😳 😉 😍 🐳 💖 🪩 🌭 💯 🤣 ⚡ 🍌 🏆 💔 😐 🍓 🍾 💋 😈 😴 🤓 👻 🕯️ 👀 🥵 🙈 😎 😭 🤝 ✍️ 🤷 🤬 🎄 ☃️ 💅 🗿 🆒 💘 🙉 🦄 😘 🙊 😇 🕶️ 👾 🫂 🧑‍💻'.split(' ');
+  const QUICK = ['?', '??', '??', '??', '??', '??', '??', '??', '??'];
+  const ALL = '? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ??? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ??? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ??? ?? ?? ?????'.split(' ');
   let expanded = false;
   let changedRef = null;
   let changedCb = null;
@@ -10378,20 +10323,20 @@ window.openArchiveModal = function() {
 
   function reactionColor(emoji) {
     const colors = {
-      '👍': '#2d9cff',
-      '❤️': '#00ead3',
-      '🔥': '#ff7a18',
-      '⭐': '#ffd447',
-      '👏': '#ffbf5b',
-      '🥰': '#ff5db8',
-      '😁': '#ffe36e',
-      '🤔': '#b993ff',
-      '🤯': '#ff6b6b',
-      '🎉': '#8bff70',
-      '🙏': '#70a7ff',
-      '💔': '#ff4f73',
-      '💯': '#ff3b30',
-      '⚡': '#ffe066'
+      '??': '#2d9cff',
+      '??': '#00ead3',
+      '??': '#ff7a18',
+      '?': '#ffd447',
+      '??': '#ffbf5b',
+      '??': '#ff5db8',
+      '??': '#ffe36e',
+      '??': '#b993ff',
+      '??': '#ff6b6b',
+      '??': '#8bff70',
+      '??': '#70a7ff',
+      '??': '#ff4f73',
+      '??': '#ff3b30',
+      '?': '#ffe066'
     };
     if (colors[emoji]) return colors[emoji];
     let hash = 0;
@@ -10607,7 +10552,7 @@ window.openArchiveModal = function() {
       panel.dataset.messageId = '';
       panel.style.setProperty('--reaction-grid-height', '0px');
       const more = panel.querySelector('.vibe-reaction-more');
-      if (more) more.textContent = '⌄';
+      if (more) more.textContent = '?';
     }
     const menu = $('context-menu');
     if (menu) menu.classList.remove('vibe-reactions-expanded');
@@ -10627,7 +10572,7 @@ window.openArchiveModal = function() {
     if (grid) {
       panel.style.setProperty('--reaction-grid-height', expanded ? `${grid.scrollHeight}px` : '0px');
     }
-    if (more) more.textContent = expanded ? '⌃' : '⌄';
+    if (more) more.textContent = expanded ? '?' : '?';
     panel.classList.toggle('expanded', expanded);
     panel.classList.toggle('compact', !expanded);
     menu.classList.toggle('vibe-reactions-expanded', expanded);
@@ -10653,7 +10598,7 @@ window.openArchiveModal = function() {
       existing.classList.remove('expanded');
       existing.style.setProperty('--reaction-grid-height', '0px');
       const more = existing.querySelector('.vibe-reaction-more');
-      if (more) more.textContent = '⌄';
+      if (more) more.textContent = '?';
       if (show) placeReactionPanel();
       return;
     }
@@ -10663,7 +10608,7 @@ window.openArchiveModal = function() {
     const row = document.createElement('div');
     row.className = 'vibe-reaction-row';
     row.innerHTML = QUICK.map(emoji => `<button type="button" class="vibe-reaction-fast" data-reaction="${esc(emoji)}">${esc(emoji)}</button>`).join('') +
-      `<button type="button" class="vibe-reaction-more" title="Все реакции">⌄</button>`;
+      `<button type="button" class="vibe-reaction-more" title="Все реакции">?</button>`;
     panel.appendChild(row);
     const grid = document.createElement('div');
     grid.className = 'vibe-reaction-grid';
@@ -11095,7 +11040,7 @@ window.openArchiveModal = function() {
         el.classList.remove('has-photo');
         el.style.backgroundImage = '';
         el.style.color = '';
-        if (!el.textContent.trim()) el.textContent = user.avatar || '👤';
+        if (!el.textContent.trim()) el.textContent = user.avatar || '??';
       }
     });
   }
@@ -11254,7 +11199,7 @@ window.openArchiveModal = function() {
     btn.id = 'vibe-scroll-bottom-btn';
     btn.type = 'button';
     btn.setAttribute('aria-label', 'Вниз');
-    btn.textContent = '⌄';
+    btn.textContent = '?';
     btn.onclick = () => {
       const box = activeMessageBox();
       if (!box) return;
@@ -11460,12 +11405,12 @@ window.openArchiveModal = function() {
     const direct = (user && user.appearance) || {};
     return {
       color: fromSettings.profileColor || direct.profileColor || user?.profileColor || '#9b642e',
-      emoji: fromSettings.patternEmoji || direct.patternEmoji || user?.patternEmoji || '☀️'
+      emoji: fromSettings.patternEmoji || direct.patternEmoji || user?.patternEmoji || '??'
     };
   }
 
   function patternOf(emoji) {
-    const encoded = encodeURIComponent(emoji || '☀️');
+    const encoded = encodeURIComponent(emoji || '??');
     return `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='130' viewBox='0 0 180 130'%3E%3Cg font-size='24' text-anchor='middle' fill='rgba(255,255,255,0.22)'%3E%3Ctext x='24' y='32'%3E${encoded}%3C/text%3E%3Ctext x='94' y='24'%3E${encoded}%3C/text%3E%3Ctext x='154' y='44'%3E${encoded}%3C/text%3E%3Ctext x='50' y='96'%3E${encoded}%3C/text%3E%3Ctext x='126' y='108'%3E${encoded}%3C/text%3E%3C/g%3E%3C/svg%3E")`;
   }
 
@@ -11496,7 +11441,7 @@ window.openArchiveModal = function() {
   function avatarMarkup(peer) {
     const photo = photoOf(peer);
     if (photo) return `<div class="vibe-mobile-info-avatar has-photo" style="background-image:url('${safeUrl(photo)}')"></div>`;
-    const fallback = isRoomItem(peer) ? (peer.avatar || (peer.type === 'channel' ? '📣' : '👥')) : (peer.avatar || '👤');
+    const fallback = isRoomItem(peer) ? (peer.avatar || (peer.type === 'channel' ? '??' : '??')) : (peer.avatar || '??');
     return `<div class="vibe-mobile-info-avatar">${esc(fallback)}</div>`;
   }
 
@@ -12638,7 +12583,7 @@ window.openArchiveModal = function() {
       const snap = await db.ref(`users/${id}`).once('value');
       if (snap.exists()) return { id, ...(snap.val() || {}) };
     } catch (error) {}
-    return { id, name: id, avatar: '👤' };
+    return { id, name: id, avatar: '??' };
   }
 
   async function freshRoom(roomId) {
@@ -12683,7 +12628,7 @@ window.openArchiveModal = function() {
     const photo = photoOf(room);
     return photo
       ? `<div class="vibe-editor-avatar" style="background-image:url('${safeUrl(photo)}')"></div>`
-      : `<div class="vibe-editor-avatar">${esc(room.avatar || (room.type === 'channel' ? '📣' : '👥'))}</div>`;
+      : `<div class="vibe-editor-avatar">${esc(room.avatar || (room.type === 'channel' ? '??' : '??'))}</div>`;
   }
 
   window.vibePickRoomPhoto = function(roomId) {
@@ -12762,8 +12707,8 @@ window.openArchiveModal = function() {
     const body = `
       <div class="vibe-editor-section-label">Ссылка</div>
       <div class="vibe-editor-card">
-        <label class="vibe-editor-radio" onclick="vibePickChannelType('public')"><span class="check" id="type-check-public">${room.isPublic ? '✓' : ''}</span><span>Публичная</span></label>
-        <label class="vibe-editor-radio" onclick="vibePickChannelType('private')"><span class="check" id="type-check-private">${!room.isPublic ? '✓' : ''}</span><span>Частная</span></label>
+        <label class="vibe-editor-radio" onclick="vibePickChannelType('public')"><span class="check" id="type-check-public">${room.isPublic ? '?' : ''}</span><span>Публичная</span></label>
+        <label class="vibe-editor-radio" onclick="vibePickChannelType('private')"><span class="check" id="type-check-private">${!room.isPublic ? '?' : ''}</span><span>Частная</span></label>
       </div>
       <div class="vibe-editor-note">Публичные каналы можно найти через поиск, подписаться на них может любой пользователь.</div>
       <input id="vibe-channel-link-edit" class="vibe-editor-link-input" value="${esc(displayLink)}" ${readonly} placeholder="https://vibe8.ru/channel">
@@ -12775,8 +12720,8 @@ window.openArchiveModal = function() {
     window.__vibeChannelTypeDraft = type;
     const pub = $('type-check-public');
     const priv = $('type-check-private');
-    if (pub) pub.textContent = type === 'public' ? '✓' : '';
-    if (priv) priv.textContent = type === 'private' ? '✓' : '';
+    if (pub) pub.textContent = type === 'public' ? '?' : '';
+    if (priv) priv.textContent = type === 'private' ? '?' : '';
     const input = $('vibe-channel-link-edit');
     if (input && type === 'private') {
       input.value = 'https://vibe8.ru/join_' + Math.random().toString(36).slice(2, 9);
@@ -12828,7 +12773,7 @@ window.openArchiveModal = function() {
     const photo = photoOf(room);
     const avatar = photo
       ? `<div class="vibe-editor-avatar" style="position:relative;background-image:url('${safeUrl(photo)}');width:88px;height:88px;"></div>`
-      : `<div class="vibe-editor-avatar" style="position:relative;width:88px;height:88px;">${esc(room.avatar || (room.type === 'channel' ? '📣' : '👥'))}</div>`;
+      : `<div class="vibe-editor-avatar" style="position:relative;width:88px;height:88px;">${esc(room.avatar || (room.type === 'channel' ? '??' : '??'))}</div>`;
     const body = `
       <div id="vibe-room-appearance-preview" class="vibe-editor-card" style="background:${esc(app.color)};min-height:210px;position:relative;display:flex;flex-direction:column;gap:12px;align-items:center;justify-content:center;overflow:hidden;">
         <div id="vibe-room-appearance-pattern" style="position:absolute;inset:0;background-image:${patternOf(app.emoji)};background-size:92px 92px;opacity:.36;"></div>
@@ -12855,7 +12800,7 @@ window.openArchiveModal = function() {
 
   window.vibeRoomAppearanceChanged = function(roomId) {
     const color = ($('vibe-room-color-edit') && $('vibe-room-color-edit').value) || '#956634';
-    const emoji = ($('vibe-room-emoji-edit') && $('vibe-room-emoji-edit').value.trim()) || '✨';
+    const emoji = ($('vibe-room-emoji-edit') && $('vibe-room-emoji-edit').value.trim()) || '?';
     const preview = $('vibe-room-appearance-preview');
     const pattern = $('vibe-room-appearance-pattern');
     if (preview) preview.style.background = color;
@@ -12884,10 +12829,10 @@ window.openArchiveModal = function() {
       const user = await getUserLight(id);
       const owner = id === room.ownerId;
       const admin = room.admins && room.admins[id];
-      const minus = editing && !owner ? `<button class="vibe-editor-minus" onclick="${mode === 'admins' ? `vibeRemoveAdmin('${room.id}','${id}')` : `vibeRemoveSubscriber('${room.id}','${id}')`}">−</button>` : '';
+      const minus = editing && !owner ? `<button class="vibe-editor-minus" onclick="${mode === 'admins' ? `vibeRemoveAdmin('${room.id}','${id}')` : `vibeRemoveSubscriber('${room.id}','${id}')`}">?</button>` : '';
       const badge = owner ? '<span class="vibe-editor-pill">владелец</span>' : admin ? '<span class="vibe-editor-pill">админ</span>' : '';
       const photo = photoOf(user);
-      const avatar = photo ? `<span class="avatar-emoji has-photo" style="background-image:url('${safeUrl(photo)}');background-size:cover;background-position:center;color:transparent;"></span>` : `<span class="avatar-emoji">${esc(user.avatar || '👤')}</span>`;
+      const avatar = photo ? `<span class="avatar-emoji has-photo" style="background-image:url('${safeUrl(photo)}');background-size:cover;background-position:center;color:transparent;"></span>` : `<span class="avatar-emoji">${esc(user.avatar || '??')}</span>`;
       return `<div class="vibe-editor-person">${avatar}<span><b>${esc(user.name || id)} ${user.verified ? (typeof badge === 'function' ? badge() : '') : ''}</b><br><small>${esc(user.handle || presence(user) || '')}</small></span>${minus || badge}</div>`;
     }));
     return rows.join('') || '<div class="vibe-editor-note">Пока никого нет</div>';
@@ -12902,7 +12847,7 @@ window.openArchiveModal = function() {
     const addRows = (await Promise.all(addable.map(async id => {
       const user = await getUserLight(id);
       const photo = photoOf(user);
-      const avatar = photo ? `<span class="avatar-emoji has-photo" style="background-image:url('${safeUrl(photo)}');background-size:cover;background-position:center;color:transparent;"></span>` : `<span class="avatar-emoji">${esc(user.avatar || '👤')}</span>`;
+      const avatar = photo ? `<span class="avatar-emoji has-photo" style="background-image:url('${safeUrl(photo)}');background-size:cover;background-position:center;color:transparent;"></span>` : `<span class="avatar-emoji">${esc(user.avatar || '??')}</span>`;
       return `<div class="vibe-editor-person" onclick="vibeAddAdmin('${room.id}','${id}')">${avatar}<span><b>${esc(user.name || id)}</b><br><small>${esc(user.handle || '')}</small></span><span>+</span></div>`;
     }))).join('') || '<div class="vibe-editor-note">Некого добавить</div>';
     const body = `
@@ -12935,7 +12880,7 @@ window.openArchiveModal = function() {
     const addable = Object.values(allFriendsMap()).filter(user => user && user.id && !current[user.id]);
     const addRows = addable.map(user => {
       const photo = photoOf(user);
-      const avatar = photo ? `<span class="avatar-emoji has-photo" style="background-image:url('${safeUrl(photo)}');background-size:cover;background-position:center;color:transparent;"></span>` : `<span class="avatar-emoji">${esc(user.avatar || '👤')}</span>`;
+      const avatar = photo ? `<span class="avatar-emoji has-photo" style="background-image:url('${safeUrl(photo)}');background-size:cover;background-position:center;color:transparent;"></span>` : `<span class="avatar-emoji">${esc(user.avatar || '??')}</span>`;
       return `<div class="vibe-editor-person" onclick="vibeAddSubscriber('${room.id}','${user.id}')">${avatar}<span><b>${esc(user.name || '')}</b><br><small>${esc(user.handle || '')}</small></span><span>+</span></div>`;
     }).join('') || '<div class="vibe-editor-note">Некого добавить</div>';
     const body = `
@@ -13131,7 +13076,7 @@ window.openArchiveModal = function() {
     const photo = photoOf(room);
     const avatar = photo
       ? `<div class="vibe-link-avatar" style="background-image:url('${safeUrl(photo)}')"></div>`
-      : `<div class="vibe-link-avatar">${esc(room.avatar || '📣')}</div>`;
+      : `<div class="vibe-link-avatar">${esc(room.avatar || '??')}</div>`;
     const overlay = document.createElement('div');
     overlay.className = 'vibe-link-landing';
     overlay.innerHTML = `
@@ -13170,7 +13115,7 @@ window.openArchiveModal = function() {
     const photo = photoOf(room);
     const avatar = photo
       ? `<span class="avatar-emoji has-photo" style="background-image:url('${safeUrl(photo)}');background-size:cover;background-position:center;color:transparent;width:48px;height:48px;flex:0 0 48px;"></span>`
-      : `<span class="avatar-emoji" style="width:48px;height:48px;flex:0 0 48px;">${esc(room.avatar || '📣')}</span>`;
+      : `<span class="avatar-emoji" style="width:48px;height:48px;flex:0 0 48px;">${esc(room.avatar || '??')}</span>`;
     const sheet = document.createElement('div');
     sheet.className = 'vibe-subscribe-sheet';
     sheet.innerHTML = `
@@ -13200,7 +13145,7 @@ window.openArchiveModal = function() {
     const room = await freshRoom(roomId);
     if (!room) return;
     if (requestOnly) {
-      await db.ref(`rooms/${roomId}/joinRequests/${user.id}`).set({ userId: user.id, name: user.name || '', avatar: user.avatar || '👤', time: Date.now() });
+      await db.ref(`rooms/${roomId}/joinRequests/${user.id}`).set({ userId: user.id, name: user.name || '', avatar: user.avatar || '??', time: Date.now() });
       showCopyToast('Запрос отправлен');
     } else {
       await db.ref(`rooms/${roomId}/members/${user.id}`).set(true);
@@ -13488,18 +13433,18 @@ window.openArchiveModal = function() {
   const isMobileWidth = () => window.innerWidth <= 768;
   const meNow = () => (typeof me !== 'undefined' && me) ? me : window.me;
   const badgeHtml = () => (typeof vBadge !== 'undefined' ? vBadge : '');
-  const defaultAvatar = user => user && (user.avatar || '👤');
+  const defaultAvatar = user => user && (user.avatar || '??');
   const photoOf = user => (user && (user.avatarPhoto || user.photoURL || user.avatarUrl || user.photo || user.image)) || '';
   const appearanceOf = user => {
     const settings = (user && user.settings && user.settings.appearance) || {};
     const direct = (user && user.appearance) || {};
     return {
       color: settings.profileColor || direct.profileColor || user?.profileColor || '#9b642e',
-      emoji: settings.patternEmoji || direct.patternEmoji || user?.patternEmoji || '☀️'
+      emoji: settings.patternEmoji || direct.patternEmoji || user?.patternEmoji || '??'
     };
   };
   const patternOf = emoji => {
-    const encoded = encodeURIComponent(emoji || '☀️');
+    const encoded = encodeURIComponent(emoji || '??');
     return `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='130' viewBox='0 0 180 130'%3E%3Cg font-size='25' text-anchor='middle'%3E%3Ctext x='24' y='32'%3E${encoded}%3C/text%3E%3Ctext x='94' y='24'%3E${encoded}%3C/text%3E%3Ctext x='154' y='44'%3E${encoded}%3C/text%3E%3Ctext x='50' y='96'%3E${encoded}%3C/text%3E%3Ctext x='126' y='108'%3E${encoded}%3C/text%3E%3C/g%3E%3C/svg%3E")`;
   };
   const icon = name => {
@@ -14181,7 +14126,7 @@ window.openArchiveModal = function() {
   }
 
   function emojiPatternLayer(emoji) {
-    const item = esc(emoji || '☀️');
+    const item = esc(emoji || '??');
     return `<div class="vibe-self-profile-pattern">${Array.from({ length: 18 }, () => `<span>${item}</span>`).join('')}</div>`;
   }
 
@@ -14281,7 +14226,7 @@ window.openArchiveModal = function() {
 
   function saveSearchRecent(user) {
     if (!user || !user.id) return;
-    const item = { id:user.id, name:user.name || 'Без имени', handle:user.handle || '', avatar:user.avatar || '👤', avatarPhoto:photoOf(user), verified:!!user.verified };
+    const item = { id:user.id, name:user.name || 'Без имени', handle:user.handle || '', avatar:user.avatar || '??', avatarPhoto:photoOf(user), verified:!!user.verified };
     const list = [item].concat(getSearchRecents().filter(existing => existing.id !== item.id)).slice(0, 8);
     localStorage.setItem(searchRecentKey(), JSON.stringify(list));
   }
@@ -14289,7 +14234,7 @@ window.openArchiveModal = function() {
   function searchAvatar(user) {
     const photo = photoOf(user);
     if (photo) return `<span class="avatar-emoji has-photo" style="background-image:url('${safeUrl(photo)}');background-size:cover;background-position:center;color:transparent;"></span>`;
-    return `<span class="avatar-emoji">${esc(user && (user.avatar || '👤'))}</span>`;
+    return `<span class="avatar-emoji">${esc(user && (user.avatar || '??'))}</span>`;
   }
 
   function searchRow(user, recent = false) {
@@ -14468,7 +14413,7 @@ window.openArchiveModal = function() {
         target.innerHTML = '<div class="settings-nav-meta">Ничего не найдено</div>';
         return;
       }
-      target.innerHTML = `<div class="contact-item glass">${esc(user.avatar || '👤')} <b>${esc(user.name || '')}${user.verified ? badgeHtml() : ''}</b><button onclick="addFriend('${user.id}')" style="margin-left:auto;background:var(--accent);color:#000;padding:5px 12px;border-radius:10px;">+</button></div>`;
+      target.innerHTML = `<div class="contact-item glass">${esc(user.avatar || '??')} <b>${esc(user.name || '')}${user.verified ? badgeHtml() : ''}</b><button onclick="addFriend('${user.id}')" style="margin-left:auto;background:var(--accent);color:#000;padding:5px 12px;border-radius:10px;">+</button></div>`;
     } catch (error) {
       target.innerHTML = '<div class="settings-nav-meta">Поиск сейчас недоступен</div>';
     }
@@ -14693,7 +14638,7 @@ window.openArchiveModal = function() {
   window.vibeOwnProfileAppearanceChanged = function() {
     const draft = window.__vibeOwnProfileDraft || {};
     const color = draft.color || appearanceOf(meNow()).color;
-    const emoji = ($('vibe-own-pattern-edit') && $('vibe-own-pattern-edit').value.trim()) || draft.emoji || '☀️';
+    const emoji = ($('vibe-own-pattern-edit') && $('vibe-own-pattern-edit').value.trim()) || draft.emoji || '??';
     const name = (($('vibe-own-name-edit') && $('vibe-own-name-edit').value.trim()) || (meNow() && meNow().name) || 'Vibe');
     const handle = '@' + ((($('vibe-own-handle-edit') && $('vibe-own-handle-edit').value.trim()) || String((meNow() && meNow().handle) || '').replace(/^@/, '') || 'user').replace(/^@/, ''));
     draft.emoji = emoji;
@@ -14970,7 +14915,7 @@ window.openArchiveModal = function() {
       type,
       name:item.name || 'Без имени',
       handle:item.handle || item.inviteCode || item.publicLink || '',
-      avatar:item.avatar || (item.type === 'channel' ? '📣' : item.type === 'group' ? '👥' : '👤'),
+      avatar:item.avatar || (item.type === 'channel' ? '??' : item.type === 'group' ? '??' : '??'),
       avatarPhoto:avatarUrl(item),
       verified:!!item.verified,
       archived:!!item.archived,
@@ -14994,7 +14939,7 @@ window.openArchiveModal = function() {
   function avatarHtml(item) {
     const photo = avatarUrl(item);
     if (photo) return `<span class="avatar-emoji has-photo" style="background-image:url('${esc(photo)}');background-size:cover;background-position:center;color:transparent;"></span>`;
-    return `<span class="avatar-emoji">${esc(item.avatar || (item.type === 'channel' ? '📣' : item.type === 'group' ? '👥' : '👤'))}</span>`;
+    return `<span class="avatar-emoji">${esc(item.avatar || (item.type === 'channel' ? '??' : item.type === 'group' ? '??' : '??'))}</span>`;
   }
 
   function typeLabel(item) {
@@ -15133,7 +15078,7 @@ window.openArchiveModal = function() {
       items.push(normalized);
     }
 
-    add({ id:`saved_${user.id}`, name:'Избранное', avatar:'⭐', type:'saved', handle:'Личное хранилище' }, 'saved');
+    add({ id:`saved_${user.id}`, name:'Избранное', avatar:'?', type:'saved', handle:'Личное хранилище' }, 'saved');
     localFriends().forEach(friend => add({ ...friend, type:'user' }, 'user'));
     localRooms().forEach(room => add(room, room.type || 'group'));
 
@@ -15185,7 +15130,7 @@ window.openArchiveModal = function() {
     let item = null;
     if (type === 'saved') {
       const user = meNow();
-      if (user && user.id) saveRecent({ id:`saved_${user.id}`, name:'Избранное', avatar:'⭐', type:'saved', handle:'Личное хранилище', added:true });
+      if (user && user.id) saveRecent({ id:`saved_${user.id}`, name:'Избранное', avatar:'?', type:'saved', handle:'Личное хранилище', added:true });
       if (typeof window.openFavorites === 'function') window.openFavorites();
       if (typeof window.vibeClosePeopleSearch === 'function') window.vibeClosePeopleSearch();
       return;
@@ -15222,7 +15167,7 @@ window.openArchiveModal = function() {
         await db.ref(`rooms/${id}/members/${user.id}`).set(true);
         await db.ref(`userRooms/${user.id}/${id}`).set(true);
       } else {
-        await db.ref(`rooms/${id}/joinRequests/${user.id}`).set({ userId:user.id, name:user.name || '', avatar:user.avatar || '👤', time:Date.now() });
+        await db.ref(`rooms/${id}/joinRequests/${user.id}`).set({ userId:user.id, name:user.name || '', avatar:user.avatar || '??', time:Date.now() });
       }
     }
     markRecentAdded(type, id);
@@ -15564,7 +15509,7 @@ window.openArchiveModal = function() {
       panel.style.pointerEvents = '';
       panel.dataset.messageId = '';
       const more = panel.querySelector('.vibe-reaction-more');
-      if (more) more.textContent = '⌄';
+      if (more) more.textContent = '?';
     }
   }
 
@@ -16598,7 +16543,7 @@ window.openArchiveModal = function() {
     const item = ITEMS[id];
     return `<div class="vibe-nav-row" draggable="true" data-nav-id="${id}">
       <span class="person-main"><span class="settings-nav-icon"><img src="${esc(item.icon)}" style="width:24px;height:24px;border-radius:7px;object-fit:cover;"></span><span><div class="settings-nav-title">${esc(item.label)}</div><div class="settings-nav-meta">Позиция ${index + 1}</div></span></span>
-      <span class="vibe-mini-actions"><button type="button" onclick="moveMainNavItem('${id}', -1)">↑</button><button type="button" onclick="moveMainNavItem('${id}', 1)">↓</button></span>
+      <span class="vibe-mini-actions"><button type="button" onclick="moveMainNavItem('${id}', -1)">^</button><button type="button" onclick="moveMainNavItem('${id}', 1)">v</button></span>
     </div>`;
   }
 
