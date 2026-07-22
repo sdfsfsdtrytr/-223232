@@ -26978,5 +26978,386 @@ window.openArchiveModal = function() {
     }
   }
 </style>
+<style id="codex-call-plus-signaling-final-style">
+  .vibe-profile-call-hard-btn svg,
+  .vibe-call-plus-btn svg,
+  .vibe-call-plus-control svg {
+    width: 21px;
+    height: 21px;
+    stroke: currentColor;
+    stroke-width: 2.4;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    pointer-events: none;
+  }
+
+  .vibe-call-plus-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 2147483647;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    background: rgba(0,0,0,.78);
+    backdrop-filter: blur(24px) saturate(165%);
+    -webkit-backdrop-filter: blur(24px) saturate(165%);
+  }
+
+  .vibe-call-plus-card {
+    width: min(840px, 100%);
+    min-height: min(620px, calc(100vh - 32px));
+    border-radius: 30px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,.18);
+    background: linear-gradient(180deg, rgba(34,36,42,.90), rgba(10,11,14,.96));
+    color: #fff;
+    box-shadow: 0 34px 120px rgba(0,0,0,.68), inset 0 1px 0 rgba(255,255,255,.18);
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+  }
+
+  .vibe-call-plus-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 18px;
+    gap: 12px;
+  }
+
+  .vibe-call-plus-name {
+    font-size: 22px;
+    font-weight: 950;
+  }
+
+  .vibe-call-plus-status {
+    margin-top: 4px;
+    color: rgba(255,255,255,.68);
+    font-size: 13px;
+    font-weight: 800;
+  }
+
+  .vibe-call-plus-stage {
+    position: relative;
+    min-height: 360px;
+    background: radial-gradient(circle at 50% 35%, rgba(16,231,242,.12), rgba(0,0,0,.94));
+    overflow: hidden;
+  }
+
+  .vibe-call-plus-remote {
+    width: 100%;
+    height: 100%;
+    min-height: 360px;
+    display: block;
+    object-fit: cover;
+    background: transparent;
+  }
+
+  .vibe-call-plus-local {
+    position: absolute;
+    right: 16px;
+    bottom: 16px;
+    width: min(190px, 34vw);
+    aspect-ratio: 9 / 13;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,.22);
+    object-fit: cover;
+    background: rgba(255,255,255,.08);
+    box-shadow: 0 18px 60px rgba(0,0,0,.42);
+  }
+
+  .vibe-call-plus-face {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    pointer-events: none;
+  }
+
+  .vibe-call-plus-face-inner {
+    display: grid;
+    place-items: center;
+    gap: 12px;
+    font-weight: 900;
+    color: rgba(255,255,255,.82);
+  }
+
+  .vibe-call-plus-avatar {
+    width: 112px;
+    height: 112px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-size: 42px;
+    background: rgba(255,255,255,.10);
+    border: 1px solid rgba(255,255,255,.16);
+  }
+
+  .vibe-call-plus-controls {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 16px;
+    background: rgba(0,0,0,.24);
+  }
+
+  .vibe-call-plus-control,
+  .vibe-call-plus-btn {
+    min-width: 54px;
+    height: 54px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,.16);
+    background: rgba(255,255,255,.11);
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-weight: 950;
+  }
+
+  .vibe-call-plus-control.danger {
+    background: #ff3b30;
+  }
+
+  .vibe-call-plus-control.accept {
+    background: #22c55e;
+  }
+
+  .vibe-call-plus-control.wide {
+    padding: 0 15px;
+  }
+
+  @media (max-width: 620px) {
+    .vibe-call-plus-overlay { padding: 0; }
+    .vibe-call-plus-card {
+      width: 100%;
+      min-height: 100vh;
+      border-radius: 0;
+    }
+    .vibe-call-plus-stage,
+    .vibe-call-plus-remote {
+      min-height: calc(100vh - 164px);
+    }
+  }
+</style>
+<script id="codex-call-plus-signaling-final">
+(() => {
+  if (window.__codexCallPlusSignalingFinal) return;
+  window.__codexCallPlusSignalingFinal = true;
+
+  const S = {
+    peer:null,
+    peerId:'',
+    local:null,
+    call:null,
+    invite:null,
+    target:null,
+    muted:false,
+    cameraOff:false,
+    screen:false,
+    listening:false
+  };
+
+  const icons = {
+    phone:'<svg viewBox="0 0 24 24"><path d="M22 16.8v3a2 2 0 0 1-2.2 2A19.8 19.8 0 0 1 3 5.2 2 2 0 0 1 5.2 3h3a2 2 0 0 1 2 1.7l.5 3a2 2 0 0 1-.5 1.7l-1.3 1.3a14 14 0 0 0 5.4 5.4l1.3-1.3a2 2 0 0 1 1.7-.5l3 .5a2 2 0 0 1 1.7 2Z"/></svg>',
+    video:'<svg viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 10 5-3v10l-5-3Z"/></svg>',
+    mic:'<svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3Z"/><path d="M19 11a7 7 0 0 1-14 0"/><path d="M12 18v3"/><path d="M8 21h8"/></svg>',
+    micOff:'<svg viewBox="0 0 24 24"><path d="m2 2 20 20"/><path d="M9 9v3a3 3 0 0 0 5 2.2"/><path d="M15 9V6a3 3 0 0 0-5.1-2.1"/><path d="M19 11a7 7 0 0 1-7 7m-4.7-2A7 7 0 0 1 5 11"/><path d="M12 18v3"/><path d="M8 21h8"/></svg>',
+    cam:'<svg viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 10 5-3v10l-5-3Z"/></svg>',
+    camOff:'<svg viewBox="0 0 24 24"><path d="m2 2 20 20"/><path d="M15 15.5V18H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3"/><path d="M14 6h2v4l5-3v10l-3.2-1.9"/></svg>',
+    screen:'<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>',
+    close:'<svg viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>',
+    check:'<svg viewBox="0 0 24 24"><path d="m20 6-11 11-5-5"/></svg>'
+  };
+
+  function meNow(){ try { return (typeof me !== 'undefined' && me) ? me : window.me; } catch(e){ return window.me; } }
+  function peerNow(){ try { return (typeof activePeer !== 'undefined' && activePeer) ? activePeer : window.activePeer; } catch(e){ return window.activePeer; } }
+  function dbNow(){ if (typeof db !== 'undefined' && db && db.ref) return db; if (window.db && window.db.ref) return window.db; return null; }
+  function isDirect(p){ const u=meNow(); return !!(p && p.id && (!u || p.id !== 'saved_' + u.id) && p.type !== 'group' && p.type !== 'channel' && !p.members); }
+  function deviceId(){ let id=localStorage.getItem('vibe_call_plus_device'); if(!id){ id='plus_'+Math.random().toString(36).slice(2,10); localStorage.setItem('vibe_call_plus_device', id); } return id; }
+  function esc(v){ const d=document.createElement('div'); d.textContent=v==null?'':String(v); return d.innerHTML; }
+  function setPeer(p){ if(!p) return; S.target=p; window.__vibeProfileCallTarget=p; try{ activePeer=p; }catch(e){} window.activePeer=p; }
+
+  function initPeer(){
+    const u=meNow(), base=dbNow();
+    if(!u || !u.id || !base || typeof Peer === 'undefined') return;
+    if(S.peer) return;
+    S.peer = new Peer(undefined, { debug:0 });
+    S.peer.on('open', id => {
+      S.peerId = id;
+      const payload={ id, deviceId:deviceId(), updatedAt:Date.now(), ua:navigator.userAgent || '' };
+      base.ref(`users/${u.id}/callPeerPlus`).set(payload).catch(()=>{});
+      base.ref(`users/${u.id}/callPeerPlusDevices/${deviceId()}`).set(payload).catch(()=>{});
+    });
+    S.peer.on('call', call => {
+      if (S.local) {
+        S.call = call;
+        call.answer(S.local);
+        bindCall(call);
+        showCall('connected');
+      } else {
+        S.call = call;
+        S.invite = { fromName:(call.metadata && call.metadata.fromName) || 'Vibe', fromAvatar:(call.metadata && call.metadata.fromAvatar) || '', kind:(call.metadata && call.metadata.kind) || 'audio' };
+        showIncoming();
+      }
+    });
+    S.peer.on('error', err => console.warn('call plus peer error', err));
+  }
+
+  function listenInvites(){
+    const u=meNow(), base=dbNow();
+    if(!u || !u.id || !base || S.listening) return;
+    S.listening = true;
+    base.ref(`callInvites/${u.id}`).limitToLast(5).on('child_added', snap => {
+      const inv=snap.val() || {};
+      if(!inv || inv.status !== 'ringing' || Date.now() - Number(inv.time || 0) > 60000) return;
+      S.invite = { ...inv, key:snap.key };
+      showIncoming();
+    });
+  }
+
+  async function getMedia(kind){
+    if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw new Error('Камера и микрофон работают через https или localhost.');
+    return navigator.mediaDevices.getUserMedia({
+      audio:{ echoCancellation:true, noiseSuppression:true, autoGainControl:true },
+      video: kind === 'video' ? { facingMode:'user', width:{ideal:1280}, height:{ideal:720} } : false
+    });
+  }
+
+  function bindCall(call){
+    S.call = call;
+    call.on('stream', stream => {
+      const remote=document.querySelector('.vibe-call-plus-remote');
+      if(remote){ remote.srcObject=stream; remote.play().catch(()=>{}); }
+      status('Соединено');
+    });
+    call.on('close', end);
+    call.on('error', () => { status('Звонок прерван'); setTimeout(end, 900); });
+  }
+
+  function overlayHtml(mode){
+    const incoming = mode === 'incoming';
+    const inv=S.invite || {};
+    const p=S.target || peerNow() || {};
+    const name=inv.fromName || p.name || p.handle || 'Собеседник';
+    const avatar=(inv.fromAvatar || p.avatar || name || '?').slice(0,2);
+    const kind=inv.kind || (mode === 'video' ? 'video' : 'audio');
+    return `<div class="vibe-call-plus-card">
+      <div class="vibe-call-plus-top">
+        <div><div class="vibe-call-plus-name">${esc(name)}</div><div class="vibe-call-plus-status">${incoming ? (kind === 'video' ? 'Входящий видеозвонок' : 'Входящий звонок') : 'Соединяем...'}</div></div>
+        <button class="vibe-call-plus-control danger" type="button" data-plus-end>${icons.close}</button>
+      </div>
+      <div class="vibe-call-plus-stage">
+        <video class="vibe-call-plus-remote" autoplay playsinline></video>
+        <div class="vibe-call-plus-face"><div class="vibe-call-plus-face-inner"><div class="vibe-call-plus-avatar">${esc(avatar)}</div><div>${esc(name)}</div></div></div>
+        <video class="vibe-call-plus-local" autoplay muted playsinline ${kind === 'video' ? '' : 'style="display:none"'}></video>
+      </div>
+      <div class="vibe-call-plus-controls">
+        ${incoming ? `<button class="vibe-call-plus-control accept" type="button" data-plus-accept>${icons.check}</button>` : ''}
+        <button class="vibe-call-plus-control" type="button" data-plus-mic>${S.muted ? icons.micOff : icons.mic}</button>
+        <button class="vibe-call-plus-control" type="button" data-plus-cam>${S.cameraOff ? icons.camOff : icons.cam}</button>
+        <button class="vibe-call-plus-control wide" type="button" data-plus-screen>${icons.screen}<span>Экран</span></button>
+        <button class="vibe-call-plus-control danger" type="button" data-plus-end>${icons.close}</button>
+      </div>
+    </div>`;
+  }
+
+  function showCall(mode){
+    document.querySelectorAll('.vibe-call-plus-overlay').forEach(n=>n.remove());
+    const o=document.createElement('div');
+    o.className='vibe-call-plus-overlay';
+    o.innerHTML=overlayHtml(mode);
+    document.body.appendChild(o);
+    o.querySelectorAll('[data-plus-end]').forEach(b=>b.onclick=end);
+    const accept=o.querySelector('[data-plus-accept]'); if(accept) accept.onclick=acceptInvite;
+    const mic=o.querySelector('[data-plus-mic]'); if(mic) mic.onclick=toggleMic;
+    const cam=o.querySelector('[data-plus-cam]'); if(cam) cam.onclick=toggleCam;
+    const screen=o.querySelector('[data-plus-screen]'); if(screen) screen.onclick=shareScreen;
+    attachLocal();
+  }
+  function showIncoming(){ showCall('incoming'); }
+  function status(t){ const el=document.querySelector('.vibe-call-plus-status'); if(el) el.textContent=t; }
+  function attachLocal(){ const v=document.querySelector('.vibe-call-plus-local'); if(v && S.local){ v.srcObject=S.local; v.play().catch(()=>{}); } }
+
+  async function start(kind, target){
+    const p=target || window.__vibeProfileCallTarget || peerNow();
+    if(!isDirect(p)) return alert('Звонки доступны только в личном чате.');
+    setPeer(p); initPeer();
+    if(!S.peerId) return alert('Звонки ещё загружаются. Подожди пару секунд и попробуй снова.');
+    try {
+      S.local=await getMedia(kind);
+      showCall(kind);
+      const u=meNow(), base=dbNow();
+      const invite={ fromId:u.id, fromName:u.name || 'Vibe', fromAvatar:u.avatar || '', fromPeerId:S.peerId, kind, status:'ringing', time:Date.now() };
+      await base.ref(`callInvites/${p.id}`).push(invite);
+      status('Звоним...');
+    } catch(e) {
+      end();
+      alert((e && e.message) || 'Не удалось начать звонок.');
+    }
+  }
+
+  async function acceptInvite(){
+    const inv=S.invite;
+    if(!inv || !inv.fromPeerId) return;
+    initPeer();
+    try {
+      S.local=await getMedia(inv.kind || 'audio');
+      showCall(inv.kind || 'audio');
+      const u=meNow();
+      const call=S.peer.call(inv.fromPeerId, S.local, { metadata:{ fromId:u.id, fromName:u.name || 'Vibe', fromAvatar:u.avatar || '', kind:inv.kind || 'audio' } });
+      bindCall(call);
+      const base=dbNow();
+      if(base && inv.key) base.ref(`callInvites/${u.id}/${inv.key}/status`).set('accepted').catch(()=>{});
+      status('Соединяем...');
+    } catch(e) {
+      end();
+      alert((e && e.message) || 'Не удалось принять звонок.');
+    }
+  }
+
+  function toggleMic(){ S.muted=!S.muted; if(S.local) S.local.getAudioTracks().forEach(t=>t.enabled=!S.muted); const b=document.querySelector('[data-plus-mic]'); if(b)b.innerHTML=S.muted?icons.micOff:icons.mic; }
+  function toggleCam(){ S.cameraOff=!S.cameraOff; if(S.local) S.local.getVideoTracks().forEach(t=>t.enabled=!S.cameraOff); const b=document.querySelector('[data-plus-cam]'); if(b)b.innerHTML=S.cameraOff?icons.camOff:icons.cam; }
+  async function shareScreen(){
+    if(!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) return alert('Демонстрация экрана недоступна в этом браузере.');
+    if(!S.call || !S.call.peerConnection) return alert('Сначала дождись соединения звонка.');
+    const stream=await navigator.mediaDevices.getDisplayMedia({ video:true, audio:false });
+    const track=stream.getVideoTracks()[0];
+    const sender=S.call.peerConnection.getSenders().find(s=>s.track && s.track.kind === 'video');
+    if(sender) sender.replaceTrack(track);
+    const local=document.querySelector('.vibe-call-plus-local');
+    if(local){ local.style.display='block'; local.srcObject=stream; local.play().catch(()=>{}); }
+    track.onended=()=>{ if(S.local){ const cam=S.local.getVideoTracks()[0]; if(sender && cam) sender.replaceTrack(cam); attachLocal(); } };
+  }
+  function end(){
+    try{ if(S.call) S.call.close(); }catch(e){}
+    if(S.local) S.local.getTracks().forEach(t=>t.stop());
+    S.local=null; S.call=null; S.invite=null; S.muted=false; S.cameraOff=false;
+    document.querySelectorAll('.vibe-call-plus-overlay').forEach(n=>n.remove());
+  }
+
+  function patchButtons(){
+    const phone=`${icons.phone}<span>Звонок</span>`;
+    const video=`${icons.video}<span>Видео</span>`;
+    document.querySelectorAll('[data-profile-call-hard="audio"],[data-vibe-call="audio"],[data-vibe-call-hard="audio"]').forEach(b=>{ b.innerHTML=phone; b.onclick=e=>{ e.preventDefault(); e.stopPropagation(); start('audio'); }; });
+    document.querySelectorAll('[data-profile-call-hard="video"],[data-vibe-call="video"],[data-vibe-call-hard="video"]').forEach(b=>{ b.innerHTML=video; b.onclick=e=>{ e.preventDefault(); e.stopPropagation(); start('video'); }; });
+  }
+  document.addEventListener('click', e=>{
+    const b=e.target && e.target.closest && e.target.closest('[data-profile-call-hard],[data-vibe-call],[data-vibe-call-hard]');
+    if(!b) return;
+    e.preventDefault(); e.stopPropagation(); if(e.stopImmediatePropagation)e.stopImmediatePropagation();
+    start((b.dataset.profileCallHard || b.dataset.vibeCall || b.dataset.vibeCallHard) === 'video' ? 'video' : 'audio');
+  }, true);
+
+  window.vibeStartCallPlus=start;
+  window.addEventListener('load',()=>[100,500,1200].forEach(ms=>setTimeout(()=>{initPeer();listenInvites();patchButtons();},ms)));
+  new MutationObserver(()=>{ clearTimeout(patchButtons.t); patchButtons.t=setTimeout(()=>{initPeer();listenInvites();patchButtons();},120); }).observe(document.body,{childList:true,subtree:true});
+  setInterval(()=>{initPeer();listenInvites();patchButtons();},1000);
+  initPeer(); listenInvites(); patchButtons();
+})();
+</script>
 </body>
 </html>
