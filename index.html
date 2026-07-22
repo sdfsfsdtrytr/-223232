@@ -11524,18 +11524,19 @@ window.openArchiveModal = function() {
     height: 58px !important;
     min-height: 58px !important;
     border-radius: 999px !important;
-    padding: 0 18px !important;
+    padding: 0 20px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    gap: 13px !important;
+    gap: 14px !important;
     box-sizing: border-box !important;
   }
   .vibe-search-sheet .vibe-search-input-wrap svg {
     width: 28px !important;
     height: 28px !important;
     flex: 0 0 28px !important;
-    transform: translateY(1px) !important;
+    display: block !important;
+    transform: translateY(0) !important;
   }
   .vibe-search-sheet .vibe-search-input-wrap input {
     height: 58px !important;
@@ -11545,7 +11546,9 @@ window.openArchiveModal = function() {
     min-width: 0 !important;
     padding: 0 !important;
     margin: 0 !important;
-    line-height: 58px !important;
+    line-height: normal !important;
+    display: block !important;
+    transform: translateY(0) !important;
   }
   .vibe-search-sheet .vibe-search-section-title {
     position: relative !important;
@@ -11565,9 +11568,11 @@ window.openArchiveModal = function() {
   .vibe-search-sheet.vibe-search-has-query .vibe-search-recents-title {
     display: none !important;
   }
-  .vibe-search-sheet.vibe-search-has-query #vibe-people-search-results,
-  .vibe-search-sheet.vibe-search-has-query #vibe-people-search-results-title {
+  .vibe-search-sheet.vibe-search-has-query #vibe-people-search-results {
     display: flex !important;
+  }
+  .vibe-search-sheet.vibe-search-has-query #vibe-people-search-results-title {
+    display: block !important;
   }
   .vibe-search-sheet:not(.vibe-search-has-query) #vibe-people-search-results,
   .vibe-search-sheet:not(.vibe-search-has-query) #vibe-people-search-results-title {
@@ -11575,6 +11580,10 @@ window.openArchiveModal = function() {
   }
   .vibe-search-sheet:not(.vibe-search-has-query) #vibe-people-search-recents {
     display: flex !important;
+  }
+  .vibe-search-sheet:not(.vibe-search-has-query) #vibe-people-search-recents-title,
+  .vibe-search-sheet:not(.vibe-search-has-query) .vibe-search-recents-title {
+    display: block !important;
   }
 </style>
 <script id="codex-main-menu-cloud-sync-final">
@@ -14733,8 +14742,10 @@ window.openArchiveModal = function() {
   window.vibePeopleSearchInput = async function(value) {
     const results = $('vibe-people-search-results');
     const title = $('vibe-people-search-results-title');
+    const sheet = document.querySelector('.vibe-search-sheet');
     if (!results || !title) return;
     const query = String(value || '').trim();
+    if (sheet) sheet.classList.toggle('vibe-search-has-query', !!query);
     if (!query) {
       title.style.display = 'none';
       results.innerHTML = '';
@@ -15626,24 +15637,28 @@ window.openArchiveModal = function() {
     const results = $('vibe-people-search-results');
     const title = $('vibe-people-search-results-title');
     const recents = $('vibe-people-search-recents');
-    const recentsTitle = recents && recents.previousElementSibling && recents.previousElementSibling.classList.contains('vibe-search-section-title')
+    const recentsTitle = $('vibe-people-search-recents-title') || (recents && recents.previousElementSibling && recents.previousElementSibling.classList.contains('vibe-search-section-title')
       ? recents.previousElementSibling
-      : null;
+      : null);
+    const sheet = document.querySelector('.vibe-search-sheet');
     if (!results || !title) return;
     const query = String(value || '').trim();
+    if (sheet) sheet.classList.toggle('vibe-search-has-query', !!query);
     if (!query) {
-      title.style.display = 'none';
+      title.style.setProperty('display', 'none', 'important');
       results.innerHTML = '';
-      if (recentsTitle) recentsTitle.style.display = '';
+      results.style.setProperty('display', 'none', 'important');
+      if (recentsTitle) recentsTitle.style.setProperty('display', 'block', 'important');
       if (recents) {
-        recents.style.display = '';
+        recents.style.setProperty('display', 'flex', 'important');
         renderRecents();
       }
       return;
     }
-    if (recentsTitle) recentsTitle.style.display = 'none';
-    if (recents) recents.style.display = 'none';
-    title.style.display = '';
+    if (recentsTitle) recentsTitle.style.setProperty('display', 'none', 'important');
+    if (recents) recents.style.setProperty('display', 'none', 'important');
+    title.style.setProperty('display', 'block', 'important');
+    results.style.setProperty('display', 'flex', 'important');
     results.innerHTML = '<div class="vibe-search-empty">Ищу...</div>';
     try {
       const found = await collectSearchItems(query);
