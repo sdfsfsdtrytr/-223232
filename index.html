@@ -4054,7 +4054,7 @@ window.addEventListener('load', () => setTimeout(() => vibeEnhancer.init(), 250)
 
   function emojiPattern(emoji) {
     const value = encodeURIComponent((emoji || '✨').trim() || '✨');
-    return `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' viewBox='0 0 96 96'%3E%3Ctext x='48' y='58' font-size='28' text-anchor='middle' fill='rgba(0,0,0,0.24)'%3E${value}%3C/text%3E%3C/svg%3E")`;
+    return `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='130' viewBox='0 0 180 130'%3E%3Cg font-size='24' text-anchor='middle' fill='rgba(0,0,0,0.24)'%3E%3Ctext x='22' y='30'%3E${value}%3C/text%3E%3Ctext x='91' y='24'%3E${value}%3C/text%3E%3Ctext x='154' y='46'%3E${value}%3C/text%3E%3Ctext x='45' y='96'%3E${value}%3C/text%3E%3Ctext x='128' y='108'%3E${value}%3C/text%3E%3C/g%3E%3C/svg%3E")`;
   }
 
   function visibleSettingsHost() {
@@ -7909,7 +7909,7 @@ window.openArchiveModal = function() {
   };
   const patternOf = emoji => {
     const encoded = encodeURIComponent(emoji || '✨');
-    return `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' viewBox='0 0 96 96'%3E%3Ctext x='48' y='58' font-size='28' text-anchor='middle' fill='rgba(255,255,255,0.22)'%3E${encoded}%3C/text%3E%3C/svg%3E")`;
+    return `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='130' viewBox='0 0 180 130'%3E%3Cg font-size='24' text-anchor='middle' fill='rgba(255,255,255,0.22)'%3E%3Ctext x='24' y='32'%3E${encoded}%3C/text%3E%3Ctext x='94' y='24'%3E${encoded}%3C/text%3E%3Ctext x='154' y='44'%3E${encoded}%3C/text%3E%3Ctext x='50' y='96'%3E${encoded}%3C/text%3E%3Ctext x='126' y='108'%3E${encoded}%3C/text%3E%3C/g%3E%3C/svg%3E")`;
   };
 
   function installPopupStyle() {
@@ -11408,7 +11408,7 @@ window.openArchiveModal = function() {
 
   function patternOf(emoji) {
     const encoded = encodeURIComponent(emoji || '☀️');
-    return `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='92' height='92' viewBox='0 0 92 92'%3E%3Ctext x='46' y='57' font-size='29' text-anchor='middle' fill='rgba(255,255,255,0.22)'%3E${encoded}%3C/text%3E%3C/svg%3E")`;
+    return `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='130' viewBox='0 0 180 130'%3E%3Cg font-size='24' text-anchor='middle' fill='rgba(255,255,255,0.22)'%3E%3Ctext x='24' y='32'%3E${encoded}%3C/text%3E%3Ctext x='94' y='24'%3E${encoded}%3C/text%3E%3Ctext x='154' y='44'%3E${encoded}%3C/text%3E%3Ctext x='50' y='96'%3E${encoded}%3C/text%3E%3Ctext x='126' y='108'%3E${encoded}%3C/text%3E%3C/g%3E%3C/svg%3E")`;
   }
 
   async function freshPeer() {
@@ -13442,7 +13442,7 @@ window.openArchiveModal = function() {
   };
   const patternOf = emoji => {
     const encoded = encodeURIComponent(emoji || '☀️');
-    return `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='92' height='92' viewBox='0 0 92 92'%3E%3Ctext x='46' y='57' font-size='30' text-anchor='middle'%3E${encoded}%3C/text%3E%3C/svg%3E")`;
+    return `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='130' viewBox='0 0 180 130'%3E%3Cg font-size='25' text-anchor='middle'%3E%3Ctext x='24' y='32'%3E${encoded}%3C/text%3E%3Ctext x='94' y='24'%3E${encoded}%3C/text%3E%3Ctext x='154' y='44'%3E${encoded}%3C/text%3E%3Ctext x='50' y='96'%3E${encoded}%3C/text%3E%3Ctext x='126' y='108'%3E${encoded}%3C/text%3E%3C/g%3E%3C/svg%3E")`;
   };
   const icon = name => {
     const common = 'viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.35" stroke-linecap="round" stroke-linejoin="round"';
@@ -15538,6 +15538,103 @@ window.openArchiveModal = function() {
     setTimeout(closeOrphanReactionPanel, 0);
   }, true);
   setInterval(closeOrphanReactionPanel, 1200);
+})();
+</script>
+<script id="codex-profile-scale-pattern-final">
+(() => {
+  function installProfilePolishStyle() {
+    let style = document.getElementById('codex-profile-scale-pattern-final-style');
+    if (!style) {
+      style = document.createElement('style');
+      style.id = 'codex-profile-scale-pattern-final-style';
+      document.head.appendChild(style);
+    }
+    style.textContent = `
+      @media (max-width: 768px) {
+        #mob-profile .vibe-self-profile-hero {
+          min-height: 252px !important;
+          padding-top: calc(10px + env(safe-area-inset-top, 0px)) !important;
+        }
+        #mob-profile .vibe-profile-edit-round {
+          width: 58px !important;
+          height: 58px !important;
+          border-radius: 999px !important;
+          background: linear-gradient(145deg, rgba(255,255,255,.18), rgba(28,28,34,.54)) !important;
+          border: 1px solid rgba(255,255,255,.22) !important;
+          box-shadow: 0 18px 42px rgba(0,0,0,.32), inset 0 1px 0 rgba(255,255,255,.2), inset 0 -12px 22px rgba(0,0,0,.14) !important;
+          backdrop-filter: blur(22px) saturate(180%) !important;
+          -webkit-backdrop-filter: blur(22px) saturate(180%) !important;
+        }
+        #mob-profile .vibe-profile-edit-round svg {
+          width: 28px !important;
+          height: 28px !important;
+          stroke-width: 2.45 !important;
+        }
+        #mob-profile .vibe-self-profile-main {
+          margin-top: 2px !important;
+        }
+        #mob-profile .vibe-self-profile-avatar {
+          width: 76px !important;
+          height: 76px !important;
+          font-size: 34px !important;
+          border: 1.5px solid rgba(255,255,255,.28) !important;
+          box-shadow: 0 20px 44px rgba(0,0,0,.26) !important;
+        }
+        #mob-profile .vibe-self-profile-name {
+          margin-top: 10px !important;
+          font-size: 25px !important;
+          line-height: 1.03 !important;
+        }
+        #mob-profile .vibe-self-profile-name .verified-badge svg {
+          width: 18px !important;
+          height: 18px !important;
+        }
+        #mob-profile .vibe-self-profile-handle {
+          margin-top: 6px !important;
+          font-size: 15px !important;
+          font-weight: 750 !important;
+        }
+        #mob-profile .vibe-self-profile-pattern {
+          display: block !important;
+          inset: 0 !important;
+        }
+        #mob-profile .vibe-self-profile-pattern span {
+          position: absolute !important;
+          font-size: 24px !important;
+          opacity: .25 !important;
+        }
+        #mob-profile .vibe-self-profile-pattern span:nth-child(1) { left: 6%; top: 9%; }
+        #mob-profile .vibe-self-profile-pattern span:nth-child(2) { left: 27%; top: 4%; }
+        #mob-profile .vibe-self-profile-pattern span:nth-child(3) { left: 58%; top: 10%; }
+        #mob-profile .vibe-self-profile-pattern span:nth-child(4) { left: 84%; top: 6%; }
+        #mob-profile .vibe-self-profile-pattern span:nth-child(5) { left: 13%; top: 39%; }
+        #mob-profile .vibe-self-profile-pattern span:nth-child(6) { left: 39%; top: 33%; }
+        #mob-profile .vibe-self-profile-pattern span:nth-child(7) { left: 68%; top: 40%; }
+        #mob-profile .vibe-self-profile-pattern span:nth-child(8) { left: 91%; top: 35%; }
+        #mob-profile .vibe-self-profile-pattern span:nth-child(9) { left: 4%; top: 73%; }
+        #mob-profile .vibe-self-profile-pattern span:nth-child(10) { left: 31%; top: 68%; }
+        #mob-profile .vibe-self-profile-pattern span:nth-child(11) { left: 57%; top: 75%; }
+        #mob-profile .vibe-self-profile-pattern span:nth-child(12) { left: 82%; top: 67%; }
+        #mob-profile .vibe-self-profile-pattern span:nth-child(n+13) { display: none !important; }
+        #mob-home #mob-contacts > .vibe-folder-tabs-shell {
+          margin-top: 18px !important;
+        }
+        #mob-home #mob-contacts.vibe-search-near-list > .vibe-folder-tabs-shell {
+          margin-top: 12px !important;
+        }
+      }
+      .settings-pattern,
+      .peer-profile-pattern,
+      .codex-peer-pattern,
+      #vibe-room-appearance-pattern {
+        background-size: 180px 130px !important;
+      }
+    `;
+  }
+
+  installProfilePolishStyle();
+  document.addEventListener('DOMContentLoaded', installProfilePolishStyle);
+  setInterval(installProfilePolishStyle, 1200);
 })();
 </script>
 </body>
