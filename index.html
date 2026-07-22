@@ -15618,9 +15618,84 @@ window.openArchiveModal = function() {
         #mob-profile .vibe-self-profile-pattern span:nth-child(n+13) { display: none !important; }
         #mob-home #mob-contacts > .vibe-folder-tabs-shell {
           margin-top: 18px !important;
+          min-height: 62px !important;
+          padding: 8px 0 8px !important;
+          overflow: visible !important;
         }
         #mob-home #mob-contacts.vibe-search-near-list > .vibe-folder-tabs-shell {
           margin-top: 12px !important;
+          min-height: 62px !important;
+          padding: 8px 0 8px !important;
+          overflow: visible !important;
+        }
+        #mob-home #mob-contacts .vibe-folder-tabs {
+          min-height: 54px !important;
+          padding: 6px 2px 10px !important;
+          overflow-x: auto !important;
+          overflow-y: visible !important;
+        }
+        #mob-home #mob-contacts .vibe-folder-tab {
+          min-height: 42px !important;
+          margin: 0 0 2px !important;
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.16), inset 0 -10px 18px rgba(0,0,0,.12), 0 10px 22px rgba(0,0,0,.18) !important;
+        }
+        .vibe-profile-editor .vibe-profile-editor-round,
+        .vibe-profile-editor .vibe-profile-photo-btn,
+        .vibe-profile-editor .vibe-profile-editor-link {
+          position: relative !important;
+          overflow: hidden !important;
+          background: linear-gradient(145deg, rgba(255,255,255,.20), rgba(255,255,255,.07) 42%, rgba(12,12,18,.30)) !important;
+          border: 1px solid rgba(255,255,255,.20) !important;
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.24), inset 0 -14px 24px rgba(0,0,0,.14), 0 14px 34px rgba(0,0,0,.22) !important;
+          backdrop-filter: blur(24px) saturate(190%) !important;
+          -webkit-backdrop-filter: blur(24px) saturate(190%) !important;
+        }
+        .vibe-profile-editor .vibe-profile-editor-round::before,
+        .vibe-profile-editor .vibe-profile-photo-btn::before,
+        .vibe-profile-editor .vibe-profile-editor-link::before {
+          content: "" !important;
+          position: absolute !important;
+          inset: 1px 1px auto 1px !important;
+          height: 45% !important;
+          border-radius: inherit !important;
+          background: linear-gradient(to bottom, rgba(255,255,255,.22), rgba(255,255,255,0)) !important;
+          pointer-events: none !important;
+        }
+        .vibe-profile-editor .vibe-profile-editor-round.confirm {
+          background: linear-gradient(145deg, rgba(255,255,255,.52), rgba(255,255,255,.20) 48%, rgba(255,255,255,.10)) !important;
+          color: #fff !important;
+        }
+        .vibe-profile-editor .vibe-profile-editor-card {
+          background: linear-gradient(145deg, rgba(255,255,255,.13), rgba(255,255,255,.06) 48%, rgba(8,8,12,.18)) !important;
+          border: 1px solid rgba(255,255,255,.12) !important;
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.14), 0 16px 40px rgba(0,0,0,.18) !important;
+          backdrop-filter: blur(22px) saturate(175%) !important;
+          -webkit-backdrop-filter: blur(22px) saturate(175%) !important;
+        }
+        .vibe-profile-editor .vibe-own-style-preview {
+          background: var(--own-style-bg) !important;
+          border: 1px solid rgba(255,255,255,.16) !important;
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.14), 0 16px 40px rgba(0,0,0,.20) !important;
+          backdrop-filter: none !important;
+          -webkit-backdrop-filter: none !important;
+        }
+        .vibe-profile-editor .vibe-own-style-preview::before {
+          background-image: var(--own-style-pattern) !important;
+          background-size: 180px 130px !important;
+        }
+        .vibe-profile-editor .vibe-profile-swatch.active {
+          border-color: rgba(255,255,255,.92) !important;
+          box-shadow: 0 0 0 3px rgba(255,255,255,.18), 0 10px 24px rgba(0,0,0,.22) !important;
+        }
+        .vibe-profile-editor .vibe-profile-swatch {
+          overflow: hidden !important;
+          border: 2px solid rgba(255,255,255,.22) !important;
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.20), 0 8px 18px rgba(0,0,0,.20) !important;
+          backdrop-filter: none !important;
+          -webkit-backdrop-filter: none !important;
+        }
+        .vibe-profile-editor .vibe-profile-swatch::before {
+          content: none !important;
         }
       }
       .settings-pattern,
