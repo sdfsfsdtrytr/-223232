@@ -11630,12 +11630,12 @@ window.openArchiveModal = function() {
 </script>
 <style id="codex-verified-badge-shape-final">
   .verified-badge {
-    width:16px !important;
-    height:16px !important;
-    min-width:16px !important;
+    width:18px !important;
+    height:18px !important;
+    min-width:18px !important;
     display:inline-block !important;
     margin-left:3px !important;
-    vertical-align:-2px !important;
+    vertical-align:-3px !important;
     position:relative !important;
     line-height:0 !important;
   }
@@ -11644,8 +11644,8 @@ window.openArchiveModal = function() {
   }
   .verified-badge::before {
     content:"" !important;
-    width:16px !important;
-    height:16px !important;
+    width:18px !important;
+    height:18px !important;
     display:inline-block !important;
     background-repeat:no-repeat !important;
     background-size:contain !important;
@@ -11655,32 +11655,32 @@ window.openArchiveModal = function() {
   #mob-chat-header-ui .verified-badge,
   .contact-item .verified-badge,
   .dialog-main .verified-badge {
-    width:15px !important;
-    height:15px !important;
-    min-width:15px !important;
+    width:17px !important;
+    height:17px !important;
+    min-width:17px !important;
     margin-left:3px !important;
     vertical-align:-1px !important;
   }
   #mob-chat-header-ui .verified-badge::before,
   .contact-item .verified-badge::before,
   .dialog-main .verified-badge::before {
-    width:15px !important;
-    height:15px !important;
+    width:17px !important;
+    height:17px !important;
   }
   .settings-preview-name .verified-badge,
   .vibe-self-profile-name .verified-badge,
   #pop-name .verified-badge {
-    width:18px !important;
-    height:18px !important;
-    min-width:18px !important;
+    width:21px !important;
+    height:21px !important;
+    min-width:21px !important;
     margin-left:5px !important;
     vertical-align:-2px !important;
   }
   .settings-preview-name .verified-badge::before,
   .vibe-self-profile-name .verified-badge::before,
   #pop-name .verified-badge::before {
-    width:18px !important;
-    height:18px !important;
+    width:21px !important;
+    height:21px !important;
   }
 </style>
 <script id="codex-mobile-peer-info-pro-final">
@@ -17040,6 +17040,67 @@ window.openArchiveModal = function() {
   document.addEventListener('DOMContentLoaded', () => { watchIntro(); start(); });
   window.addEventListener('resize', renderNav);
   setInterval(start, 800);
+})();
+</script>
+<script id="codex-people-search-state-lock-final">
+(() => {
+  const $ = id => document.getElementById(id);
+  let lastQuery = '';
+
+  function titleBefore(node) {
+    const prev = node && node.previousElementSibling;
+    return prev && prev.classList && prev.classList.contains('vibe-search-section-title') ? prev : null;
+  }
+
+  function lockSearchState() {
+    const input = $('vibe-people-search-input');
+    const recents = $('vibe-people-search-recents');
+    const results = $('vibe-people-search-results');
+    const resultsTitle = $('vibe-people-search-results-title');
+    if (!input || !recents || !results) return;
+
+    const query = input.value.trim();
+    const recentsTitle = titleBefore(recents);
+    const hasQuery = query.length > 0;
+
+    if (hasQuery) {
+      recents.style.display = 'none';
+      if (recentsTitle) recentsTitle.style.display = 'none';
+      results.style.display = '';
+      if (resultsTitle) resultsTitle.style.display = '';
+      if (!results.innerHTML.trim()) results.innerHTML = '<div class="vibe-search-empty">Ищу...</div>';
+    } else {
+      results.innerHTML = '';
+      results.style.display = 'none';
+      if (resultsTitle) resultsTitle.style.display = 'none';
+      recents.style.display = '';
+      if (recentsTitle) recentsTitle.style.display = '';
+      if (typeof window.renderRecents === 'function') window.renderRecents();
+    }
+    lastQuery = query;
+  }
+
+  const baseSearch = window.vibePeopleSearchInput;
+  window.vibePeopleSearchInput = async function(value) {
+    const input = $('vibe-people-search-input');
+    if (input && input.value !== value) input.value = value || '';
+    lockSearchState();
+    if (typeof baseSearch === 'function') await baseSearch(value);
+    lockSearchState();
+  };
+
+  document.addEventListener('input', event => {
+    if (!event.target || event.target.id !== 'vibe-people-search-input') return;
+    lockSearchState();
+    setTimeout(lockSearchState, 80);
+    setTimeout(lockSearchState, 260);
+  }, true);
+
+  setInterval(() => {
+    const input = $('vibe-people-search-input');
+    if (!input) return;
+    if (input.value.trim() !== lastQuery || document.querySelector('.vibe-search-sheet')) lockSearchState();
+  }, 180);
 })();
 </script>
 </body>
