@@ -25750,5 +25750,1029 @@ window.openArchiveModal = function() {
   applyPresenceState();
 })();
 </script>
+<style id="codex-professional-calls-and-scroll-final-style">
+  #pc-chat-header-ui,
+  #mob-chat-header-ui {
+    position: relative;
+  }
+
+  .vibe-call-header-actions {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 20;
+  }
+
+  #mob-chat-header-ui .vibe-call-header-actions {
+    right: 70px;
+  }
+
+  .vibe-call-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,.18);
+    background: rgba(255,255,255,.12);
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 900;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.20), 0 10px 28px rgba(0,0,0,.25);
+    backdrop-filter: blur(22px) saturate(160%);
+    -webkit-backdrop-filter: blur(22px) saturate(160%);
+  }
+
+  .vibe-call-btn:hover {
+    background: rgba(16,231,242,.25);
+  }
+
+  .vibe-profile-call-actions {
+    display: flex;
+    gap: 10px;
+    margin: 14px 0 4px;
+  }
+
+  .vibe-profile-call-actions .vibe-call-btn {
+    width: auto;
+    min-width: 132px;
+    height: 44px;
+    border-radius: 16px;
+    gap: 8px;
+    padding: 0 14px;
+    font-size: 14px;
+  }
+
+  .vibe-call-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 2147483647;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+    background: rgba(0,0,0,.78);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+  }
+
+  .vibe-call-card {
+    width: min(860px, 100%);
+    min-height: min(620px, calc(100vh - 36px));
+    border-radius: 30px;
+    border: 1px solid rgba(255,255,255,.18);
+    background: linear-gradient(180deg, rgba(34,36,42,.86), rgba(12,13,16,.94));
+    box-shadow: 0 32px 110px rgba(0,0,0,.62), inset 0 1px 0 rgba(255,255,255,.18);
+    color: #fff;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    overflow: hidden;
+  }
+
+  .vibe-call-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 18px;
+  }
+
+  .vibe-call-name {
+    font-size: 22px;
+    font-weight: 950;
+  }
+
+  .vibe-call-status {
+    margin-top: 3px;
+    font-size: 13px;
+    color: rgba(255,255,255,.66);
+    font-weight: 750;
+  }
+
+  .vibe-call-stage {
+    position: relative;
+    background: #050607;
+    min-height: 360px;
+    overflow: hidden;
+  }
+
+  .vibe-call-remote {
+    width: 100%;
+    height: 100%;
+    min-height: 360px;
+    object-fit: cover;
+    display: block;
+    background: radial-gradient(circle at center, rgba(16,231,242,.12), rgba(0,0,0,.92));
+  }
+
+  .vibe-call-audio-face {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 12px;
+    pointer-events: none;
+  }
+
+  .vibe-call-avatar {
+    width: 112px;
+    height: 112px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,.10);
+    border: 1px solid rgba(255,255,255,.16);
+    font-size: 46px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.20), 0 20px 70px rgba(0,0,0,.35);
+  }
+
+  .vibe-call-local {
+    position: absolute;
+    right: 16px;
+    bottom: 16px;
+    width: min(190px, 35vw);
+    aspect-ratio: 9 / 13;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,.22);
+    object-fit: cover;
+    background: rgba(255,255,255,.08);
+    box-shadow: 0 18px 60px rgba(0,0,0,.42);
+  }
+
+  .vibe-call-controls {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    padding: 16px;
+    background: rgba(0,0,0,.22);
+  }
+
+  .vibe-call-control {
+    min-width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,.16);
+    background: rgba(255,255,255,.10);
+    color: #fff;
+    font-size: 20px;
+    font-weight: 950;
+  }
+
+  .vibe-call-control.danger {
+    background: #ff3b30;
+    border-color: rgba(255,255,255,.24);
+  }
+
+  .vibe-call-control.accept {
+    background: #22c55e;
+  }
+
+  @media (max-width: 620px) {
+    .vibe-call-overlay {
+      padding: 0;
+    }
+    .vibe-call-card {
+      width: 100%;
+      min-height: 100vh;
+      border-radius: 0;
+    }
+    .vibe-call-stage,
+    .vibe-call-remote {
+      min-height: calc(100vh - 160px);
+    }
+    .vibe-call-header-actions {
+      gap: 6px;
+    }
+    .vibe-call-btn {
+      width: 34px;
+      height: 34px;
+      font-size: 16px;
+    }
+  }
+</style>
+<script id="codex-professional-calls-and-scroll-final">
+(() => {
+  if (window.__codexProfessionalCallsAndScrollFinal) return;
+  window.__codexProfessionalCallsAndScrollFinal = true;
+
+  const $ = id => document.getElementById(id);
+  const state = {
+    peer:null,
+    peerId:'',
+    localStream:null,
+    currentCall:null,
+    pendingCall:null,
+    remoteStream:null,
+    video:false,
+    muted:false,
+    cameraOff:false,
+    initStarted:false
+  };
+
+  function meNow() {
+    try { return (typeof me !== 'undefined' && me) ? me : window.me; } catch (error) { return window.me; }
+  }
+
+  function peerNow() {
+    try { return (typeof activePeer !== 'undefined' && activePeer) ? activePeer : window.activePeer; } catch (error) { return window.activePeer; }
+  }
+
+  function isDirectPeer(item) {
+    return !!(item && item.id && item.id !== 'saved_' + ((meNow() && meNow().id) || '') && item.type !== 'group' && item.type !== 'channel' && !item.members);
+  }
+
+  function dbNow() {
+    if (typeof db !== 'undefined' && db && typeof db.ref === 'function') return db;
+    if (window.db && typeof window.db.ref === 'function') return window.db;
+    return null;
+  }
+
+  function deviceId() {
+    try {
+      if (typeof getDeviceId === 'function') return getDeviceId();
+    } catch (error) {}
+    let id = localStorage.getItem('vibe_call_device_id');
+    if (!id) {
+      id = 'call_' + Math.random().toString(36).slice(2, 10);
+      localStorage.setItem('vibe_call_device_id', id);
+    }
+    return id;
+  }
+
+  function safePeerId(raw) {
+    return String(raw || '').replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 80);
+  }
+
+  function icon(kind) {
+    if (kind === 'audio') return '&#9742;';
+    if (kind === 'video') return '&#9654;';
+    if (kind === 'mic') return state.muted ? '&#128263;' : '&#127908;';
+    if (kind === 'cam') return state.cameraOff ? '&#128247;' : '&#128249;';
+    return '&#10005;';
+  }
+
+  function peerLabel(item = peerNow()) {
+    return (item && (item.name || item.handle)) || 'Собеседник';
+  }
+
+  function peerAvatar(item = peerNow()) {
+    return (item && (item.avatar || item.name || '?')) || '?';
+  }
+
+  async function saveCallPeer(id) {
+    const user = meNow();
+    const base = dbNow();
+    if (!user || !user.id || !base || !id) return;
+    const payload = { id, deviceId:deviceId(), updatedAt:Date.now(), ua:navigator.userAgent || '' };
+    await base.ref(`users/${user.id}/callPeer`).set(payload).catch(() => {});
+    await base.ref(`users/${user.id}/callPeers/${deviceId()}`).set(payload).catch(() => {});
+  }
+
+  function initCallPeer() {
+    const user = meNow();
+    const base = dbNow();
+    if (!user || !user.id || !base || typeof Peer === 'undefined') return;
+    if (state.peer || state.initStarted) return;
+    state.initStarted = true;
+    const wanted = safePeerId(`vibe_${user.id}_${deviceId()}`);
+    try {
+      state.peer = new Peer(wanted, { debug:0 });
+    } catch (error) {
+      state.peer = new Peer(undefined, { debug:0 });
+    }
+    state.peer.on('open', id => {
+      state.peerId = id;
+      saveCallPeer(id);
+    });
+    state.peer.on('call', call => {
+      state.pendingCall = call;
+      state.video = !!(call.metadata && call.metadata.video);
+      showIncomingCall(call);
+    });
+    state.peer.on('error', error => {
+      console.warn('Call peer error', error);
+      if (String(error && error.type || '').includes('unavailable') && state.peer) {
+        try { state.peer.destroy(); } catch (e) {}
+        state.peer = null;
+        state.initStarted = false;
+        setTimeout(initCallPeer, 900);
+      }
+    });
+    window.addEventListener('beforeunload', () => {
+      const userNowValue = meNow();
+      const dbValue = dbNow();
+      if (userNowValue && dbValue) dbValue.ref(`users/${userNowValue.id}/callPeers/${deviceId()}`).remove().catch(() => {});
+    }, { once:true });
+  }
+
+  async function remotePeerId(item) {
+    const base = dbNow();
+    if (!base || !item || !item.id) return '';
+    const snap = await base.ref(`users/${item.id}/callPeer`).once('value').catch(() => null);
+    const value = snap && snap.val ? snap.val() : null;
+    if (value && value.id && Date.now() - Number(value.updatedAt || 0) < 1000 * 60 * 15) return value.id;
+    const peersSnap = await base.ref(`users/${item.id}/callPeers`).once('value').catch(() => null);
+    const peers = peersSnap && peersSnap.val ? peersSnap.val() || {} : {};
+    return Object.values(peers)
+      .filter(peer => peer && peer.id && Date.now() - Number(peer.updatedAt || 0) < 1000 * 60 * 15)
+      .sort((a, b) => Number(b.updatedAt || 0) - Number(a.updatedAt || 0))[0]?.id || '';
+  }
+
+  async function media(video) {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      throw new Error('Камера и микрофон работают только через https или localhost.');
+    }
+    return navigator.mediaDevices.getUserMedia({
+      audio:{ echoCancellation:true, noiseSuppression:true, autoGainControl:true },
+      video: video ? { facingMode:'user', width:{ ideal:1280 }, height:{ ideal:720 } } : false
+    });
+  }
+
+  function stopLocal() {
+    if (state.localStream) state.localStream.getTracks().forEach(track => track.stop());
+    state.localStream = null;
+  }
+
+  function closeCallOverlay() {
+    document.querySelectorAll('.vibe-call-overlay').forEach(node => node.remove());
+  }
+
+  function setStatus(text) {
+    const el = document.querySelector('.vibe-call-status');
+    if (el) el.textContent = text || '';
+  }
+
+  function bindCall(call) {
+    state.currentCall = call;
+    call.on('stream', stream => {
+      state.remoteStream = stream;
+      const remote = document.querySelector('.vibe-call-remote');
+      if (remote) {
+        remote.srcObject = stream;
+        remote.play().catch(() => {});
+      }
+      setStatus('Соединено');
+    });
+    call.on('close', endCall);
+    call.on('error', error => {
+      console.warn('Call error', error);
+      setStatus('Звонок прерван');
+      setTimeout(endCall, 900);
+    });
+  }
+
+  function renderCallOverlay(kind, incoming) {
+    closeCallOverlay();
+    const video = kind === 'video';
+    const name = incoming && state.pendingCall && state.pendingCall.metadata && state.pendingCall.metadata.fromName
+      ? state.pendingCall.metadata.fromName
+      : peerLabel();
+    const avatar = incoming && state.pendingCall && state.pendingCall.metadata && state.pendingCall.metadata.fromAvatar
+      ? state.pendingCall.metadata.fromAvatar
+      : peerAvatar();
+    const overlay = document.createElement('div');
+    overlay.className = 'vibe-call-overlay';
+    overlay.innerHTML = `
+      <div class="vibe-call-card" role="dialog" aria-modal="true">
+        <div class="vibe-call-top">
+          <div>
+            <div class="vibe-call-name">${escapeText(name)}</div>
+            <div class="vibe-call-status">${incoming ? (video ? 'Входящий видеозвонок' : 'Входящий звонок') : 'Соединяем...'}</div>
+          </div>
+          <button class="vibe-call-control danger" type="button" data-hang>${icon('close')}</button>
+        </div>
+        <div class="vibe-call-stage">
+          <video class="vibe-call-remote" autoplay playsinline ${video ? '' : 'style="opacity:.18"'}></video>
+          <div class="vibe-call-audio-face" ${video ? 'style="display:none"' : ''}>
+            <div class="vibe-call-avatar">${escapeText(avatar).slice(0, 2)}</div>
+            <div>${escapeText(name)}</div>
+          </div>
+          <video class="vibe-call-local" autoplay muted playsinline ${video ? '' : 'style="display:none"'}></video>
+        </div>
+        <div class="vibe-call-controls">
+          ${incoming ? '<button class="vibe-call-control accept" type="button" data-accept>&#10003;</button>' : ''}
+          <button class="vibe-call-control" type="button" data-mic>${icon('mic')}</button>
+          <button class="vibe-call-control" type="button" data-cam ${video ? '' : 'style="display:none"'}>${icon('cam')}</button>
+          <button class="vibe-call-control danger" type="button" data-hang>${icon('close')}</button>
+        </div>
+      </div>`;
+    document.body.appendChild(overlay);
+    overlay.querySelectorAll('[data-hang]').forEach(btn => btn.onclick = endCall);
+    const accept = overlay.querySelector('[data-accept]');
+    if (accept) accept.onclick = acceptIncomingCall;
+    const mic = overlay.querySelector('[data-mic]');
+    if (mic) mic.onclick = toggleMic;
+    const cam = overlay.querySelector('[data-cam]');
+    if (cam) cam.onclick = toggleCamera;
+    attachLocalPreview();
+  }
+
+  function attachLocalPreview() {
+    const local = document.querySelector('.vibe-call-local');
+    if (local && state.localStream) {
+      local.srcObject = state.localStream;
+      local.play().catch(() => {});
+    }
+  }
+
+  async function startCall(kind) {
+    const item = peerNow();
+    if (!isDirectPeer(item)) return alert('Звонки доступны только в личном чате.');
+    initCallPeer();
+    if (!state.peer) return alert('Модуль звонков ещё загружается. Подожди пару секунд и попробуй снова.');
+    const id = await remotePeerId(item);
+    if (!id) return alert('Собеседник сейчас не готов к звонку. Пусть откроет мессенджер и разрешит звонки.');
+    try {
+      state.video = kind === 'video';
+      state.localStream = await media(state.video);
+      renderCallOverlay(kind, false);
+      const user = meNow() || {};
+      const call = state.peer.call(id, state.localStream, {
+        metadata:{ fromId:user.id || '', fromName:user.name || 'Vibe', fromAvatar:user.avatar || '', video:state.video }
+      });
+      bindCall(call);
+    } catch (error) {
+      stopLocal();
+      alert((error && error.message) || 'Не удалось начать звонок. Проверь разрешения камеры и микрофона.');
+      closeCallOverlay();
+    }
+  }
+
+  function showIncomingCall(call) {
+    renderCallOverlay(call.metadata && call.metadata.video ? 'video' : 'audio', true);
+  }
+
+  async function acceptIncomingCall() {
+    const call = state.pendingCall;
+    if (!call) return;
+    try {
+      state.localStream = await media(!!(call.metadata && call.metadata.video));
+      call.answer(state.localStream);
+      bindCall(call);
+      state.pendingCall = null;
+      renderCallOverlay(state.video ? 'video' : 'audio', false);
+      setStatus('Соединяем...');
+    } catch (error) {
+      alert((error && error.message) || 'Не удалось принять звонок. Проверь разрешения камеры и микрофона.');
+      endCall();
+    }
+  }
+
+  function toggleMic() {
+    if (!state.localStream) return;
+    state.muted = !state.muted;
+    state.localStream.getAudioTracks().forEach(track => { track.enabled = !state.muted; });
+    const btn = document.querySelector('[data-mic]');
+    if (btn) btn.innerHTML = icon('mic');
+  }
+
+  function toggleCamera() {
+    if (!state.localStream) return;
+    state.cameraOff = !state.cameraOff;
+    state.localStream.getVideoTracks().forEach(track => { track.enabled = !state.cameraOff; });
+    const btn = document.querySelector('[data-cam]');
+    if (btn) btn.innerHTML = icon('cam');
+  }
+
+  function endCall() {
+    try { if (state.currentCall) state.currentCall.close(); } catch (error) {}
+    try { if (state.pendingCall) state.pendingCall.close(); } catch (error) {}
+    state.currentCall = null;
+    state.pendingCall = null;
+    state.remoteStream = null;
+    state.muted = false;
+    state.cameraOff = false;
+    stopLocal();
+    closeCallOverlay();
+  }
+
+  function escapeText(value) {
+    const div = document.createElement('div');
+    div.textContent = value == null ? '' : String(value);
+    return div.innerHTML;
+  }
+
+  function callButtons(markupOnly) {
+    const html = `<button class="vibe-call-btn" type="button" data-vibe-call="audio" title="Звонок">${icon('audio')}</button><button class="vibe-call-btn" type="button" data-vibe-call="video" title="Видеозвонок">${icon('video')}</button>`;
+    return markupOnly ? html : html;
+  }
+
+  function bindButtons(root = document) {
+    root.querySelectorAll('[data-vibe-call]:not([data-call-bound])').forEach(btn => {
+      btn.dataset.callBound = '1';
+      btn.onclick = event => {
+        event.preventDefault();
+        event.stopPropagation();
+        startCall(btn.dataset.vibeCall === 'video' ? 'video' : 'audio');
+      };
+    });
+  }
+
+  function injectHeaderButtons() {
+    const item = peerNow();
+    ['pc-chat-header-ui','mob-chat-header-ui'].forEach(id => {
+      const header = $(id);
+      if (!header) return;
+      const old = header.querySelector('.vibe-call-header-actions');
+      if (!isDirectPeer(item)) {
+        if (old) old.remove();
+        return;
+      }
+      if (!old) {
+        const box = document.createElement('div');
+        box.className = 'vibe-call-header-actions';
+        box.innerHTML = callButtons(true);
+        header.appendChild(box);
+      }
+    });
+    bindButtons();
+  }
+
+  function injectProfileButtons() {
+    const item = peerNow();
+    if (!isDirectPeer(item)) return;
+    const modal = document.querySelector('#app-overlay-root .app-modal, #profile-popup, .peer-profile-panel');
+    if (!modal || modal.querySelector('.vibe-profile-call-actions')) return;
+    const box = document.createElement('div');
+    box.className = 'vibe-profile-call-actions';
+    box.innerHTML = `<button class="vibe-call-btn" type="button" data-vibe-call="audio">${icon('audio')} Звонок</button><button class="vibe-call-btn" type="button" data-vibe-call="video">${icon('video')} Видео</button>`;
+    const place = modal.querySelector('.settings-card') || modal;
+    place.insertBefore(box, place.firstChild);
+    bindButtons(modal);
+  }
+
+  function scrollChatToBottom(mode, smooth) {
+    const box = $(`${mode}-msgs`);
+    if (!box) return;
+    try { box.scrollTo({ top:box.scrollHeight + 9999, behavior:smooth ? 'smooth' : 'auto' }); }
+    catch (error) { box.scrollTop = box.scrollHeight + 9999; }
+  }
+
+  function scrollBothSoon() {
+    [0, 80, 220, 520, 1100].forEach(ms => setTimeout(() => {
+      scrollChatToBottom('pc', ms > 0);
+      scrollChatToBottom('mob', ms > 0);
+    }, ms));
+  }
+
+  function wrapOpenChat() {
+    if (window.__vibeCallScrollOpenWrapped) return;
+    window.__vibeCallScrollOpenWrapped = true;
+    const oldPc = window.openPCChat;
+    const oldMob = window.openMobChat;
+    if (typeof oldPc === 'function') {
+      window.openPCChat = function(...args) {
+        const result = oldPc.apply(this, args);
+        scrollBothSoon();
+        setTimeout(injectHeaderButtons, 180);
+        return result;
+      };
+    }
+    if (typeof oldMob === 'function') {
+      window.openMobChat = function(...args) {
+        const result = oldMob.apply(this, args);
+        scrollBothSoon();
+        setTimeout(injectHeaderButtons, 180);
+        return result;
+      };
+    }
+    const oldProfile = window.showPeerProfile;
+    if (typeof oldProfile === 'function') {
+      window.showPeerProfile = function(...args) {
+        const result = oldProfile.apply(this, args);
+        setTimeout(injectProfileButtons, 120);
+        setTimeout(injectProfileButtons, 420);
+        return result;
+      };
+    }
+  }
+
+  function bindScrollObservers() {
+    ['pc','mob'].forEach(mode => {
+      const box = $(`${mode}-msgs`);
+      if (!box || box.dataset.vibeAutoScrollFinal === '1') return;
+      box.dataset.vibeAutoScrollFinal = '1';
+      new MutationObserver(() => scrollChatToBottom(mode, true)).observe(box, { childList:true, subtree:true });
+      scrollChatToBottom(mode, false);
+    });
+  }
+
+  function boot() {
+    initCallPeer();
+    wrapOpenChat();
+    injectHeaderButtons();
+    injectProfileButtons();
+    bindScrollObservers();
+  }
+
+  window.vibeStartCall = startCall;
+  window.vibeEndCall = endCall;
+  window.addEventListener('load', () => [150, 600, 1300].forEach(ms => setTimeout(boot, ms)));
+  new MutationObserver(() => {
+    clearTimeout(boot.timer);
+    boot.timer = setTimeout(boot, 180);
+  }).observe(document.body, { childList:true, subtree:true });
+  setInterval(boot, 2500);
+  boot();
+})();
+</script>
+<style id="codex-header-back-and-call-buttons-fix-style">
+  #mob-chat-header-ui {
+    pointer-events: auto !important;
+  }
+
+  #mob-chat-header-ui .vibe26-header-button,
+  #mob-chat-header-ui [data-vibe26-back] {
+    position: relative !important;
+    z-index: 80 !important;
+    pointer-events: auto !important;
+  }
+
+  #mob-chat-header-ui .vibe26-title-pill,
+  #mob-chat-header-ui .vibe26-header-avatar {
+    pointer-events: auto !important;
+  }
+
+  #mob-chat-header-ui .vibe-call-header-actions,
+  #pc-chat-header-ui .vibe-call-header-actions {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    z-index: 70 !important;
+  }
+
+  #mob-chat-header-ui .vibe-call-header-actions {
+    right: 58px !important;
+    top: 50% !important;
+  }
+
+  #pc-chat-header-ui .vibe-call-header-actions {
+    right: 14px !important;
+  }
+
+  #mob-chat-header-ui .vibe-call-btn,
+  #pc-chat-header-ui .vibe-call-btn {
+    width: 34px !important;
+    height: 34px !important;
+    min-width: 34px !important;
+    padding: 0 !important;
+    font-size: 15px !important;
+  }
+
+  #pc-chat-header-ui {
+    padding-right: 104px !important;
+  }
+
+  #mob-chat-header-ui .vibe26-title-pill {
+    max-width: calc(100% - 190px) !important;
+  }
+</style>
+<script id="codex-header-back-and-call-buttons-fix">
+(() => {
+  if (window.__codexHeaderBackAndCallButtonsFix) return;
+  window.__codexHeaderBackAndCallButtonsFix = true;
+
+  const $ = id => document.getElementById(id);
+
+  function meNow() {
+    try { return (typeof me !== 'undefined' && me) ? me : window.me; } catch (error) { return window.me; }
+  }
+
+  function peerNow() {
+    try { return (typeof activePeer !== 'undefined' && activePeer) ? activePeer : window.activePeer; } catch (error) { return window.activePeer; }
+  }
+
+  function isDirectPeer(item) {
+    const user = meNow();
+    return !!(item && item.id && (!user || item.id !== 'saved_' + user.id) && item.type !== 'group' && item.type !== 'channel' && !item.members);
+  }
+
+  function callIcon(type) {
+    return type === 'video' ? '&#9654;' : '&#9742;';
+  }
+
+  function start(type, event) {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+      if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+    }
+    if (typeof window.vibeStartCall === 'function') {
+      window.vibeStartCall(type);
+    } else {
+      alert('Звонки ещё загружаются. Подожди пару секунд.');
+    }
+    return false;
+  }
+
+  function closeChat(event) {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+      if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+    }
+    if (typeof window.closeMobChat === 'function') window.closeMobChat();
+    return false;
+  }
+
+  function openInfo(event) {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+      if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+    }
+    if (typeof window.showPeerProfile === 'function') window.showPeerProfile();
+    return false;
+  }
+
+  function ensureCalls(header) {
+    const item = peerNow();
+    let box = header.querySelector('.vibe-call-header-actions');
+    if (!isDirectPeer(item)) {
+      if (box) box.remove();
+      return;
+    }
+    if (!box) {
+      box = document.createElement('div');
+      box.className = 'vibe-call-header-actions';
+      header.appendChild(box);
+    }
+    box.innerHTML = `
+      <button class="vibe-call-btn" type="button" data-vibe-call-hard="audio" title="Звонок">${callIcon('audio')}</button>
+      <button class="vibe-call-btn" type="button" data-vibe-call-hard="video" title="Видеозвонок">${callIcon('video')}</button>`;
+    box.querySelector('[data-vibe-call-hard="audio"]').onclick = event => start('audio', event);
+    box.querySelector('[data-vibe-call-hard="video"]').onclick = event => start('video', event);
+  }
+
+  function repairHeader() {
+    const mob = $('mob-chat-header-ui');
+    if (mob) {
+      mob.onclick = null;
+      const back = mob.querySelector('[data-vibe26-back], .vibe26-header-button');
+      if (back) {
+        back.onclick = closeChat;
+        back.setAttribute('type', 'button');
+      }
+      mob.querySelectorAll('[data-vibe26-profile], .vibe26-title-pill, .vibe26-header-avatar').forEach(node => {
+        node.onclick = openInfo;
+      });
+      ensureCalls(mob);
+    }
+
+    const pc = $('pc-chat-header-ui');
+    if (pc) {
+      ensureCalls(pc);
+      const actions = pc.querySelector('.vibe-call-header-actions');
+      pc.onclick = event => {
+        if (event.target && event.target.closest && event.target.closest('.vibe-call-header-actions')) return false;
+        openInfo(event);
+      };
+      if (actions) actions.onclick = event => {
+        event.stopPropagation();
+      };
+    }
+  }
+
+  document.addEventListener('click', event => {
+    const back = event.target && event.target.closest && event.target.closest('#mob-chat-header-ui [data-vibe26-back], #mob-chat-header-ui .vibe26-header-button');
+    if (back) return closeChat(event);
+    const hardCall = event.target && event.target.closest && event.target.closest('[data-vibe-call-hard]');
+    if (hardCall) return start(hardCall.dataset.vibeCallHard === 'video' ? 'video' : 'audio', event);
+  }, true);
+
+  const oldProfile = window.showPeerProfile;
+  if (typeof oldProfile === 'function') {
+    window.showPeerProfile = function(...args) {
+      const result = oldProfile.apply(this, args);
+      setTimeout(repairHeader, 60);
+      setTimeout(repairHeader, 250);
+      return result;
+    };
+  }
+
+  window.addEventListener('load', () => [80, 300, 900, 1600].forEach(ms => setTimeout(repairHeader, ms)));
+  new MutationObserver(() => {
+    clearTimeout(repairHeader.timer);
+    repairHeader.timer = setTimeout(repairHeader, 100);
+  }).observe(document.body, { childList:true, subtree:true });
+  setInterval(repairHeader, 700);
+  repairHeader();
+})();
+</script>
+<style id="codex-mobile-name-info-and-clean-back-final-style">
+  #mob-chat-header-ui .vibe-call-header-actions {
+    display: none !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  #mob-chat-header-ui .vibe26-title-pill,
+  #mob-chat-header-ui .vibe26-title-pill *,
+  #mob-chat-header-ui .vibe26-header-avatar {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+  }
+</style>
+<script id="codex-mobile-name-info-and-clean-back-final">
+(() => {
+  if (window.__codexMobileNameInfoAndCleanBackFinal) return;
+  window.__codexMobileNameInfoAndCleanBackFinal = true;
+
+  const $ = id => document.getElementById(id);
+
+  function stop(event) {
+    if (!event) return;
+    event.preventDefault();
+    event.stopPropagation();
+    if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+  }
+
+  function closeChat(event) {
+    stop(event);
+    if (typeof window.closeMobChat === 'function') window.closeMobChat();
+    return false;
+  }
+
+  function openInfo(event) {
+    stop(event);
+    if (typeof window.showPeerProfile === 'function') window.showPeerProfile();
+    return false;
+  }
+
+  function repair() {
+    const header = $('mob-chat-header-ui');
+    if (!header) return;
+    header.querySelectorAll('.vibe-call-header-actions').forEach(node => node.remove());
+    header.onclick = null;
+
+    const back = header.querySelector('[data-vibe26-back], .vibe26-header-button');
+    if (back) {
+      back.onclick = closeChat;
+      back.setAttribute('type', 'button');
+    }
+
+    header.querySelectorAll('[data-vibe26-profile], .vibe26-title-pill, .vibe26-title-pill *, .vibe26-header-avatar').forEach(node => {
+      node.onclick = openInfo;
+    });
+  }
+
+  document.addEventListener('click', event => {
+    const target = event.target;
+    if (!target || !target.closest) return;
+    if (target.closest('#mob-chat-header-ui [data-vibe26-back], #mob-chat-header-ui .vibe26-header-button')) return closeChat(event);
+    if (target.closest('#mob-chat-header-ui .vibe26-title-pill, #mob-chat-header-ui .vibe26-header-avatar, #mob-chat-header-ui [data-vibe26-profile]')) return openInfo(event);
+  }, true);
+
+  window.addEventListener('load', () => [80, 250, 700, 1400].forEach(ms => setTimeout(repair, ms)));
+  new MutationObserver(() => {
+    clearTimeout(repair.timer);
+    repair.timer = setTimeout(repair, 80);
+  }).observe(document.body, { childList:true, subtree:true });
+  setInterval(repair, 600);
+  repair();
+})();
+</script>
+<style id="codex-profile-call-buttons-visible-final-style">
+  .vibe-profile-call-actions,
+  .vibe-profile-call-actions-hard {
+    display: flex !important;
+    gap: 10px !important;
+    margin: 14px 0 12px !important;
+    width: 100% !important;
+    position: relative !important;
+    z-index: 50 !important;
+  }
+
+  .vibe-profile-call-actions-hard .vibe-profile-call-hard-btn {
+    flex: 1 1 0 !important;
+    min-height: 46px !important;
+    border-radius: 17px !important;
+    border: 1px solid rgba(255,255,255,.16) !important;
+    background: rgba(255,255,255,.11) !important;
+    color: #fff !important;
+    font-size: 15px !important;
+    font-weight: 950 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.18), 0 12px 34px rgba(0,0,0,.24) !important;
+    backdrop-filter: blur(22px) saturate(160%) !important;
+    -webkit-backdrop-filter: blur(22px) saturate(160%) !important;
+  }
+
+  .vibe-profile-call-actions-hard .vibe-profile-call-hard-btn.video {
+    background: rgba(16,231,242,.20) !important;
+    border-color: rgba(16,231,242,.36) !important;
+  }
+</style>
+<script id="codex-profile-call-buttons-visible-final">
+(() => {
+  if (window.__codexProfileCallButtonsVisibleFinal) return;
+  window.__codexProfileCallButtonsVisibleFinal = true;
+
+  function meNow() {
+    try { return (typeof me !== 'undefined' && me) ? me : window.me; } catch (error) { return window.me; }
+  }
+
+  function peerNow() {
+    try { return (typeof activePeer !== 'undefined' && activePeer) ? activePeer : window.activePeer; } catch (error) { return window.activePeer; }
+  }
+
+  function isDirectPeer(item) {
+    const user = meNow();
+    return !!(item && item.id && (!user || item.id !== 'saved_' + user.id) && item.type !== 'group' && item.type !== 'channel' && !item.members);
+  }
+
+  function startCall(type, event) {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+      if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+    }
+    if (typeof window.vibeStartCall === 'function') window.vibeStartCall(type);
+    else alert('Звонки ещё загружаются. Подожди пару секунд.');
+    return false;
+  }
+
+  function visible(node) {
+    if (!node) return false;
+    const rect = node.getBoundingClientRect();
+    return rect.width > 0 && rect.height > 0;
+  }
+
+  function profileRoots() {
+    return Array.from(document.querySelectorAll([
+      '#app-overlay-root .app-modal',
+      '#profile-popup',
+      '.peer-profile-panel',
+      '.codex-peer-info-card',
+      '.codex-peer-profile-cover'
+    ].join(','))).filter(visible);
+  }
+
+  function placeFor(root) {
+    return root.querySelector('.settings-card') ||
+      root.querySelector('.codex-peer-info-card') ||
+      root.querySelector('.peer-profile-preview') ||
+      root.querySelector('.settings-preview') ||
+      root;
+  }
+
+  function insertButtons(root) {
+    const item = peerNow();
+    if (!isDirectPeer(item) || !root || root.querySelector('.vibe-profile-call-actions-hard')) return;
+    const box = document.createElement('div');
+    box.className = 'vibe-profile-call-actions-hard';
+    box.innerHTML = `
+      <button type="button" class="vibe-profile-call-hard-btn audio" data-profile-call-hard="audio">&#9742; Звонок</button>
+      <button type="button" class="vibe-profile-call-hard-btn video" data-profile-call-hard="video">&#9654; Видео</button>`;
+    const place = placeFor(root);
+    if (place.classList && (place.classList.contains('settings-preview') || place.classList.contains('peer-profile-preview') || place.classList.contains('codex-peer-profile-cover'))) {
+      place.insertAdjacentElement('afterend', box);
+    } else {
+      place.insertBefore(box, place.firstChild);
+    }
+    box.querySelector('[data-profile-call-hard="audio"]').onclick = event => startCall('audio', event);
+    box.querySelector('[data-profile-call-hard="video"]').onclick = event => startCall('video', event);
+  }
+
+  function repair() {
+    profileRoots().forEach(insertButtons);
+  }
+
+  document.addEventListener('click', event => {
+    const btn = event.target && event.target.closest && event.target.closest('[data-profile-call-hard]');
+    if (!btn) return;
+    return startCall(btn.dataset.profileCallHard === 'video' ? 'video' : 'audio', event);
+  }, true);
+
+  const prevShow = window.showPeerProfile;
+  if (typeof prevShow === 'function') {
+    window.showPeerProfile = function(...args) {
+      const result = prevShow.apply(this, args);
+      [80, 220, 520, 1000].forEach(ms => setTimeout(repair, ms));
+      return result;
+    };
+  }
+
+  window.addEventListener('load', () => [200, 800, 1600].forEach(ms => setTimeout(repair, ms)));
+  new MutationObserver(() => {
+    clearTimeout(repair.timer);
+    repair.timer = setTimeout(repair, 120);
+  }).observe(document.body, { childList:true, subtree:true });
+  setInterval(repair, 800);
+  repair();
+})();
+</script>
 </body>
 </html>
