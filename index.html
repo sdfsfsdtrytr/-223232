@@ -1474,6 +1474,20 @@ var db = firebase.database();
 var storage = firebase.storage();
 window.db = db;
 window.storage = storage;
+function ensureAuthDb() {
+    if (typeof db !== 'undefined' && db && typeof db.ref === 'function') return db;
+    if (window.db && typeof window.db.ref === 'function') {
+        db = window.db;
+        return db;
+    }
+    if (window.firebase && typeof window.firebase.database === 'function') {
+        if (!window.firebase.apps.length) window.firebase.initializeApp(firebaseConfig);
+        db = window.firebase.database();
+        window.db = db;
+        return db;
+    }
+    throw new Error('База данных ещё загружается. Подожди пару секунд и попробуй снова.');
+}
 const EMAILJS_PUBLIC_KEY = "Nx7G0SMyg2yP2bvBW";
 const EMAILJS_SERVICE_ID = "default_service";
 const EMAILJS_TEMPLATE_ID = "template_4yxrnid";
@@ -1858,6 +1872,7 @@ function mobTab(id) {
         }
 
         async function validateAuthFlow(mode) {
+            ensureAuthDb();
             if (mode === 'login') {
                 const email = document.getElementById('l-email-input').value.trim().toLowerCase();
                 const password = document.getElementById('l-pass-input').value;
@@ -1909,6 +1924,7 @@ function mobTab(id) {
         }
 
         async function sendVerificationCode(mode, isResend = false) {
+            ensureAuthDb();
             const data = await validateAuthFlow(mode);
             const code = generateCode();
             const now = Date.now();
@@ -1940,6 +1956,7 @@ function mobTab(id) {
         }
 
         async function startEmailFlow(mode) {
+    ensureAuthDb();
     // Находим кнопку в зависимости от режима
     const btn = document.getElementById(mode === 'login' ? 'login-btn-main' : 
                                        mode === 'reg' ? 'reg-btn-main' :
@@ -1973,6 +1990,7 @@ function mobTab(id) {
         async function resendVerificationCode() {
             if (!authFlowMode) return;
             try {
+                ensureAuthDb();
                 await sendVerificationCode(authFlowMode, true);
             } catch (e) {
                 console.error('Resend code error:', e);
