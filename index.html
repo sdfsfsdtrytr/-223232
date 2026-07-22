@@ -15821,7 +15821,9 @@ window.openArchiveModal = function() {
           touch-action: none !important;
         }
         body:has(#intro-screen) .bottom-nav.vibe-liquid-copy-nav,
-        body.vibe-intro-active .bottom-nav.vibe-liquid-copy-nav {
+        body.vibe-intro-active .bottom-nav.vibe-liquid-copy-nav,
+        body.vibe-auth-active .bottom-nav.vibe-liquid-copy-nav,
+        body:has(#auth-page:not([style*="display: none"])) .bottom-nav.vibe-liquid-copy-nav {
           display: none !important;
         }
         .bottom-nav.vibe-liquid-copy-nav::before {
@@ -16357,6 +16359,10 @@ window.openArchiveModal = function() {
     installStyle();
     const nav = document.querySelector('.bottom-nav');
     if (!nav) return;
+    if (authVisible()) {
+      nav.classList.add('vibe-liquid-copy-nav');
+      return;
+    }
     if (dragStarted) return;
     const order = getOrder();
     const active = activeId();
@@ -16576,17 +16582,33 @@ window.openArchiveModal = function() {
   function start() {
     installStyle();
     document.body.classList.toggle('vibe-intro-active', !!document.getElementById('intro-screen'));
+    document.body.classList.toggle('vibe-auth-active', authVisible());
     renderNav();
     patchEditor();
   }
 
+  function authVisible() {
+    const auth = document.getElementById('auth-page');
+    if (!auth) return false;
+    const style = window.getComputedStyle(auth);
+    return style.display !== 'none' && style.visibility !== 'hidden' && style.opacity !== '0';
+  }
+
   function watchIntro() {
     document.body.classList.toggle('vibe-intro-active', !!document.getElementById('intro-screen'));
+    document.body.classList.toggle('vibe-auth-active', authVisible());
     if (document.body.dataset.vibeIntroWatch === '1') return;
     document.body.dataset.vibeIntroWatch = '1';
     new MutationObserver(() => {
       document.body.classList.toggle('vibe-intro-active', !!document.getElementById('intro-screen'));
+      document.body.classList.toggle('vibe-auth-active', authVisible());
     }).observe(document.body, { childList: true, subtree: true });
+    const auth = document.getElementById('auth-page');
+    if (auth) {
+      new MutationObserver(() => {
+        document.body.classList.toggle('vibe-auth-active', authVisible());
+      }).observe(auth, { attributes: true, attributeFilter: ['style', 'class'] });
+    }
   }
 
   document.addEventListener('pointerdown', event => {
