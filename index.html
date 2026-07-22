@@ -1665,13 +1665,8 @@ function mobTab(id) {
 
         function getDatabaseSafe() {
             if (window.db && typeof window.db.ref === 'function') return window.db;
-            if (typeof db !== 'undefined' && db && typeof db.ref === 'function') {
-                window.db = db;
-                return db;
-            }
             if (window.firebase && typeof window.firebase.database === 'function') {
                 window.db = window.firebase.database();
-                db = window.db;
                 return window.db;
             }
             throw new Error('База данных ещё не загрузилась. Подожди секунду и попробуй снова.');
@@ -1835,6 +1830,15 @@ function mobTab(id) {
     try {
         await sendVerificationCode(mode);
     } catch (e) {
+        if (String(e && e.message || '').includes("Cannot access 'db'")) {
+            try {
+                window.db = window.firebase.database();
+                await sendVerificationCode(mode);
+                return;
+            } catch (retryError) {
+                e = retryError;
+            }
+        }
         console.error('Email flow error:', e);
         alert(e.message || 'Не удалось отправить код. Проверь данные и попробуй ещё раз.');
         
@@ -1923,6 +1927,7 @@ function mobTab(id) {
         }
 
         async function finishResetPassword() {
+            const authDb = getDatabaseSafe();
             const email = document.getElementById('reset-email').value.trim().toLowerCase();
             const newPassword = document.getElementById('reset-new-pass').value;
             const confirmPassword = document.getElementById('reset-new-pass-confirm').value;
@@ -1939,11 +1944,11 @@ function mobTab(id) {
                 if (newPassword.length < 6) throw new Error('Пароль должен быть минимум 6 символов!');
                 if (newPassword !== confirmPassword) throw new Error('Пароли не совпадают!');
 
-                const emailSnap = await db.ref('emails/' + email.replace(/\./g, '_')).once('value');
+                const emailSnap = await authDb.ref('emails/' + email.replace(/\./g, '_')).once('value');
                 if (!emailSnap.exists()) throw new Error('Пользователь с такой почтой не найден!');
 
                 const uid = emailSnap.val();
-                await db.ref('users/' + uid + '/passwordHash').set(btoa(newPassword));
+                await authDb.ref('users/' + uid + '/passwordHash').set(btoa(newPassword));
 
                 clearVerifyStorage();
                 document.getElementById('reset-new-pass').value = '';
@@ -1961,6 +1966,7 @@ function mobTab(id) {
         }
 
         async function registerWithEmail() {
+            const authDb = getDatabaseSafe();
             const email = document.getElementById('r-email-input').value.trim().toLowerCase();
             const password = document.getElementById('r-pass-input').value;
             const name = document.getElementById('r-n-input').value.trim();
@@ -1973,8 +1979,8 @@ function mobTab(id) {
 
             const hKey = handle.replace('@', '');
             const [handleSnap, emailSnap] = await Promise.all([
-                db.ref('handles/' + hKey).once('value'),
-                db.ref('emails/' + email.replace(/\./g, '_')).once('value')
+                authDb.ref('handles/' + hKey).once('value'),
+                authDb.ref('emails/' + email.replace(/\./g, '_')).once('value')
             ]);
             if (handleSnap.exists()) throw new Error('Этот ник уже занят!');
             if (emailSnap.exists()) throw new Error('Эта почта уже используется!');
@@ -1994,9 +2000,9 @@ function mobTab(id) {
                 createdAt: Date.now()
             };
 
-            await db.ref('users/' + id).set(newUser);
-            await db.ref('handles/' + hKey).set(id);
-            await db.ref('emails/' + email.replace(/\./g, '_')).set(id);
+            await authDb.ref('users/' + id).set(newUser);
+            await authDb.ref('handles/' + hKey).set(id);
+            await authDb.ref('emails/' + email.replace(/\./g, '_')).set(id);
 
             clearVerifyStorage();
             localStorage.setItem('liquid_pro_v32', JSON.stringify(newUser));
@@ -2004,15 +2010,16 @@ function mobTab(id) {
         }
 
         async function loginWithEmail() {
+            const authDb = getDatabaseSafe();
             const email = document.getElementById('l-email-input').value.trim().toLowerCase();
             const password = document.getElementById('l-pass-input').value;
             assertVerification('login');
 
-            const snap = await db.ref('emails/' + email.replace(/\./g, '_')).once('value');
+            const snap = await authDb.ref('emails/' + email.replace(/\./g, '_')).once('value');
             if (!snap.exists()) throw new Error('Пользователь с такой почтой не найден!');
 
             const uid = snap.val();
-            const uSnap = await db.ref('users/' + uid).once('value');
+            const uSnap = await authDb.ref('users/' + uid).once('value');
             if (!uSnap.exists()) throw new Error('Данные пользователя не найдены в базе.');
 
             const user = uSnap.val();
@@ -2025,27 +2032,28 @@ function mobTab(id) {
         }
 
         async function linkEmailToAccount() {
+            const authDb = getDatabaseSafe();
             const handle = document.getElementById('link-h-input').value.toLowerCase().trim();
             const email = document.getElementById('link-email-input').value.trim().toLowerCase();
             const password = document.getElementById('link-pass-input').value;
             assertVerification('link');
 
             const hKey = handle.replace('@', '');
-            const snap = await db.ref('handles/' + hKey).once('value');
+            const snap = await authDb.ref('handles/' + hKey).once('value');
             if (!snap.exists()) throw new Error('Пользователь с таким ником не найден!');
 
             const uid = snap.val();
-            const uSnap = await db.ref('users/' + uid).once('value');
+            const uSnap = await authDb.ref('users/' + uid).once('value');
             const user = uSnap.val();
             if (!user) throw new Error('Аккаунт не найден.');
             if (user.email) throw new Error('К этому аккаунту уже привязана почта!');
 
-            const emailSnap = await db.ref('emails/' + email.replace(/\./g, '_')).once('value');
+            const emailSnap = await authDb.ref('emails/' + email.replace(/\./g, '_')).once('value');
             if (emailSnap.exists()) throw new Error('Эта почта уже используется!');
 
-            await db.ref('users/' + uid + '/email').set(email);
-            await db.ref('users/' + uid + '/passwordHash').set(btoa(password));
-            await db.ref('emails/' + email.replace(/\./g, '_')).set(uid);
+            await authDb.ref('users/' + uid + '/email').set(email);
+            await authDb.ref('users/' + uid + '/passwordHash').set(btoa(password));
+            await authDb.ref('emails/' + email.replace(/\./g, '_')).set(uid);
 
             clearVerifyStorage();
             if (me && me.id === uid) {
