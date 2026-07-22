@@ -1333,13 +1333,15 @@ const firebaseConfig = {
 };
 
 // 2. ?нициализация (создаем ту самую db, которую он не видит)
-if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
+var db = window.db || null;
+var storage = window.storage || null;
+try {
+    if (window.firebase && !firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    if (window.firebase && typeof firebase.database === 'function') db = window.db = firebase.database();
+    if (window.firebase && typeof firebase.storage === 'function') storage = window.storage = firebase.storage();
+} catch (error) {
+    console.warn('Firebase init delayed:', error);
 }
-var db = window.db || firebase.database();
-var storage = window.storage || firebase.storage();
-window.db = db;
-window.storage = storage;
 const EMAILJS_PUBLIC_KEY = "Nx7G0SMyg2yP2bvBW";
 const EMAILJS_SERVICE_ID = "default_service";
 const EMAILJS_TEMPLATE_ID = "template_4yxrnid";
@@ -1663,13 +1665,44 @@ function mobTab(id) {
             return map[mode];
         }
 
-        function getDatabaseSafe() {
-            if (window.db && typeof window.db.ref === 'function') return window.db;
-            if (window.firebase && typeof window.firebase.database === 'function') {
-                window.db = window.firebase.database();
-                return window.db;
+        function loadScriptOnce(src) {
+            window.__vibeLoadedScripts = window.__vibeLoadedScripts || {};
+            if (window.__vibeLoadedScripts[src]) return window.__vibeLoadedScripts[src];
+            window.__vibeLoadedScripts[src] = new Promise((resolve, reject) => {
+                const existing = Array.from(document.scripts).find(script => script.src === src);
+                if (existing && existing.dataset.loaded === '1') return resolve();
+                const script = existing || document.createElement('script');
+                script.src = src;
+                script.async = false;
+                script.onload = () => {
+                    script.dataset.loaded = '1';
+                    resolve();
+                };
+                script.onerror = () => reject(new Error('Не удалось загрузить ' + src));
+                if (!existing) document.head.appendChild(script);
+            });
+            return window.__vibeLoadedScripts[src];
+        }
+
+        async function getDatabaseSafe() {
+            const appSrc = 'https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js';
+            const dbSrc = 'https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js';
+            for (let attempt = 0; attempt < 8; attempt++) {
+                if (!window.firebase) {
+                    try { await loadScriptOnce(appSrc); } catch (error) {}
+                }
+                if (window.firebase && typeof window.firebase.database !== 'function') {
+                    try { await loadScriptOnce(dbSrc); } catch (error) {}
+                }
+                if (window.firebase && typeof window.firebase.database === 'function') {
+                    if (!window.firebase.apps.length) window.firebase.initializeApp(firebaseConfig);
+                    window.db = window.firebase.database();
+                    db = window.db;
+                    return window.db;
+                }
+                await new Promise(resolve => setTimeout(resolve, 450));
             }
-            throw new Error('База данных ещё не загрузилась. Подожди секунду и попробуй снова.');
+            throw new Error('Firebase Database не загрузился. Проверь интернет и перезагрузи страницу.');
         }
 
         function startResendCountdown(startTime) {
@@ -1733,7 +1766,7 @@ function mobTab(id) {
         }
 
         async function validateAuthFlow(mode) {
-            const authDb = getDatabaseSafe();
+            const authDb = await getDatabaseSafe();
             if (mode === 'login') {
                 const email = document.getElementById('l-email-input').value.trim().toLowerCase();
                 const password = document.getElementById('l-pass-input').value;
@@ -1830,9 +1863,9 @@ function mobTab(id) {
     try {
         await sendVerificationCode(mode);
     } catch (e) {
-        if (String(e && e.message || '').includes("Cannot access 'db'")) {
+        if (String(e && e.message || '').includes("Cannot access 'db'") || String(e && e.message || '').includes('Database не загрузился')) {
             try {
-                window.db = window.firebase.database();
+                await getDatabaseSafe();
                 await sendVerificationCode(mode);
                 return;
             } catch (retryError) {
@@ -1927,7 +1960,7 @@ function mobTab(id) {
         }
 
         async function finishResetPassword() {
-            const authDb = getDatabaseSafe();
+            const authDb = await getDatabaseSafe();
             const email = document.getElementById('reset-email').value.trim().toLowerCase();
             const newPassword = document.getElementById('reset-new-pass').value;
             const confirmPassword = document.getElementById('reset-new-pass-confirm').value;
@@ -1966,7 +1999,7 @@ function mobTab(id) {
         }
 
         async function registerWithEmail() {
-            const authDb = getDatabaseSafe();
+            const authDb = await getDatabaseSafe();
             const email = document.getElementById('r-email-input').value.trim().toLowerCase();
             const password = document.getElementById('r-pass-input').value;
             const name = document.getElementById('r-n-input').value.trim();
@@ -2010,7 +2043,7 @@ function mobTab(id) {
         }
 
         async function loginWithEmail() {
-            const authDb = getDatabaseSafe();
+            const authDb = await getDatabaseSafe();
             const email = document.getElementById('l-email-input').value.trim().toLowerCase();
             const password = document.getElementById('l-pass-input').value;
             assertVerification('login');
@@ -2032,7 +2065,7 @@ function mobTab(id) {
         }
 
         async function linkEmailToAccount() {
-            const authDb = getDatabaseSafe();
+            const authDb = await getDatabaseSafe();
             const handle = document.getElementById('link-h-input').value.toLowerCase().trim();
             const email = document.getElementById('link-email-input').value.trim().toLowerCase();
             const password = document.getElementById('link-pass-input').value;
