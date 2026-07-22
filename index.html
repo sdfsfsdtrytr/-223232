@@ -17982,9 +17982,13 @@ window.openArchiveModal = function() {
 
   body.chat-open-mobile #mob-chat-view {
     background:
-      radial-gradient(circle at 50% -10%, rgba(255,255,255,.18), transparent 36%),
-      linear-gradient(180deg, rgba(255,255,255,.055), rgba(0,0,0,.14)),
-      var(--bg) !important;
+      linear-gradient(180deg, #20252d 0%, #1b2028 52%, #181d24 100%) !important;
+    background-attachment:fixed !important;
+  }
+
+  body.chat-open-mobile #mob-chat-view::after {
+    content:none !important;
+    display:none !important;
   }
 
   body.chat-open-mobile #mob-chat-view::before {
@@ -18757,6 +18761,172 @@ window.openArchiveModal = function() {
     right:20px !important;
     bottom:calc(106px + env(safe-area-inset-bottom, 0px)) !important;
   }
+
+  @media (max-width: 520px) {
+    body.chat-open-mobile #mob-chat-header-ui {
+      grid-template-columns:48px minmax(0,1fr) 48px;
+      gap:10px;
+      min-height:62px;
+      padding:calc(6px + env(safe-area-inset-top)) 10px 6px !important;
+    }
+
+    body.chat-open-mobile .vibe26-header-button,
+    body.chat-open-mobile .vibe26-header-avatar {
+      width:46px !important;
+      height:46px !important;
+      min-width:46px;
+    }
+
+    body.chat-open-mobile .vibe26-header-button svg {
+      width:24px;
+      height:24px;
+    }
+
+    body.chat-open-mobile .vibe26-title-pill {
+      height:46px;
+      border-radius:24px;
+      width:min(100%, calc(100vw - 138px));
+      padding:0 10px;
+    }
+
+    body.chat-open-mobile .vibe26-title-pill b {
+      font-size:18px;
+      line-height:1;
+    }
+
+    body.chat-open-mobile .vibe26-title-pill span {
+      font-size:12px;
+      margin-top:2px;
+    }
+
+    body.chat-open-mobile .vibe26-pin-card {
+      top:calc(58px + env(safe-area-inset-top));
+      min-height:48px;
+      margin:0 10px 5px;
+      border-radius:22px;
+      grid-template-columns:10px minmax(0,1fr) 34px;
+      gap:8px;
+      padding:7px 10px 7px 12px;
+    }
+
+    body.chat-open-mobile .vibe26-pin-card.vibe26-pin-has-media {
+      grid-template-columns:10px 42px minmax(0,1fr) 34px;
+    }
+
+    body.chat-open-mobile .vibe26-pin-rail {
+      width:3px;
+      height:34px;
+    }
+
+    body.chat-open-mobile .vibe26-pin-title {
+      font-size:16px;
+      line-height:1.05;
+    }
+
+    body.chat-open-mobile .vibe26-pin-text {
+      font-size:14px;
+      margin-top:3px;
+    }
+
+    body.chat-open-mobile .vibe26-pin-icon,
+    body.chat-open-mobile .vibe26-pin-icon svg {
+      width:27px;
+      height:27px;
+    }
+
+    body.chat-open-mobile .vibe26-pin-thumb {
+      width:38px;
+      height:38px;
+      border-radius:12px;
+      font-size:11px;
+    }
+
+    body.chat-open-mobile #mob-msgs.chat-messages {
+      gap:9px !important;
+      padding-left:12px !important;
+      padding-right:12px !important;
+      padding-top:calc(112px + env(safe-area-inset-top)) !important;
+      padding-bottom:calc(84px + env(safe-area-inset-bottom)) !important;
+    }
+
+    body.chat-open-mobile #mob-msgs .msg {
+      max-width:78% !important;
+      padding:9px 14px !important;
+      border-radius:18px !important;
+      font-size:14px !important;
+      line-height:1.25 !important;
+    }
+
+    body.chat-open-mobile #mob-msgs .voice-message {
+      min-height:38px !important;
+      gap:8px !important;
+    }
+
+    body.chat-open-mobile #mob-msgs .voice-message audio {
+      max-width:220px !important;
+      height:34px !important;
+    }
+
+    body.chat-open-mobile #mob-chat-view .chat-input-bar {
+      grid-template-columns:46px minmax(0,1fr) 46px;
+      gap:8px !important;
+      min-height:68px;
+      padding:8px 10px calc(8px + env(safe-area-inset-bottom)) !important;
+    }
+
+    body.chat-open-mobile #mob-chat-view .chat-input-bar button {
+      width:46px !important;
+      height:46px !important;
+      min-width:46px;
+    }
+
+    body.chat-open-mobile #mob-chat-view .chat-input-bar button img {
+      width:25px !important;
+      height:25px !important;
+    }
+
+    body.chat-open-mobile #mob-chat-view .chat-input-bar > input#mob-input {
+      height:46px !important;
+      border-radius:24px !important;
+      padding:0 70px 0 16px !important;
+      font-size:18px !important;
+    }
+
+    body.chat-open-mobile #mob-chat-view .chat-input-bar > button.circle-btn:not(.send):not(#mob-voice-btn):not(.attach-plus) {
+      width:40px !important;
+      height:40px !important;
+      margin-right:4px;
+    }
+
+    body.chat-open-mobile #mob-chat-view .chat-input-bar > button.circle-btn:not(.send):not(#mob-voice-btn):not(.attach-plus)::before {
+      width:22px;
+      height:22px;
+      border-width:2.2px;
+    }
+
+    body.chat-open-mobile #mob-chat-view .chat-input-bar > button.circle-btn:not(.send):not(#mob-voice-btn):not(.attach-plus)::after {
+      width:11px;
+      height:6px;
+      border-bottom-width:2.2px;
+      transform:translateY(5px);
+    }
+
+    #vibe-scroll-bottom-btn {
+      width:48px !important;
+      height:48px !important;
+    }
+
+    #vibe-scroll-bottom-btn::before,
+    #vibe-scroll-bottom-btn::after {
+      width:18px;
+      height:3px;
+    }
+
+    #vibe-scroll-bottom-btn.mobile {
+      right:14px !important;
+      bottom:calc(78px + env(safe-area-inset-bottom, 0px)) !important;
+    }
+  }
 </style>
 <script id="codex-ios26-chat-redesign-final">
 (() => {
@@ -19126,6 +19296,312 @@ window.openArchiveModal = function() {
     removeGiftButtons();
     if (document.body.classList.contains('chat-open-mobile')) refreshSendState('mob');
   }, 900);
+})();
+</script>
+<style id="codex-real-pinned-messages-final">
+  .vibe26-pin-card {
+    cursor:pointer;
+  }
+
+  .vibe26-pin-card:not(.active) {
+    display:none !important;
+  }
+
+  .vibe26-pin-card:not([data-real-pins="1"]) {
+    display:none !important;
+  }
+
+  .vibe26-pin-card.vibe26-pin-has-media {
+    grid-template-columns:16px 56px minmax(0,1fr) 50px;
+  }
+
+  .vibe26-pin-thumb {
+    width:48px;
+    height:48px;
+    border-radius:14px;
+    overflow:hidden;
+    background:rgba(0,0,0,.30);
+    border:1px solid rgba(255,255,255,.16);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:rgba(255,255,255,.75);
+    font-size:13px;
+    font-weight:900;
+    flex:0 0 auto;
+  }
+
+  .vibe26-pin-thumb img,
+  .vibe26-pin-thumb video {
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+  }
+
+  .msg.vibe26-pin-flash {
+    animation:vibe26PinFlash .42s ease-in-out 0s 2 both !important;
+  }
+
+  @keyframes vibe26PinFlash {
+    0%,100% { filter:none; transform:translateZ(0) scale(1); }
+    50% { filter:drop-shadow(0 0 18px rgba(0,242,254,.95)); transform:translateZ(0) scale(1.025); }
+  }
+</style>
+<script id="codex-real-pinned-messages-final">
+(() => {
+  if (window.__vibeRealPinnedMessagesFinal) return;
+  window.__vibeRealPinnedMessagesFinal = true;
+
+  const $ = id => document.getElementById(id);
+  const esc = value => String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+
+  const state = {
+    key: '',
+    pins: [],
+    index: -1,
+    ref: null,
+    cb: null
+  };
+
+  function peerNow() {
+    return (typeof activePeer !== 'undefined' && activePeer) ? activePeer : window.activePeer;
+  }
+
+  function meNow() {
+    return (typeof me !== 'undefined' && me) ? me : window.me;
+  }
+
+  function chatPath(peer) {
+    const user = meNow();
+    if (!peer || !user || !user.id) return '';
+    try {
+      if (typeof window.chatPathFor === 'function') return window.chatPathFor(peer);
+      if (typeof chatPathFor === 'function') return chatPathFor(peer);
+    } catch (error) {}
+    if (peer.type === 'group' || peer.type === 'channel') return `rooms/${peer.id}/messages`;
+    return user.id < peer.id ? `chats/${user.id}_${peer.id}` : `chats/${peer.id}_${user.id}`;
+  }
+
+  function pinsKey(path) {
+    return String(path || '').replace(/[.#$\[\]/]/g, '_');
+  }
+
+  function pinsRef(peer = peerNow()) {
+    const path = chatPath(peer);
+    if (!path || typeof db === 'undefined') return null;
+    return db.ref(`chatPinnedMessages/${pinsKey(path)}`);
+  }
+
+  function currentMode() {
+    return document.body.classList.contains('chat-open-mobile') ? 'mob' : 'pc';
+  }
+
+  function messageEl(id, mode = currentMode()) {
+    return $(`${mode}-msgs-${id}`) || $(`pc-msgs-${id}`) || $(`mob-msgs-${id}`) || $(`msg-${id}`);
+  }
+
+  function mediaUrl(msg) {
+    return (msg && msg.media && msg.media.url) || (msg && msg.val) || '';
+  }
+
+  function pinLabel(msg) {
+    if (!msg) return 'Сообщение';
+    if (msg.type === 'image') return 'Фотография';
+    if (msg.type === 'video') return 'Видео';
+    if (msg.type === 'voice') return 'Голосовое сообщение';
+    if (msg.type === 'file') return (msg.media && msg.media.name) || 'Файл';
+    return String(msg.val || 'Сообщение').replace(/\s+/g, ' ').trim();
+  }
+
+  function pinPayload(id, msg) {
+    const media = (msg && msg.media) || {};
+    return {
+      id,
+      sender: (msg && msg.sender) || '',
+      type: (msg && msg.type) || 'text',
+      text: pinLabel(msg),
+      val: (msg && msg.val) || '',
+      media: {
+        url: media.url || mediaUrl(msg),
+        name: media.name || '',
+        size: media.size || 0
+      },
+      time: (msg && msg.time) || Date.now(),
+      pinnedAt: Date.now(),
+      pinnedBy: (meNow() && meNow().id) || ''
+    };
+  }
+
+  async function selectedMessageData() {
+    const fix = window.vibeFix20260524 || window.vibeFix20260524Final || {};
+    const id = fix.selectedMsgId || window.selectedMsgId || (typeof selectedMsgId !== 'undefined' ? selectedMsgId : '');
+    let msg = fix.selectedMsgData || window.selectedMsgData || null;
+    if (!msg && id) {
+      const path = chatPath(peerNow());
+      try {
+        const snap = await db.ref(`${path}/${id}`).once('value');
+        msg = snap.val();
+      } catch (error) {}
+    }
+    return { id, msg };
+  }
+
+  function ensureMenuButton() {
+    const menu = $('context-menu');
+    if (!menu || $('vibe-pin-message-btn')) return;
+    const item = document.createElement('div');
+    item.className = 'menu-item';
+    item.id = 'vibe-pin-message-btn';
+    item.onclick = () => window.vibeTogglePinnedMessage();
+    item.innerHTML = '<svg viewBox="0 0 24 24"><path d="M14.8 3.7v5.1l2.4 2.4v1.9H13v6.2L12 21l-1-1.7v-6.2H6.8v-1.9l2.4-2.4V3.7h5.6Z"/></svg><span>Закрепить</span>';
+    const fav = menu.querySelector('[onclick*="sendToFavorites"]');
+    if (fav && fav.nextSibling) menu.insertBefore(item, fav.nextSibling);
+    else menu.insertBefore(item, menu.children[2] || null);
+  }
+
+  async function updateMenuButton() {
+    ensureMenuButton();
+    const btn = $('vibe-pin-message-btn');
+    if (!btn) return;
+    const label = btn.querySelector('span');
+    const { id } = await selectedMessageData();
+    const exists = !!(id && state.pins.some(pin => pin.id === id));
+    if (label) label.textContent = exists ? 'Открепить' : 'Закрепить';
+  }
+
+  window.vibeTogglePinnedMessage = async function() {
+    const ref = pinsRef();
+    const { id, msg } = await selectedMessageData();
+    if (!ref || !id) return;
+    const exists = state.pins.some(pin => pin.id === id);
+    if (exists) await ref.child(id).remove();
+    else await ref.child(id).set(pinPayload(id, msg || { val: window.selectedMsgText || '' }));
+    const menu = $('context-menu');
+    if (menu) menu.style.display = 'none';
+  };
+
+  function thumbHtml(pin) {
+    const url = pin && pin.media && pin.media.url;
+    if (pin.type === 'image' && url) return `<div class="vibe26-pin-thumb"><img src="${esc(url)}" alt=""></div>`;
+    if (pin.type === 'video' && url) return `<div class="vibe26-pin-thumb"><video src="${esc(url)}" muted playsinline></video></div>`;
+    if (pin.type === 'file') return '<div class="vibe26-pin-thumb">FILE</div>';
+    if (pin.type === 'voice') return '<div class="vibe26-pin-thumb">MIC</div>';
+    return '';
+  }
+
+  function renderPinBar() {
+    ['pc', 'mob'].forEach(mode => {
+      const pin = $(`${mode}-vibe26-pin`);
+      if (!pin) return;
+      if (!state.pins.length) {
+        pin.classList.remove('active', 'vibe26-pin-has-media');
+        pin.removeAttribute('data-pin-id');
+        pin.removeAttribute('data-real-pins');
+        return;
+      }
+      const item = state.pins[Math.max(0, Math.min(state.index < 0 ? 0 : state.index, state.pins.length - 1))] || state.pins[0];
+      const hasMedia = item.type === 'image' || item.type === 'video' || item.type === 'file' || item.type === 'voice';
+      pin.classList.add('active');
+      pin.classList.toggle('vibe26-pin-has-media', hasMedia);
+      pin.dataset.realPins = '1';
+      pin.dataset.pinId = item.id;
+      pin.innerHTML = `
+        <div class="vibe26-pin-rail"></div>
+        ${thumbHtml(item)}
+        <div style="min-width:0">
+          <div class="vibe26-pin-title">Закреплённое сообщение</div>
+          <div class="vibe26-pin-text">${esc(item.text || pinLabel(item))}</div>
+        </div>
+        <div class="vibe26-pin-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4.5v5.1l2.9 2.9v2H13v5.1L12 21l-1-1.4v-5.1H6.6v-2l2.9-2.9V4.5h5Z"/><path d="M4 15h4"/><path d="M3 11h4"/></svg></div>`;
+      pin.onclick = () => cyclePinned(mode);
+    });
+  }
+
+  function flashMessage(el) {
+    if (!el) return;
+    el.classList.remove('vibe26-pin-flash');
+    void el.offsetWidth;
+    el.classList.add('vibe26-pin-flash');
+    setTimeout(() => el.classList.remove('vibe26-pin-flash'), 1000);
+  }
+
+  function cyclePinned(mode = currentMode()) {
+    if (!state.pins.length) return;
+    state.index = (state.index + 1) % state.pins.length;
+    const item = state.pins[state.index];
+    renderPinBar();
+    const el = messageEl(item.id, mode);
+    if (el) {
+      el.scrollIntoView({ block:'center', behavior:'smooth' });
+      setTimeout(() => flashMessage(el), 360);
+    }
+  }
+
+  function bindPins() {
+    const ref = pinsRef();
+    const key = pinsKey(chatPath(peerNow()));
+    if (!ref || !key || state.key === key) return;
+    if (state.ref && state.cb) state.ref.off('value', state.cb);
+    state.key = key;
+    state.ref = ref;
+    state.pins = [];
+    state.index = -1;
+    renderPinBar();
+    state.cb = snap => {
+      const value = snap.val() || {};
+      state.pins = Object.values(value).filter(Boolean).sort((a, b) => (a.pinnedAt || 0) - (b.pinnedAt || 0));
+      if (state.index >= state.pins.length) state.index = -1;
+      renderPinBar();
+      updateMenuButton();
+    };
+    ref.on('value', state.cb);
+  }
+
+  const baseShowMsgMenu = window.showMsgMenu;
+  window.showMsgMenu = function(...args) {
+    const result = typeof baseShowMsgMenu === 'function' ? baseShowMsgMenu.apply(this, args) : false;
+    setTimeout(() => {
+      bindPins();
+      updateMenuButton();
+    }, 0);
+    return result;
+  };
+
+  function boot() {
+    ensureMenuButton();
+    bindPins();
+    renderPinBar();
+  }
+
+  const baseOpenMob = window.openMobChat;
+  if (typeof baseOpenMob === 'function') {
+    window.openMobChat = function(...args) {
+      const result = baseOpenMob.apply(this, args);
+      setTimeout(boot, 80);
+      return result;
+    };
+  }
+
+  const baseOpenPc = window.openPCChat;
+  if (typeof baseOpenPc === 'function') {
+    window.openPCChat = function(...args) {
+      const result = baseOpenPc.apply(this, args);
+      setTimeout(boot, 80);
+      return result;
+    };
+  }
+
+  window.addEventListener('load', () => setTimeout(boot, 500));
+  setInterval(() => {
+    ensureMenuButton();
+    if (peerNow()) bindPins();
+    if (state.pins.length) renderPinBar();
+  }, 1200);
 })();
 </script>
 </body>
