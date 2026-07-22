@@ -11525,10 +11525,27 @@ window.openArchiveModal = function() {
     min-height: 58px !important;
     border-radius: 999px !important;
     padding: 0 18px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 13px !important;
+    box-sizing: border-box !important;
+  }
+  .vibe-search-sheet .vibe-search-input-wrap svg {
+    width: 28px !important;
+    height: 28px !important;
+    flex: 0 0 28px !important;
+    transform: translateY(1px) !important;
   }
   .vibe-search-sheet .vibe-search-input-wrap input {
     height: 58px !important;
     font-size: 22px !important;
+    width: min(55vw, 220px) !important;
+    max-width: 220px !important;
+    min-width: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    line-height: 58px !important;
   }
   .vibe-search-sheet .vibe-search-section-title {
     position: relative !important;
@@ -11542,6 +11559,22 @@ window.openArchiveModal = function() {
   .vibe-search-sheet .vibe-search-list {
     position: relative !important;
     z-index: 1 !important;
+  }
+  .vibe-search-sheet.vibe-search-has-query #vibe-people-search-recents,
+  .vibe-search-sheet.vibe-search-has-query #vibe-people-search-recents-title,
+  .vibe-search-sheet.vibe-search-has-query .vibe-search-recents-title {
+    display: none !important;
+  }
+  .vibe-search-sheet.vibe-search-has-query #vibe-people-search-results,
+  .vibe-search-sheet.vibe-search-has-query #vibe-people-search-results-title {
+    display: flex !important;
+  }
+  .vibe-search-sheet:not(.vibe-search-has-query) #vibe-people-search-results,
+  .vibe-search-sheet:not(.vibe-search-has-query) #vibe-people-search-results-title {
+    display: none !important;
+  }
+  .vibe-search-sheet:not(.vibe-search-has-query) #vibe-people-search-recents {
+    display: flex !important;
   }
 </style>
 <script id="codex-main-menu-cloud-sync-final">
@@ -14677,7 +14710,7 @@ window.openArchiveModal = function() {
         <button class="vibe-search-close" onclick="vibeClosePeopleSearch()">${icon('close')}</button>
         <div class="vibe-search-input-wrap">${icon('search')}<input id="vibe-people-search-input" placeholder="Поиск" autocomplete="off" oninput="vibePeopleSearchInput(this.value)"></div>
       </div>
-      <div class="vibe-search-section-title">Недавние</div>
+      <div class="vibe-search-section-title vibe-search-recents-title" id="vibe-people-search-recents-title">Недавние</div>
       <div id="vibe-people-search-recents" class="vibe-search-list"></div>
       <div class="vibe-search-section-title" id="vibe-people-search-results-title" style="display:none;">Результаты</div>
       <div id="vibe-people-search-results" class="vibe-search-list"></div>
@@ -17057,24 +17090,26 @@ window.openArchiveModal = function() {
     const recents = $('vibe-people-search-recents');
     const results = $('vibe-people-search-results');
     const resultsTitle = $('vibe-people-search-results-title');
+    const sheet = document.querySelector('.vibe-search-sheet');
     if (!input || !recents || !results) return;
 
     const query = input.value.trim();
-    const recentsTitle = titleBefore(recents);
+    const recentsTitle = $('vibe-people-search-recents-title') || titleBefore(recents);
     const hasQuery = query.length > 0;
+    if (sheet) sheet.classList.toggle('vibe-search-has-query', hasQuery);
 
     if (hasQuery) {
-      recents.style.display = 'none';
-      if (recentsTitle) recentsTitle.style.display = 'none';
-      results.style.display = '';
-      if (resultsTitle) resultsTitle.style.display = '';
+      recents.style.setProperty('display', 'none', 'important');
+      if (recentsTitle) recentsTitle.style.setProperty('display', 'none', 'important');
+      results.style.setProperty('display', 'flex', 'important');
+      if (resultsTitle) resultsTitle.style.setProperty('display', 'block', 'important');
       if (!results.innerHTML.trim()) results.innerHTML = '<div class="vibe-search-empty">Ищу...</div>';
     } else {
       results.innerHTML = '';
-      results.style.display = 'none';
-      if (resultsTitle) resultsTitle.style.display = 'none';
-      recents.style.display = '';
-      if (recentsTitle) recentsTitle.style.display = '';
+      results.style.setProperty('display', 'none', 'important');
+      if (resultsTitle) resultsTitle.style.setProperty('display', 'none', 'important');
+      recents.style.setProperty('display', 'flex', 'important');
+      if (recentsTitle) recentsTitle.style.setProperty('display', 'block', 'important');
       if (typeof window.renderRecents === 'function') window.renderRecents();
     }
     lastQuery = query;
