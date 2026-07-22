@@ -288,7 +288,7 @@ button:disabled {
     width: 100vw;
     height: 100vh;
     background: #000;
-    z-index: 999999999;
+    z-index: 2147483600;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -15710,6 +15710,861 @@ window.openArchiveModal = function() {
   installProfilePolishStyle();
   document.addEventListener('DOMContentLoaded', installProfilePolishStyle);
   setInterval(installProfilePolishStyle, 1200);
+})();
+</script>
+<script id="codex-mobile-liquid-nav-copy-final">
+(() => {
+  const ITEMS = {
+    home: { label: 'Чаты', icon: 'Эконки/Чаты.jpg' },
+    profile: { label: 'Профиль', icon: 'Эконки/Профель.png' },
+    settings: { label: 'Настройки', icon: 'Эконки/Настройки.png' }
+  };
+  const DEFAULT_ORDER = ['home', 'profile', 'settings'];
+  const BAD_ITEMS = new Set(['contacts', 'contact', 'search']);
+  const $ = id => document.getElementById(id);
+  const isMobile = () => window.innerWidth <= 768;
+  const meNow = () => (typeof me !== 'undefined' && me) ? me : window.me;
+  const esc = value => String(value ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  let pressTimer = null;
+  let draggingId = null;
+  let dragStarted = false;
+  let suppressClick = false;
+  let editMode = false;
+  let scrubbing = false;
+  let longPressShown = false;
+  let reorderDragId = null;
+  let reorderStartX = 0;
+  let reorderStartY = 0;
+  let reorderOrder = null;
+  let reorderDragItem = null;
+  let reorderGhost = null;
+  let startX = 0;
+  let startY = 0;
+
+  function storageKey() {
+    const user = meNow();
+    return `vibe_mobile_liquid_nav_order_${(user && user.id) || 'guest'}`;
+  }
+
+  function cleanOrder(order) {
+    const list = Array.isArray(order) ? order : [];
+    const normalized = list.map(id => id === 'search' ? 'profile' : id).filter(id => ITEMS[id] && !BAD_ITEMS.has(id));
+    DEFAULT_ORDER.forEach(id => { if (!normalized.includes(id)) normalized.push(id); });
+    return normalized.filter((id, index, arr) => arr.indexOf(id) === index).slice(0, 3);
+  }
+
+  function getOrder() {
+    const user = meNow();
+    let saved = null;
+    try { saved = JSON.parse(localStorage.getItem(storageKey()) || 'null'); } catch (error) {}
+    const fromUser = user && user.settings && user.settings.mainMenu && user.settings.mainMenu.mobileNavOrder;
+    const legacy = user && user.settings && user.settings.mainMenu && user.settings.mainMenu.navOrder;
+    return cleanOrder(saved || fromUser || legacy || DEFAULT_ORDER);
+  }
+
+  async function saveOrder(order) {
+    const user = meNow();
+    const clean = cleanOrder(order);
+    try { localStorage.setItem(storageKey(), JSON.stringify(clean)); } catch (error) {}
+    if (user) {
+      user.settings = user.settings || {};
+      user.settings.mainMenu = user.settings.mainMenu || {};
+      user.settings.mainMenu.mobileNavOrder = clean;
+      try { localStorage.setItem('liquid_pro_v32', JSON.stringify(user)); } catch (error) {}
+      if (typeof db !== 'undefined' && user.id) {
+        try { await db.ref(`users/${user.id}/settings/mainMenu/mobileNavOrder`).set(clean); } catch (error) {}
+      }
+    }
+    return clean;
+  }
+
+  function activeId() {
+    const screen = document.querySelector('.mob-screen.active');
+    const id = screen && screen.id ? screen.id.replace(/^mob-/, '') : 'home';
+    return id === 'search' ? 'profile' : (ITEMS[id] ? id : 'home');
+  }
+
+  function installStyle() {
+    let style = $('codex-mobile-liquid-nav-copy-style');
+    if (!style) {
+      style = document.createElement('style');
+      style.id = 'codex-mobile-liquid-nav-copy-style';
+      document.head.appendChild(style);
+    }
+    style.textContent = `
+      @media (max-width: 768px) {
+        .bottom-nav.vibe-liquid-copy-nav {
+          position: fixed !important;
+          left: max(14px, env(safe-area-inset-left, 0px)) !important;
+          right: max(14px, env(safe-area-inset-right, 0px)) !important;
+          bottom: calc(12px + env(safe-area-inset-bottom, 0px)) !important;
+          height: 70px !important;
+          padding: 7px !important;
+          display: grid !important;
+          grid-template-columns: repeat(var(--nav-count, 3), minmax(0, 1fr)) !important;
+          align-items: center !important;
+          gap: 5px !important;
+          border-radius: 999px !important;
+          border: 1px solid rgba(255,255,255,.28) !important;
+          background:
+            radial-gradient(circle at 18% 0%, rgba(255,255,255,.16), transparent 30%),
+            linear-gradient(145deg, rgba(255,255,255,.07), rgba(255,255,255,.012) 48%, rgba(0,0,0,.03)),
+            rgba(22,22,26,.018) !important;
+          box-shadow:
+            inset 0 1px 0 rgba(255,255,255,.28),
+            inset 0 -18px 30px rgba(0,0,0,.055),
+            0 18px 44px rgba(0,0,0,.20) !important;
+          backdrop-filter: blur(42px) saturate(280%) contrast(1.08) !important;
+          -webkit-backdrop-filter: blur(42px) saturate(280%) contrast(1.08) !important;
+          overflow: visible !important;
+          z-index: 2147481200 !important;
+          touch-action: none !important;
+        }
+        body:has(#intro-screen) .bottom-nav.vibe-liquid-copy-nav,
+        body.vibe-intro-active .bottom-nav.vibe-liquid-copy-nav {
+          display: none !important;
+        }
+        .bottom-nav.vibe-liquid-copy-nav::before {
+          content: "" !important;
+          position: absolute !important;
+          inset: 1px 10px auto 10px !important;
+          height: 38% !important;
+          border-radius: inherit !important;
+          background: linear-gradient(to bottom, rgba(255,255,255,.24), rgba(255,255,255,0)) !important;
+          pointer-events: none !important;
+        }
+        .bottom-nav.vibe-liquid-copy-nav .nav-indicator {
+          position: absolute !important;
+          left: 7px !important;
+          top: 7px !important;
+          width: var(--nav-item-width, 56px) !important;
+          height: 56px !important;
+          border-radius: 999px !important;
+          background:
+            linear-gradient(145deg, rgba(255,255,255,.22), rgba(255,255,255,.085) 48%, rgba(0,0,0,.14)),
+            rgba(34,34,40,.18) !important;
+          box-shadow:
+            inset 0 1px 0 rgba(255,255,255,.36),
+            inset 0 -14px 24px rgba(0,0,0,.16),
+            0 10px 28px rgba(0,0,0,.22) !important;
+          transform: translate3d(var(--nav-x, 7px), 0, 0) !important;
+          transition: transform .58s cubic-bezier(.16,1,.2,1), width .28s ease, border-radius .36s cubic-bezier(.16,1,.2,1) !important;
+          z-index: 0 !important;
+        }
+        .bottom-nav.vibe-liquid-copy-nav .nav-indicator::after {
+          content: none !important;
+          display: none !important;
+        }
+        .bottom-nav.vibe-liquid-copy-nav.vibe-nav-editing .nav-indicator {
+          border-radius: 999px !important;
+          transform: translate3d(var(--nav-x, var(--drag-x, 7px)), 0, 0) scale(1.03) !important;
+          transition: transform .12s ease-out, border-radius .28s ease !important;
+        }
+        .bottom-nav.vibe-liquid-copy-nav.vibe-nav-scrubbing .nav-indicator {
+          transform: translate3d(var(--nav-x, var(--drag-x, 7px)), 0, 0) scale(1.04) !important;
+          transition: transform .055s linear, border-radius .18s ease !important;
+        }
+        .bottom-nav.vibe-liquid-copy-nav.vibe-nav-scrubbing,
+        .bottom-nav.vibe-liquid-copy-nav.vibe-nav-traveling,
+        body.vibe-nav-is-traveling .bottom-nav.vibe-liquid-copy-nav {
+          background: rgba(255,255,255,.018) !important;
+          border-color: rgba(255,255,255,.10) !important;
+          box-shadow:
+            inset 0 1px 0 rgba(255,255,255,.12),
+            0 10px 28px rgba(0,0,0,.10) !important;
+          backdrop-filter: blur(28px) saturate(220%) contrast(1.04) !important;
+          -webkit-backdrop-filter: blur(28px) saturate(220%) contrast(1.04) !important;
+        }
+        .bottom-nav.vibe-liquid-copy-nav.vibe-nav-scrubbing::before,
+        .bottom-nav.vibe-liquid-copy-nav.vibe-nav-traveling::before,
+        body.vibe-nav-is-traveling .bottom-nav.vibe-liquid-copy-nav::before {
+          opacity: 0 !important;
+        }
+        .bottom-nav.vibe-liquid-copy-nav.vibe-nav-scrubbing .nav-indicator,
+        .bottom-nav.vibe-liquid-copy-nav.vibe-nav-traveling .nav-indicator,
+        body.vibe-nav-is-traveling .bottom-nav.vibe-liquid-copy-nav .nav-indicator {
+          background: rgba(255,255,255,.022) !important;
+          border-color: rgba(255,255,255,.08) !important;
+          box-shadow:
+            inset 0 1px 0 rgba(255,255,255,.13),
+            0 8px 20px rgba(0,0,0,.10) !important;
+          backdrop-filter: blur(24px) saturate(210%) contrast(1.03) !important;
+          -webkit-backdrop-filter: blur(24px) saturate(210%) contrast(1.03) !important;
+        }
+        .bottom-nav.vibe-liquid-copy-nav.vibe-nav-scrubbing .nav-indicator::after,
+        .bottom-nav.vibe-liquid-copy-nav.vibe-nav-traveling .nav-indicator::after,
+        body.vibe-nav-is-traveling .bottom-nav.vibe-liquid-copy-nav .nav-indicator::after {
+          opacity: 0 !important;
+          display: none !important;
+        }
+        .bottom-nav.vibe-liquid-copy-nav .nav-item {
+          position: relative !important;
+          z-index: 2 !important;
+          width: 100% !important;
+          height: 56px !important;
+          min-width: 0 !important;
+          border-radius: 999px !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          opacity: .58 !important;
+          transform: none !important;
+          transition: opacity .22s ease, transform .24s cubic-bezier(.2,.9,.2,1), filter .22s ease !important;
+          -webkit-tap-highlight-color: transparent !important;
+          touch-action: none !important;
+        }
+        .bottom-nav.vibe-liquid-copy-nav .nav-item.active {
+          opacity: 1 !important;
+          transform: scale(1.04) !important;
+        }
+        .bottom-nav.vibe-liquid-copy-nav.vibe-nav-editing .nav-item {
+          animation: vibeLiquidNavWiggle .82s ease-in-out infinite alternate !important;
+        }
+        .bottom-nav.vibe-liquid-copy-nav.vibe-nav-editing .nav-item:nth-child(2n) {
+          animation-delay: -.25s !important;
+        }
+        .bottom-nav.vibe-liquid-copy-nav .nav-item.dragging {
+          opacity: 1 !important;
+          transform: scale(1.12) !important;
+        }
+        .bottom-nav.vibe-liquid-copy-nav .nav-item:active {
+          transform: scale(.97) !important;
+        }
+        .bottom-nav.vibe-liquid-copy-nav .nav-icon {
+          width: 29px !important;
+          height: 29px !important;
+          border-radius: 9px !important;
+          object-fit: contain !important;
+          filter: grayscale(.12) brightness(1.04) drop-shadow(0 2px 7px rgba(0,0,0,.28)) !important;
+        }
+        .bottom-nav.vibe-liquid-copy-nav .nav-item.active .nav-icon {
+          filter: brightness(1.18) drop-shadow(0 4px 12px rgba(0,0,0,.30)) !important;
+        }
+        body.chat-open-mobile .bottom-nav.vibe-liquid-copy-nav {
+          display: none !important;
+        }
+        #mob-contacts { padding-bottom: 128px !important; }
+        .vibe-liquid-reorder-hint {
+          position: fixed !important;
+          left: 50% !important;
+          bottom: calc(92px + env(safe-area-inset-bottom, 0px)) !important;
+          transform: translateX(-50%) translateY(8px) scale(.96) !important;
+          z-index: 2147481300 !important;
+          opacity: 0 !important;
+          pointer-events: none !important;
+          padding: 9px 16px !important;
+          border-radius: 999px !important;
+          color: #fff !important;
+          font-size: 13px !important;
+          font-weight: 850 !important;
+          background: linear-gradient(145deg, rgba(255,255,255,.18), rgba(255,255,255,.07)), rgba(18,18,22,.55) !important;
+          border: 1px solid rgba(255,255,255,.16) !important;
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.22), 0 14px 32px rgba(0,0,0,.30) !important;
+          backdrop-filter: blur(24px) saturate(190%) !important;
+          -webkit-backdrop-filter: blur(24px) saturate(190%) !important;
+          transition: opacity .2s ease, transform .22s cubic-bezier(.2,.9,.2,1) !important;
+        }
+        .vibe-liquid-reorder-hint.visible {
+          opacity: 1 !important;
+          pointer-events: auto !important;
+          transform: translateX(-50%) translateY(0) scale(1) !important;
+        }
+        .vibe-liquid-reorder-hint:active {
+          transform: translateX(-50%) translateY(0) scale(.96) !important;
+        }
+        .vibe-liquid-reorder-sheet {
+          position: fixed !important;
+          left: 14px !important;
+          right: 14px !important;
+          bottom: calc(96px + env(safe-area-inset-bottom, 0px)) !important;
+          z-index: 2147481320 !important;
+          border-radius: 30px !important;
+          padding: 12px !important;
+          display: none !important;
+          grid-template-columns: repeat(var(--nav-count, 3), minmax(0, 1fr)) !important;
+          gap: 8px !important;
+          align-items: center !important;
+          background: linear-gradient(145deg, rgba(255,255,255,.10), rgba(255,255,255,.025)), rgba(20,20,24,.07) !important;
+          border: 1px solid rgba(255,255,255,.20) !important;
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.26), 0 18px 44px rgba(0,0,0,.24) !important;
+          backdrop-filter: blur(34px) saturate(240%) !important;
+          -webkit-backdrop-filter: blur(34px) saturate(240%) !important;
+          animation: vibeLiquidSheetIn .24s cubic-bezier(.2,.9,.2,1) both !important;
+        }
+        .vibe-liquid-reorder-sheet.visible {
+          display: grid !important;
+        }
+        .vibe-liquid-reorder-title {
+          grid-column: 1 / -1 !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: space-between !important;
+          gap: 10px !important;
+          padding: 0 2px 4px !important;
+          color: rgba(255,255,255,.86) !important;
+          font-size: 13px !important;
+          font-weight: 850 !important;
+        }
+        .vibe-liquid-reorder-done {
+          border: 1px solid rgba(255,255,255,.18) !important;
+          border-radius: 999px !important;
+          padding: 7px 13px !important;
+          color: #fff !important;
+          font-size: 12px !important;
+          font-weight: 850 !important;
+          background: linear-gradient(145deg, rgba(255,255,255,.17), rgba(255,255,255,.055)), rgba(255,255,255,.05) !important;
+          backdrop-filter: blur(22px) saturate(210%) !important;
+          -webkit-backdrop-filter: blur(22px) saturate(210%) !important;
+        }
+        .vibe-liquid-reorder-item {
+          flex: 1 1 0 !important;
+          height: 54px !important;
+          border-radius: 22px !important;
+          border: 1px solid rgba(255,255,255,.16) !important;
+          background: linear-gradient(145deg, rgba(255,255,255,.18), rgba(255,255,255,.06)), rgba(255,255,255,.04) !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          gap: 7px !important;
+          color: #fff !important;
+          font-size: 12px !important;
+          font-weight: 850 !important;
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.18), 0 10px 24px rgba(0,0,0,.18) !important;
+          touch-action: none !important;
+          transition: transform .18s cubic-bezier(.2,.9,.2,1), opacity .18s ease, box-shadow .18s ease !important;
+          user-select: none !important;
+        }
+        .vibe-liquid-reorder-item.placeholder {
+          opacity: .36 !important;
+          transform: scale(.94) !important;
+        }
+        .vibe-liquid-reorder-item img {
+          width: 23px !important;
+          height: 23px !important;
+          object-fit: contain !important;
+          border-radius: 7px !important;
+        }
+        .vibe-liquid-reorder-item.dragging {
+          opacity: .9 !important;
+          z-index: 3 !important;
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.26), 0 18px 38px rgba(0,0,0,.30) !important;
+        }
+        .vibe-liquid-reorder-ghost {
+          position: fixed !important;
+          z-index: 2147481500 !important;
+          margin: 0 !important;
+          pointer-events: none !important;
+          border-radius: 22px !important;
+          border: 1px solid rgba(255,255,255,.20) !important;
+          background: linear-gradient(145deg, rgba(255,255,255,.20), rgba(255,255,255,.07)), rgba(255,255,255,.055) !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          gap: 7px !important;
+          color: #fff !important;
+          font-size: 12px !important;
+          font-weight: 850 !important;
+          box-shadow: inset 0 1px 0 rgba(255,255,255,.28), 0 18px 38px rgba(0,0,0,.30) !important;
+          backdrop-filter: blur(26px) saturate(220%) !important;
+          -webkit-backdrop-filter: blur(26px) saturate(220%) !important;
+          will-change: transform !important;
+        }
+        .vibe-liquid-reorder-ghost img {
+          width: 23px !important;
+          height: 23px !important;
+          object-fit: contain !important;
+          border-radius: 7px !important;
+        }
+        @keyframes vibeLiquidSheetIn {
+          from { opacity: 0; transform: translateY(10px) scale(.97); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes vibeLiquidNavWiggle {
+          from { transform: rotate(-1.2deg) scale(1.01); }
+          to { transform: rotate(1.2deg) scale(1.035); }
+        }
+      }
+    `;
+  }
+
+  function hint(show) {
+    let node = document.querySelector('.vibe-liquid-reorder-hint');
+    if (!node) {
+      node = document.createElement('button');
+      node.type = 'button';
+      node.className = 'vibe-liquid-reorder-hint';
+      node.textContent = 'Изменить порядок';
+      node.addEventListener('click', event => {
+        event.preventDefault();
+        event.stopPropagation();
+        editMode = true;
+        longPressShown = false;
+        suppressClick = true;
+        setEditing(true);
+        hint(false);
+        renderReorderSheet(true);
+        try { navigator.vibrate && navigator.vibrate([10, 18, 10]); } catch (error) {}
+        setTimeout(() => { suppressClick = false; }, 120);
+      }, true);
+      document.body.appendChild(node);
+    }
+    node.classList.toggle('visible', !!show);
+  }
+
+  function reorderSheet() {
+    let sheet = document.querySelector('.vibe-liquid-reorder-sheet');
+    if (!sheet) {
+      sheet = document.createElement('div');
+      sheet.className = 'vibe-liquid-reorder-sheet';
+      document.body.appendChild(sheet);
+    }
+    return sheet;
+  }
+
+  function reorderIndexFromClientX(clientX, sheet) {
+    const order = getOrder();
+    const rect = sheet.getBoundingClientRect();
+    const slot = rect.width / Math.max(1, order.length);
+    return Math.max(0, Math.min(order.length - 1, Math.floor((clientX - rect.left) / slot)));
+  }
+
+  function bindReorderSheet(sheet) {
+    if (!sheet || sheet.dataset.bound === '1') return;
+    sheet.dataset.bound = '1';
+    sheet.addEventListener('click', event => {
+      const done = event.target.closest && event.target.closest('.vibe-liquid-reorder-done');
+      if (!done) return;
+      event.preventDefault();
+      event.stopPropagation();
+      longPressShown = false;
+      hint(false);
+      closeReorderSheet();
+      renderNav();
+    }, true);
+    sheet.addEventListener('pointerdown', event => {
+      const item = event.target.closest && event.target.closest('.vibe-liquid-reorder-item');
+      if (!item) return;
+      event.preventDefault();
+      event.stopPropagation();
+      reorderDragId = item.dataset.navId;
+      reorderStartX = event.clientX;
+      reorderStartY = event.clientY;
+      reorderOrder = getOrder();
+      reorderDragItem = item;
+      const rect = item.getBoundingClientRect();
+      item.classList.add('dragging');
+      item.classList.add('placeholder');
+      reorderGhost = item.cloneNode(true);
+      reorderGhost.className = 'vibe-liquid-reorder-ghost';
+      reorderGhost.style.left = `${rect.left}px`;
+      reorderGhost.style.top = `${rect.top}px`;
+      reorderGhost.style.width = `${rect.width}px`;
+      reorderGhost.style.height = `${rect.height}px`;
+      document.body.appendChild(reorderGhost);
+      suppressClick = true;
+      try { item.setPointerCapture(event.pointerId); } catch (error) {}
+    }, true);
+    sheet.addEventListener('pointermove', event => {
+      if (!reorderDragId) return;
+      event.preventDefault();
+      if (reorderGhost) reorderGhost.style.transform = `translate3d(${event.clientX - reorderStartX}px, ${event.clientY - reorderStartY}px, 0) scale(1.08)`;
+    }, true);
+    const finish = event => {
+      if (!reorderDragId) return;
+      event.preventDefault();
+      event.stopPropagation();
+      const order = Array.isArray(reorderOrder) ? reorderOrder : getOrder();
+      const from = order.indexOf(reorderDragId);
+      const to = reorderIndexFromClientX(event.clientX || reorderStartX, sheet);
+      const next = order.slice();
+      if (from >= 0 && to >= 0 && from !== to) {
+        const [moved] = next.splice(from, 1);
+        next.splice(to, 0, moved);
+      }
+      reorderDragId = null;
+      reorderOrder = null;
+      reorderDragItem = null;
+      if (reorderGhost) {
+        reorderGhost.remove();
+        reorderGhost = null;
+      }
+      suppressClick = true;
+      saveOrder(cleanOrder(next)).then(() => {
+        renderReorderSheet(true);
+        renderNav();
+        setEditing(true);
+      });
+      setTimeout(() => { suppressClick = false; }, 100);
+    };
+    sheet.addEventListener('pointerup', finish, true);
+    sheet.addEventListener('pointercancel', finish, true);
+  }
+
+  function applyReorderVisualOrder(sheet, order) {
+    if (!sheet) return;
+    const title = sheet.querySelector('.vibe-liquid-reorder-title');
+    if (title) title.style.order = '0';
+    order.forEach((id, index) => {
+      const item = sheet.querySelector(`.vibe-liquid-reorder-item[data-nav-id="${id}"]`);
+      if (item) item.style.order = String(index + 1);
+    });
+  }
+
+  function renderReorderSheet(show) {
+    const sheet = reorderSheet();
+    bindReorderSheet(sheet);
+    const order = getOrder();
+    sheet.style.setProperty('--nav-count', String(order.length));
+    sheet.innerHTML = `<div class="vibe-liquid-reorder-title"><span>Изменить порядок</span><button class="vibe-liquid-reorder-done" type="button">Готово</button></div>` + order.map(id => {
+      const item = ITEMS[id];
+      return `<button class="vibe-liquid-reorder-item" type="button" data-nav-id="${esc(id)}"><img src="${esc(item.icon)}" alt="${esc(item.label)}"><span>${esc(item.label)}</span></button>`;
+    }).join('');
+    applyReorderVisualOrder(sheet, order);
+    sheet.classList.toggle('visible', !!show);
+  }
+
+  function closeReorderSheet() {
+    const sheet = document.querySelector('.vibe-liquid-reorder-sheet');
+    if (sheet) sheet.classList.remove('visible');
+    reorderDragId = null;
+    reorderStartX = 0;
+    reorderStartY = 0;
+    reorderOrder = null;
+    reorderDragItem = null;
+    if (reorderGhost) {
+      reorderGhost.remove();
+      reorderGhost = null;
+    }
+    setEditing(false);
+  }
+
+  function setEditing(enabled) {
+    const nav = document.querySelector('.bottom-nav');
+    if (!nav) return;
+    nav.classList.toggle('vibe-nav-editing', !!enabled);
+    if (!enabled) editMode = false;
+    if (!enabled) {
+      nav.style.removeProperty('--drag-x');
+      nav.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('dragging'));
+    }
+  }
+
+  function indicatorXForIndex(index) {
+    const nav = document.querySelector('.bottom-nav');
+    if (!nav) return 7;
+    const rect = nav.getBoundingClientRect();
+    const order = getOrder();
+    const count = Math.max(1, order.length);
+    const gap = 5;
+    const inner = Math.max(56, rect.width - 14);
+    const itemWidth = Math.max(56, (inner - gap * (count - 1)) / count);
+    nav.style.setProperty('--nav-item-width', `${itemWidth}px`);
+    return Math.max(7, Math.min(rect.width - itemWidth - 7, 7 + (itemWidth + gap) * index));
+  }
+
+  function setIndicatorX(x) {
+    const nav = document.querySelector('.bottom-nav');
+    if (!nav) return;
+    const rect = nav.getBoundingClientRect();
+    const indicator = nav.querySelector('.nav-indicator');
+    const width = indicator ? Math.max(56, indicator.getBoundingClientRect().width) : 56;
+    const clamped = Math.max(7, Math.min(rect.width - width - 7, x));
+    nav.style.setProperty('--nav-x', `${clamped}px`);
+    nav.style.setProperty('--drag-x', `${clamped}px`);
+  }
+
+  function setIndicatorFromPointer(clientX) {
+    const nav = document.querySelector('.bottom-nav');
+    if (!nav) return;
+    const rect = nav.getBoundingClientRect();
+    const indicator = nav.querySelector('.nav-indicator');
+    const width = indicator ? Math.max(56, indicator.getBoundingClientRect().width) : 56;
+    setIndicatorX(clientX - rect.left - width / 2);
+    const index = indexFromClientX(clientX);
+    nav.querySelectorAll('.nav-item').forEach((btn, itemIndex) => btn.classList.toggle('active', itemIndex === index));
+  }
+
+  function indexFromClientX(x) {
+    const nav = document.querySelector('.bottom-nav');
+    if (!nav) return 0;
+    const rect = nav.getBoundingClientRect();
+    const order = getOrder();
+    const slot = rect.width / Math.max(1, order.length);
+    return Math.max(0, Math.min(order.length - 1, Math.floor((x - rect.left) / slot)));
+  }
+
+  function setDropIndex(index) {
+    const nav = document.querySelector('.bottom-nav');
+    if (!nav) return;
+    nav.style.setProperty('--nav-index', String(index));
+    setIndicatorX(indicatorXForIndex(index));
+    nav.querySelectorAll('.nav-item').forEach((btn, itemIndex) => btn.classList.toggle('active', itemIndex === index));
+  }
+
+  function openNavItem(id, fallbackIndex) {
+    const order = getOrder();
+    const normalized = id === 'search' ? 'profile' : id;
+    const to = Math.max(0, order.indexOf(normalized));
+    const index = to >= 0 ? to : Math.max(0, fallbackIndex || 0);
+    const nav = document.querySelector('.bottom-nav');
+    document.body.classList.add('vibe-nav-is-traveling');
+    if (nav) nav.classList.add('vibe-nav-traveling');
+    setDropIndex(index);
+    setTimeout(() => window.mobNavControl(normalized, index), 135);
+    setTimeout(() => {
+      const current = document.querySelector('.bottom-nav');
+      if (current) current.classList.remove('vibe-nav-traveling');
+      document.body.classList.remove('vibe-nav-is-traveling');
+    }, 520);
+  }
+
+  function renderNav() {
+    if (!isMobile()) return;
+    installStyle();
+    const nav = document.querySelector('.bottom-nav');
+    if (!nav) return;
+    if (dragStarted) return;
+    const order = getOrder();
+    const active = activeId();
+    const index = Math.max(0, order.indexOf(active));
+    nav.classList.add('vibe-liquid-copy-nav');
+    nav.style.setProperty('--nav-count', String(order.length));
+    nav.style.setProperty('--nav-index', String(index < 0 ? 0 : index));
+    nav.innerHTML = `<div class="nav-indicator" id="mob-nav-indicator"></div>` + order.map((id, itemIndex) => {
+      const item = ITEMS[id];
+      return `<button class="nav-item ${id === active ? 'active' : ''}" type="button" data-nav-id="${id}" aria-label="${esc(item.label)}"><img class="nav-icon" src="${esc(item.icon)}" alt="${esc(item.label)}"></button>`;
+    }).join('');
+    requestAnimationFrame(() => setDropIndex(index < 0 ? 0 : index));
+    bindNavGestures(nav);
+    if (editMode) requestAnimationFrame(() => setEditing(true));
+  }
+
+  function bindNavGestures(nav) {
+    if (!nav || nav.dataset.vibeLiquidGestures === '1') return;
+    nav.dataset.vibeLiquidGestures = '1';
+    nav.addEventListener('pointerdown', event => {
+      const btn = event.target.closest && event.target.closest('.nav-item');
+      if (!btn) return;
+      clearTimeout(pressTimer);
+      hint(false);
+      suppressClick = false;
+      dragStarted = false;
+      scrubbing = false;
+      longPressShown = false;
+      draggingId = btn.dataset.navId;
+      startX = event.clientX;
+      startY = event.clientY;
+      try { btn.setPointerCapture(event.pointerId); } catch (error) {}
+      if (editMode) {
+        dragStarted = true;
+        suppressClick = true;
+        btn.classList.add('dragging');
+        setEditing(true);
+        setIndicatorFromPointer(event.clientX);
+        return;
+      }
+      pressTimer = setTimeout(() => {
+        if (scrubbing || dragStarted) return;
+        longPressShown = true;
+        suppressClick = true;
+        hint(true);
+        try { navigator.vibrate && navigator.vibrate([12, 18, 8]); } catch (error) {}
+      }, 520);
+    }, true);
+    nav.addEventListener('pointermove', event => {
+      if (!draggingId) return;
+      const dx = event.clientX - startX;
+      const dy = event.clientY - startY;
+      const moved = Math.hypot(dx, dy) > 9;
+      if (editMode && dragStarted) {
+        event.preventDefault();
+        setIndicatorFromPointer(event.clientX);
+        return;
+      }
+      if (!editMode && moved && !longPressShown) {
+        clearTimeout(pressTimer);
+        scrubbing = true;
+        suppressClick = true;
+        hint(false);
+        nav.classList.add('vibe-nav-scrubbing');
+        event.preventDefault();
+        setIndicatorFromPointer(event.clientX);
+      }
+    }, true);
+    const finish = event => {
+      clearTimeout(pressTimer);
+      const order = getOrder();
+      if (editMode && dragStarted && draggingId) {
+        const order = getOrder();
+        const from = order.indexOf(draggingId);
+        const to = indexFromClientX(event.clientX || 0);
+        if (from >= 0 && to >= 0 && from !== to) {
+          const next = order.slice();
+          const [item] = next.splice(from, 1);
+          next.splice(to, 0, item);
+          saveOrder(next).then(() => {
+            renderReorderSheet(true);
+            renderNav();
+            setEditing(true);
+          });
+        } else {
+          renderNav();
+          setEditing(true);
+        }
+      } else if (scrubbing && draggingId) {
+        const to = indexFromClientX(event.clientX || startX);
+        const id = order[to] || draggingId;
+        const nav = document.querySelector('.bottom-nav');
+        if (nav) {
+          nav.classList.remove('vibe-nav-scrubbing');
+          nav.classList.add('vibe-nav-traveling');
+        }
+        document.body.classList.add('vibe-nav-is-traveling');
+        hint(false);
+        setDropIndex(to);
+        setTimeout(() => window.mobNavControl(id, to), 40);
+        setTimeout(() => {
+          const current = document.querySelector('.bottom-nav');
+          if (current) current.classList.remove('vibe-nav-traveling');
+          document.body.classList.remove('vibe-nav-is-traveling');
+        }, 520);
+      } else if (longPressShown) {
+        hint(true);
+      } else {
+        const nav = document.querySelector('.bottom-nav');
+        if (nav) {
+          nav.classList.remove('vibe-nav-scrubbing');
+          nav.classList.remove('vibe-nav-traveling');
+          nav.style.removeProperty('--drag-x');
+        }
+        document.body.classList.remove('vibe-nav-is-traveling');
+        if (draggingId) {
+          suppressClick = true;
+          openNavItem(draggingId, indexFromClientX(startX));
+        } else {
+          renderNav();
+        }
+      }
+      draggingId = null;
+      dragStarted = false;
+      scrubbing = false;
+      setTimeout(() => { if (!longPressShown) suppressClick = false; }, 90);
+    };
+    nav.addEventListener('pointerup', finish, true);
+    nav.addEventListener('pointercancel', finish, true);
+    nav.addEventListener('click', event => {
+      const btn = event.target.closest && event.target.closest('.nav-item');
+      if (!btn) return;
+      event.preventDefault();
+      event.stopPropagation();
+      if (suppressClick) return;
+      openNavItem(btn.dataset.navId, Math.max(0, getOrder().indexOf(btn.dataset.navId)));
+    }, true);
+  }
+
+  function setScreen(id) {
+    const normalized = id === 'search' ? 'profile' : id;
+    if (!ITEMS[normalized]) return false;
+    const order = getOrder();
+    const index = Math.max(0, order.indexOf(normalized));
+    document.querySelectorAll('.mob-screen').forEach(screen => screen.classList.remove('active'));
+    const target = $('mob-' + normalized);
+    if (target) target.classList.add('active');
+    if (normalized === 'profile' && typeof window.renderOwnProfile === 'function') window.renderOwnProfile();
+    if (normalized === 'home' && typeof window.ensureHomeSearch === 'function') window.ensureHomeSearch();
+    if (typeof closeMobChat === 'function') closeMobChat();
+    renderNav();
+    const nav = document.querySelector('.bottom-nav');
+    if (nav) nav.style.setProperty('--nav-index', String(index));
+    return true;
+  }
+
+  const previousMobNavControl = window.mobNavControl;
+  window.mobNavControl = function(id, index) {
+    const normalized = id === 'search' ? 'profile' : id;
+    if (ITEMS[normalized]) {
+      if (typeof previousMobNavControl === 'function') {
+        try { previousMobNavControl(normalized, Math.max(0, getOrder().indexOf(normalized))); } catch (error) {}
+      }
+      return setScreen(normalized);
+    }
+    if (typeof previousMobNavControl === 'function') return previousMobNavControl(id, index);
+  };
+
+  window.mobTab = function(id) {
+    const normalized = id === 'search' ? 'profile' : id;
+    window.mobNavControl(normalized, Math.max(0, getOrder().indexOf(normalized)));
+  };
+
+  function editorRow(id, index) {
+    const item = ITEMS[id];
+    return `<div class="vibe-nav-row" draggable="true" data-nav-id="${id}">
+      <span class="person-main"><span class="settings-nav-icon"><img src="${esc(item.icon)}" style="width:24px;height:24px;border-radius:7px;object-fit:cover;"></span><span><div class="settings-nav-title">${esc(item.label)}</div><div class="settings-nav-meta">Позиция ${index + 1}</div></span></span>
+      <span class="vibe-mini-actions"><button type="button" onclick="moveMainNavItem('${id}', -1)">↑</button><button type="button" onclick="moveMainNavItem('${id}', 1)">↓</button></span>
+    </div>`;
+  }
+
+  function patchEditor() {
+    const editor = $('main-nav-editor');
+    if (!editor) return;
+    const order = getOrder();
+    const current = Array.from(editor.querySelectorAll('.vibe-nav-row')).map(row => row.dataset.navId).join('|');
+    if (current !== order.join('|')) editor.innerHTML = order.map(editorRow).join('');
+  }
+
+  window.moveMainNavItem = function(id, direction) {
+    const order = getOrder();
+    const index = order.indexOf(id === 'search' ? 'profile' : id);
+    const next = index + direction;
+    if (index < 0 || next < 0 || next >= order.length) return;
+    [order[index], order[next]] = [order[next], order[index]];
+    saveOrder(order).then(() => {
+      patchEditor();
+      renderNav();
+    });
+  };
+
+  window.saveMainNavOrder = async function() {
+    const editor = $('main-nav-editor');
+    const order = editor ? Array.from(editor.querySelectorAll('.vibe-nav-row')).map(row => row.dataset.navId) : getOrder();
+    await saveOrder(order);
+    patchEditor();
+    renderNav();
+    alert('Панель сохранена.');
+  };
+
+  window.resetMainNavOrder = async function() {
+    await saveOrder(DEFAULT_ORDER);
+    patchEditor();
+    renderNav();
+  };
+
+  function start() {
+    installStyle();
+    document.body.classList.toggle('vibe-intro-active', !!document.getElementById('intro-screen'));
+    renderNav();
+    patchEditor();
+  }
+
+  function watchIntro() {
+    document.body.classList.toggle('vibe-intro-active', !!document.getElementById('intro-screen'));
+    if (document.body.dataset.vibeIntroWatch === '1') return;
+    document.body.dataset.vibeIntroWatch = '1';
+    new MutationObserver(() => {
+      document.body.classList.toggle('vibe-intro-active', !!document.getElementById('intro-screen'));
+    }).observe(document.body, { childList: true, subtree: true });
+  }
+
+  document.addEventListener('pointerdown', event => {
+    if (event.target.closest && event.target.closest('.bottom-nav.vibe-liquid-copy-nav,.vibe-liquid-reorder-hint,.vibe-liquid-reorder-sheet')) return;
+    longPressShown = false;
+    hint(false);
+    if (editMode) closeReorderSheet();
+    if (!editMode) suppressClick = false;
+  }, true);
+  document.addEventListener('DOMContentLoaded', () => { watchIntro(); start(); });
+  window.addEventListener('resize', renderNav);
+  setInterval(start, 800);
 })();
 </script>
 </body>
