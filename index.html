@@ -1336,8 +1336,10 @@ const firebaseConfig = {
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
-const db = firebase.database();
-const storage = firebase.storage();
+var db = window.db || firebase.database();
+var storage = window.storage || firebase.storage();
+window.db = db;
+window.storage = storage;
 const EMAILJS_PUBLIC_KEY = "Nx7G0SMyg2yP2bvBW";
 const EMAILJS_SERVICE_ID = "default_service";
 const EMAILJS_TEMPLATE_ID = "template_4yxrnid";
@@ -1661,6 +1663,20 @@ function mobTab(id) {
             return map[mode];
         }
 
+        function getDatabaseSafe() {
+            if (window.db && typeof window.db.ref === 'function') return window.db;
+            if (typeof db !== 'undefined' && db && typeof db.ref === 'function') {
+                window.db = db;
+                return db;
+            }
+            if (window.firebase && typeof window.firebase.database === 'function') {
+                window.db = window.firebase.database();
+                db = window.db;
+                return window.db;
+            }
+            throw new Error('База данных ещё не загрузилась. Подожди секунду и попробуй снова.');
+        }
+
         function startResendCountdown(startTime) {
             const timerEl = document.getElementById('verify-timer');
             const resendBtn = document.getElementById('verify-resend-btn');
@@ -1722,11 +1738,12 @@ function mobTab(id) {
         }
 
         async function validateAuthFlow(mode) {
+            const authDb = getDatabaseSafe();
             if (mode === 'login') {
                 const email = document.getElementById('l-email-input').value.trim().toLowerCase();
                 const password = document.getElementById('l-pass-input').value;
                 if (!email || !password) throw new Error('Введи email и пароль!');
-                const emailSnap = await db.ref('emails/' + email.replace(/\./g, '_')).once('value');
+                const emailSnap = await authDb.ref('emails/' + email.replace(/\./g, '_')).once('value');
                 if (!emailSnap.exists()) throw new Error('Пользователь с такой почтой не найден!');
                 return { email, name: 'Пользователь' };
             }
@@ -1743,8 +1760,8 @@ function mobTab(id) {
                 if (!handle.startsWith('@')) handle = '@' + handle;
                 const hKey = handle.replace('@', '');
                 const [handleSnap, emailSnap] = await Promise.all([
-                    db.ref('handles/' + hKey).once('value'),
-                    db.ref('emails/' + email.replace(/\./g, '_')).once('value')
+                    authDb.ref('handles/' + hKey).once('value'),
+                    authDb.ref('emails/' + email.replace(/\./g, '_')).once('value')
                 ]);
                 if (handleSnap.exists()) throw new Error('Этот ник уже занят!');
                 if (emailSnap.exists()) throw new Error('Эта почта уже используется!');
@@ -1754,7 +1771,7 @@ function mobTab(id) {
             if (mode === 'reset') {
                 const email = document.getElementById('reset-email').value.trim().toLowerCase();
                 if (!email) throw new Error('Введи email!');
-                const emailSnap = await db.ref('emails/' + email.replace(/\./g, '_')).once('value');
+                const emailSnap = await authDb.ref('emails/' + email.replace(/\./g, '_')).once('value');
                 if (!emailSnap.exists()) throw new Error('Пользователь с такой почтой не найден!');
                 return { email, name: 'Пользователь' };
             }
@@ -1765,9 +1782,9 @@ function mobTab(id) {
             if (!rawHandle || !email || !password) throw new Error('Заполни все поля!');
             if (password.length < 6) throw new Error('Пароль должен быть минимум 6 символов!');
             const hKey = rawHandle.replace('@', '');
-            const userRef = await db.ref('handles/' + hKey).once('value');
+            const userRef = await authDb.ref('handles/' + hKey).once('value');
             if (!userRef.exists()) throw new Error('Пользователь с таким ником не найден!');
-            const emailSnap = await db.ref('emails/' + email.replace(/\./g, '_')).once('value');
+            const emailSnap = await authDb.ref('emails/' + email.replace(/\./g, '_')).once('value');
             if (emailSnap.exists()) throw new Error('Эта почта уже используется!');
             return { email, name: rawHandle };
         }
