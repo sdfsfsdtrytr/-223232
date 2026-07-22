@@ -25562,5 +25562,175 @@ window.openArchiveModal = function() {
   boot();
 })();
 </script>
+<style id="codex-presence-privacy-read-fix-style">
+  body.vibe-privacy-peer-hidden .msg.sent .vibe-message-checks.read::after,
+  body.vibe-privacy-self-hidden .msg.sent .vibe-message-checks.read::after {
+    opacity: 0 !important;
+  }
+
+  body.vibe-privacy-peer-hidden .msg.sent .vibe-message-checks.read,
+  body.vibe-privacy-self-hidden .msg.sent .vibe-message-checks.read {
+    color: rgba(0,0,0,.64) !important;
+  }
+
+  body.vibe-privacy-self-hidden .activity-line,
+  body.vibe-privacy-self-hidden .vibe-live-activity {
+    color: inherit !important;
+    opacity: .66 !important;
+  }
+</style>
+<script id="codex-presence-privacy-read-fix">
+(() => {
+  if (window.__codexPresencePrivacyReadFix) return;
+  window.__codexPresencePrivacyReadFix = true;
+
+  const escKey = value => String(value || '').replace(/[.#$\[\]/:]/g, '_');
+  const originalRef = (typeof db !== 'undefined' && db && db.ref) ? db.ref.bind(db) : null;
+  if (!originalRef) return;
+
+  function meNow() {
+    try { return (typeof me !== 'undefined' && me) ? me : window.me; } catch (error) { return window.me; }
+  }
+
+  function peerNow() {
+    try { return (typeof activePeer !== 'undefined' && activePeer) ? activePeer : window.activePeer; } catch (error) { return window.activePeer; }
+  }
+
+  function privacyOf(user) {
+    return (user && user.settings && user.settings.privacy) || {};
+  }
+
+  function selfHidden() {
+    const user = meNow();
+    return ((privacyOf(user).lastSeenMode || 'all') === 'nobody');
+  }
+
+  function peerHidden() {
+    const peer = peerNow();
+    return ((privacyOf(peer).lastSeenMode || 'all') === 'nobody');
+  }
+
+  function userId() {
+    const user = meNow();
+    return user && user.id ? String(user.id) : '';
+  }
+
+  function chatKey(peer = peerNow()) {
+    if (!peer || !peer.id) return '';
+    return (peer.type === 'group' || peer.type === 'channel' || peer.members) ? `room:${peer.id}` : `user:${peer.id}`;
+  }
+
+  function activityPathFor(peer = peerNow()) {
+    const key = chatKey(peer);
+    return key ? `activity/${escKey(key)}` : '';
+  }
+
+  function isOwnReadPath(path) {
+    const id = userId();
+    return !!(id && String(path || '').startsWith(`readState/${id}/`));
+  }
+
+  function isOwnActivityPath(path) {
+    const id = userId();
+    const activity = activityPathFor();
+    const value = String(path || '');
+    return !!(id && activity && (value === `${activity}/${id}` || value.startsWith(`${activity}/${id}/`)));
+  }
+
+  function isOwnUserPath(path) {
+    const id = userId();
+    const value = String(path || '');
+    return !!(id && (value === `users/${id}` || value.startsWith(`users/${id}/`)));
+  }
+
+  function shouldBlockSet(path) {
+    return selfHidden() && (isOwnReadPath(path) || isOwnActivityPath(path));
+  }
+
+  function shouldFilterPresence(path) {
+    return selfHidden() && isOwnUserPath(path);
+  }
+
+  function resolved(value) {
+    return Promise.resolve(value == null ? null : value);
+  }
+
+  function wrapRef(ref, path) {
+    return new Proxy(ref, {
+      get(target, prop, receiver) {
+        if (prop === 'set') {
+          return value => shouldBlockSet(path) ? resolved() : target.set(value);
+        }
+        if (prop === 'remove') {
+          return () => shouldBlockSet(path) ? resolved() : target.remove();
+        }
+        if (prop === 'update') {
+          return value => {
+            if (!shouldFilterPresence(path) || !value || typeof value !== 'object') return target.update(value);
+            const clean = { ...value };
+            delete clean.online;
+            delete clean.lastSeenAt;
+            delete clean.status;
+            if (!Object.keys(clean).length) return resolved();
+            return target.update(clean);
+          };
+        }
+        const got = Reflect.get(target, prop, receiver);
+        return typeof got === 'function' ? got.bind(target) : got;
+      }
+    });
+  }
+
+  db.ref = function(path) {
+    return wrapRef(originalRef(path), String(path || ''));
+  };
+
+  const previousPresence = window.getPresenceText;
+  window.getPresenceText = function(user) {
+    if (!user) return '';
+    const privacy = privacyOf(user);
+    if ((privacy.lastSeenMode || 'all') === 'nobody' && user.id !== userId()) {
+      return 'Был(а) недавно';
+    }
+    if (typeof previousPresence === 'function') return previousPresence(user);
+    return user.online ? 'в сети' : 'не в сети';
+  };
+
+  function applyPresenceState() {
+    const id = userId();
+    if (!id) return;
+    document.body.classList.toggle('vibe-privacy-self-hidden', selfHidden());
+    document.body.classList.toggle('vibe-privacy-peer-hidden', peerHidden());
+    if (selfHidden()) {
+      originalRef(`users/${id}`).update({ online:false, lastSeenAt:null }).catch(() => {});
+      originalRef(`readState/${id}`).remove().catch(() => {});
+      originalRef(`activity/${id}`).remove().catch(() => {});
+      const peer = peerNow();
+      const activity = activityPathFor(peer);
+      if (activity) originalRef(`${activity}/${id}`).remove().catch(() => {});
+    }
+    if (peerHidden()) {
+      document.querySelectorAll('.msg.sent .vibe-message-checks.read').forEach(check => {
+        check.classList.remove('read');
+        check.setAttribute('aria-label', 'Отправлено');
+      });
+    }
+  }
+
+  const previousSetPresenceMode = window.setPresenceMode;
+  if (typeof previousSetPresenceMode === 'function') {
+    window.setPresenceMode = async function(mode) {
+      const result = await previousSetPresenceMode.apply(this, arguments);
+      applyPresenceState();
+      return result;
+    };
+  }
+
+  window.addEventListener('load', () => [100, 700, 1600].forEach(ms => setTimeout(applyPresenceState, ms)));
+  document.addEventListener('visibilitychange', applyPresenceState);
+  setInterval(applyPresenceState, 1200);
+  applyPresenceState();
+})();
+</script>
 </body>
 </html>
