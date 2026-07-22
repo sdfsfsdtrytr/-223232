@@ -14702,7 +14702,7 @@ window.openArchiveModal = function() {
     const title = $('vibe-people-search-results-title');
     if (!results || !title) return;
     const query = String(value || '').trim();
-    if (query.length < 2) {
+    if (!query) {
       title.style.display = 'none';
       results.innerHTML = '';
       return;
@@ -14817,7 +14817,7 @@ window.openArchiveModal = function() {
     const search = $('vibe-home-search');
     if (search) search.classList.add('visible');
     const query = String(value || '').trim();
-    if (query.length < 2) {
+    if (!query) {
       target.innerHTML = '';
       return;
     }
@@ -15535,7 +15535,7 @@ window.openArchiveModal = function() {
     };
 
     return items
-      .filter(item => q.length < 2 ? item.archived : matches(item))
+      .filter(item => q.length < 1 ? item.archived : matches(item))
       .sort((a, b) => Number(!!b.archived) - Number(!!a.archived) || String(a.name || '').localeCompare(String(b.name || ''), 'ru'))
       .slice(0, 30);
   }
@@ -15598,7 +15598,7 @@ window.openArchiveModal = function() {
       : null;
     if (!results || !title) return;
     const query = String(value || '').trim();
-    if (query.length < 2) {
+    if (!query) {
       title.style.display = 'none';
       results.innerHTML = '';
       if (recentsTitle) recentsTitle.style.display = '';
@@ -15614,6 +15614,8 @@ window.openArchiveModal = function() {
     results.innerHTML = '<div class="vibe-search-empty">Ищу...</div>';
     try {
       const found = await collectSearchItems(query);
+      const currentInput = $('vibe-people-search-input');
+      if (!currentInput || currentInput.value.trim() !== query) return;
       if (!found.length) {
         results.innerHTML = '<div class="vibe-search-empty">Ничего не найдено</div>';
         return;
@@ -15868,7 +15870,7 @@ window.openArchiveModal = function() {
     const results = document.getElementById('vibe-people-search-results');
     const resultsTitle = document.getElementById('vibe-people-search-results-title');
     if (!input || !recents) return;
-    const hasQuery = input.value.trim().length >= 2;
+    const hasQuery = input.value.trim().length > 0;
     const recentsTitle = getSearchTitleBefore(recents);
     recents.style.display = hasQuery ? 'none' : '';
     if (recentsTitle) recentsTitle.style.display = hasQuery ? 'none' : '';
