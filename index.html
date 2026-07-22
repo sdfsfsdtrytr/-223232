@@ -10334,8 +10334,21 @@ window.openArchiveModal = function() {
 <script id="codex-message-reactions-final">
 (() => {
   const $ = id => document.getElementById(id);
-  const QUICK = ['?', '??', '??', '??', '??', '??', '??', '??', '??'];
-  const ALL = '? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ??? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ??? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? ??? ?? ?? ?????'.split(' ');
+  const E = (...codes) => String.fromCodePoint(...codes);
+  const QUICK = [
+    E(0x2B50), E(0x1F496), E(0x1F44F), E(0x1F44D), E(0x1F525),
+    E(0x1F970), E(0x1F601), E(0x1F914), E(0x1F389)
+  ];
+  const ALL = [
+    E(0x2B50), E(0x1F496), E(0x1F44F), E(0x1F44D), E(0x1F525), E(0x1F970), E(0x1F601), E(0x1F914),
+    E(0x1F92F), E(0x1F631), E(0x1F630), E(0x1F389), E(0x1F929), E(0x1F64F), E(0x1F44C), E(0x1F54A),
+    E(0x1F921), E(0x1F633), E(0x1F60A), E(0x1F60D), E(0x1F976), E(0x1F496), E(0x1FA9E), E(0x1F32D),
+    E(0x1F4AF), E(0x1F923), E(0x26A1), E(0x1F4AA), E(0x1F3C6), E(0x1F494), E(0x1F636), E(0x1F47F),
+    E(0x1F37E), E(0x1F48B), E(0x1F608), E(0x1F634), E(0x1F913), E(0x1F47B), E(0x1F56F), E(0x1F440),
+    E(0x1F921), E(0x1F648), E(0x1F60E), E(0x1F62D), E(0x1F91D), E(0x270D), E(0x1F937), E(0x1F47A),
+    E(0x1F332), E(0x2603), E(0x1F485), E(0x1FAA8), E(0x1F192), E(0x1F498), E(0x1F64A), E(0x1F984),
+    E(0x1F618), E(0x1F649), E(0x1F607), E(0x1F576), E(0x1F47E), E(0x1F483), E(0x1F9D1,0x200D,0x1F4BB)
+  ];
   let expanded = false;
   let changedRef = null;
   let changedCb = null;
@@ -11618,6 +11631,28 @@ window.openArchiveModal = function() {
     catch (error) { return null; }
   }
 
+  function readProfileConfig() {
+    try {
+      const profile = JSON.parse(localStorage.getItem('liquid_pro_v32') || 'null');
+      return profile && profile.settings && profile.settings.mainMenu;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function readAnyFolderBackup() {
+    let best = null;
+    try {
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i) || '';
+        if (!key.startsWith('vibe_main_menu_config_')) continue;
+        const value = JSON.parse(localStorage.getItem(key) || 'null');
+        best = richer(best, value);
+      }
+    } catch (error) {}
+    return best;
+  }
+
   function applyConfig(cfg) {
     const user = userNow();
     if (!user || !user.id) return;
@@ -11644,18 +11679,20 @@ window.openArchiveModal = function() {
     syncing = true;
     const ref = db.ref(`users/${user.id}/settings/mainMenu`);
     const local = readLocal(user.id);
+    const profileLocal = readProfileConfig();
+    const anyBackup = readAnyFolderBackup();
     const current = user.settings && user.settings.mainMenu;
     try {
       const snap = await ref.once('value');
       const remote = snap.val();
-      const chosen = richer(remote || current, local || current);
+      const chosen = richer(richer(remote || current, local || current), richer(profileLocal, anyBackup));
       applyConfig(chosen);
       if (!remote || normalize(local).folders.length > normalize(remote).folders.length) {
         await ref.set(chosen);
       }
       ref.on('value', nextSnap => {
         const remoteNext = nextSnap.val();
-        if (remoteNext) applyConfig(remoteNext);
+        if (remoteNext) applyConfig(richer(richer(remoteNext, readLocal(user.id)), richer(readProfileConfig(), readAnyFolderBackup())));
       });
     } catch (error) {
       if (local || current) applyConfig(richer(local, current));
@@ -18629,13 +18666,13 @@ window.openArchiveModal = function() {
 
   body.chat-open-mobile .vibe26-pin-card {
     position:absolute;
-    top:calc(72px + env(safe-area-inset-top));
+    top:calc(84px + env(safe-area-inset-top));
     left:0;
     right:0;
   }
 
   body.chat-open-mobile #mob-msgs.chat-messages {
-    padding-top:calc(138px + env(safe-area-inset-top)) !important;
+    padding-top:calc(158px + env(safe-area-inset-top)) !important;
     padding-bottom:calc(96px + env(safe-area-inset-bottom)) !important;
   }
 
@@ -18800,7 +18837,7 @@ window.openArchiveModal = function() {
     }
 
     body.chat-open-mobile .vibe26-pin-card {
-      top:calc(58px + env(safe-area-inset-top));
+      top:calc(68px + env(safe-area-inset-top));
       min-height:48px;
       margin:0 10px 5px;
       border-radius:22px;
@@ -18845,7 +18882,7 @@ window.openArchiveModal = function() {
       gap:9px !important;
       padding-left:12px !important;
       padding-right:12px !important;
-      padding-top:calc(112px + env(safe-area-inset-top)) !important;
+      padding-top:calc(128px + env(safe-area-inset-top)) !important;
       padding-bottom:calc(84px + env(safe-area-inset-bottom)) !important;
     }
 
@@ -19602,6 +19639,419 @@ window.openArchiveModal = function() {
     if (peerNow()) bindPins();
     if (state.pins.length) renderPinBar();
   }, 1200);
+})();
+</script>
+<style id="codex-emoji-reactions-restore-final">
+  body.chat-open-mobile #mob-emoji-picker,
+  #pc-emoji-picker.vibe-emoji-panel-final,
+  #mob-emoji-picker.vibe-emoji-panel-final {
+    border-radius:22px !important;
+    background:rgba(21,21,24,.80) !important;
+    border:1px solid rgba(255,255,255,.14) !important;
+    box-shadow:0 22px 70px rgba(0,0,0,.44), inset 0 1px 0 rgba(255,255,255,.18) !important;
+    backdrop-filter:blur(24px) saturate(160%) !important;
+    -webkit-backdrop-filter:blur(24px) saturate(160%) !important;
+    padding:10px !important;
+    overflow:hidden !important;
+  }
+
+  .vibe-final-picker-shell {
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    height:100%;
+  }
+
+  .vibe-final-picker-top {
+    height:38px;
+    border-radius:19px;
+    background:linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,.06));
+    border:1px solid rgba(255,255,255,.13);
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+    padding:0 12px;
+    color:#13f2ff;
+    font-size:18px;
+    font-weight:900;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.18);
+  }
+
+  .vibe-final-picker-tabs {
+    display:flex;
+    gap:8px;
+  }
+
+  .vibe-final-picker-tab,
+  .vibe-final-picker-add {
+    min-height:32px;
+    border-radius:14px;
+    border:1px solid rgba(255,255,255,.12);
+    background:rgba(255,255,255,.08);
+    color:#fff;
+    font-size:12px;
+    font-weight:900;
+    padding:0 12px;
+  }
+
+  .vibe-final-picker-tab.active {
+    background:#10e7f2;
+    color:#052026;
+  }
+
+  .vibe-final-picker-add {
+    width:42px;
+    padding:0;
+    margin-left:auto;
+  }
+
+  .vibe-final-picker-panel {
+    display:none;
+    overflow:auto;
+    max-height:calc(min(54vh, 420px) - 92px);
+    padding:0 4px 0 0;
+    scrollbar-color:#10e7f2 rgba(255,255,255,.07);
+    scrollbar-width:thin;
+  }
+
+  .vibe-final-picker-panel::-webkit-scrollbar {
+    width:8px;
+  }
+
+  .vibe-final-picker-panel::-webkit-scrollbar-track {
+    background:rgba(255,255,255,.07);
+    border-radius:999px;
+  }
+
+  .vibe-final-picker-panel::-webkit-scrollbar-thumb {
+    background:#10e7f2;
+    border-radius:999px;
+  }
+
+  .vibe-final-picker-panel.active[data-panel="emoji"] {
+    display:grid;
+    grid-template-columns:repeat(8, minmax(0,1fr));
+    gap:7px;
+  }
+
+  .vibe-final-picker-panel.active[data-panel="stickers"] {
+    display:block;
+  }
+
+  .vibe-final-emoji {
+    width:34px;
+    height:34px;
+    border-radius:11px;
+    border:1px solid rgba(255,255,255,.08);
+    background:rgba(255,255,255,.08);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:21px;
+    line-height:1;
+  }
+
+  .vibe-final-sticker-grid {
+    display:grid;
+    grid-template-columns:repeat(3, minmax(0,1fr));
+    gap:9px;
+  }
+
+  .vibe-final-sticker {
+    min-height:82px;
+    border-radius:16px;
+    border:1px solid rgba(255,255,255,.10);
+    background:rgba(255,255,255,.08);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    padding:8px;
+  }
+
+  .vibe-final-sticker img {
+    width:100%;
+    height:100%;
+    object-fit:contain;
+  }
+
+  .vibe-reaction-panel .vibe-reaction-fast,
+  .vibe-reaction-panel .vibe-reaction-grid button {
+    font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif !important;
+  }
+
+  .vibe-reaction-panel .vibe-reaction-more {
+    color:#10e7f2 !important;
+    position:relative;
+    font-size:0 !important;
+  }
+
+  .vibe-reaction-panel .vibe-reaction-more::before,
+  .vibe-reaction-panel .vibe-reaction-more::after {
+    content:"";
+    position:absolute;
+    width:9px;
+    height:2.5px;
+    border-radius:999px;
+    background:#10e7f2;
+    top:50%;
+    left:50%;
+  }
+
+  .vibe-reaction-panel .vibe-reaction-more::before {
+    transform:translate(-80%, -20%) rotate(45deg);
+  }
+
+  .vibe-reaction-panel .vibe-reaction-more::after {
+    transform:translate(-20%, -20%) rotate(-45deg);
+  }
+
+  .vibe-reaction-panel.expanded .vibe-reaction-more::before {
+    transform:translate(-80%, -20%) rotate(-45deg);
+  }
+
+  .vibe-reaction-panel.expanded .vibe-reaction-more::after {
+    transform:translate(-20%, -20%) rotate(45deg);
+  }
+
+  @media (max-width:520px) {
+    .vibe-final-picker-panel.active[data-panel="emoji"] {
+      grid-template-columns:repeat(7, minmax(0,1fr));
+      gap:6px;
+    }
+
+    .vibe-final-emoji {
+      width:32px;
+      height:32px;
+      font-size:20px;
+    }
+
+    body.chat-open-mobile #mob-emoji-picker {
+      left:10px !important;
+      right:10px !important;
+      bottom:calc(76px + env(safe-area-inset-bottom)) !important;
+      max-height:48vh !important;
+    }
+  }
+</style>
+<script id="codex-emoji-reactions-restore-final">
+(() => {
+  if (window.__vibeEmojiReactionsRestoreFinal) return;
+  window.__vibeEmojiReactionsRestoreFinal = true;
+
+  const $ = id => document.getElementById(id);
+  const E = (...codes) => String.fromCodePoint(...codes);
+  const esc = value => String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+
+  const EMOJIS = [
+    0x2B50,0x1F496,0x1F44F,0x1F44D,0x1F525,0x1F970,0x1F601,0x1F914,
+    0x1F92F,0x1F631,0x1F630,0x1F389,0x1F929,0x1F64F,0x1F44C,0x1F54A,
+    0x1F921,0x1F633,0x1F60A,0x1F60D,0x1F976,0x1F496,0x1FA9E,0x1F32D,
+    0x1F4AF,0x1F923,0x26A1,0x1F4AA,0x1F3C6,0x1F494,0x1F636,0x1F47F,
+    0x1F37E,0x1F48B,0x1F608,0x1F634,0x1F913,0x1F47B,0x1F56F,0x1F440,
+    0x1F921,0x1F648,0x1F60E,0x1F62D,0x1F91D,0x270D,0x1F937,0x1F47A,
+    0x1F332,0x2603,0x1F485,0x1FAA8,0x1F192,0x1F498,0x1F64A,0x1F984,
+    0x1F618,0x1F649,0x1F607,0x1F576,0x1F47E,0x1F483,0x1F9D1
+  ].map(code => E(code));
+
+  function stickers() {
+    try {
+      return JSON.parse(localStorage.getItem('vibe_custom_stickers_v1') || '[]');
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function saveStickers(list) {
+    localStorage.setItem('vibe_custom_stickers_v1', JSON.stringify((list || []).slice(0, 120)));
+  }
+
+  function modeInput(mode) {
+    return $(`${mode}-input`);
+  }
+
+  function render(mode) {
+    const root = $(`${mode}-emoji-picker`);
+    if (!root) return;
+    root.classList.add('vibe-emoji-panel-final');
+    const active = root.dataset.finalTab || 'emoji';
+    const custom = stickers();
+    root.innerHTML = `
+      <div class="vibe-final-picker-shell">
+        <div class="vibe-final-picker-top">⌃</div>
+        <div class="vibe-final-picker-tabs">
+          <button type="button" class="vibe-final-picker-tab ${active === 'emoji' ? 'active' : ''}" data-final-tab="emoji">Emoji</button>
+          <button type="button" class="vibe-final-picker-tab ${active === 'stickers' ? 'active' : ''}" data-final-tab="stickers">Stickers</button>
+          <button type="button" class="vibe-final-picker-add" data-final-add>+</button>
+        </div>
+        <div class="vibe-final-picker-panel ${active === 'emoji' ? 'active' : ''}" data-panel="emoji">
+          ${EMOJIS.map(item => `<button type="button" class="vibe-final-emoji" data-final-emoji="${esc(item)}">${esc(item)}</button>`).join('')}
+        </div>
+        <div class="vibe-final-picker-panel ${active === 'stickers' ? 'active' : ''}" data-panel="stickers">
+          <div class="vibe-final-sticker-grid">
+            ${custom.map(sticker => `<button type="button" class="vibe-final-sticker" data-final-sticker="${esc(sticker.url || '')}" data-final-name="${esc(sticker.name || 'Sticker')}"><img src="${esc(sticker.url || '')}" alt=""></button>`).join('')}
+          </div>
+        </div>
+      </div>`;
+
+    root.querySelectorAll('[data-final-tab]').forEach(btn => {
+      btn.onclick = () => {
+        root.dataset.finalTab = btn.dataset.finalTab || 'emoji';
+        render(mode);
+      };
+    });
+
+    root.querySelectorAll('[data-final-emoji]').forEach(btn => {
+      btn.onclick = () => {
+        const input = modeInput(mode);
+        if (!input) return;
+        input.value = (input.value || '') + btn.dataset.finalEmoji;
+        input.focus();
+        if (typeof window.updateSendButton === 'function') window.updateSendButton(mode);
+      };
+    });
+
+    root.querySelectorAll('[data-final-sticker]').forEach(btn => {
+      btn.onclick = async () => {
+        const url = btn.dataset.finalSticker;
+        if (!url) return;
+        if (typeof window.sendStickerMessage === 'function') await window.sendStickerMessage(url, btn.dataset.finalName || 'Sticker', 1);
+        root.style.display = 'none';
+      };
+    });
+
+    const add = root.querySelector('[data-final-add]');
+    if (add) add.onclick = () => {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/*';
+      input.onchange = () => {
+        const file = input.files && input.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          const list = stickers();
+          list.unshift({ id:`custom_${Date.now()}`, name:file.name || 'Sticker', url:String(reader.result || '') });
+          saveStickers(list);
+          root.dataset.finalTab = 'stickers';
+          render(mode);
+        };
+        reader.readAsDataURL(file);
+      };
+      input.click();
+    };
+  }
+
+  window.loadEmojis = function() {
+    render('pc');
+    render('mob');
+  };
+
+  window.toggleEmoji = function(mode) {
+    const fixed = mode === 'pc' ? 'pc' : 'mob';
+    const root = $(`${fixed}-emoji-picker`);
+    if (!root) return;
+    render(fixed);
+    root.style.display = root.style.display === 'block' ? 'none' : 'block';
+  };
+
+  const baseShow = window.showMsgMenu;
+  if (typeof baseShow === 'function') {
+    window.showMsgMenu = function(...args) {
+      const result = baseShow.apply(this, args);
+      setTimeout(() => {
+        document.querySelectorAll('.vibe-reaction-more').forEach(btn => { btn.textContent = '⌄'; });
+      }, 30);
+      return result;
+    };
+  }
+
+  window.addEventListener('load', () => setTimeout(window.loadEmojis, 650));
+})();
+</script>
+<script id="codex-folder-recovery-final">
+(() => {
+  if (window.__vibeFolderRecoveryFinal) return;
+  window.__vibeFolderRecoveryFinal = true;
+
+  function userNow() {
+    return (typeof me !== 'undefined' && me) ? me : window.me;
+  }
+
+  function normalize(value) {
+    const cfg = value && typeof value === 'object' ? { ...value } : {};
+    cfg.folders = Array.isArray(cfg.folders) ? cfg.folders.filter(Boolean) : [];
+    cfg.navOrder = Array.isArray(cfg.navOrder) && cfg.navOrder.length ? cfg.navOrder.filter(Boolean) : ['home', 'search', 'settings'];
+    return cfg;
+  }
+
+  function richer(a, b) {
+    const left = normalize(a);
+    const right = normalize(b);
+    const leftScore = left.folders.length * 10 + left.navOrder.length;
+    const rightScore = right.folders.length * 10 + right.navOrder.length;
+    return leftScore >= rightScore ? left : right;
+  }
+
+  function readJson(key) {
+    try { return JSON.parse(localStorage.getItem(key) || 'null'); }
+    catch (error) { return null; }
+  }
+
+  function bestConfig() {
+    const user = userNow();
+    let best = user && user.settings && user.settings.mainMenu;
+    if (user && user.id) best = richer(best, readJson(`vibe_main_menu_config_${user.id}`));
+    const profile = readJson('liquid_pro_v32');
+    best = richer(best, profile && profile.settings && profile.settings.mainMenu);
+    try {
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i) || '';
+        if (key.startsWith('vibe_main_menu_config_')) best = richer(best, readJson(key));
+      }
+    } catch (error) {}
+    return normalize(best);
+  }
+
+  function applyBest(reason) {
+    const user = userNow();
+    if (!user || !user.id) return;
+    const best = bestConfig();
+    if (!best.folders.length) return;
+    user.settings = user.settings || {};
+    const current = normalize(user.settings.mainMenu);
+    if (current.folders.length >= best.folders.length) return;
+    user.settings.mainMenu = best;
+    window.me = user;
+    try {
+      localStorage.setItem(`vibe_main_menu_config_${user.id}`, JSON.stringify(best));
+      localStorage.setItem('liquid_pro_v32', JSON.stringify(user));
+    } catch (error) {}
+    if (typeof db !== 'undefined') db.ref(`users/${user.id}/settings/mainMenu`).set(best).catch(() => {});
+    if (typeof window.renderFolderedDialogs === 'function') window.renderFolderedDialogs(true);
+    else if (typeof window.renderDialogsFixed === 'function') window.renderDialogsFixed();
+  }
+
+  function foldersMissing() {
+    const best = bestConfig();
+    if (!best.folders.length) return false;
+    const hosts = [document.getElementById('pc-contacts-list'), document.getElementById('mob-contacts')].filter(Boolean);
+    return hosts.some(host => !host.querySelector('.vibe-folder-tabs'));
+  }
+
+  function boot() {
+    applyBest('boot');
+    if (foldersMissing()) {
+      if (typeof window.renderFolderedDialogs === 'function') window.renderFolderedDialogs(true);
+      else if (typeof window.renderDialogsFixed === 'function') window.renderDialogsFixed();
+    }
+  }
+
+  window.addEventListener('load', () => [300, 900, 1800, 3200].forEach(ms => setTimeout(boot, ms)));
 })();
 </script>
 </body>
